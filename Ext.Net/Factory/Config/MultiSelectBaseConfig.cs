@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,10 +33,7 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
-    public abstract partial class MultiSelectBase
+    public abstract partial class MultiSelectBase<T>
     {
         /// <summary>
         /// 
@@ -64,82 +61,298 @@ namespace Ext.Net
 				}
 			}
         
-			private StoreCollection<Store> store = null;
+			private StoreCollection store = null;
 
 			/// <summary>
 			/// The data store to use.
 			/// </summary>
-			public StoreCollection<Store> Store
+			public StoreCollection Store
 			{
 				get
 				{
 					if (this.store == null)
 					{
-						this.store = new StoreCollection<Store>();
+						this.store = new StoreCollection();
 					}
 			
 					return this.store;
 				}
 			}
 			        
-			private ListItemCollection items = null;
+			private ListItemCollection<T> items = null;
 
 			/// <summary>
 			/// 
 			/// </summary>
-			public ListItemCollection Items
+			public ListItemCollection<T> Items
 			{
 				get
 				{
 					if (this.items == null)
 					{
-						this.items = new ListItemCollection();
+						this.items = new ListItemCollection<T>();
 					}
 			
 					return this.items;
 				}
 			}
 			        
-			private ListItemCollection selectedItems = null;
+			private SelectedListItemCollection selectedItems = null;
 
 			/// <summary>
 			/// 
 			/// </summary>
-			public ListItemCollection SelectedItems
+			public SelectedListItemCollection SelectedItems
 			{
 				get
 				{
 					if (this.selectedItems == null)
 					{
-						this.selectedItems = new ListItemCollection();
+						this.selectedItems = new SelectedListItemCollection();
 					}
 			
 					return this.selectedItems;
 				}
 			}
 			
-			private string listTitle = "";
+			private string displayField = "";
 
 			/// <summary>
-			/// An optional title to be displayed at the top of the selection list.
+			/// The underlying data field name to bind to this MultiSelect.
 			/// </summary>
 			[DefaultValue("")]
-			public virtual string ListTitle 
+			public virtual string DisplayField 
 			{ 
 				get
 				{
-					return this.listTitle;
+					return this.displayField;
 				}
 				set
 				{
-					this.listTitle = value;
+					this.displayField = value;
+				}
+			}
+
+			private string valueField = "";
+
+			/// <summary>
+			/// The underlying data value name to bind to this MultiSelect.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string ValueField 
+			{ 
+				get
+				{
+					return this.valueField;
+				}
+				set
+				{
+					this.valueField = value;
+				}
+			}
+
+			private bool allowBlank = true;
+
+			/// <summary>
+			/// False to validate that the value length > 0 (defaults to true).
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool AllowBlank 
+			{ 
+				get
+				{
+					return this.allowBlank;
+				}
+				set
+				{
+					this.allowBlank = value;
+				}
+			}
+
+			private int maxLength = -1;
+
+			/// <summary>
+			/// Maximum input field length allowed (defaults to Number.MAX_VALUE).
+			/// </summary>
+			[DefaultValue(-1)]
+			public virtual int MaxLength 
+			{ 
+				get
+				{
+					return this.maxLength;
+				}
+				set
+				{
+					this.maxLength = value;
+				}
+			}
+
+			private int minLength = 0;
+
+			/// <summary>
+			/// Minimum input field length required (defaults to 0).
+			/// </summary>
+			[DefaultValue(0)]
+			public virtual int MinLength 
+			{ 
+				get
+				{
+					return this.minLength;
+				}
+				set
+				{
+					this.minLength = value;
+				}
+			}
+
+			private string maxLengthText = "";
+
+			/// <summary>
+			/// Error text to display if the maximum length validation fails (defaults to 'The maximum length for this field is {maxLength}').
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string MaxLengthText 
+			{ 
+				get
+				{
+					return this.maxLengthText;
+				}
+				set
+				{
+					this.maxLengthText = value;
+				}
+			}
+
+			private string minLengthText = "";
+
+			/// <summary>
+			/// Error text to display if the minimum length validation fails (defaults to 'The minimum length for this field is {minLength}').
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string MinLengthText 
+			{ 
+				get
+				{
+					return this.minLengthText;
+				}
+				set
+				{
+					this.minLengthText = value;
+				}
+			}
+
+			private string blankText = "";
+
+			/// <summary>
+			/// Error text to display if the allow blank validation fails (defaults to 'This field is required').
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string BlankText 
+			{ 
+				get
+				{
+					return this.blankText;
+				}
+				set
+				{
+					this.blankText = value;
+				}
+			}
+
+			private bool copy = false;
+
+			/// <summary>
+			/// Causes drag operations to copy nodes rather than move (defaults to false).
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool Copy 
+			{ 
+				get
+				{
+					return this.copy;
+				}
+				set
+				{
+					this.copy = value;
+				}
+			}
+
+			private bool allowDuplicates = false;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool AllowDuplicates 
+			{ 
+				get
+				{
+					return this.allowDuplicates;
+				}
+				set
+				{
+					this.allowDuplicates = value;
+				}
+			}
+
+			private bool allowTrash = false;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool AllowTrash 
+			{ 
+				get
+				{
+					return this.allowTrash;
+				}
+				set
+				{
+					this.allowTrash = value;
+				}
+			}
+
+			private string legend = "";
+
+			/// <summary>
+			/// The title text to display in the panel header (defaults to '')
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string Legend 
+			{ 
+				get
+				{
+					return this.legend;
+				}
+				set
+				{
+					this.legend = value;
+				}
+			}
+
+			private string delimiter = ",";
+
+			/// <summary>
+			/// The string used to delimit between items when set or returned as a string of values
+			/// </summary>
+			[DefaultValue(",")]
+			public virtual string Delimiter 
+			{ 
+				get
+				{
+					return this.delimiter;
+				}
+				set
+				{
+					this.delimiter = value;
 				}
 			}
 
 			private string dragGroup = "";
 
 			/// <summary>
-			/// The ddgroup name(s) for the MultiSelect DragZone (defaults to undefined).
+			/// The ddgroup name(s) for the View's DragZone (defaults to undefined).
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string DragGroup 
@@ -172,46 +385,10 @@ namespace Ext.Net
 				}
 			}
 
-			private bool dDReorder = false;
-
-			/// <summary>
-			/// Whether the items in the MultiSelect list are drag/drop reorderable (defaults to false).
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool DDReorder 
-			{ 
-				get
-				{
-					return this.dDReorder;
-				}
-				set
-				{
-					this.dDReorder = value;
-				}
-			}
-        
-			private ToolbarCollection topBar = null;
-
-			/// <summary>
-			/// An optional toolbar to be inserted at the top of the control's selection list.
-			/// </summary>
-			public ToolbarCollection TopBar
-			{
-				get
-				{
-					if (this.topBar == null)
-					{
-						this.topBar = new ToolbarCollection();
-					}
-			
-					return this.topBar;
-				}
-			}
-			
 			private bool appendOnly = false;
 
 			/// <summary>
-			/// True if the list should only allow append drops when drag/drop is enabled (use for lists which are sorted, defaults to false).
+			/// 
 			/// </summary>
 			[DefaultValue(false)]
 			public virtual bool AppendOnly 
@@ -226,192 +403,102 @@ namespace Ext.Net
 				}
 			}
 
-			private string displayField = "text";
+			private string sortField = "";
 
 			/// <summary>
-			/// Name of the desired display field in the dataset (defaults to 'text').
-			/// </summary>
-			[DefaultValue("text")]
-			public virtual string DisplayField 
-			{ 
-				get
-				{
-					return this.displayField;
-				}
-				set
-				{
-					this.displayField = value;
-				}
-			}
-
-			private string valueField = "";
-
-			/// <summary>
-			/// Name of the desired value field in the dataset (defaults to the value of displayField).
+			/// 
 			/// </summary>
 			[DefaultValue("")]
-			public virtual string ValueField 
+			public virtual string SortField 
 			{ 
 				get
 				{
-					return this.valueField;
+					return this.sortField;
 				}
 				set
 				{
-					this.valueField = value;
+					this.sortField = value;
 				}
 			}
 
-			private bool allowBlank = true;
+			private SortDirection direction = SortDirection.ASC;
 
 			/// <summary>
-			/// False to require at least one item in the list to be selected, true to allow no selection (defaults to true).
+			/// 
+			/// </summary>
+			[DefaultValue(SortDirection.ASC)]
+			public virtual SortDirection Direction 
+			{ 
+				get
+				{
+					return this.direction;
+				}
+				set
+				{
+					this.direction = value;
+				}
+			}
+
+			private bool submitText = true;
+
+			/// <summary>
+			/// True to submit text of selected items. Defaults to true.
 			/// </summary>
 			[DefaultValue(true)]
-			public virtual bool AllowBlank 
+			public virtual bool SubmitText 
 			{ 
 				get
 				{
-					return this.allowBlank;
+					return this.submitText;
 				}
 				set
 				{
-					this.allowBlank = value;
+					this.submitText = value;
 				}
 			}
 
-			private int maxSelections = int.MaxValue;
+			private bool submitIndexes = true;
 
 			/// <summary>
-			/// Maximum number of selections allowed (defaults to Number.MAX_VALUE).
+			/// True to submit indexes of selected items. Defaults to true.
 			/// </summary>
-			[DefaultValue(int.MaxValue)]
-			public virtual int MaxSelections 
+			[DefaultValue(true)]
+			public virtual bool SubmitIndexes 
 			{ 
 				get
 				{
-					return this.maxSelections;
+					return this.submitIndexes;
 				}
 				set
 				{
-					this.maxSelections = value;
+					this.submitIndexes = value;
 				}
 			}
 
-			private int minSelections = 0;
+			private bool fireSelectOnLoad = false;
 
 			/// <summary>
-			/// Minimum number of selections allowed (defaults to 0).
-			/// </summary>
-			[DefaultValue(0)]
-			public virtual int MinSelections 
-			{ 
-				get
-				{
-					return this.minSelections;
-				}
-				set
-				{
-					this.minSelections = value;
-				}
-			}
-
-			private string blankText = "This field is required";
-
-			/// <summary>
-			/// Default text displayed when the control contains no items (defaults to 'This field is required')
-			/// </summary>
-			[DefaultValue("This field is required")]
-			public virtual string BlankText 
-			{ 
-				get
-				{
-					return this.blankText;
-				}
-				set
-				{
-					this.blankText = value;
-				}
-			}
-
-			private string maxSelectionsText = "Maximum {0} item(s) allowed";
-
-			/// <summary>
-			/// Validation message displayed when MaxSelections is not met (defaults to 'Maximum {0} item(s) allowed').  The {0} token will be replaced by the value of MaxSelections.
-			/// </summary>
-			[DefaultValue("Maximum {0} item(s) allowed")]
-			public virtual string MaxSelectionsText 
-			{ 
-				get
-				{
-					return this.maxSelectionsText;
-				}
-				set
-				{
-					this.maxSelectionsText = value;
-				}
-			}
-
-			private string minSelectionsText = "Minimum {0} item(s) required";
-
-			/// <summary>
-			/// Validation message displayed when MinSelections is not met (defaults to 'Minimum {0} item(s) required').  The {0} token will be replaced by the value of MinSelections.
-			/// </summary>
-			[DefaultValue("Minimum {0} item(s) required")]
-			public virtual string MinSelectionsText 
-			{ 
-				get
-				{
-					return this.minSelectionsText;
-				}
-				set
-				{
-					this.minSelectionsText = value;
-				}
-			}
-
-			private string delimiter = ",";
-
-			/// <summary>
-			/// The string used to delimit the selected values when getSubmitValue submitting the field as part of a form. Defaults to ','. If you wish to have the selected values submitted as separate parameters rather than a single delimited parameter, set this to null.
-			/// </summary>
-			[DefaultValue(",")]
-			public virtual string Delimiter 
-			{ 
-				get
-				{
-					return this.delimiter;
-				}
-				set
-				{
-					this.delimiter = value;
-				}
-			}
-
-			private bool copy = false;
-
-			/// <summary>
-			/// Causes drag operations to copy nodes rather than move (defaults to false).
+			/// Set init selecetion without event fires
 			/// </summary>
 			[DefaultValue(false)]
-			public virtual bool Copy 
+			public virtual bool FireSelectOnLoad 
 			{ 
 				get
 				{
-					return this.copy;
+					return this.fireSelectOnLoad;
 				}
 				set
 				{
-					this.copy = value;
+					this.fireSelectOnLoad = value;
 				}
 			}
 
-			private bool multiSelect = false;
+			private bool multiSelect = true;
 
 			/// <summary>
-			/// True to allow selection of more than one item at a time, false to allow selection of only a single item at a time or no selection at all, depending on the value of singleSelect (defaults to false).
+			/// True to allow multi selection (defaults to true).
 			/// </summary>
-			[DefaultValue(false)]
+			[DefaultValue(true)]
 			public virtual bool MultiSelect 
 			{ 
 				get
@@ -424,57 +511,75 @@ namespace Ext.Net
 				}
 			}
 
-			private bool simpleSelect = true;
+			private KeepSelectionMode keepSelectionOnClick = KeepSelectionMode.Always;
 
 			/// <summary>
-			/// True to enable multiselection by clicking on multiple items without requiring the user to hold Shift or Ctrl, false to force the user to hold Ctrl or Shift to select more than on item (defaults to true).
+			/// Selection Mode
 			/// </summary>
-			[DefaultValue(true)]
-			public virtual bool SimpleSelect 
+			[DefaultValue(KeepSelectionMode.Always)]
+			public virtual KeepSelectionMode KeepSelectionOnClick 
 			{ 
 				get
 				{
-					return this.simpleSelect;
+					return this.keepSelectionOnClick;
 				}
 				set
 				{
-					this.simpleSelect = value;
+					this.keepSelectionOnClick = value;
 				}
 			}
 
-			private bool singleSelect = false;
+			private string bodyStyle = "";
 
 			/// <summary>
-			/// True to allow selection of exactly one item at a time, false to allow no selection at all (defaults to false). Note that if multiSelect = true, this value will be ignored.
+			/// Custom CSS styles to be applied to the body element in the format expected by Ext.Element.applyStyles (defaults to null).
 			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool SingleSelect 
+			[DefaultValue("")]
+			public virtual string BodyStyle 
 			{ 
 				get
 				{
-					return this.singleSelect;
+					return this.bodyStyle;
 				}
 				set
 				{
-					this.singleSelect = value;
+					this.bodyStyle = value;
 				}
 			}
         
-			private BoundList listConfig = null;
+			private ToolbarCollection bottomBar = null;
 
 			/// <summary>
-			/// 
+			/// The bottom toolbar of the panel.
 			/// </summary>
-			public BoundList ListConfig
+			public ToolbarCollection BottomBar
 			{
 				get
 				{
-					if (this.listConfig == null)
+					if (this.bottomBar == null)
 					{
-						this.listConfig = new BoundList();
+						this.bottomBar = new ToolbarCollection();
 					}
 			
-					return this.listConfig;
+					return this.bottomBar;
+				}
+			}
+			        
+			private ToolbarCollection topBar = null;
+
+			/// <summary>
+			/// The top toolbar of the panel.
+			/// </summary>
+			public ToolbarCollection TopBar
+			{
+				get
+				{
+					if (this.topBar == null)
+					{
+						this.topBar = new ToolbarCollection();
+					}
+			
+					return this.topBar;
 				}
 			}
 			

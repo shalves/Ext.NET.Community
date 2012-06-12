@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,16 +33,13 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public abstract partial class ComboBoxBase
+    public abstract partial class ComboBoxBase<T>
     {
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TComboBoxBase, TBuilder> : PickerField.Builder<TComboBoxBase, TBuilder>
-            where TComboBoxBase : ComboBoxBase
+        new public abstract partial class Builder<TComboBoxBase, TBuilder> : TriggerFieldBase.Builder<TComboBoxBase, TBuilder>
+            where TComboBoxBase : ComboBoxBase<T>
             where TBuilder : Builder<TComboBoxBase, TBuilder>
         {
             /*  Ctor
@@ -58,26 +55,6 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder SelectedItems(Action<ListItemCollection> action)
-            {
-                action(this.ToComponent().SelectedItems);
-                return this as TBuilder;
-            }
-			 
- 			/// <summary>
-			/// True to submit value only
-			/// </summary>
-            public virtual TBuilder SimpleSubmit(bool simpleSubmit)
-            {
-                this.ToComponent().SimpleSubmit = simpleSubmit;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
 			/// The text query to send to the server to return all records for the list with no filtering (defaults to '').
 			/// </summary>
             public virtual TBuilder AllQuery(string allQuery)
@@ -87,25 +64,16 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// true to automatically highlight the first result gathered by the data store in the dropdown list when it is opened. (Defaults to true). A false value would cause nothing in the list to be highlighted automatically, so the user would have to manually highlight an item before pressing the enter or tab key to select it (unless the value of (typeAhead) were true), or use the mouse to select a value.
+			/// true to clear any filters on the store (when in local mode) when reset is called (defaults to true)
 			/// </summary>
-            public virtual TBuilder AutoSelect(bool autoSelect)
+            public virtual TBuilder ClearFilterOnReset(bool clearFilterOnReset)
             {
-                this.ToComponent().AutoSelect = autoSelect;
+                this.ToComponent().ClearFilterOnReset = clearFilterOnReset;
                 return this as TBuilder;
             }
              
  			/// <summary>
-			/// The character(s) used to separate the display values of multiple selected items when multiSelect = true. Defaults to ', '.
-			/// </summary>
-            public virtual TBuilder Delimiter(string delimiter)
-            {
-                this.ToComponent().Delimiter = delimiter;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// The underlying data field name to bind to this ComboBox (defaults to 'text').
+			/// The underlying data field name to bind to this ComboBox (defaults to undefined if mode = 'remote' or 'text' if transforming a select).
 			/// </summary>
             public virtual TBuilder DisplayField(string displayField)
             {
@@ -114,7 +82,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// true to restrict the selected value to one of the values in the list, false to allow the user to set arbitrary text into the field (defaults to false)
+			/// True to restrict the selected value to one of the values in the list, false to allow the user to set arbitrary text into the field (defaults to true).
 			/// </summary>
             public virtual TBuilder ForceSelection(bool forceSelection)
             {
@@ -123,11 +91,65 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// 
+			/// The height in pixels of the dropdown list resize handle if resizable = true (defaults to 8).
 			/// </summary>
-            public virtual TBuilder ListConfig(BoundList listConfig)
+            public virtual TBuilder HandleHeight(Unit handleHeight)
             {
-                this.ToComponent().ListConfig = listConfig;
+                this.ToComponent().HandleHeight = handleHeight;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// If hiddenName is specified, hiddenId can also be provided to give the hidden field a unique id (defaults to the hiddenName). The hiddenId and combo id should be different, since no two DOM nodes should share the same id.
+			/// </summary>
+            public virtual TBuilder HiddenID(string hiddenID)
+            {
+                this.ToComponent().HiddenID = hiddenID;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Sets the initial value of the hidden field if hiddenName is specified to contain the selected valueField, from the Store. Defaults to the configured value.
+			/// </summary>
+            public virtual TBuilder HiddenValue(string hiddenValue)
+            {
+                this.ToComponent().HiddenValue = hiddenValue;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// If specified, a hidden form field with this name is dynamically generated to store the field's data value (defaults to the underlying DOM element's name). Required for the combo's value to automatically post during a form submission.
+			/// </summary>
+            public virtual TBuilder HiddenName(string hiddenName)
+            {
+                this.ToComponent().HiddenName = hiddenName;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// This setting is required if a custom XTemplate has been specified in tpl which assigns a class other than 'x-combo-list-item' to dropdown list items. A simple CSS selector (e.g. div.some-class or span:first-child) that will be used to determine what nodes the DataView which handles the dropdown display will be working with.
+			/// </summary>
+            public virtual TBuilder ItemSelector(string itemSelector)
+            {
+                this.ToComponent().ItemSelector = itemSelector;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to not initialize the list for this combo until the field is focused. (defaults to true).
+			/// </summary>
+            public virtual TBuilder LazyInit(bool lazyInit)
+            {
+                this.ToComponent().LazyInit = lazyInit;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to prevent the ComboBox from rendering until requested (should always be used when rendering into an Ext.Editor, defaults to false).
+			/// </summary>
+            public virtual TBuilder LazyRender(bool lazyRender)
+            {
+                this.ToComponent().LazyRender = lazyRender;
                 return this as TBuilder;
             }
              
@@ -141,7 +163,61 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The minimum number of characters the user must type before autocomplete and typeAhead activate (defaults to 4 if queryMode = 'remote' or 0 if queryMode = 'local', does not apply if editable = false).
+			/// A valid anchor position value. See Ext.Element.alignTo for details on supported anchor positions (defaults to 'tl-bl').
+			/// </summary>
+            public virtual TBuilder ListAlign(string listAlign)
+            {
+                this.ToComponent().ListAlign = listAlign;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// CSS class to apply to the dropdown list element (defaults to '').
+			/// </summary>
+            public virtual TBuilder ListClass(string listClass)
+            {
+                this.ToComponent().ListClass = listClass;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The width in pixels of the dropdown list (defaults to the width of the ComboBox field).
+			/// </summary>
+            public virtual TBuilder ListWidth(Unit listWidth)
+            {
+                this.ToComponent().ListWidth = listWidth;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The text to display in the dropdown list while data is loading. Only applies when mode = 'remote' (defaults to 'Loading...').
+			/// </summary>
+            public virtual TBuilder LoadingText(string loadingText)
+            {
+                this.ToComponent().LoadingText = loadingText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The maximum height in pixels of the dropdown list before scrollbars are shown (defaults to 300).
+			/// </summary>
+            public virtual TBuilder MaxHeight(Unit maxHeight)
+            {
+                this.ToComponent().MaxHeight = maxHeight;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The minimum height in pixels of the dropdown list when the list is constrained by its distance to the viewport edges (defaults to 90).
+			/// </summary>
+            public virtual TBuilder MinHeight(Unit minHeight)
+            {
+                this.ToComponent().MinHeight = minHeight;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The minimum number of characters the user must type before autocomplete and typeahead activate (defaults to 4 if remote or 0 if local, does not apply if editable = false).
 			/// </summary>
             public virtual TBuilder MinChars(int minChars)
             {
@@ -150,16 +226,25 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// If set to true, allows the combo field to hold more than one value at a time, and allows selecting multiple items from the dropdown list. The combo's text field will show all selected values separated by the delimiter. (Defaults to false.)
+			/// The minimum width of the dropdown list in pixels (defaults to 70, will be ignored if listWidth has a higher value).
 			/// </summary>
-            public virtual TBuilder MultiSelect(bool multiSelect)
+            public virtual TBuilder MinListWidth(Unit minListWidth)
             {
-                this.ToComponent().MultiSelect = multiSelect;
+                this.ToComponent().MinListWidth = minListWidth;
                 return this as TBuilder;
             }
              
  			/// <summary>
-			/// If greater than 0, a Ext.toolbar.Paging is displayed in the footer of the dropdown list and the filter queries will execute with page start and limit parameters. Only applies when queryMode = 'remote' (defaults to 0).
+			/// Set to 'local' if the ComboBox loads local data (defaults to 'remote' which loads from the server).
+			/// </summary>
+            public virtual TBuilder Mode(DataLoadMode mode)
+            {
+                this.ToComponent().Mode = mode;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// If greater than 0, a paging toolbar is displayed in the footer of the dropdown list and the filter queries will execute with page addToStart and limit parameters. Only applies when mode = 'remote' (defaults to 0).
 			/// </summary>
             public virtual TBuilder PageSize(int pageSize)
             {
@@ -168,7 +253,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The length of time in milliseconds to delay between the start of typing and sending the query to filter the dropdown list (defaults to 500 if queryMode = 'remote' or 10 if queryMode = 'local')
+			/// The length of time in milliseconds to delay between the addToStart of typing and sending the query to filter the dropdown list (defaults to 500 if mode = 'remote' or 10 if mode = 'local').
 			/// </summary>
             public virtual TBuilder QueryDelay(int queryDelay)
             {
@@ -177,16 +262,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// Set to 'local' if the ComboBox loads local data (defaults to 'remote' which loads from the server).
-			/// </summary>
-            public virtual TBuilder QueryMode(DataLoadMode queryMode)
-            {
-                this.ToComponent().QueryMode = queryMode;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// Name of the parameter used by the Store to pass the typed string when the ComboBox is configured with queryMode: 'remote' (defaults to 'query'). If explicitly set to a falsy value it will not be sent.
+			/// Name of the query as it will be passed on the querystring (defaults to 'query').
 			/// </summary>
             public virtual TBuilder QueryParam(string queryParam)
             {
@@ -195,16 +271,61 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// Whether the Tab key should select the currently highlighted item. Defaults to true.
+			/// True to add a resize handle to the bottom of the dropdown list (defaults to false)
 			/// </summary>
-            public virtual TBuilder SelectOnTab(bool selectOnTab)
+            public virtual TBuilder Resizable(bool resizable)
             {
-                this.ToComponent().SelectOnTab = selectOnTab;
+                this.ToComponent().Resizable = resizable;
                 return this as TBuilder;
             }
              
  			/// <summary>
-			/// The id, DOM node or Ext.Element of an existing HTML <select> element to convert into a ComboBox. The target select's options will be used to build the options in the ComboBox dropdown; a configured store will take precedence over this.
+			/// CSS class to apply to the selected items in the dropdown list (defaults to 'x-combo-selected').
+			/// </summary>
+            public virtual TBuilder SelectedClass(string selectedClass)
+            {
+                this.ToComponent().SelectedClass = selectedClass;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 'Sides' for the default effect, 'Frame' for 4-way shadow, and 'Drop' for bottom-right.
+			/// </summary>
+            public virtual TBuilder Shadow(ShadowMode shadow)
+            {
+                this.ToComponent().Shadow = shadow;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// true for the default effect
+			/// </summary>
+            public virtual TBuilder EnableShadow(bool enableShadow)
+            {
+                this.ToComponent().EnableShadow = enableShadow;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to automatically select any existing field text when the field receives input focus (defaults to false).
+			/// </summary>
+            public virtual TBuilder SelectOnFocus(bool selectOnFocus)
+            {
+                this.ToComponent().SelectOnFocus = selectOnFocus;
+                return this as TBuilder;
+            }
+             
+ 			// /// <summary>
+			// /// The template string to use to display each item in the dropdown list.
+			// /// </summary>
+            // public virtual TBuilder Template(XTemplate template)
+            // {
+            //    this.ToComponent().Template = template;
+            //    return this as TBuilder;
+            // }
+             
+ 			/// <summary>
+			/// The ID of an existing select to convert to a ComboBox.
 			/// </summary>
             public virtual TBuilder Transform(string transform)
             {
@@ -213,7 +334,16 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The action to execute when the trigger is clicked.
+			/// If supplied, a header element is created containing this text and added into the top of the dropdown list.
+			/// </summary>
+            public virtual TBuilder Title(string title)
+            {
+                this.ToComponent().Title = title;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The action to execute when the trigger field is activated. Use 'All' to run the query specified by the allQuery config option (defaults to 'Query').
 			/// </summary>
             public virtual TBuilder TriggerAction(TriggerAction triggerAction)
             {
@@ -240,7 +370,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The underlying data value name to bind to this ComboBox (defaults to match the value of the displayField config).
+			/// The underlying data value name to bind to this ComboBox (defaults to undefined if mode = 'remote' or 'value' if transforming a select) Note: use of a valueField requires the user to make a selection in order for a value to be mapped.
 			/// </summary>
             public virtual TBuilder ValueField(string valueField)
             {
@@ -249,7 +379,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// When using a name/value combo, if the value passed to setValue is not found in the store, valueNotFoundText will be displayed as the field text if defined (defaults to undefined). If this default text is used, it means there is no value set and no validation will occur on this field.
+			/// When using a name/value combo, if the value passed to setValue is not found in the store, valueNotFoundText will be displayed as the field text if defined (defaults to undefined).
 			/// </summary>
             public virtual TBuilder ValueNotFoundText(string valueNotFoundText)
             {
@@ -266,28 +396,15 @@ namespace Ext.Net
                 return this as TBuilder;
             }
              
- 			/// <summary>
-			/// The data store to use.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder Store(Action<StoreCollection<Store>> action)
-            {
-                action(this.ToComponent().Store);
-                return this as TBuilder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder Items(Action<ListItemCollection> action)
-            {
-                action(this.ToComponent().Items);
-                return this as TBuilder;
-            }
-			 
+ 			// /// <summary>
+			// /// The data store to use.
+			// /// </summary>
+            // public virtual TBuilder Store(StoreCollection store)
+            // {
+            //    this.ToComponent().Store = store;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
 			/// 
 			/// </summary>
@@ -296,13 +413,31 @@ namespace Ext.Net
                 this.ToComponent().AlwaysMergeItems = alwaysMergeItems;
                 return this as TBuilder;
             }
+             
+ 			/// <summary>
+			/// Trigger AutoPostBack
+			/// </summary>
+            public virtual TBuilder TriggerAutoPostBack(bool triggerAutoPostBack)
+            {
+                this.ToComponent().TriggerAutoPostBack = triggerAutoPostBack;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder AutoPostBackEvent(ComboAutoPostBackEvent autoPostBackEvent)
+            {
+                this.ToComponent().AutoPostBackEvent = autoPostBackEvent;
+                return this as TBuilder;
+            }
             
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/
 			
  			/// <summary>
-			/// 
+			/// Clears any text/value currently set in the field
 			/// </summary>
             public virtual TBuilder ClearValue()
             {
@@ -311,16 +446,16 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Hides the dropdown list if it is currently expanded. Fires the collapse event on completion.
 			/// </summary>
-            public virtual TBuilder DoQuery(string query, bool forceAll, bool rawQuery)
+            public virtual TBuilder Collapse()
             {
-                this.ToComponent().DoQuery(query, forceAll, rawQuery);
+                this.ToComponent().Collapse();
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// Execute a query to filter the dropdown list. Fires the beforequery event prior to performing the query allowing the query action to be canceled if needed.
 			/// </summary>
             public virtual TBuilder DoQuery(string query, bool forceAll)
             {
@@ -329,7 +464,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Execute a query to filter the dropdown list. Fires the beforequery event prior to performing the query allowing the query action to be canceled if needed.
 			/// </summary>
             public virtual TBuilder DoQuery(string query)
             {
@@ -338,7 +473,25 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Expands the dropdown list if it is currently hidden. Fires the expand event on completion.
+			/// </summary>
+            public virtual TBuilder Expand()
+            {
+                this.ToComponent().Expand();
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Select an item in the dropdown list by its numeric index in the list. This function does NOT cause the select event to fire. The store must be loaded and the list expanded for this function to work, otherwise use setValue.
+			/// </summary>
+            public virtual TBuilder Select(int index, bool scrollIntoView)
+            {
+                this.ToComponent().Select(index, scrollIntoView);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Select an item in the dropdown list by its numeric index in the list. This function does NOT cause the select event to fire. The store must be loaded and the list expanded for this function to work, otherwise use setValue.
 			/// </summary>
             public virtual TBuilder Select(int index)
             {
@@ -347,11 +500,20 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Select an item in the dropdown list by its data value. This function does NOT cause the select event to fire. The store must be loaded and the list expanded for this function to work, otherwise use setValue.
 			/// </summary>
-            public virtual TBuilder Select(object value)
+            public virtual TBuilder SelectByValue(string value, bool scrollIntoView)
             {
-                this.ToComponent().Select(value);
+                this.ToComponent().SelectByValue(value, scrollIntoView);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Select an item in the dropdown list by its data value. This function does NOT cause the select event to fire. The store must be loaded and the list expanded for this function to work, otherwise use setValue.
+			/// </summary>
+            public virtual TBuilder SelectByValue(string value)
+            {
+                this.ToComponent().SelectByValue(value);
                 return this as TBuilder;
             }
             
@@ -437,11 +599,11 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Sets a data value into the field and validates it. To set the value directly without validation see setRawValue.
 			/// </summary>
-            public virtual TBuilder UpdateSelectedItems()
+            public virtual TBuilder SetInitValue(object value)
             {
-                this.ToComponent().UpdateSelectedItems();
+                this.ToComponent().SetInitValue(value);
                 return this as TBuilder;
             }
             

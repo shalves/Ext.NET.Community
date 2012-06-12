@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class SpinnerField
     {
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : SpinnerFieldBase.Builder<SpinnerField, SpinnerField.Builder>
+        public partial class Builder : NumberFieldBase.Builder<SpinnerField, SpinnerField.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -78,31 +75,126 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of SpinnerField.Builder</returns>
-            public virtual SpinnerField.Builder Listeners(Action<SpinnerFieldListeners> action)
+			/// Increment Value
+			/// </summary>
+            public virtual SpinnerField.Builder DeferHeight(bool deferHeight)
             {
-                action(this.ToComponent().Listeners);
+                this.ToComponent().DeferHeight = deferHeight;
                 return this as SpinnerField.Builder;
             }
-			 
+             
  			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of SpinnerField.Builder</returns>
-            public virtual SpinnerField.Builder DirectEvents(Action<SpinnerFieldDirectEvents> action)
+			/// Increment Value
+			/// </summary>
+            public virtual SpinnerField.Builder IncrementValue(double incrementValue)
             {
-                action(this.ToComponent().DirectEvents);
+                this.ToComponent().IncrementValue = incrementValue;
                 return this as SpinnerField.Builder;
             }
-			
+             
+ 			/// <summary>
+			/// Alerternate Increment Value
+			/// </summary>
+            public virtual SpinnerField.Builder AlternateIncrementValue(double alternateIncrementValue)
+            {
+                this.ToComponent().AlternateIncrementValue = alternateIncrementValue;
+                return this as SpinnerField.Builder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual SpinnerField.Builder TriggerClass(string triggerClass)
+            {
+                this.ToComponent().TriggerClass = triggerClass;
+                return this as SpinnerField.Builder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual SpinnerField.Builder SplitterClass(string splitterClass)
+            {
+                this.ToComponent().SplitterClass = splitterClass;
+                return this as SpinnerField.Builder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual SpinnerField.Builder DefaultValue(double defaultValue)
+            {
+                this.ToComponent().DefaultValue = defaultValue;
+                return this as SpinnerField.Builder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual SpinnerField.Builder Accelerate(bool accelerate)
+            {
+                this.ToComponent().Accelerate = accelerate;
+                return this as SpinnerField.Builder;
+            }
+             
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(SpinnerFieldListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(SpinnerFieldDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/
 			
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual SpinnerField.Builder Spin()
+            {
+                this.ToComponent().Spin();
+                return this;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual SpinnerField.Builder Spin(bool down)
+            {
+                this.ToComponent().Spin(down);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual SpinnerField.Builder Spin(bool down, bool alternate)
+            {
+                this.ToComponent().Spin(down, alternate);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual SpinnerField.Builder FixBoundries(double value)
+            {
+                this.ToComponent().FixBoundries(value);
+                return this;
+            }
+            
         }
 
         /// <summary>

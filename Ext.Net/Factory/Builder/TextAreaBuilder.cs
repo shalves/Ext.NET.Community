@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class TextArea
     {
         /// <summary>
@@ -78,25 +75,25 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
-			/// An initial value for the 'cols' attribute on the textarea element. This is only used if the component has no configured width and is not given a width by its container's layout. Defaults to 4.
+			/// The maximum width to allow when grow = true (defaults to 800).
 			/// </summary>
-            public virtual TextArea.Builder Cols(int cols)
+            public virtual TextArea.Builder GrowMax(Unit growMax)
             {
-                this.ToComponent().Cols = cols;
+                this.ToComponent().GrowMax = growMax;
                 return this as TextArea.Builder;
             }
              
  			/// <summary>
-			/// True if you want the enter key to be classed as a special key. Special keys are generally navigation keys (arrows, space, enter). Setting the config property to true would mean that you could not insert returns into the textarea. (defaults to false)
+			/// The minimum width to allow when grow = true (defaults to 60).
 			/// </summary>
-            public virtual TextArea.Builder EnterIsSpecial(bool enterIsSpecial)
+            public virtual TextArea.Builder GrowMin(Unit growMin)
             {
-                this.ToComponent().EnterIsSpecial = enterIsSpecial;
+                this.ToComponent().GrowMin = growMin;
                 return this as TextArea.Builder;
             }
              
  			/// <summary>
-			/// true to prevent scrollbars from appearing regardless of how much text is in the field. This option is only relevant when grow is true. Equivalent to setting overflow: hidden, defaults to false.
+			/// True to prevent scrollbars from appearing regardless of how much text is in the field (equivalent to setting overflow: hidden, defaults to false).
 			/// </summary>
             public virtual TextArea.Builder PreventScrollbars(bool preventScrollbars)
             {
@@ -104,28 +101,24 @@ namespace Ext.Net
                 return this as TextArea.Builder;
             }
              
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TextArea.Builder</returns>
-            public virtual TextArea.Builder Listeners(Action<TextFieldListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as TextArea.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TextArea.Builder</returns>
-            public virtual TextArea.Builder DirectEvents(Action<TextFieldDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as TextArea.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(TextFieldListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(TextFieldDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

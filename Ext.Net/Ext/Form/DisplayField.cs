@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -31,9 +31,7 @@ using System.Web.UI;
 namespace Ext.Net
 {
     /// <summary>
-    /// A display-only text field which is not validated and not submitted. This is useful for when you want to display a value from a form's loaded data but do not want to allow the user to edit or submit that value. The value can be optionally HTML encoded if it contains HTML markup that you do not want to be rendered.
-    ///
-    /// If you have more complex content, or need to include components within the displayed content, also consider using a Ext.form.FieldContainer instead.
+    /// A display-only text field which is not validated and not submitted.
     /// </summary>
     [Meta]
     [ToolboxData("<{0}:DisplayField runat=\"server\" />")]
@@ -70,27 +68,28 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.form.field.Display";
+                return "Ext.form.DisplayField";
             }
         }
 
         /// <summary>
         /// The default CSS class for the field (defaults to "x-form-display-field")
         /// </summary>
+        [Meta]
         [ConfigOption]
         [Category("6. DisplayField")]
         [DefaultValue("x-form-display-field")]
         [Localizable(true)]
         [Description("The default CSS class for the field (defaults to 'x-form-display-field')")]
-        public override string FieldCls
+        public override string FieldClass
         {
             get
             {
-                return this.State.Get<string>("FieldCls", "x-form-display-field");
+                return (string)this.ViewState["FieldClass"] ?? "x-form-display-field";
             }
             set
             {
-                this.State.Set("FieldCls", value);
+                this.ViewState["FieldClass"] = value;
             }
         }
         
@@ -107,11 +106,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("HtmlEncode", false);
+                object obj = this.ViewState["HtmlEncode"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("HtmlEncode", value);
+                this.ViewState["HtmlEncode"] = value;
             }
         }
 
@@ -129,11 +129,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Text", "");
+                return (string)this.ViewState["Text"] ?? "";
             }
             set
             {
-                this.State.Set("Text", value);
+                this.ViewState["Text"] = value;
             }
         }
 
@@ -147,7 +147,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public FieldListeners Listeners
         {
@@ -172,7 +173,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public FieldDirectEvents DirectEvents
         {
@@ -180,7 +182,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new FieldDirectEvents(this);
+                    this.directEvents = new FieldDirectEvents();
                 }
 
                 return this.directEvents;
@@ -189,7 +191,6 @@ namespace Ext.Net
 
         /*  Public Methods
             -----------------------------------------------------------------------------------------------*/
-
         /// <summary>
         /// Appends the specified string to the DisplayField's value.
         /// </summary>

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,20 +33,16 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class TabStripDirectEvents : ContainerDirectEvents
+    public partial class TabStripDirectEvents : BoxComponentDirectEvents
     {
-        public TabStripDirectEvents() { }
-
-        public TabStripDirectEvents(Observable parent) { this.Parent = parent; }
-
         private ComponentDirectEvent beforeTabChange;
 
         /// <summary>
         /// Fires before the active tab changes. Handlers can return false to cancel the tab change.
         /// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "newTab")]
-        [ListenerArgument(2, "currentTab")]
+        [ListenerArgument(0, "item", typeof(TabPanel), "this")]
+        [ListenerArgument(1, "newTab", typeof(Panel), "The tab being activated")]
+        [ListenerArgument(2, "currentTab", typeof(Panel), "The current active tab")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("beforetabchange", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -56,7 +52,38 @@ namespace Ext.Net
         {
             get
             {
-                return this.beforeTabChange ?? (this.beforeTabChange = new ComponentDirectEvent(this));
+                if (this.beforeTabChange == null)
+                {
+                    this.beforeTabChange = new ComponentDirectEvent();
+                }
+
+                return this.beforeTabChange;
+            }
+        }
+
+        private ComponentDirectEvent contextMenu;
+
+        /// <summary>
+        /// Fires when the original browser contextmenu event originated from a tab element.
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(TabPanel), "this")]
+        [ListenerArgument(1, "tab", typeof(Panel), "The target tab")]
+        [ListenerArgument(2, "e", typeof(object), "EventObject")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("contextmenu", typeof(DirectEventJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when the original browser contextmenu event originated from a tab element.")]
+        public virtual ComponentDirectEvent ContextMenu
+        {
+            get
+            {
+                if (this.contextMenu == null)
+                {
+                    this.contextMenu = new ComponentDirectEvent();
+                }
+
+                return this.contextMenu;
             }
         }
 
@@ -65,9 +92,8 @@ namespace Ext.Net
         /// <summary>
         /// Fires after the active tab has changed.
         /// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "tab")]
-        [ListenerArgument(2, "oldTab")]
+        [ListenerArgument(0, "item", typeof(TabPanel), "this")]
+        [ListenerArgument(1, "tab", typeof(Panel), "The new active tab")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("tabchange", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -77,7 +103,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.tabChange ?? (this.tabChange = new ComponentDirectEvent(this));
+                if (this.tabChange == null)
+                {
+                    this.tabChange = new ComponentDirectEvent();
+                }
+
+                return this.tabChange;
             }
         }
 
@@ -86,8 +117,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        [ListenerArgument(0, "item", typeof(TabStrip))]
-        [ListenerArgument(1, "tab")]
+        [ListenerArgument(0, "tab", typeof(PanelBase), "tab")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("tabclose", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -97,7 +127,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.tabClose ?? (this.tabClose = new ComponentDirectEvent(this));
+                if (this.tabClose == null)
+                {
+                    this.tabClose = new ComponentDirectEvent();
+                }
+
+                return this.tabClose;
             }
         }
 
@@ -106,8 +141,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        [ListenerArgument(0, "item", typeof(TabStrip))]
-        [ListenerArgument(1, "tab")]
+        [ListenerArgument(0, "tab", typeof(PanelBase), "tab")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("beforetabclose", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -117,7 +151,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.beforeTabClose ?? (this.beforeTabClose = new ComponentDirectEvent(this));
+                if (this.beforeTabClose == null)
+                {
+                    this.beforeTabClose = new ComponentDirectEvent();
+                }
+
+                return this.beforeTabClose;
             }
         }
     }

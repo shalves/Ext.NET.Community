@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,10 +36,7 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public partial class Node
+    public abstract partial class Node
     {
         /// <summary>
         /// 
@@ -57,26 +54,6 @@ namespace Ext.Net
                 
                 list.Add("nodeID", new ConfigOption("nodeID", new SerializationOptions("id"), "", this.NodeID ));
                 list.Add("leaf", new ConfigOption("leaf", null, false, this.Leaf ));
-                list.Add("allowDrag", new ConfigOption("allowDrag", null, true, this.AllowDrag ));
-                list.Add("allowDrop", new ConfigOption("allowDrop", null, true, this.AllowDrop ));
-                list.Add("checked", new ConfigOption("checked", null, null, this.Checked ));
-                list.Add("cls", new ConfigOption("cls", null, "", this.Cls ));
-                list.Add("editable", new ConfigOption("editable", null, true, this.Editable ));
-                list.Add("expandable", new ConfigOption("expandable", null, null, this.Expandable ));
-                list.Add("expanded", new ConfigOption("expanded", null, false, this.Expanded ));
-                list.Add("emptyChildrenProxy", new ConfigOption("emptyChildrenProxy", new SerializationOptions("children", JsonMode.Raw), "", this.EmptyChildrenProxy ));
-                list.Add("href", new ConfigOption("href", null, "#", this.Href ));
-                list.Add("hrefTarget", new ConfigOption("hrefTarget", null, "", this.HrefTarget ));
-                list.Add("iconFile", new ConfigOption("iconFile", new SerializationOptions("icon"), "", this.IconFile ));
-                list.Add("iconClsProxy", new ConfigOption("iconClsProxy", new SerializationOptions("iconCls"), "", this.IconClsProxy ));
-                list.Add("qtip", new ConfigOption("qtip", null, "", this.Qtip ));
-                list.Add("qtitle", new ConfigOption("qtitle", null, "", this.Qtitle ));
-                list.Add("text", new ConfigOption("text", null, "", this.Text ));
-                list.Add("children", new ConfigOption("children", new SerializationOptions(JsonMode.AlwaysArray), null, this.Children ));
-                list.Add("dataPath", new ConfigOption("dataPath", null, "", this.DataPath ));
-                list.Add("customAttributes", new ConfigOption("customAttributes", new SerializationOptions("-", typeof(CustomConfigJsonConverter)), null, this.CustomAttributes ));
-                list.Add("attributesObject", new ConfigOption("attributesObject", new SerializationOptions(JsonMode.UnrollObject), null, this.AttributesObject ));
-                list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
 
                 return list;
             }

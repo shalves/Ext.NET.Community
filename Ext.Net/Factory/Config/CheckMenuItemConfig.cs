@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class CheckMenuItem
     {
 		/*  Ctor
@@ -99,24 +96,6 @@ namespace Ext.Net
 				}
 			}
 
-			private string checkedCls = "";
-
-			/// <summary>
-			/// The CSS class used by cls to show the checked state. Defaults to Ext.baseCSSPrefix + 'menu-item-checked'.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string CheckedCls 
-			{ 
-				get
-				{
-					return this.checkedCls;
-				}
-				set
-				{
-					this.checkedCls = value;
-				}
-			}
-
 			private string group = "";
 
 			/// <summary>
@@ -135,39 +114,21 @@ namespace Ext.Net
 				}
 			}
 
-			private string groupCls = "";
+			private string groupClass = "";
 
 			/// <summary>
-			/// The CSS class applied to this item's icon image to denote being a part of a radio group. Defaults to Ext.baseCSSClass + 'menu-group-icon'. Any specified iconCls overrides this.
+			/// The default CSS class to use for radio group check items (defaults to \"x-menu-group-item\")
 			/// </summary>
 			[DefaultValue("")]
-			public virtual string GroupCls 
+			public virtual string GroupClass 
 			{ 
 				get
 				{
-					return this.groupCls;
+					return this.groupClass;
 				}
 				set
 				{
-					this.groupCls = value;
-				}
-			}
-
-			private string uncheckedCls = "";
-
-			/// <summary>
-			/// The CSS class used by cls to show the unchecked state. Defaults to Ext.baseCSSPrefix + 'menu-item-unchecked'.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string UncheckedCls 
-			{ 
-				get
-				{
-					return this.uncheckedCls;
-				}
-				set
-				{
-					this.uncheckedCls = value;
+					this.groupClass = value;
 				}
 			}
 

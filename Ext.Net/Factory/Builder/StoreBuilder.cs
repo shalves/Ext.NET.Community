@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class Store
     {
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : StoreBase.Builder<Store, Store.Builder>
+        public partial class Builder : StoreDataBound.Builder<Store, Store.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -77,28 +74,24 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Store.Builder</returns>
-            public virtual Store.Builder Listeners(Action<StoreListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as Store.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Store.Builder</returns>
-            public virtual Store.Builder DirectEvents(Action<StoreDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as Store.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(StoreListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(StoreDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

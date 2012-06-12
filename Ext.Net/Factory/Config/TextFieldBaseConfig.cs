@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public abstract partial class TextFieldBase
     {
         /// <summary>
@@ -190,24 +187,6 @@ namespace Ext.Net
 				}
 			}
 
-			private bool enforceMaxLength = false;
-
-			/// <summary>
-			/// True to set the maxLength property on the underlying input field. Defaults to false
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool EnforceMaxLength 
-			{ 
-				get
-				{
-					return this.enforceMaxLength;
-				}
-				set
-				{
-					this.enforceMaxLength = value;
-				}
-			}
-
 			private bool grow = false;
 
 			/// <summary>
@@ -223,24 +202,6 @@ namespace Ext.Net
 				set
 				{
 					this.grow = value;
-				}
-			}
-
-			private string growAppend = "W";
-
-			/// <summary>
-			/// A string that will be appended to the field's current value for the purposes of calculating the target field size. Only used when the grow config is true. Defaults to a single capital \"W\" (the widest character in common fonts) to leave enough space for the next typed character and avoid the field value shifting before the width is adjusted.
-			/// </summary>
-			[DefaultValue("W")]
-			public virtual string GrowAppend 
-			{ 
-				get
-				{
-					return this.growAppend;
-				}
-				set
-				{
-					this.growAppend = value;
 				}
 			}
 
@@ -280,6 +241,24 @@ namespace Ext.Net
 				}
 			}
 
+			private InputType inputType = InputType.Text;
+
+			/// <summary>
+			/// The type attribute for input fields.
+			/// </summary>
+			[DefaultValue(InputType.Text)]
+			public virtual InputType InputType 
+			{ 
+				get
+				{
+					return this.inputType;
+				}
+				set
+				{
+					this.inputType = value;
+				}
+			}
+
 			private string maskRe = "";
 
 			/// <summary>
@@ -301,7 +280,7 @@ namespace Ext.Net
 			private int maxLength = -1;
 
 			/// <summary>
-			/// Maximum input field length allowed by validation (defaults to Number.MAX_VALUE). This behavior is intended to provide instant feedback to the user by improving usability to allow pasting and editing or overtyping and back tracking. To restrict the maximum number of characters that can be entered into the field use the enforceMaxLength option.
+			/// Maximum input field length allowed (defaults to Number.MAX_VALUE).
 			/// </summary>
 			[DefaultValue(-1)]
 			public virtual int MaxLength 
@@ -373,7 +352,7 @@ namespace Ext.Net
 			private string regex = "";
 
 			/// <summary>
-			/// A JavaScript RegExp object to be tested against the field value during validation (defaults to undefined). If the test fails, the field will be marked invalid using regexText.
+			/// A JavaScript RegExp object to be tested against the field value during validation (defaults to null). If available, this regex will be evaluated only after the basic validators all return true, and will be passed the current field value. If the test fails, the field will be marked invalid using RegexText.
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string Regex 
@@ -424,28 +403,10 @@ namespace Ext.Net
 				}
 			}
 
-			private int size = 20;
-
-			/// <summary>
-			/// An initial value for the 'size' attribute on the text input element. This is only used if the field has no configured width and is not given a width by its container's layout. Defaults to 20.
-			/// </summary>
-			[DefaultValue(20)]
-			public virtual int Size 
-			{ 
-				get
-				{
-					return this.size;
-				}
-				set
-				{
-					this.size = value;
-				}
-			}
-
 			private string stripCharsRe = "";
 
 			/// <summary>
-			/// A JavaScript RegExp object used to strip unwanted content from the value before validation (defaults to undefined).
+			/// A JavaScript RegExp object used to strip unwanted content from the value before validation (defaults to null).
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string StripCharsRe 
@@ -457,6 +418,42 @@ namespace Ext.Net
 				set
 				{
 					this.stripCharsRe = value;
+				}
+			}
+
+			private bool truncate = true;
+
+			/// <summary>
+			/// If MaxLength property has been set, more characters than the MaxLength can be entered if Truncate='false'. If 'false', then a validation error is rendered if more characters entered (or pasted) than the MaxLength property. Default value is 'true'.
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool Truncate 
+			{ 
+				get
+				{
+					return this.truncate;
+				}
+				set
+				{
+					this.truncate = value;
+				}
+			}
+
+			private string validator = "";
+
+			/// <summary>
+			/// A custom validation function to be called during field validation (defaults to null). If available, this function will be called only after the basic validators all return true, and will be passed the current field value and expected to return boolean true if the value is valid or a string error message if invalid.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string Validator 
+			{ 
+				get
+				{
+					return this.validator;
+				}
+				set
+				{
+					this.validator = value;
 				}
 			}
 

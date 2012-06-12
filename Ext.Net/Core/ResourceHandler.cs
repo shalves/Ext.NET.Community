@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -65,7 +65,8 @@ namespace Ext.Net
         public InitializationScriptNotFoundException(string errorMessage, Exception inner)
             : base(errorMessage, inner) { }
     }
-    
+
+    [AspNetHostingPermission(SecurityAction.LinkDemand, Level = AspNetHostingPermissionLevel.Minimal)]
     internal class ResourceHandler : Page, IHttpHandler, IRequiresSessionState
     {
         Stream stream;
@@ -76,7 +77,7 @@ namespace Ext.Net
         byte[] output;
         int length;
         bool compress;
-
+        
         private static long GetAssemblyTime(Assembly assembly)
         {
             AssemblyName assemblyName = assembly.GetName();
@@ -135,7 +136,7 @@ namespace Ext.Net
                 context.Response.StatusDescription = "Not Modified";
                 context.Response.AddHeader("Content-Length", "0");
                 return;
-            }
+            }            
             
             this.SetResponseCache(context);
 
@@ -147,7 +148,7 @@ namespace Ext.Net
                 {
                     try
                     {
-                        string script = this.context.Application[key].ToString();
+                        string script = this.context.Session[key].ToString();
                         this.context.Session.Remove(key);                        
                         CompressionUtils.GZipAndSend(script);
                     }
@@ -284,7 +285,7 @@ namespace Ext.Net
 
         private void Send(byte[] data, string responseType)
         {
-            if (this.compress)
+            if(this.compress)
             {
                 CompressionUtils.Send(data, responseType, true);
             }
@@ -344,9 +345,9 @@ namespace Ext.Net
         [Description("")]
         public static bool HasModule()
         {
-            if (HttpContext.Current.Application["Ext.Net.HasModule"] != null)
+            if (HttpContext.Current.Application["HasModule"] != null)
             {
-                return (bool)HttpContext.Current.Application["Ext.Net.HasModule"];
+                return (bool)HttpContext.Current.Application["HasModule"];
             }
 
             bool result = false;
@@ -372,7 +373,7 @@ namespace Ext.Net
                 reader.Close();
             }
 
-            HttpContext.Current.Application["Ext.Net.HasModule"] = result;
+            HttpContext.Current.Application["HasModule"] = result;
 
             return result;
         }
@@ -384,9 +385,9 @@ namespace Ext.Net
         [Description("")]
         public static bool HasHandler()
         {
-            if (HttpContext.Current.Application["Ext.Net.HasHandler"] != null)
+            if (HttpContext.Current.Application["HasHandler"] != null)
             {
-                return (bool)HttpContext.Current.Application["Ext.Net.HasHandler"];
+                return (bool)HttpContext.Current.Application["HasHandler"];
             }
 
             bool result = false;
@@ -412,7 +413,7 @@ namespace Ext.Net
                 reader.Close();
             }
 
-            HttpContext.Current.Application["Ext.Net.HasHandler"] = result;
+            HttpContext.Current.Application["HasHandler"] = result;
 
             return result;
         }
@@ -466,8 +467,6 @@ namespace Ext.Net
                 handlers.Handlers.Add(action);
                 config.Save();
             }
-
-
 
             HttpModulesSection modules = (HttpModulesSection)config.GetSection("system.web/httpModules");
 

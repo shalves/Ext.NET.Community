@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class RowSelectionModelListeners
     {
         /// <summary>
@@ -55,10 +52,12 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
-                list.Add("beforeDeselect", new ConfigOption("beforeDeselect", new SerializationOptions("beforedeselect", typeof(ListenerJsonConverter)), null, this.BeforeDeselect ));
-                list.Add("deselect", new ConfigOption("deselect", new SerializationOptions("deselect", typeof(ListenerJsonConverter)), null, this.Deselect ));
-                list.Add("beforeSelect", new ConfigOption("beforeSelect", new SerializationOptions("beforeselect", typeof(ListenerJsonConverter)), null, this.BeforeSelect ));
-                list.Add("select", new ConfigOption("select", new SerializationOptions("select", typeof(ListenerJsonConverter)), null, this.Select ));
+                list.Add("beforeRowSelect", new ConfigOption("beforeRowSelect", new SerializationOptions("beforerowselect", typeof(ListenerJsonConverter)), null, this.BeforeRowSelect ));
+                list.Add("rowDeselect", new ConfigOption("rowDeselect", new SerializationOptions("rowdeselect", typeof(ListenerJsonConverter)), null, this.RowDeselect ));
+                list.Add("rowSelect", new ConfigOption("rowSelect", new SerializationOptions("rowselect", typeof(ListenerJsonConverter)), null, this.RowSelect ));
+                list.Add("selectionChange", new ConfigOption("selectionChange", new SerializationOptions("selectionchange", typeof(ListenerJsonConverter)), null, this.SelectionChange ));
+                list.Add("beforeCheckAllClick", new ConfigOption("beforeCheckAllClick", new SerializationOptions("beforecheckallclick", typeof(ListenerJsonConverter)), null, this.BeforeCheckAllClick ));
+                list.Add("afterCheckAllClick", new ConfigOption("afterCheckAllClick", new SerializationOptions("aftercheckallclick", typeof(ListenerJsonConverter)), null, this.AfterCheckAllClick ));
 
                 return list;
             }

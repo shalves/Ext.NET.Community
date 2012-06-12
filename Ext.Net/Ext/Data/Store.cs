@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -29,13 +29,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.UI;
+using System.Xml;
 
 using Ext.Net.Utilities;
-using Newtonsoft.Json.Linq;
 
 namespace Ext.Net
 {
@@ -57,7 +56,7 @@ namespace Ext.Net
     [Designer(typeof(EmptyDesigner))]
     [ToolboxBitmap(typeof(Store), "Build.ToolboxIcons.Store.bmp")]
     [Description("The Store class encapsulates a client side cache of Record objects which provide input data for Components such as the GridPanel, the ComboBox, or the DataView.")]
-    public partial class Store : StoreBase, IPostBackEventHandler
+    public partial class Store : StoreDataBound, IPostBackEventHandler
     {
         /// <summary>
         /// 
@@ -65,43 +64,20 @@ namespace Ext.Net
         [Description("")]
         public Store() { }
 
-        public static StoreAction Action(string action)
-        {
-            return (StoreAction)Enum.Parse(typeof(StoreAction), action, true);
-        }
-
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="sender"></param>
-        protected override void OnBeforeClientInit(Observable sender)
-        {
-            base.OnBeforeClientInit(sender);
-
-            if (this.Reader.Primary != null && this.IsProxyDefined)
-            {
-                throw new Exception(ServiceMessages.DEFINE_READER_FOR_PROXY);
-            }
-
-            if (this.Writer.Primary != null && this.IsProxyDefined)
-            {
-                throw new Exception(ServiceMessages.DEFINE_WRITER_FOR_PROXY);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected override string StoreType
+        [Description("")]
+        protected override List<ResourceItem> Resources
         {
             get
             {
-                if ((!this.IsProxyDefined && this.IsPagingStore) || !this.RemotePaging)
-                {
-                    return "paging";
-                }
+                List<ResourceItem> baseList = base.Resources;
+                baseList.Capacity += 1;
 
-                return "";
+                baseList.Add(XControl.ExtNetDataItem);
+
+                return baseList;
             }
         }
 
@@ -114,14 +90,29 @@ namespace Ext.Net
         {
             get
             {
-                string className = "Ext.data.Store";
+                string className = "Ext.net.Store";
 
-                if ((!this.IsProxyDefined && this.IsPagingStore) || !this.RemotePaging)
+                if (this.Proxy.Count == 0 || !this.RemotePaging)
                 {
-                    className = "Ext.data.PagingStore";
+                    className = "Ext.ux.data.PagingStore";
                 }
 
                 return className;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        [Description("")]
+        protected override void OnInit(EventArgs e)
+        {
+            base.OnInit(e);
+
+            if (!this.DesignMode && !this.IsLazy)
+            {
+                this.Page.LoadComplete += Page_LoadComplete;
             }
         }
 
@@ -133,7 +124,46 @@ namespace Ext.Net
         {
             get
             {
-                return !this.IsDynamic;
+                return true;
+            }
+        }
+
+        void Page_LoadComplete(object sender, EventArgs e)
+        {
+            if (this.ParentComponent == null || (RequestManager.IsMicrosoftAjaxRequest && !this.IsInUpdatePanelRefresh))
+            {
+                return;
+            }
+
+            Component parent = this.ParentComponent;
+
+            if (parent != null)
+            {
+                parent = this.ParentComponent;
+                while (parent != null && (parent.IsLazy || parent.IsLayout))
+                {
+                    parent = parent.ParentComponent;
+                }
+            }
+
+
+            if (parent != null)
+            {
+                parent.BeforeClientInit += Parent_BeforeClientInit;
+            }
+        }
+
+        void Parent_BeforeClientInit(Observable sender)
+        {
+            this.ForcePreRender();
+        }
+
+        internal override void ForcePreRender()
+        {
+            if (!RequestManager.IsAjaxRequest && !this.IsLazy)
+            {
+                this.EnsureDataBound();
+                base.ForcePreRender();    
             }
         }
 
@@ -147,18 +177,55 @@ namespace Ext.Net
         {
             get
             {
-                if (!this.IsProxyDefined)
+                if (this.Proxy.Count == 0)
                 {
-                    string reader = this.Reader.Primary != null ? (", reader:" + new ClientConfig().Serialize(this.Reader.Primary)) : "";
-                    string writer = this.Writer.Primary != null ? (", writer:" + new ClientConfig().Serialize(this.Writer.Primary)) : "";
-                    
                     if (this.MemoryDataPresent)
                     {
-                        string template = "{{data:{0}, type: '{1}'{2}{3}}}";
-                        return string.Format(template, this.DSData != null ? JSON.Serialize(this.DSData) : JsonData, this.IsPagingStore || this.Buffered ? "pagingmemory" : "memory", reader,writer);
+                        string template = "new Ext.data.PagingMemoryProxy({0}, {1})";
+                        return string.Format(template, this.Data != null ? JSON.Serialize(this.Data) : JsonData, JSON.Serialize(this.IsUrl));
                     }
+                    else
+                    {
+                        return "new Ext.data.PagingMemoryProxy({})";
+                    }
+                }
 
-                    return string.Format("{{data:[],type:'{0}'{1}{2}}}", this.IsPagingStore || this.Buffered ? "pagingmemory" : "memory", reader, writer);
+                return "";
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigOption("beforeLoadParams", JsonMode.Raw)]
+        [DefaultValue("")]
+        [Description("")]
+        protected virtual string BeforeLoadParamsProxy
+        {
+            get
+            {
+                if (this.BaseParams.Count > 0)
+                {
+                    return this.BuildParams(this.BaseParams);
+                }
+
+                return "";
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigOption("beforeSaveParams", JsonMode.Raw)]
+        [DefaultValue("")]
+        [Description("")]
+        protected virtual string BeforeSaveParamsProxy
+        {
+            get
+            {
+                if (this.WriteBaseParams.Count > 0)
+                {
+                    return this.BuildParams(this.WriteBaseParams);
                 }
 
                 return "";
@@ -171,12 +238,8 @@ namespace Ext.Net
         public virtual bool MemoryDataPresent
         {
             get 
-            {
-                if (this.IsDynamic && !this.IsDataBound && (this.DataSourceID.IsNotEmpty() || this.DataSource != null))
-                {
-                    this.DataBind();
-                }
-                return (this.DSData != null || this.JsonData.IsNotEmpty()); 
+            { 
+                return this.Reader != null && this.Reader.Reader != null && (this.Data != null || this.JsonData.IsNotEmpty()); 
             }
         }
 
@@ -184,7 +247,8 @@ namespace Ext.Net
         {
             StringBuilder sb = new StringBuilder("function(store,options){if (!options.params){options.params = {};};");
 
-            sb.AppendFormat("Ext.apply(options.params,{0});", parameters.ToJson());
+            sb.AppendFormat("Ext.apply(options.params,{0});", parameters.ToJson(2));
+            sb.AppendFormat("Ext.applyIf(options.params,{0});", parameters.ToJson(1));
             sb.Append("}");
 
             return sb.ToString();
@@ -201,6 +265,7 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public StoreListeners Listeners
         {
@@ -226,6 +291,7 @@ namespace Ext.Net
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public StoreDirectEvents DirectEvents
         {
@@ -233,7 +299,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new StoreDirectEvents(this);
+                    this.directEvents = new StoreDirectEvents();
                 }
                 
                 return this.directEvents;
@@ -254,7 +320,7 @@ namespace Ext.Net
         private static readonly object EventAfterRecordInserted = new object();
         private static readonly object EventBeforeDirectEvent = new object();
         private static readonly object EventAfterDirectEvent = new object();
-        private static readonly object EventReadData = new object();
+        private static readonly object EventRefreshData = new object();
         private static readonly object EventSubmitData = new object();
 
 		/// <summary>
@@ -504,15 +570,15 @@ namespace Ext.Net
         /// </summary>
         [Category("Action")]
         [Description("")]
-        public event AjaxRefreshDataEventHandler ReadData
+        public event AjaxRefreshDataEventHandler RefreshData
         {
             add
             {
-                this.Events.AddHandler(EventReadData, value);
+                this.Events.AddHandler(EventRefreshData, value);
             }
             remove
             {
-                this.Events.RemoveHandler(EventReadData, value);
+                this.Events.RemoveHandler(EventRefreshData, value);
             }
         }
 
@@ -673,9 +739,9 @@ namespace Ext.Net
         /// </summary>
         /// <param name="e"></param>
         [Description("")]
-        protected virtual void OnReadData(StoreRefreshDataEventArgs e)
+        protected virtual void OnRefreshData(StoreRefreshDataEventArgs e)
         {
-            AjaxRefreshDataEventHandler handler = (AjaxRefreshDataEventHandler)Events[EventReadData];
+            AjaxRefreshDataEventHandler handler = (AjaxRefreshDataEventHandler)Events[EventRefreshData];
 
             if (handler != null)
             {
@@ -716,8 +782,9 @@ namespace Ext.Net
         private IDictionary keys;
         private IDictionary values;
         private IDictionary oldValues;
-        private JToken record;
-        private List<object> responseRecords;
+        private bool needRetrieve;
+        private ConfirmationRecord confirmation;
+        private XmlNode record;
         
         void IPostBackEventHandler.RaisePostBackEvent(string eventArgument)
         {
@@ -773,45 +840,47 @@ namespace Ext.Net
                 return;
             }
 
-            if (this.DirectConfig == null)
+            if (this.SubmitConfig == null)
             {
                 return;
             }
 
-            JToken eventArgumentToken = this.DirectConfig.SelectToken("config.__EVENTARGUMENT", false);
+            XmlNode eventArgumentNode = this.SubmitConfig.SelectSingleNode("config/__EVENTARGUMENT");
 
-            if (eventArgumentToken == null)
+            if (eventArgumentNode == null)
             {
                 throw new InvalidOperationException(
                     "Incorrect submit config - the '__EVENTARGUMENT' parameter is absent");
             }
 
-            JToken eventTargetToken = this.DirectConfig.SelectToken("config.__EVENTTARGET", false);
+            XmlNode eventTargetNode = this.SubmitConfig.SelectSingleNode("config/__EVENTTARGET");
 
-            if (eventTargetToken == null)
+            if (eventTargetNode == null)
             {
                 throw new InvalidOperationException(
                     "Incorrect submit config - the '__EVENTTARGET' parameter is absent");
             }
 
-            string id = JSON.ToString(eventTargetToken);
-            if (id == this.UniqueID)
+            if (eventTargetNode.InnerText == this.UniqueID)
             {
-                RaiseAjaxPostBackEvent(JSON.ToString(eventArgumentToken));
+                RaiseAjaxPostBackEvent(eventArgumentNode.InnerText);
             }
         }
 
         private BeforeStoreChangedEventArgs changingEventArgs;
 
-        private void DoSaving(string action, string jsonData, JToken parameters)
+        private void DoSaving(string jsonData, XmlNode callbackParameters)
         {
-            if (this.ModelInstance == null)
-            {
-                throw new Exception("Model is not defined for the store");
-            }
-            this.responseRecords = new List<object>();
+            changingEventArgs = new BeforeStoreChangedEventArgs(jsonData, null, callbackParameters);
 
-            this.changingEventArgs = new BeforeStoreChangedEventArgs(action, jsonData, parameters, this.responseRecords);
+            ConfirmationList confirmationList = null;
+
+            if (this.UseIdConfirmation && this.Reader.Reader != null)
+            {
+                confirmationList = changingEventArgs.DataHandler.BuildConfirmationList(GetIdColumnName());
+            }
+            
+            changingEventArgs.ConfirmationList = confirmationList;
 
             this.OnBeforeStoreChanged(changingEventArgs);
 
@@ -819,7 +888,7 @@ namespace Ext.Net
 
             try
             {
-                if (!this.changingEventArgs.Cancel)
+                if (!changingEventArgs.Cancel)
                 {
                     this.MakeChanges();
                 }
@@ -829,7 +898,7 @@ namespace Ext.Net
                 ex = e;
             }
 
-            AfterStoreChangedEventArgs eStoreChanged = new AfterStoreChangedEventArgs(action, true, ex, this.responseRecords);
+            AfterStoreChangedEventArgs eStoreChanged = new AfterStoreChangedEventArgs(true, ex, confirmationList);
             this.OnAfterStoreChanged(eStoreChanged);
 
             if (eStoreChanged.Exception != null && !eStoreChanged.ExceptionHandled)
@@ -853,43 +922,66 @@ namespace Ext.Net
                 throw new HttpException("Can't find DataSource");
             }
 
-            JArray data = JArray.Parse(this.changingEventArgs.DataHandler.JsonData);            
-
-            if (this.changingEventArgs.Action == StoreAction.Update && (noDs || ds.GetView(this.DataMember).CanUpdate))
+            if (this.Reader.Reader == null)
             {
-                this.MakeUpdates(ds, data); 
+                throw new InvalidOperationException("The Store does not contain a Reader.");
             }
 
-            if (this.changingEventArgs.Action == StoreAction.Destroy && (noDs || ds.GetView(this.DataMember).CanDelete))
+            XmlDocument xml = changingEventArgs.DataHandler.XmlData;
+
+            if (noDs || ds.GetView(this.DataMember).CanUpdate)
             {
-                this.MakeDeletes(ds, data);
+                this.MakeUpdates(ds, xml); 
             }
 
-            if (this.changingEventArgs.Action == StoreAction.Create && (noDs || ds.GetView(this.DataMember).CanInsert))
+            if (noDs || ds.GetView(this.DataMember).CanDelete)
             {
-                this.MakeInsertes(ds, data);
+                this.MakeDeletes(ds, xml);
+            }
+
+            if (noDs || ds.GetView(this.DataMember).CanInsert)
+            {
+                this.MakeInsertes(ds, xml);
             }
         }
 
-        private void MakeUpdates(IDataSource ds, JArray data)
+        private string GetIdColumnName()
         {
-            string id = this.ModelInstance.GetIDProperty();
+            string id = "";
 
-            foreach (JToken token in data)
+            if (this.Reader.Reader != null)
             {
-                this.record = token;
-                values = new SortedList(this.ModelInstance.Fields.Count);
+                id = this.Reader.Reader.IDField;
+            }
+
+            return id;
+        }
+
+        private void MakeUpdates(IDataSource ds, XmlDocument xml)
+        {
+            XmlNodeList updatingRecords = xml.SelectNodes("records/Updated/record");
+            
+            string id = GetIdColumnName();
+
+            foreach (XmlNode node in updatingRecords)
+            {
+                record = node;
+                values = new SortedList(this.Reader.Reader.Fields.Count);
                 keys = new SortedList();
                 oldValues = new SortedList();
 
-                foreach (ModelField field in this.ModelInstance.Fields)
+                foreach (RecordField field in this.Reader.Reader.Fields)
                 {
-                    values[field.Name] = token.Value<string>(field.Mapping.IsNotEmpty() ? field.Mapping : field.Name) ?? token.Value<string>(field.Name);
+                    XmlNode keyNode = node.SelectSingleNode(field.Name);
+                    values[field.Name] = keyNode != null ? keyNode.InnerText : null;
                 }
+
+                confirmation = null;
 
                 if (id.IsNotEmpty())
                 {
-                    string idStr = token.Value<string>(id);
+                    XmlNode keyNode = node.SelectSingleNode(id);
+                    string idStr = keyNode != null ? keyNode.InnerText : null;
                     
                     int idInt;
 
@@ -901,9 +993,14 @@ namespace Ext.Net
                     {
                         keys[id] = idStr;
                     }
+                    
+                    if (this.UseIdConfirmation && keys[id] != null)
+                    {
+                        confirmation = changingEventArgs.ConfirmationList[keys[id].ToString()];
+                    }
                 }
 
-                BeforeRecordUpdatedEventArgs eBeforeRecordUpdated = new BeforeRecordUpdatedEventArgs(record, keys, values, oldValues);
+                BeforeRecordUpdatedEventArgs eBeforeRecordUpdated = new BeforeRecordUpdatedEventArgs(record, keys, values, oldValues, confirmation);
                 this.OnBeforeRecordUpdated(eBeforeRecordUpdated);
 
                 if (eBeforeRecordUpdated.CancelAll)
@@ -928,20 +1025,24 @@ namespace Ext.Net
             }
         }
 
-        private void MakeDeletes(IDataSource ds, JArray data)
+        private void MakeDeletes(IDataSource ds, XmlDocument xml)
         {
-            string id = this.ModelInstance.GetIDProperty();
+            XmlNodeList deletingRecords = xml.SelectNodes("records/Deleted/record");
+            string id = GetIdColumnName();
 
-            foreach (JToken token in data)
+            foreach (XmlNode node in deletingRecords)
             {
-                this.record = token;
+                record = node;
                 values = new SortedList(0);
                 keys = new SortedList();
                 oldValues = new SortedList(0);
 
+                confirmation = null;
+
                 if (id.IsNotEmpty())
                 {
-                    string idStr = token.Value<string>(id);
+                    XmlNode keyNode = node.SelectSingleNode(id);
+                    string idStr = keyNode != null ? keyNode.InnerText : null;
 
                     int idInt;
 
@@ -953,9 +1054,14 @@ namespace Ext.Net
                     {
                         keys[id] = idStr;
                     }
+
+                    if (this.UseIdConfirmation && keys[id] != null)
+                    {
+                        confirmation = changingEventArgs.ConfirmationList[keys[id].ToString()];
+                    }
                 }
 
-                BeforeRecordDeletedEventArgs eBeforeRecordDeleted = new BeforeRecordDeletedEventArgs(record, keys);
+                BeforeRecordDeletedEventArgs eBeforeRecordDeleted = new BeforeRecordDeletedEventArgs(record, keys, confirmation);
                 this.OnBeforeRecordDeleted(eBeforeRecordDeleted);
 
                 if (eBeforeRecordDeleted.CancelAll)
@@ -977,25 +1083,44 @@ namespace Ext.Net
                     this.DeleteCallback(0, null);
                 }
             }
+
+            if (deletingRecords.Count > 0)
+            {
+                needRetrieve = true;
+            }
         }
 
-        private void MakeInsertes(IDataSource ds, JArray data)
+        private void MakeInsertes(IDataSource ds, XmlDocument xml)
         {
-            string id = this.ModelInstance.GetIDProperty();
+            XmlNodeList insertingRecords = xml.SelectNodes("records/Created/record");
+            string id = GetIdColumnName();
 
-            foreach (JToken token in data)
+            foreach (XmlNode node in insertingRecords)
             {
-                this.record = token;
-                values = new SortedList(this.ModelInstance.Fields.Count);
+                record = node;
+                values = new SortedList(this.Reader.Reader.Fields.Count);
                 keys = new SortedList();
                 oldValues = new SortedList();
 
-                foreach (ModelField field in this.ModelInstance.Fields)
+                foreach (RecordField field in this.Reader.Reader.Fields)
                 {
-                    values[field.Name] = token.Value<string>(field.Mapping.IsNotEmpty() ? field.Mapping : field.Name) ?? token.Value<string>(field.Name);
+                    XmlNode keyNode = node.SelectSingleNode(field.Name);
+                    values[field.Name] = keyNode != null ? keyNode.InnerText : null;
                 }
-                
-                BeforeRecordInsertedEventArgs eBeforeRecordInserted = new BeforeRecordInsertedEventArgs(record, keys, values);
+
+                confirmation = null;
+
+                if (id.IsNotEmpty())
+                {
+                    XmlNode keyNode = node.SelectSingleNode(id);
+                    
+                    if (this.UseIdConfirmation && keyNode != null && keyNode.InnerText.IsNotEmpty())
+                    {
+                        confirmation = changingEventArgs.ConfirmationList[keyNode.InnerText];
+                    }
+                }
+
+                BeforeRecordInsertedEventArgs eBeforeRecordInserted = new BeforeRecordInsertedEventArgs(record, keys, values, confirmation);
                 this.OnBeforeRecordInserted(eBeforeRecordInserted);
 
                 if (eBeforeRecordInserted.CancelAll)
@@ -1017,42 +1142,33 @@ namespace Ext.Net
                     this.InsertCallback(0, null);
                 }
             }
+
+            if (insertingRecords.Count > 0)
+            {
+                needRetrieve = true;
+            }
         }
 
         bool UpdateCallback(int recordsAffected, Exception exception)
         {
-            AfterRecordUpdatedEventArgs eAfterRecordUpdated = new AfterRecordUpdatedEventArgs(record, recordsAffected, exception, keys, values);
+            if (confirmation != null && recordsAffected > 0)
+            {
+                confirmation.ConfirmRecord();
+            }
+            AfterRecordUpdatedEventArgs eAfterRecordUpdated = new AfterRecordUpdatedEventArgs(record, recordsAffected, exception, keys, values, oldValues, confirmation);
             this.OnAfterRecordUpdated(eAfterRecordUpdated);
 
-            if (this.AutomaticResponseValues)
-            {
-                if (this.keys.Count > 0)
-                {
-                    IEnumerator enumerator = this.keys.Keys.GetEnumerator();
-                    enumerator.MoveNext();
-                    string keyName = (string)enumerator.Current;
-                    if (keyName != null)
-                    {
-                        this.values[keyName] = this.keys[keyName];
-                    }
-                }
-
-                var mappings = new Dictionary<string, object>();
-                var model = this.ModelInstance;
-                foreach (var key in values.Keys)
-                {
-                    var field = model.Fields.First<ModelField>(f => f.Name == key.ToString());
-                    mappings.Add(field != null ? (field.Mapping.IsNotEmpty() ? field.Mapping : field.Name) : key.ToString(), values[key]);
-                }
-
-                this.responseRecords.Add(mappings);
-            }
             return eAfterRecordUpdated.ExceptionHandled;
         }
 
         bool DeleteCallback(int recordsAffected, Exception exception)
         {
-            AfterRecordDeletedEventArgs eAfterRecordDeleted = new AfterRecordDeletedEventArgs(record, recordsAffected, exception, keys);
+            if (confirmation != null && recordsAffected > 0)
+            {
+                confirmation.ConfirmRecord();
+            }
+
+            AfterRecordDeletedEventArgs eAfterRecordDeleted = new AfterRecordDeletedEventArgs(record, recordsAffected, exception, keys, confirmation);
             this.OnAfterRecordDeleted(eAfterRecordDeleted);
 
             return eAfterRecordDeleted.ExceptionHandled;
@@ -1060,52 +1176,15 @@ namespace Ext.Net
 
         bool InsertCallback(int recordsAffected, Exception exception)
         {
-            AfterRecordInsertedEventArgs eAfterRecordInserted = new AfterRecordInsertedEventArgs(record, recordsAffected, exception, keys, values);
+            if (confirmation != null && recordsAffected > 0)
+            {
+                confirmation.ConfirmRecord();
+            }
+
+            AfterRecordInsertedEventArgs eAfterRecordInserted = new AfterRecordInsertedEventArgs(record, recordsAffected, exception, keys, values, confirmation);
             this.OnAfterRecordInserted(eAfterRecordInserted);
 
-            if (this.AutomaticResponseValues)
-            {
-                if (this.keys.Count > 0)
-                {
-                    IEnumerator enumerator = this.keys.Keys.GetEnumerator();
-                    enumerator.MoveNext();
-                    string keyName = enumerator.Current as string;
-                    this.values[keyName] = this.keys[keyName];
-                }
-                else
-                {
-                    throw new Exception("Key value is not defined for inserted record");
-                }
-
-                var mappings = new Dictionary<string, object>();
-                var model = this.ModelInstance;
-                foreach (var key in values.Keys)
-                {
-                    var field = model.Fields.Single<ModelField>(f => f.Name == key.ToString());
-                    mappings.Add(field != null ? (field.Mapping.IsNotEmpty() ? field.Mapping : field.Name) : key.ToString(), values[key]);
-                }
-
-                this.responseRecords.Add(mappings);
-            }
-
             return eAfterRecordInserted.ExceptionHandled;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [DefaultValue(true)]
-        [Description("")]
-        public virtual bool AutomaticResponseValues
-        {
-            get
-            {
-                return this.State.Get<bool>("AutomaticResponseValues", true);
-            }
-            set
-            {
-                this.State.Set("AutomaticResponseValues", value);
-            }
         }
 
 
@@ -1116,6 +1195,8 @@ namespace Ext.Net
 
         private void RaiseAjaxPostBackEvent(string eventArgument)
         {
+            bool needConfirmation = false;
+
             try
             {
                 if (eventArgument.IsEmpty())
@@ -1123,25 +1204,27 @@ namespace Ext.Net
                     throw new ArgumentNullException("eventArgument");
                 }
 
+                XmlNode xmlData = this.SubmitConfig;
                 string data = null;
-                JToken parametersToken = null;
+                XmlNode parametersNode = null;
 
-                if (this.DirectConfig != null)
+                if (xmlData != null)
                 {
-                    parametersToken = this.DirectConfig.SelectToken("config.extraParams", false);
+                    parametersNode = xmlData.SelectSingleNode("config/extraParams");
+                
+                    XmlNode serviceNode = xmlData.SelectSingleNode("config/serviceParams");
 
-                    JToken serviceToken = this.DirectConfig.SelectToken("config.serviceParams", false);
-
-                    if (serviceToken != null)
+                    if (serviceNode != null)
                     {
-                        data = JSON.ToString(serviceToken);
+                        data = serviceNode.InnerText;
                     }
                 }
 
                 string action = eventArgument;
 
-                BeforeDirectEventArgs e = new BeforeDirectEventArgs(action, data, parametersToken);
+                BeforeDirectEventArgs e = new BeforeDirectEventArgs(action, data, parametersNode);
                 this.OnAjaxPostBack(e);
+                PageProxy dsp = this.Proxy.Proxy as PageProxy;
 
                 if (this.AutoDecode && data.IsNotEmpty())
                 {
@@ -1150,23 +1233,26 @@ namespace Ext.Net
 
                 switch(action)
                 {
-                    case "create":
-                    case "destroy":
                     case "update":
-                    case "batch":
                         if (data == null)
                         {
                             throw new InvalidOperationException("No data in request");
                         }
 
-                        this.DoSaving(action, data, parametersToken);
+                        needConfirmation = this.UseIdConfirmation;
+                        this.DoSaving(data, parametersNode);
+                        
+                        if (this.RefreshAfterSaving == RefreshAfterSavingMode.None || dsp != null)
+                        {
+                            needRetrieve = false;
+                        }
                         
                         break;
-                    case "read":
-                        StoreRefreshDataEventArgs refreshArgs = new StoreRefreshDataEventArgs(parametersToken);
-                        this.OnReadData(refreshArgs);
-                        PageProxy dsp = this.Proxy.Primary as PageProxy;
-
+                    case "refresh":
+                        needRetrieve = true;
+                        StoreRefreshDataEventArgs refreshArgs = new StoreRefreshDataEventArgs(parametersNode);
+                        this.OnRefreshData(refreshArgs);
+                        
                         if (dsp != null)
                         {
                             if (refreshArgs.Total > -1)
@@ -1177,12 +1263,14 @@ namespace Ext.Net
 
                         break;
                     case "submit":
+                        needRetrieve = false;
+
                         if (data == null)
                         {
                             throw new InvalidOperationException("No data in request");
                         }
 
-                        StoreSubmitDataEventArgs args = new StoreSubmitDataEventArgs(data, parametersToken);
+                        StoreSubmitDataEventArgs args =new StoreSubmitDataEventArgs(data, parametersNode);
                         this.OnSubmitData(args);
 
                         break;
@@ -1201,30 +1289,24 @@ namespace Ext.Net
 
             AfterDirectEventArgs eAjaxPostBackResult = new AfterDirectEventArgs(new Response(success, msg));
             this.OnAjaxPostBackResult(eAjaxPostBackResult);
-
+            
             StoreResponseData response = new StoreResponseData();
-
-            if (eAjaxPostBackResult.Response.Success)
+            
+            if (needRetrieve && eAjaxPostBackResult.Response.Success)
             {
-                switch (eventArgument)
+                if (this.RequiresDataBinding)
                 {
-                    case "read":
-
-                        if (this.RequiresDataBinding)
-                        {
-                            this.DataBind();
-                        }
-
-                        response.Data = this.GetAjaxDataJson();
-                        PageProxy dsp = this.Proxy.Primary as PageProxy;
-                        response.Total = dsp != null ? dsp.Total : -1;
-                        break;
-                    case "create":
-                    case "destroy":
-                    case "update":
-                        response.Data = JSON.Serialize(this.responseRecords);
-                        break;
+                    this.DataBind(); 
                 }
+
+                response.Data = this.GetAjaxDataJson();
+                PageProxy dsp = this.Proxy.Proxy as PageProxy;
+                response.Total = dsp != null ? dsp.Total : 0;
+            }
+
+            if (needConfirmation)
+            {
+                response.Confirmation = changingEventArgs.ConfirmationList;
             }
 
             eAjaxPostBackResult.Response.Data = response.ToString();

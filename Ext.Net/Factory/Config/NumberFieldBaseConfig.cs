@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,19 +33,70 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public abstract partial class NumberFieldBase
     {
         /// <summary>
         /// 
         /// </summary>
-        new public abstract partial class Config : SpinnerFieldBase.Config 
+        new public abstract partial class Config : TextFieldBase.Config 
         { 
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
+			        
+			private object emptyValue = null;
+
+			/// <summary>
+			/// The fields null value.
+			/// </summary>
+			public object EmptyValue
+			{
+				get
+				{
+					if (this.emptyValue == null)
+					{
+						this.emptyValue = new object();
+					}
 			
+					return this.emptyValue;
+				}
+			}
+			
+			private InputType inputType = InputType.Text;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue(InputType.Text)]
+			public override InputType InputType 
+			{ 
+				get
+				{
+					return this.inputType;
+				}
+				set
+				{
+					this.inputType = value;
+				}
+			}
+
+			private string text = "";
+
+			/// <summary>
+			/// The Text value to initialize this field with.
+			/// </summary>
+			[DefaultValue("")]
+			public override string Text 
+			{ 
+				get
+				{
+					return this.text;
+				}
+				set
+				{
+					this.text = value;
+				}
+			}
+
 			private double number = double.MinValue;
 
 			/// <summary>
@@ -82,21 +133,39 @@ namespace Ext.Net
 				}
 			}
 
-			private bool autoStripChars = false;
+			private bool trimTrailedZeros = true;
 
 			/// <summary>
-			/// True to automatically strip not allowed characters from the field. Defaults to false
+			/// False to disallow trim trailed zeros.
 			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool AutoStripChars 
+			[DefaultValue(true)]
+			public virtual bool TrimTrailedZeros 
 			{ 
 				get
 				{
-					return this.autoStripChars;
+					return this.trimTrailedZeros;
 				}
 				set
 				{
-					this.autoStripChars = value;
+					this.trimTrailedZeros = value;
+				}
+			}
+
+			private bool allowNegative = true;
+
+			/// <summary>
+			/// False to prevent entering a negative sign (defaults to true).
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool AllowNegative 
+			{ 
+				get
+				{
+					return this.allowNegative;
+				}
+				set
+				{
+					this.allowNegative = value;
 				}
 			}
 
@@ -175,7 +244,7 @@ namespace Ext.Net
 			private Double maxValue = Double.MaxValue;
 
 			/// <summary>
-			/// The maximum allowed value (defaults to Number.MAX_VALUE). Will be used by the field's validation logic, and for enabling/disabling the up spinner button.
+			/// The maximum allowed value (defaults to Double.MaxValue)
 			/// </summary>
 			[DefaultValue(Double.MaxValue)]
 			public virtual Double MaxValue 
@@ -211,7 +280,7 @@ namespace Ext.Net
 			private Double minValue = Double.MinValue;
 
 			/// <summary>
-			/// The minimum allowed value (defaults to Number.NEGATIVE_INFINITY). Will be used by the field's validation logic, and for enabling/disabling the down spinner button.
+			/// The minimum allowed value (defaults to Double.MinValue)
 			/// </summary>
 			[DefaultValue(Double.MinValue)]
 			public virtual Double MinValue 
@@ -241,60 +310,6 @@ namespace Ext.Net
 				set
 				{
 					this.nanText = value;
-				}
-			}
-
-			private string negativeText = "";
-
-			/// <summary>
-			/// Error text to display if the value is negative and minValue is set to 0. This is used instead of the minText in that circumstance only.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string NegativeText 
-			{ 
-				get
-				{
-					return this.negativeText;
-				}
-				set
-				{
-					this.negativeText = value;
-				}
-			}
-
-			private double step = 1.0;
-
-			/// <summary>
-			/// Specifies a numeric interval by which the field's value will be incremented or decremented when the user invokes the spinner. Defaults to 1.
-			/// </summary>
-			[DefaultValue(1.0)]
-			public virtual double Step 
-			{ 
-				get
-				{
-					return this.step;
-				}
-				set
-				{
-					this.step = value;
-				}
-			}
-
-			private bool trimTrailedZeros = true;
-
-			/// <summary>
-			/// False to disallow trim trailed zeros.
-			/// </summary>
-			[DefaultValue(true)]
-			public virtual bool TrimTrailedZeros 
-			{ 
-				get
-				{
-					return this.trimTrailedZeros;
-				}
-				set
-				{
-					this.trimTrailedZeros = value;
 				}
 			}
 

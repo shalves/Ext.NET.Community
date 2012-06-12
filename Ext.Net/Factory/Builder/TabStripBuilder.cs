@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class TabStrip
     {
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ComponentBase.Builder<TabStrip, TabStrip.Builder>
+        public partial class Builder : BoxComponentBase.Builder<TabStrip, TabStrip.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -77,26 +74,15 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
- 			/// <summary>
-			/// The position where the tab strip should be rendered (defaults to 'top'). The only other supported value is 'Bottom'. Note that tab scrolling is only supported for position 'top'.
-			/// </summary>
-            public virtual TabStrip.Builder TabPosition(TabPosition tabPosition)
-            {
-                this.ToComponent().TabPosition = tabPosition;
-                return this as TabStrip.Builder;
-            }
+ 			// /// <summary>
+			// /// Items Collection
+			// /// </summary>
+            // public virtual TBuilder Items(TabStripItems items)
+            // {
+            //    this.ToComponent().Items = items;
+            //    return this as TBuilder;
+            // }
              
- 			/// <summary>
-			/// Items Collection
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TabStrip.Builder</returns>
-            public virtual TabStrip.Builder Items(Action<Tabs> action)
-            {
-                action(this.ToComponent().Items);
-                return this as TabStrip.Builder;
-            }
-			 
  			/// <summary>
 			/// The ID of the container which has card layout. TabStrip will switch active item automatically beased on the current index.
 			/// </summary>
@@ -125,20 +111,29 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// 
+			/// True to animate tab scrolling so that hidden tabs slide smoothly into view (defaults to true). Only applies when EnableTabScroll = true.
 			/// </summary>
-            public virtual TabStrip.Builder MinTabWidth(int minTabWidth)
+            public virtual TabStrip.Builder AnimScroll(bool animScroll)
             {
-                this.ToComponent().MinTabWidth = minTabWidth;
+                this.ToComponent().AnimScroll = animScroll;
                 return this as TabStrip.Builder;
             }
              
  			/// <summary>
-			/// 
+			/// True to enable scrolling to tabs that may be invisible due to overflowing the overall TabPanel width. Only available with tabs on addToStart. (defaults to false).
 			/// </summary>
-            public virtual TabStrip.Builder MaxTabWidth(int maxTabWidth)
+            public virtual TabStrip.Builder EnableTabScroll(bool enableTabScroll)
             {
-                this.ToComponent().MaxTabWidth = maxTabWidth;
+                this.ToComponent().EnableTabScroll = enableTabScroll;
+                return this as TabStrip.Builder;
+            }
+             
+ 			/// <summary>
+			/// The minimum width in pixels for each tab when ResizeTabs = true (defaults to 30).
+			/// </summary>
+            public virtual TabStrip.Builder MinTabWidth(Unit minTabWidth)
+            {
+                this.ToComponent().MinTabWidth = minTabWidth;
                 return this as TabStrip.Builder;
             }
              
@@ -152,42 +147,128 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TabStrip.Builder</returns>
-            public virtual TabStrip.Builder Listeners(Action<TabStripListeners> action)
+			/// True to automatically resize each tab so that the tabs will completely fill the tab strip (defaults to false). Setting this to true may cause specific widths that might be set per tab to be overridden in order to fit them all into view (although MinTabWidth will always be honored).
+			/// </summary>
+            public virtual TabStrip.Builder ResizeTabs(bool resizeTabs)
             {
-                action(this.ToComponent().Listeners);
+                this.ToComponent().ResizeTabs = resizeTabs;
                 return this as TabStrip.Builder;
             }
-			 
+             
  			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TabStrip.Builder</returns>
-            public virtual TabStrip.Builder DirectEvents(Action<TabStripDirectEvents> action)
+			/// Sync size after active tab change. This property is ignored if AutoGrow=false
+			/// </summary>
+            public virtual TabStrip.Builder SyncOnTabChange(bool syncOnTabChange)
             {
-                action(this.ToComponent().DirectEvents);
+                this.ToComponent().SyncOnTabChange = syncOnTabChange;
                 return this as TabStrip.Builder;
             }
-			 
+             
+ 			/// <summary>
+			/// True to auto grow width
+			/// </summary>
+            public virtual TabStrip.Builder AutoGrow(bool autoGrow)
+            {
+                this.ToComponent().AutoGrow = autoGrow;
+                return this as TabStrip.Builder;
+            }
+             
+ 			/// <summary>
+			/// The number of milliseconds that each scroll animation should last (defaults to .35). Only applies when AnimScroll = true.
+			/// </summary>
+            public virtual TabStrip.Builder ScrollDuration(float scrollDuration)
+            {
+                this.ToComponent().ScrollDuration = scrollDuration;
+                return this as TabStrip.Builder;
+            }
+             
+ 			/// <summary>
+			/// The number of pixels to scroll each time a tab scroll button is pressed (defaults to 100, or if ResizeTabs = true, the calculated tab width). Only applies when EnableTabScroll = true.
+			/// </summary>
+            public virtual TabStrip.Builder ScrollIncrement(int scrollIncrement)
+            {
+                this.ToComponent().ScrollIncrement = scrollIncrement;
+                return this as TabStrip.Builder;
+            }
+             
+ 			/// <summary>
+			/// Number of milliseconds between each scroll while a tab scroll button is continuously pressed (defaults to 400).
+			/// </summary>
+            public virtual TabStrip.Builder ScrollRepeatInterval(int scrollRepeatInterval)
+            {
+                this.ToComponent().ScrollRepeatInterval = scrollRepeatInterval;
+                return this as TabStrip.Builder;
+            }
+             
+ 			/// <summary>
+			/// The number of pixels of space to calculate into the sizing and scrolling of tabs. If you change the margin in CSS, you will need to update this value so calculations are correct with either resizeTabs or scrolling tabs. (defaults to 2)
+			/// </summary>
+            public virtual TabStrip.Builder TabMargin(Unit tabMargin)
+            {
+                this.ToComponent().TabMargin = tabMargin;
+                return this as TabStrip.Builder;
+            }
+             
+ 			/// <summary>
+			/// This config option is used on child Components of ths TabPanel. A CSS class name applied to the tab strip item representing the child Component, allowing special styling to be applied.
+			/// </summary>
+            public virtual TabStrip.Builder TabCls(string tabCls)
+            {
+                this.ToComponent().TabCls = tabCls;
+                return this as TabStrip.Builder;
+            }
+             
+ 			/// <summary>
+			/// The position where the tab strip should be rendered (defaults to 'addToStart'). The only other supported value is 'Bottom'. Note that tab scrolling is only supported for position 'addToStart'.
+			/// </summary>
+            public virtual TabStrip.Builder TabPosition(TabPosition tabPosition)
+            {
+                this.ToComponent().TabPosition = tabPosition;
+                return this as TabStrip.Builder;
+            }
+             
+ 			/// <summary>
+			/// The initial width in pixels of each new tab (defaults to 120).
+			/// </summary>
+            public virtual TabStrip.Builder TabWidth(Unit tabWidth)
+            {
+                this.ToComponent().TabWidth = tabWidth;
+                return this as TabStrip.Builder;
+            }
+             
+ 			/// <summary>
+			/// For scrolling tabs, the number of pixels to increment on mouse wheel scrolling (defaults to 20).
+			/// </summary>
+            public virtual TabStrip.Builder WheelIncrement(int wheelIncrement)
+            {
+                this.ToComponent().WheelIncrement = wheelIncrement;
+                return this as TabStrip.Builder;
+            }
+             
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(TabStripListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(TabStripDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
 			/// Gets or sets a value indicating whether the control state automatically posts back to the server when tab changed.
 			/// </summary>
             public virtual TabStrip.Builder AutoPostBack(bool autoPostBack)
             {
                 this.ToComponent().AutoPostBack = autoPostBack;
-                return this as TabStrip.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TabStrip.Builder PostBackEvent(string postBackEvent)
-            {
-                this.ToComponent().PostBackEvent = postBackEvent;
                 return this as TabStrip.Builder;
             }
              

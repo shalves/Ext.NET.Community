@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -38,7 +38,7 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class DomObject : BaseItem
+    public partial class DomObject : StateManagedItem
     {
 		/// <summary>
 		/// 
@@ -68,11 +68,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<HtmlTextWriterTag>("Tag", HtmlTextWriterTag.Div);
+                object obj = this.ViewState["Tag"];
+                return (obj == null) ? HtmlTextWriterTag.Div : (HtmlTextWriterTag)obj;
             }
             set
             {
-                this.State.Set("Tag", value);
+                this.ViewState["Tag"] = value;
             }
         }
 
@@ -87,11 +88,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("ID", "");
+                return (string)this.ViewState["ID"] ?? "";
             }
             set
             {
-                this.State.Set("ID", value);
+                this.ViewState["ID"] = value;
             }
         }
 
@@ -106,11 +107,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Cls", "");
+                return (string)this.ViewState["Cls"] ?? "";
             }
             set
             {
-                this.State.Set("Cls", value);
+                this.ViewState["Cls"] = value;
             }
         }
 
@@ -125,11 +126,30 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Html", "");
+                return (string)this.ViewState["Html"] ?? "";
             }
             set
             {
-                this.State.Set("Html", value);
+                this.ViewState["Html"] = value;
+            }
+        }
+
+        private ConfigItemCollection customConfig;
+
+        [ConfigOption("-", typeof(CustomConfigJsonConverter))]
+        [NotifyParentProperty(true)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("Collection of custom js config")]
+        public virtual ConfigItemCollection CustomConfig
+        {
+            get
+            {
+                if (this.customConfig == null)
+                {
+                    this.customConfig = new ConfigItemCollection();
+                }
+
+                return this.customConfig;
             }
         }
 
@@ -169,7 +189,7 @@ namespace Ext.Net
     /// 
     /// </summary>
     [Description("")]
-    public partial class DomObjectCollection : BaseItemCollection<DomObject> { }
+    public partial class DomObjectCollection : StateManagedCollection<DomObject> { }
 
     /// <summary>
     /// 
@@ -201,7 +221,7 @@ namespace Ext.Net
         private static void RegisterScript(string name, params object[] arguments)
         {
             ResourceManager rm = ResourceManager.GetInstance(HttpContext.Current);
-            string script = "Ext.core.DomHelper.".ConcatWith(name, "(", FormatArgs(arguments), ");");
+            string script = "Ext.DomHelper.".ConcatWith(name, "(", FormatArgs(arguments), ");");
 
             if (rm != null)
             {
@@ -214,7 +234,7 @@ namespace Ext.Net
 
         private static Element ReturnElement(string name, params object[] arguments)
         {
-            Element e = new Element("Ext.core.DomHelper.".ConcatWith(name, "(", FormatArgs(arguments), ")"));
+            Element e = new Element("Ext.DomHelper.".ConcatWith(name, "(", FormatArgs(arguments), ")"));
             e.RegisterVar();
 
             return e;
@@ -329,7 +349,7 @@ namespace Ext.Net
         /// <param name="html">The HTML fragmenet</param>
         public static Element InsertHtml(InsertPosition where, Element el, string html)
         {
-            Element e = Element.Get("Ext.core.DomHelper.".ConcatWith("insertHtml", "(", FormatArgs(new object[]{where.ToString().ToLowerCamelCase(), new JRawValue(el.Descriptor+".dom"), Element.ConvertToSafeJSHtml(html)}), ")"));
+            Element e = Element.Get("Ext.DomHelper.".ConcatWith("insertHtml", "(", FormatArgs(new object[]{where.ToString().ToLowerCamelCase(), new JRawValue(el.Descriptor+".dom"), Element.ConvertToSafeJSHtml(html)}), ")"));
             e.RegisterVar();
 
             return e;

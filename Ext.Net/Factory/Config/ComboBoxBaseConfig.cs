@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,55 +33,16 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
-    public abstract partial class ComboBoxBase
+    public abstract partial class ComboBoxBase<T>
     {
         /// <summary>
         /// 
         /// </summary>
-        new public abstract partial class Config : PickerField.Config 
+        new public abstract partial class Config : TriggerFieldBase.Config 
         { 
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
-			        
-			private ListItemCollection selectedItems = null;
-
-			/// <summary>
-			/// 
-			/// </summary>
-			public ListItemCollection SelectedItems
-			{
-				get
-				{
-					if (this.selectedItems == null)
-					{
-						this.selectedItems = new ListItemCollection();
-					}
 			
-					return this.selectedItems;
-				}
-			}
-			
-			private bool simpleSubmit = false;
-
-			/// <summary>
-			/// True to submit value only
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool SimpleSubmit 
-			{ 
-				get
-				{
-					return this.simpleSubmit;
-				}
-				set
-				{
-					this.simpleSubmit = value;
-				}
-			}
-
 			private string allQuery = "";
 
 			/// <summary>
@@ -100,48 +61,30 @@ namespace Ext.Net
 				}
 			}
 
-			private bool autoSelect = true;
+			private bool clearFilterOnReset = true;
 
 			/// <summary>
-			/// true to automatically highlight the first result gathered by the data store in the dropdown list when it is opened. (Defaults to true). A false value would cause nothing in the list to be highlighted automatically, so the user would have to manually highlight an item before pressing the enter or tab key to select it (unless the value of (typeAhead) were true), or use the mouse to select a value.
+			/// true to clear any filters on the store (when in local mode) when reset is called (defaults to true)
 			/// </summary>
 			[DefaultValue(true)]
-			public virtual bool AutoSelect 
+			public virtual bool ClearFilterOnReset 
 			{ 
 				get
 				{
-					return this.autoSelect;
+					return this.clearFilterOnReset;
 				}
 				set
 				{
-					this.autoSelect = value;
+					this.clearFilterOnReset = value;
 				}
 			}
 
-			private string delimiter = ", ";
+			private string displayField = "";
 
 			/// <summary>
-			/// The character(s) used to separate the display values of multiple selected items when multiSelect = true. Defaults to ', '.
+			/// The underlying data field name to bind to this ComboBox (defaults to undefined if mode = 'remote' or 'text' if transforming a select).
 			/// </summary>
-			[DefaultValue(", ")]
-			public virtual string Delimiter 
-			{ 
-				get
-				{
-					return this.delimiter;
-				}
-				set
-				{
-					this.delimiter = value;
-				}
-			}
-
-			private string displayField = "text";
-
-			/// <summary>
-			/// The underlying data field name to bind to this ComboBox (defaults to 'text').
-			/// </summary>
-			[DefaultValue("text")]
+			[DefaultValue("")]
 			public virtual string DisplayField 
 			{ 
 				get
@@ -154,12 +97,12 @@ namespace Ext.Net
 				}
 			}
 
-			private bool forceSelection = false;
+			private bool forceSelection = true;
 
 			/// <summary>
-			/// true to restrict the selected value to one of the values in the list, false to allow the user to set arbitrary text into the field (defaults to false)
+			/// True to restrict the selected value to one of the values in the list, false to allow the user to set arbitrary text into the field (defaults to true).
 			/// </summary>
-			[DefaultValue(false)]
+			[DefaultValue(true)]
 			public virtual bool ForceSelection 
 			{ 
 				get
@@ -172,21 +115,129 @@ namespace Ext.Net
 				}
 			}
 
-			private BoundList listConfig = null;
+			private Unit handleHeight = Unit.Pixel(8);
 
 			/// <summary>
-			/// 
+			/// The height in pixels of the dropdown list resize handle if resizable = true (defaults to 8).
 			/// </summary>
-			[DefaultValue(null)]
-			public virtual BoundList ListConfig 
+			[DefaultValue(typeof(Unit), "8")]
+			public virtual Unit HandleHeight 
 			{ 
 				get
 				{
-					return this.listConfig;
+					return this.handleHeight;
 				}
 				set
 				{
-					this.listConfig = value;
+					this.handleHeight = value;
+				}
+			}
+
+			private string hiddenID = "";
+
+			/// <summary>
+			/// If hiddenName is specified, hiddenId can also be provided to give the hidden field a unique id (defaults to the hiddenName). The hiddenId and combo id should be different, since no two DOM nodes should share the same id.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string HiddenID 
+			{ 
+				get
+				{
+					return this.hiddenID;
+				}
+				set
+				{
+					this.hiddenID = value;
+				}
+			}
+
+			private string hiddenValue = "";
+
+			/// <summary>
+			/// Sets the initial value of the hidden field if hiddenName is specified to contain the selected valueField, from the Store. Defaults to the configured value.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string HiddenValue 
+			{ 
+				get
+				{
+					return this.hiddenValue;
+				}
+				set
+				{
+					this.hiddenValue = value;
+				}
+			}
+
+			private string hiddenName = "";
+
+			/// <summary>
+			/// If specified, a hidden form field with this name is dynamically generated to store the field's data value (defaults to the underlying DOM element's name). Required for the combo's value to automatically post during a form submission.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string HiddenName 
+			{ 
+				get
+				{
+					return this.hiddenName;
+				}
+				set
+				{
+					this.hiddenName = value;
+				}
+			}
+
+			private string itemSelector = "";
+
+			/// <summary>
+			/// This setting is required if a custom XTemplate has been specified in tpl which assigns a class other than 'x-combo-list-item' to dropdown list items. A simple CSS selector (e.g. div.some-class or span:first-child) that will be used to determine what nodes the DataView which handles the dropdown display will be working with.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string ItemSelector 
+			{ 
+				get
+				{
+					return this.itemSelector;
+				}
+				set
+				{
+					this.itemSelector = value;
+				}
+			}
+
+			private bool lazyInit = true;
+
+			/// <summary>
+			/// True to not initialize the list for this combo until the field is focused. (defaults to true).
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool LazyInit 
+			{ 
+				get
+				{
+					return this.lazyInit;
+				}
+				set
+				{
+					this.lazyInit = value;
+				}
+			}
+
+			private bool lazyRender = false;
+
+			/// <summary>
+			/// True to prevent the ComboBox from rendering until requested (should always be used when rendering into an Ext.Editor, defaults to false).
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool LazyRender 
+			{ 
+				get
+				{
+					return this.lazyRender;
+				}
+				set
+				{
+					this.lazyRender = value;
 				}
 			}
 
@@ -208,12 +259,120 @@ namespace Ext.Net
 				}
 			}
 
-			private int minChars = 0;
+			private string listAlign = "";
 
 			/// <summary>
-			/// The minimum number of characters the user must type before autocomplete and typeAhead activate (defaults to 4 if queryMode = 'remote' or 0 if queryMode = 'local', does not apply if editable = false).
+			/// A valid anchor position value. See Ext.Element.alignTo for details on supported anchor positions (defaults to 'tl-bl').
 			/// </summary>
-			[DefaultValue(0)]
+			[DefaultValue("")]
+			public virtual string ListAlign 
+			{ 
+				get
+				{
+					return this.listAlign;
+				}
+				set
+				{
+					this.listAlign = value;
+				}
+			}
+
+			private string listClass = "";
+
+			/// <summary>
+			/// CSS class to apply to the dropdown list element (defaults to '').
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string ListClass 
+			{ 
+				get
+				{
+					return this.listClass;
+				}
+				set
+				{
+					this.listClass = value;
+				}
+			}
+
+			private Unit listWidth = Unit.Empty;
+
+			/// <summary>
+			/// The width in pixels of the dropdown list (defaults to the width of the ComboBox field).
+			/// </summary>
+			[DefaultValue(typeof(Unit), "")]
+			public virtual Unit ListWidth 
+			{ 
+				get
+				{
+					return this.listWidth;
+				}
+				set
+				{
+					this.listWidth = value;
+				}
+			}
+
+			private string loadingText = "Loading...";
+
+			/// <summary>
+			/// The text to display in the dropdown list while data is loading. Only applies when mode = 'remote' (defaults to 'Loading...').
+			/// </summary>
+			[DefaultValue("Loading...")]
+			public virtual string LoadingText 
+			{ 
+				get
+				{
+					return this.loadingText;
+				}
+				set
+				{
+					this.loadingText = value;
+				}
+			}
+
+			private Unit maxHeight = Unit.Pixel(300);
+
+			/// <summary>
+			/// The maximum height in pixels of the dropdown list before scrollbars are shown (defaults to 300).
+			/// </summary>
+			[DefaultValue(typeof(Unit), "300")]
+			public override Unit MaxHeight 
+			{ 
+				get
+				{
+					return this.maxHeight;
+				}
+				set
+				{
+					this.maxHeight = value;
+				}
+			}
+
+			private Unit minHeight = Unit.Pixel(90);
+
+			/// <summary>
+			/// The minimum height in pixels of the dropdown list when the list is constrained by its distance to the viewport edges (defaults to 90).
+			/// </summary>
+			[DefaultValue(typeof(Unit), "90")]
+			public override Unit MinHeight 
+			{ 
+				get
+				{
+					return this.minHeight;
+				}
+				set
+				{
+					this.minHeight = value;
+				}
+			}
+
+			private int minChars = 4;
+
+			/// <summary>
+			/// The minimum number of characters the user must type before autocomplete and typeahead activate (defaults to 4 if remote or 0 if local, does not apply if editable = false).
+			/// </summary>
+			[DefaultValue(4)]
 			public virtual int MinChars 
 			{ 
 				get
@@ -226,28 +385,46 @@ namespace Ext.Net
 				}
 			}
 
-			private bool multiSelect = false;
+			private Unit minListWidth = Unit.Pixel(70);
 
 			/// <summary>
-			/// If set to true, allows the combo field to hold more than one value at a time, and allows selecting multiple items from the dropdown list. The combo's text field will show all selected values separated by the delimiter. (Defaults to false.)
+			/// The minimum width of the dropdown list in pixels (defaults to 70, will be ignored if listWidth has a higher value).
 			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool MultiSelect 
+			[DefaultValue(typeof(Unit), "70")]
+			public virtual Unit MinListWidth 
 			{ 
 				get
 				{
-					return this.multiSelect;
+					return this.minListWidth;
 				}
 				set
 				{
-					this.multiSelect = value;
+					this.minListWidth = value;
+				}
+			}
+
+			private DataLoadMode mode = DataLoadMode.Remote;
+
+			/// <summary>
+			/// Set to 'local' if the ComboBox loads local data (defaults to 'remote' which loads from the server).
+			/// </summary>
+			[DefaultValue(DataLoadMode.Remote)]
+			public virtual DataLoadMode Mode 
+			{ 
+				get
+				{
+					return this.mode;
+				}
+				set
+				{
+					this.mode = value;
 				}
 			}
 
 			private int pageSize = 0;
 
 			/// <summary>
-			/// If greater than 0, a Ext.toolbar.Paging is displayed in the footer of the dropdown list and the filter queries will execute with page start and limit parameters. Only applies when queryMode = 'remote' (defaults to 0).
+			/// If greater than 0, a paging toolbar is displayed in the footer of the dropdown list and the filter queries will execute with page addToStart and limit parameters. Only applies when mode = 'remote' (defaults to 0).
 			/// </summary>
 			[DefaultValue(0)]
 			public virtual int PageSize 
@@ -262,12 +439,12 @@ namespace Ext.Net
 				}
 			}
 
-			private int queryDelay = -1;
+			private int queryDelay = 500;
 
 			/// <summary>
-			/// The length of time in milliseconds to delay between the start of typing and sending the query to filter the dropdown list (defaults to 500 if queryMode = 'remote' or 10 if queryMode = 'local')
+			/// The length of time in milliseconds to delay between the addToStart of typing and sending the query to filter the dropdown list (defaults to 500 if mode = 'remote' or 10 if mode = 'local').
 			/// </summary>
-			[DefaultValue(-1)]
+			[DefaultValue(500)]
 			public virtual int QueryDelay 
 			{ 
 				get
@@ -280,28 +457,10 @@ namespace Ext.Net
 				}
 			}
 
-			private DataLoadMode queryMode = DataLoadMode.Remote;
-
-			/// <summary>
-			/// Set to 'local' if the ComboBox loads local data (defaults to 'remote' which loads from the server).
-			/// </summary>
-			[DefaultValue(DataLoadMode.Remote)]
-			public virtual DataLoadMode QueryMode 
-			{ 
-				get
-				{
-					return this.queryMode;
-				}
-				set
-				{
-					this.queryMode = value;
-				}
-			}
-
 			private string queryParam = "query";
 
 			/// <summary>
-			/// Name of the parameter used by the Store to pass the typed string when the ComboBox is configured with queryMode: 'remote' (defaults to 'query'). If explicitly set to a falsy value it will not be sent.
+			/// Name of the query as it will be passed on the querystring (defaults to 'query').
 			/// </summary>
 			[DefaultValue("query")]
 			public virtual string QueryParam 
@@ -316,28 +475,118 @@ namespace Ext.Net
 				}
 			}
 
-			private bool selectOnTab = true;
+			private bool resizable = false;
 
 			/// <summary>
-			/// Whether the Tab key should select the currently highlighted item. Defaults to true.
+			/// True to add a resize handle to the bottom of the dropdown list (defaults to false)
 			/// </summary>
-			[DefaultValue(true)]
-			public virtual bool SelectOnTab 
+			[DefaultValue(false)]
+			public virtual bool Resizable 
 			{ 
 				get
 				{
-					return this.selectOnTab;
+					return this.resizable;
 				}
 				set
 				{
-					this.selectOnTab = value;
+					this.resizable = value;
 				}
 			}
 
+			private string selectedClass = "";
+
+			/// <summary>
+			/// CSS class to apply to the selected items in the dropdown list (defaults to 'x-combo-selected').
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string SelectedClass 
+			{ 
+				get
+				{
+					return this.selectedClass;
+				}
+				set
+				{
+					this.selectedClass = value;
+				}
+			}
+
+			private ShadowMode shadow = ShadowMode.Sides;
+
+			/// <summary>
+			/// 'Sides' for the default effect, 'Frame' for 4-way shadow, and 'Drop' for bottom-right.
+			/// </summary>
+			[DefaultValue(ShadowMode.Sides)]
+			public virtual ShadowMode Shadow 
+			{ 
+				get
+				{
+					return this.shadow;
+				}
+				set
+				{
+					this.shadow = value;
+				}
+			}
+
+			private bool enableShadow = true;
+
+			/// <summary>
+			/// true for the default effect
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool EnableShadow 
+			{ 
+				get
+				{
+					return this.enableShadow;
+				}
+				set
+				{
+					this.enableShadow = value;
+				}
+			}
+
+			private bool selectOnFocus = false;
+
+			/// <summary>
+			/// True to automatically select any existing field text when the field receives input focus (defaults to false).
+			/// </summary>
+			[DefaultValue(false)]
+			public override bool SelectOnFocus 
+			{ 
+				get
+				{
+					return this.selectOnFocus;
+				}
+				set
+				{
+					this.selectOnFocus = value;
+				}
+			}
+        
+			private XTemplate template = null;
+
+			/// <summary>
+			/// The template string to use to display each item in the dropdown list.
+			/// </summary>
+			public XTemplate Template
+			{
+				get
+				{
+					if (this.template == null)
+					{
+						this.template = new XTemplate();
+					}
+			
+					return this.template;
+				}
+			}
+			
 			private string transform = "";
 
 			/// <summary>
-			/// The id, DOM node or Ext.Element of an existing HTML <select> element to convert into a ComboBox. The target select's options will be used to build the options in the ComboBox dropdown; a configured store will take precedence over this.
+			/// The ID of an existing select to convert to a ComboBox.
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string Transform 
@@ -352,10 +601,28 @@ namespace Ext.Net
 				}
 			}
 
+			private string title = "";
+
+			/// <summary>
+			/// If supplied, a header element is created containing this text and added into the top of the dropdown list.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string Title 
+			{ 
+				get
+				{
+					return this.title;
+				}
+				set
+				{
+					this.title = value;
+				}
+			}
+
 			private TriggerAction triggerAction = TriggerAction.Query;
 
 			/// <summary>
-			/// The action to execute when the trigger is clicked.
+			/// The action to execute when the trigger field is activated. Use 'All' to run the query specified by the allQuery config option (defaults to 'Query').
 			/// </summary>
 			[DefaultValue(TriggerAction.Query)]
 			public virtual TriggerAction TriggerAction 
@@ -409,7 +676,7 @@ namespace Ext.Net
 			private string valueField = "";
 
 			/// <summary>
-			/// The underlying data value name to bind to this ComboBox (defaults to match the value of the displayField config).
+			/// The underlying data value name to bind to this ComboBox (defaults to undefined if mode = 'remote' or 'value' if transforming a select) Note: use of a valueField requires the user to make a selection in order for a value to be mapped.
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string ValueField 
@@ -427,7 +694,7 @@ namespace Ext.Net
 			private string valueNotFoundText = "";
 
 			/// <summary>
-			/// When using a name/value combo, if the value passed to setValue is not found in the store, valueNotFoundText will be displayed as the field text if defined (defaults to undefined). If this default text is used, it means there is no value set and no validation will occur on this field.
+			/// When using a name/value combo, if the value passed to setValue is not found in the store, valueNotFoundText will be displayed as the field text if defined (defaults to undefined).
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string ValueNotFoundText 
@@ -460,39 +727,21 @@ namespace Ext.Net
 				}
 			}
         
-			private StoreCollection<Store> store = null;
+			private StoreCollection store = null;
 
 			/// <summary>
 			/// The data store to use.
 			/// </summary>
-			public StoreCollection<Store> Store
+			public StoreCollection Store
 			{
 				get
 				{
 					if (this.store == null)
 					{
-						this.store = new StoreCollection<Store>();
+						this.store = new StoreCollection();
 					}
 			
 					return this.store;
-				}
-			}
-			        
-			private ListItemCollection items = null;
-
-			/// <summary>
-			/// 
-			/// </summary>
-			public ListItemCollection Items
-			{
-				get
-				{
-					if (this.items == null)
-					{
-						this.items = new ListItemCollection();
-					}
-			
-					return this.items;
 				}
 			}
 			
@@ -511,6 +760,42 @@ namespace Ext.Net
 				set
 				{
 					this.alwaysMergeItems = value;
+				}
+			}
+
+			private bool triggerAutoPostBack = false;
+
+			/// <summary>
+			/// Trigger AutoPostBack
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool TriggerAutoPostBack 
+			{ 
+				get
+				{
+					return this.triggerAutoPostBack;
+				}
+				set
+				{
+					this.triggerAutoPostBack = value;
+				}
+			}
+
+			private ComboAutoPostBackEvent autoPostBackEvent = ComboAutoPostBackEvent.Select;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue(ComboAutoPostBackEvent.Select)]
+			public virtual ComboAutoPostBackEvent AutoPostBackEvent 
+			{ 
+				get
+				{
+					return this.autoPostBackEvent;
+				}
+				set
+				{
+					this.autoPostBackEvent = value;
 				}
 			}
 

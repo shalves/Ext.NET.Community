@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -37,17 +37,13 @@ namespace Ext.Net
 {
     /// <summary>
     /// Provides a time input field with a time dropdown and automatic time validation.
-    ///
-    /// This field recognizes and uses JavaScript Date objects as its main value type (only the time portion of the date is used; the month/day/year are ignored). In addition, it recognizes string values which are parsed according to the format and/or altFormats configs. These may be reconfigured to use time formats appropriate for the user's locale.
-    ///
-    /// The field may be limited to a certain range of times by using the minValue and maxValue configs, and the interval between time options in the dropdown can be changed with the increment config.
     /// </summary>
     [Meta]
     [ToolboxData("<{0}:TimeField runat=\"server\"></{0}:TimeField>")]
     [Designer(typeof(EmptyDesigner))]
     [ToolboxBitmap(typeof(TimeField), "Build.ToolboxIcons.TimeField.bmp")]
     [Description("Provides a time input field with a time dropdown and automatic time validation.")]
-    public partial class TimeField : PickerField
+    public partial class TimeField : ComboBox
     {
         /// <summary>
         /// 
@@ -77,7 +73,7 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.form.field.Time";
+                return "Ext.form.TimeField";
             }
         }
 
@@ -88,6 +84,7 @@ namespace Ext.Net
         /// <summary>
         /// The fields null value.
         /// </summary>
+        [Meta]
         [Category("5. Field")]
         [DefaultValue(typeof(TimeSpan), "-9223372036854775808")]
         [Description("The fields null value.")]
@@ -95,11 +92,31 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<object>("EmptyValue", this.initTime);
+                object obj = this.ViewState["EmptyValue"];
+                return (obj == null) ? this.initTime : obj;
             }
             set
             {
-                this.State.Set("EmptyValue", value);
+                this.ViewState["EmptyValue"] = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigOption("store", JsonMode.Raw)]
+        [DefaultValue("")]
+        [Description("")]
+        protected override string ItemsProxy
+        {
+            get
+            {
+                if (this.StoreID.IsNotEmpty() || this.Items.Count == 0)
+                {
+                    return "";
+                }
+
+                return this.ItemsToStore;
             }
         }
 
@@ -169,6 +186,7 @@ namespace Ext.Net
 		/// <summary>
         /// 
         /// </summary>
+        [Meta]
         [Browsable(false)]
         [DirectEventUpdate(MethodName = "SetTimeValue")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -178,7 +196,8 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<object>("Value", null);
+                object obj = this.ViewState["Value"];
+                return (obj == null) ? null : obj;
             }
             set
             {
@@ -186,11 +205,9 @@ namespace Ext.Net
                 {
                     this.Init += delegate
                     {
-                        this.Value = this.State["Value"];
+                        this.Value = this.ViewState["Value"];
                     };
-
-                    this.State.Set("Value", value);
-                    
+                    this.ViewState["Value"] = value;
                     return;
                 }
                 
@@ -221,26 +238,57 @@ namespace Ext.Net
                     }
                 }
 
-                this.State.Set("Value", obj);
+                this.ViewState["Value"] = obj;
             }
         }
 
         /// <summary>
-        /// Multiple date formats separated by "|" to try when parsing a user input value and it doesn't match the defined format (defaults to 'g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H|gi a|hi a|giA|hiA|gi A|hi A').
+        /// 
+        /// </summary>
+        /// <param name="postDataKey"></param>
+        /// <param name="postCollection"></param>
+        /// <returns></returns>
+        [Description("")]
+        protected override bool LoadPostData(string postDataKey, NameValueCollection postCollection)
+        {
+            this.HasLoadPostData = true;
+
+            bool val = base.LoadPostData(postDataKey, postCollection);
+
+            this.SuspendScripting();
+
+            this.RawValue = this.SelectedItem.Value;
+
+            if (this.SelectedItem.Value.IsEmpty())
+            {
+                this.Value = this.EmptyValue;
+            }
+            else
+            {
+                this.Value = this.SelectedItem.Value;
+            }
+
+            this.ResumeScripting();
+
+            return val;
+        }
+
+        /// <summary>
+        /// Multiple date formats separated by \" | \" to try when parsing a user input value and it doesn't match the defined format (defaults to 'm/d/Y|m-d-y|m-d-Y|m/d|m-d|d').
         /// </summary>
         [Meta]
         [Category("9. TimeField")]
         [DefaultValue("")]
-        [Description("Multiple date formats separated by \" | \" to try when parsing a user input value and it doesn't match the defined format (defaults to 'g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H|gi a|hi a|giA|hiA|gi A|hi A').")]
+        [Description("Multiple date formats separated by \" | \" to try when parsing a user input value and it doesn't match the defined format (defaults to 'm/d/Y|m-d-y|m-d-Y|m/d|m-d|d').")]
         public virtual string AltFormats
         {
             get
             {
-                return this.State.Get<string>("AltFormats", "");
+                return (string)this.ViewState["AltFormats"] ?? "";
             }
             set
             {
-                this.State.Set("AltFormats", value);
+                this.ViewState["AltFormats"] = value;
             }
         }
 
@@ -259,21 +307,21 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// The default time format string which can be overriden for localization support. The format must be valid according to Ext.Date.parse (defaults to 'g:i A', e.g., '3:15 PM'). For 24-hour time format try 'H:i' instead.
+        /// The default date format string which can be overriden for localization support. The format must be valid according to Date.parseDate (defaults to 'm/d/y').
         /// </summary>
         [Meta]
         [Category("9. TimeField")]
         [DefaultValue("t")]
-        [Description("The default time format string which can be overriden for localization support. The format must be valid according to Ext.Date.parse (defaults to 'g:i A', e.g., '3:15 PM'). For 24-hour time format try 'H:i' instead.")]
+        [Description("The default date format string which can be overriden for localization support. The format must be valid according to Date.parseDate (defaults to 'h:mm tt', e.g., '3:15 PM'). For 24-hour time format try 'H:mm' instead.")]
         public virtual string Format
         {
             get
             {
-                return this.State.Get<string>("Format", "t");
+                return (string)this.ViewState["Format"] ?? "t";
             }
             set
             {
-                this.State.Set("Format", value);
+                this.ViewState["Format"] = value;
             }
         }
 
@@ -303,80 +351,60 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("Increment", 15);
+                object obj = this.ViewState["Increment"];
+                return (obj == null) ? 15 : (int)obj;
             }
             set
             {
-                this.State.Set("Increment", value);
+                this.ViewState["Increment"] = value;
             }
         }
 
         /// <summary>
-        /// The error text to display when the time in the field is invalid (defaults to '{value} is not a valid time').
-        /// </summary>
-        [ConfigOption]
-        [Category("9. TimeField")]
-        [DefaultValue("{value} is not a valid time")]
-        [Localizable(true)]
-        [Description("The error text to display when the time in the field is invalid (defaults to '{value} is not a valid time').")]
-        public override string InvalidText
-        {
-            get
-            {
-                return this.State.Get<string>("InvalidText", "{value} is not a valid time");
-            }
-            set
-            {
-                this.State.Set("InvalidText", value);
-            }
-        }
-
-        /// <summary>
-        /// The error text to display when the entered time is after maxValue (defaults to 'The time in this field must be equal to or before {0}').
+        /// The error text to display when the time is after maxValue (defaults to 'The time in this field must be equal to or before {0}').
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("9. TimeField")]
-        [DefaultValue("The time in this field must be equal to or before {0}")]
+        [DefaultValue("")]
         [Localizable(true)]
-        [Description("The error text to display when the entered time is after maxValue (defaults to 'The time in this field must be equal to or before {0}').")]
+        [Description("The error text to display when the time is after maxValue (defaults to 'The time in this field must be equal to or before {0}').")]
         public virtual string MaxText
         {
             get
             {
-                return this.State.Get<string>("MaxText", "The time in this field must be equal to or before {0}");
+                return (string)this.ViewState["MaxText"] ?? "";
             }
             set
             {
-                this.State.Set("MaxText", value);
+                this.ViewState["MaxText"] = value;
             }
         }
 
         /// <summary>
-        /// The maximum allowed time. Can be either a Javascript date object with a valid time value or a string time in a valid format -- see format and altFormats (defaults to undefined).
+        /// The maximum allowed time. Can be either a Javascript date object or a string date in a valid format (defaults to TimeSpan.MaxValue).
         /// </summary>
         [Meta]
-        [DirectEventUpdate(MethodName="SetMaxTime")]
         [Category("9. TimeField")]
         [DefaultValue(typeof(TimeSpan), "9223372036854775807")]
         [TypeConverter(typeof(TimeSpanConverter))]
-        [Description("The maximum allowed time. Can be either a Javascript date object with a valid time value or a string time in a valid format -- see format and altFormats (defaults to undefined).")]
+        [Description("The maximum allowed time. Can be either a Javascript date object or a string date in a valid format (defaults to null).")]
         public virtual TimeSpan MaxTime
         {
             get
             {
-                TimeSpan obj = this.State.Get<TimeSpan>("MaxTime", TimeSpan.Zero);
+                object obj = this.ViewState["MaxTime"];
 
-                if (obj == TimeSpan.Zero && this.DesignMode)
+                if (obj == null && this.DesignMode)
                 {
                     return new TimeSpan(23, 59, 59);
                 }
                 
-                return obj == TimeSpan.Zero ? TimeSpan.MaxValue : obj;
+                return (obj == null) ? TimeSpan.MaxValue : (TimeSpan)obj;
             }
             set
             {
-                this.State.Set("MaxTime", value);
+                this.ViewState["MaxTime"] = value;
             }
         }
 
@@ -396,30 +424,29 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// The minimum allowed time. Can be either a Javascript date object with a valid time value or a string time in a valid format -- see format and altFormats (defaults to undefined).
+        /// The minimum allowed time. Can be either a Javascript date object or a string date in a valid format (defaults to TimeSpan.MinValue).
         /// </summary>
         [Meta]
-        [DirectEventUpdate(MethodName = "SetMinTime")]
         [Category("9. TimeField")]
         [DefaultValue(typeof(TimeSpan), "-9223372036854775808")]
         [TypeConverter(typeof(TimeSpanConverter))]
-        [Description("The minimum allowed time. Can be either a Javascript date object with a valid time value or a string time in a valid format -- see format and altFormats (defaults to undefined).")]
+        [Description("The minimum allowed time. Can be either a Javascript date object or a string date in a valid format (defaults to null).")]
         public virtual TimeSpan MinTime
         {
             get
             {
-                TimeSpan obj = this.State.Get<TimeSpan>("MinTime", TimeSpan.Zero);
+                object obj = this.ViewState["MinTime"];
 
-                if (obj == TimeSpan.Zero && this.DesignMode)
+                if (obj == null && this.DesignMode)
                 {
                     return TimeSpan.Zero;
                 }
 
-                return obj == TimeSpan.Zero ? (TimeSpan)this.EmptyValue : obj;
+                return (obj == null) ? (TimeSpan)this.EmptyValue : (TimeSpan)obj;
             }
             set
             {
-                this.State.Set("MinTime", value);
+                this.ViewState["MinTime"] = value;
             }
         }
 
@@ -439,96 +466,23 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// The error text to display when the entered time is before minValue (defaults to 'The time in this field must be equal to or after {0}').
+        /// The error text to display when the date in the cell is before minValue (defaults to 'The time in this field must be equal to or after {0}').
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("9. TimeField")]
-        [DefaultValue("The time in this field must be equal to or after {0}")]
+        [DefaultValue("")]
         [Localizable(true)]
-        [Description("The error text to display when the entered time is before minValue (defaults to 'The time in this field must be equal to or after {0}').")]
+        [Description("The error text to display when the date in the cell is before minValue (defaults to 'The time in this field must be equal to or after {0}').")]
         public virtual string MinText
         {
             get
             {
-                return this.State.Get<string>("MinText", "The time in this field must be equal to or after {0}");
+                return (string)this.ViewState["MinText"] ?? "";
             }
             set
             {
-                this.State.Set("MinText", value);
-            }
-        }
-
-        /// <summary>
-        /// The maximum height of the Ext.picker.Time dropdown. Defaults to 300.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("9. TimeField")]
-        [DefaultValue(300)]
-        [Description("The maximum height of the Ext.picker.Time dropdown. Defaults to 300.")]
-        public virtual int PickerMaxHeight
-        {
-            get
-            {
-                return this.State.Get<int>("PickerMaxHeight", 300);
-            }
-            set
-            {
-                this.State.Set("PickerMaxHeight", value);
-            }
-        }
-
-        /// <summary>
-        /// Whether the Tab key should select the currently highlighted item. Defaults to true.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("9. TimeField")]
-        [DefaultValue(true)]
-        [Description("Whether the Tab key should select the currently highlighted item. Defaults to true.")]
-        public virtual bool SelectOnTab
-        {
-            get
-            {
-                return this.State.Get<bool>("SelectOnTab", true);
-            }
-            set
-            {
-                this.State.Set("SelectOnTab", value);
-            }
-        }
-
-        /// <summary>
-        /// The date format string which will be submitted to the server. The format must be valid according to Ext.Date.parse (defaults to format).
-        /// </summary>
-        [Meta]
-        [Category("9. TimeField")]
-        [DefaultValue("t")]
-        [Description("The date format string which will be submitted to the server. The format must be valid according to Ext.Date.parse (defaults to format).")]
-        public virtual string SubmitFormat
-        {
-            get
-            {
-                return this.State.Get<string>("SubmitFormat", "t");
-            }
-            set
-            {
-                this.State.Set("SubmitFormat", value);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [ConfigOption("submitFormat")]
-        [DefaultValue("")]
-        [Description("")]
-        protected virtual string SubmitFormatProxy
-        {
-            get
-            {
-                return DateTimeUtils.ConvertNetToPHP(this.SubmitFormat, this.HasResourceManager ? this.ResourceManager.CurrentLocale : CultureInfo.InvariantCulture);
+                this.ViewState["MinText"] = value;
             }
         }
 
@@ -546,112 +500,13 @@ namespace Ext.Net
 
         /*  DirectEvent Handler
             -----------------------------------------------------------------------------------------------*/
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="postDataKey"></param>
-        /// <param name="postCollection"></param>
-        /// <returns></returns>
-        [Description("")]
-        protected override bool LoadPostData(string postDataKey, NameValueCollection postCollection)
+        
+        static TimeField()
         {
-            this.HasLoadPostData = true;
-
-            // TODO : this method must be changed (now stub only)
-            string val = postCollection[this.UniqueName];
-
-            this.SuspendScripting();
-
-            this.RawValue = val;
-
-            if (val.IsEmpty())
-            {
-                this.Value = this.EmptyValue;
-            }
-            else
-            {
-                this.Value = val;
-            }
-
-            this.ResumeScripting();
-
-            return false;
+            DirectEventChange = new object();
         }
 
-        /// <summary>
-        /// Replaces any existing maxValue with the new time and refreshes the picker's range.
-        /// </summary>
-        /// <param name="time">The maximum time that can be selected</param>
-        public void SetMaxTime(TimeSpan time)
-        {
-            CultureInfo culture = this.SafeResourceManager != null ? this.ResourceManager.CurrentLocale : CultureInfo.CurrentUICulture;
-            string value = new DateTime(time.Ticks).ToString(this.Format, culture).ToLower(culture);
-
-            this.Call("setMaxValue", value);
-        }
-
-        /// <summary>
-        /// Replaces any existing minValue with the new time and refreshes the picker's range.
-        /// </summary>
-        /// <param name="time">The minimum time that can be selected</param>
-        public void SetMinTime(TimeSpan time)
-        {
-            CultureInfo culture = this.SafeResourceManager != null ? this.ResourceManager.CurrentLocale : CultureInfo.CurrentUICulture;
-            string value = new DateTime(time.Ticks).ToString(this.Format, culture).ToLower(culture);
-
-            this.Call("setMinValue", value);
-        }
-
-        private PickerFieldListeners listeners;
-
-        /// <summary>
-        /// Client-side JavaScript Event Handlers
-        /// </summary>
-        [Meta]
-        [ConfigOption("listeners", JsonMode.Object)]
-        [Category("2. Observable")]
-        [NotifyParentProperty(true)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
-        [Description("Client-side JavaScript Event Handlers")]
-        public PickerFieldListeners Listeners
-        {
-            get
-            {
-                if (this.listeners == null)
-                {
-                    this.listeners = new PickerFieldListeners();
-                }
-
-                return this.listeners;
-            }
-        }
-
-        private PickerFieldDirectEvents directEvents;
-
-        /// <summary>
-        /// Server-side Ajax Event Handlers
-        /// </summary>
-        [Meta]
-        [Category("2. Observable")]
-        [NotifyParentProperty(true)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
-        [Description("Server-side Ajax Event Handlers")]
-        public PickerFieldDirectEvents DirectEvents
-        {
-            get
-            {
-                if (this.directEvents == null)
-                {
-                    this.directEvents = new PickerFieldDirectEvents(this);
-                }
-
-                return this.directEvents;
-            }
-        }
+        private static readonly object DirectEventChange;
 
         /// <summary>
         /// Server-side DirectEvent handler. Method signature is (object sender, DirectEventArgs e).
@@ -669,20 +524,125 @@ namespace Ext.Net
             }
         }
 
+
+        /*  Hidden
+            -----------------------------------------------------------------------------------------------*/
+
         /// <summary>
-        /// Server-side DirectEvent handler. Method signature is (object sender, DirectEventArgs e).
+        /// 
         /// </summary>
-        [Description("Server-side DirectEvent handler. Method signature is (object sender, DirectEventArgs e).")]
-        public event ComponentDirectEvent.DirectEventHandler DirectSelect
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        [ConfigOption(JsonMode.Ignore)]
+        [Description("")]
+        public override string AllQuery
         {
-            add
-            {
-                this.DirectEvents.Select.Event += value;
-            }
-            remove
-            {
-                this.DirectEvents.Select.Event -= value;
-            }
+            get { return base.AllQuery; }
+            set { base.AllQuery = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        [ConfigOption(JsonMode.Ignore)]
+        [Description("")]
+        public override int QueryDelay
+        {
+            get { return base.QueryDelay; }
+            set { base.QueryDelay = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        [ConfigOption(JsonMode.Ignore)]
+        [Description("")]
+        public override string QueryParam
+        {
+            get { return base.QueryParam; }
+            set { base.QueryParam = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        [ConfigOption(JsonMode.Ignore)]
+        [Description("")]
+        public override string StoreID
+        {
+            get { return base.StoreID; }
+            set { base.StoreID = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        [ConfigOption(JsonMode.Ignore)]
+        [Description("")]
+        public override ListItem SelectedItem
+        {
+            get { return base.SelectedItem; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        [ConfigOption]
+        [DefaultValue("")]
+        [Description("")]
+        public override string ValueField
+        {
+            get { return "text"; }
+            set { base.ValueField = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        [ConfigOption(JsonMode.Ignore)]
+        [Description("")]
+        public override string DisplayField
+        {
+            get { return ""; }
+            set { base.DisplayField = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        [ConfigOption(JsonMode.Ignore)]
+        [Description("")]
+        public override TriggerAction TriggerAction
+        {
+            get { return TriggerAction.Query; }
+            set { base.TriggerAction = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
+        [ConfigOption(JsonMode.Ignore)]
+        [Description("")]
+        public override DataLoadMode Mode
+        {
+            get { return DataLoadMode.Remote; }
+            set { base.Mode = value; }
         }
     }
 }

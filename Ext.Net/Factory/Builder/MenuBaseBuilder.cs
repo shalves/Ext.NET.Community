@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class MenuBase
     {
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TMenuBase, TBuilder> : AbstractPanel.Builder<TMenuBase, TBuilder>
+        new public abstract partial class Builder<TMenuBase, TBuilder> : ContainerBase.Builder<TMenuBase, TBuilder>
             where TMenuBase : MenuBase
             where TBuilder : Builder<TMenuBase, TBuilder>
         {
@@ -58,6 +55,33 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
+			/// The default type of content Container represented by this object as registered in Ext.ComponentMgr (defaults to 'panel').
+			/// </summary>
+            public virtual TBuilder DefaultType(string defaultType)
+            {
+                this.ToComponent().DefaultType = defaultType;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Whenever a menu gets so long that the items won't fit the viewable area, it provides the user with an easy UI to scroll the menu.
+			/// </summary>
+            public virtual TBuilder EnableScrolling(bool enableScrolling)
+            {
+                this.ToComponent().EnableScrolling = enableScrolling;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// By default, a Menu configured as floating:true will be rendered as an Ext.Layer (an absolutely positioned, floating Component with zindex=15000). If configured as floating:false, the Menu may be used as child item of another Container instead of a free-floating Layer.
+			/// </summary>
+            public virtual TBuilder Floating(bool floating)
+            {
+                this.ToComponent().Floating = floating;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
 			/// True to allow multiple menus to be displayed at the same time (defaults to false).
 			/// </summary>
             public virtual TBuilder AllowOtherMenus(bool allowOtherMenus)
@@ -67,7 +91,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The default Ext.Element#getAlignToXY anchor position value for this menu relative to its element of origin. Defaults to: \"tl-bl?\"
+			/// The default Ext.Element.alignTo anchor position value for this menu relative to its element of origin (defaults to \"tl-bl?\")
 			/// </summary>
             public virtual TBuilder DefaultAlign(string defaultAlign)
             {
@@ -76,7 +100,25 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// True to ignore clicks on any item in this menu that is a parent item (displays a submenu) so that the submenu is not dismissed when clicking the parent item. Defaults to: false
+			/// X offset in pixels by which to change the default Menu popup position after aligning according to the defaultAlign configuration.
+			/// </summary>
+            public virtual TBuilder OffsetX(int offsetX)
+            {
+                this.ToComponent().OffsetX = offsetX;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Y offset in pixels by which to change the default Menu popup position after aligning according to the defaultAlign configuration.
+			/// </summary>
+            public virtual TBuilder OffsetY(int offsetY)
+            {
+                this.ToComponent().OffsetY = offsetY;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to ignore clicks on any item in this menu that is a parent item (displays a submenu) so that the submenu is not dismissed when clicking the parent item (defaults to false).
 			/// </summary>
             public virtual TBuilder IgnoreParentClicks(bool ignoreParentClicks)
             {
@@ -85,11 +127,29 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// True to remove the incised line down the left side of the menu and to not indent general Component items. Defaults to: false
+			/// The minimum width of the menu in pixels (defaults to 120).
 			/// </summary>
-            public virtual TBuilder Plain(bool plain)
+            public virtual TBuilder MinWidth(Unit minWidth)
             {
-                this.ToComponent().Plain = plain;
+                this.ToComponent().MinWidth = minWidth;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The maximum height of the menu. Only applies when enableScrolling is set to True (defaults to null).
+			/// </summary>
+            public virtual TBuilder MaxHeight(Unit maxHeight)
+            {
+                this.ToComponent().MaxHeight = maxHeight;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The amount to scroll the menu. Only applies when enableScrolling is set to True (defaults to 24).
+			/// </summary>
+            public virtual TBuilder ScrollIncrement(int scrollIncrement)
+            {
+                this.ToComponent().ScrollIncrement = scrollIncrement;
                 return this as TBuilder;
             }
              
@@ -99,6 +159,24 @@ namespace Ext.Net
             public virtual TBuilder ShowSeparator(bool showSeparator)
             {
                 this.ToComponent().ShowSeparator = showSeparator;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True or \"sides\" for the default effect, \"frame\" for 4-way shadow, and \"drop\" for bottom-right shadow (defaults to \"sides\")
+			/// </summary>
+            public virtual TBuilder Shadow(ShadowMode shadow)
+            {
+                this.ToComponent().Shadow = shadow;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The Ext.Element.alignTo anchor position value to use for submenus of this menu (defaults to \"tl-tr?\")
+			/// </summary>
+            public virtual TBuilder SubMenuAlign(string subMenuAlign)
+            {
+                this.ToComponent().SubMenuAlign = subMenuAlign;
                 return this as TBuilder;
             }
              
@@ -125,38 +203,38 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			
  			/// <summary>
-			/// 
+			/// Hides this menu and optionally all parent menus
 			/// </summary>
-            public virtual TBuilder DeactivateActiveItem()
+            public virtual TBuilder Hide(bool deep)
             {
-                this.ToComponent().DeactivateActiveItem();
+                this.ToComponent().Hide(deep);
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// Displays this menu relative to another element
 			/// </summary>
-            public virtual TBuilder ShowBy(string element, string position, int[] offsets)
+            public virtual TBuilder Show(string element, string position)
             {
-                this.ToComponent().ShowBy(element, position, offsets);
+                this.ToComponent().Show(element, position);
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// Displays this menu relative to another element
 			/// </summary>
-            public virtual TBuilder ShowBy(string element, string position)
+            public virtual TBuilder Show(string element)
             {
-                this.ToComponent().ShowBy(element, position);
+                this.ToComponent().Show(element);
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// Displays this menu at a specific xy position
 			/// </summary>
-            public virtual TBuilder ShowBy(string element)
+            public virtual TBuilder ShowAt(int x, int y)
             {
-                this.ToComponent().ShowBy(element);
+                this.ToComponent().ShowAt(x, y);
                 return this as TBuilder;
             }
             

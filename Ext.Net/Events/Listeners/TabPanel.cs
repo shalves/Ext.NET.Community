@@ -15,16 +15,19 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using System.Web.UI;
 
 namespace Ext.Net
@@ -38,60 +41,77 @@ namespace Ext.Net
         private ComponentListener beforeTabChange;
 
         /// <summary>
-        /// Fires before a tab change (activated by setActiveTab). Return false in any listener to cancel the tabchange
-        /// Parameters
-        /// item : Ext.tab.Panel
-        ///     The TabPanel
-        /// newTab : Ext.Component
-        ///     The tab that is about to be activated
-        /// oldTab : Ext.Component
-        ///     The tab that is currently active
-        /// eOpts : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
+        /// Fires before the active tab changes. Handlers can return false to cancel the tab change.
         /// </summary>
         [ListenerArgument(0, "item", typeof(TabPanel), "this")]
-        [ListenerArgument(1, "newTab", typeof(AbstractPanel), "The tab being activated")]
-        [ListenerArgument(2, "oldTab", typeof(AbstractPanel), "The card that is currently active")]
+        [ListenerArgument(1, "newTab", typeof(PanelBase), "The tab being activated")]
+        [ListenerArgument(2, "currentTab", typeof(Panel), "The current active tab")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("beforetabchange", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires before a tab change (activated by setActiveTab). Return false in any listener to cancel the tabchange")]
+        [Description("Fires before the active tab changes. Handlers can return false to cancel the tab change.")]
         public virtual ComponentListener BeforeTabChange 
         {
             get
             {
-                return this.beforeTabChange ?? (this.beforeTabChange = new ComponentListener());
+                if (this.beforeTabChange == null)
+                {
+                    this.beforeTabChange = new ComponentListener();
+                }
+
+                return this.beforeTabChange;
+            }
+        }
+
+        private ComponentListener contextMenu;
+
+        /// <summary>
+        /// Fires when the original browser contextmenu event originated from a tab element.
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(TabPanel), "this")]
+        [ListenerArgument(1, "tab", typeof(PanelBase), "The target tab")]
+        [ListenerArgument(2, "e", typeof(object), "EventObject")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("contextmenu", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when the original browser contextmenu event originated from a tab element.")]
+        public virtual ComponentListener ContextMenu 
+        {
+            get
+            {
+                if (this.contextMenu == null)
+                {
+                    this.contextMenu = new ComponentListener();
+                }
+
+                return this.contextMenu;
             }
         }
 
         private ComponentListener tabChange;
 
         /// <summary>
-        /// Fires when a new tab has been activated (activated by setActiveTab).
-        /// Parameters
-        /// item : Ext.tab.Panel
-        ///     The TabPanel
-        /// newTab : Ext.Component
-        ///     The newly activated item
-        /// oldTab : Ext.Component
-            /// The previously active item
-        /// eOpts : Object
-        /// The options object passed to Ext.util.Observable.addListener.
+        /// Fires after the active tab has changed.
         /// </summary>
         [ListenerArgument(0, "item", typeof(TabPanel), "this")]
-        [ListenerArgument(1, "newTab", typeof(AbstractPanel), "The tab being activated")]
-        [ListenerArgument(2, "oldTab", typeof(AbstractPanel), "The tab that is currently active")]
+        [ListenerArgument(1, "tab", typeof(Panel), "The new active tab")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("tabchange", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when a new tab has been activated (activated by setActiveTab).")]
+        [Description("Fires after the active tab has changed.")]
         public virtual ComponentListener TabChange 
         {
             get
             {
-                return this.tabChange ?? (this.tabChange = new ComponentListener());
+                if (this.tabChange == null)
+                {
+                    this.tabChange = new ComponentListener();
+                }
+
+                return this.tabChange;
             }
         }
 
@@ -100,8 +120,8 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        [ListenerArgument(0, "item", typeof(AbstractPanel), "tabpanel")]
-        [ListenerArgument(1, "tab", typeof(AbstractPanel), "tab")]
+        [ListenerArgument(0, "item", typeof(PanelBase), "tabpanel")]
+        [ListenerArgument(1, "tab", typeof(PanelBase), "tab")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("beforetabclose", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -111,7 +131,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.beforeTabClose ?? (this.beforeTabClose = new ComponentListener());
+                if (this.beforeTabClose == null)
+                {
+                    this.beforeTabClose = new ComponentListener();
+                }
+
+                return this.beforeTabClose;
             }
         }
 
@@ -120,8 +145,8 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        [ListenerArgument(0, "item", typeof(AbstractPanel), "tabpanel")]
-        [ListenerArgument(1, "tab", typeof(AbstractPanel), "tab")]
+        [ListenerArgument(0, "item", typeof(PanelBase), "tabpanel")]
+        [ListenerArgument(1, "tab", typeof(PanelBase), "tab")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("beforetabhide", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -131,7 +156,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.beforeTabHide ?? (this.beforeTabHide = new ComponentListener());
+                if (this.beforeTabHide == null)
+                {
+                    this.beforeTabHide = new ComponentListener();
+                }
+
+                return this.beforeTabHide;
             }
         }
 
@@ -140,8 +170,8 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        [ListenerArgument(0, "item", typeof(AbstractPanel), "tabpanel")]
-        [ListenerArgument(1, "tab", typeof(AbstractPanel), "tab")]
+        [ListenerArgument(0, "item", typeof(PanelBase), "tabpanel")]
+        [ListenerArgument(1, "tab", typeof(PanelBase), "tab")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("tabclose", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -151,7 +181,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.tabClose ?? (this.tabClose = new ComponentListener());
+                if (this.tabClose == null)
+                {
+                    this.tabClose = new ComponentListener();
+                }
+
+                return this.tabClose;
             }
         }
 
@@ -161,7 +196,7 @@ namespace Ext.Net
         /// 
         /// </summary>
         [ListenerArgument(0, "item", typeof(TabPanel), "el")]
-        [ListenerArgument(0, "tab", typeof(AbstractPanel), "tab")]
+        [ListenerArgument(0, "tab", typeof(PanelBase), "tab")]
         [ListenerArgument(0, "menu", typeof(MenuBase), "menu")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("beforetabmenushow", typeof(ListenerJsonConverter))]
@@ -172,7 +207,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.beforeTabMenuShow ?? (this.beforeTabMenuShow = new ComponentListener());
+                if (this.beforeTabMenuShow == null)
+                {
+                    this.beforeTabMenuShow = new ComponentListener();
+                }
+
+                return this.beforeTabMenuShow;
             }
         }
     }

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,12 +33,8 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class RowExpanderDirectEvents : ComponentDirectEvents
+    public partial class RowExpanderDirectEvents : ContainerDirectEvents
     {
-        public RowExpanderDirectEvents() { }
-
-        public RowExpanderDirectEvents(Observable parent) { this.Parent = parent; }
-
         private ComponentDirectEvent beforeExpand;
 
         /// <summary>
@@ -47,8 +43,7 @@ namespace Ext.Net
         [ListenerArgument(0, "item", typeof(RowExpander), "this")]
         [ListenerArgument(1, "record", typeof(object))]
         [ListenerArgument(2, "body", typeof(object))]
-        [ListenerArgument(3, "row", typeof(object))]
-        [ListenerArgument(4, "rowIndex", typeof(object))]
+        [ListenerArgument(3, "rowIndex", typeof(object))]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("beforeexpand", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -58,7 +53,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.beforeExpand ?? (this.beforeExpand = new ComponentDirectEvent(this));
+                if (this.beforeExpand == null)
+                {
+                    this.beforeExpand = new ComponentDirectEvent();
+                }
+
+                return this.beforeExpand;
             }
         }
 
@@ -70,8 +70,7 @@ namespace Ext.Net
         [ListenerArgument(0, "item", typeof(RowExpander), "this")]
         [ListenerArgument(1, "record", typeof(object))]
         [ListenerArgument(2, "body", typeof(object))]
-        [ListenerArgument(3, "row", typeof(object))]
-        [ListenerArgument(4, "rowIndex", typeof(object))]
+        [ListenerArgument(3, "rowIndex", typeof(object))]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("expand", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -81,7 +80,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.expand ?? (this.expand = new ComponentDirectEvent(this));
+                if (this.expand == null)
+                {
+                    this.expand = new ComponentDirectEvent();
+                }
+
+                return this.expand;
             }
         }
 
@@ -93,8 +97,7 @@ namespace Ext.Net
         [ListenerArgument(0, "item", typeof(RowExpander), "this")]
         [ListenerArgument(1, "record", typeof(object))]
         [ListenerArgument(2, "body", typeof(object))]
-        [ListenerArgument(3, "row", typeof(object))]
-        [ListenerArgument(4, "rowIndex", typeof(object))]
+        [ListenerArgument(3, "rowIndex", typeof(object))]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("beforecollapse", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -104,7 +107,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.beforeCollapse ?? (this.beforeCollapse = new ComponentDirectEvent(this));
+                if (this.beforeCollapse == null)
+                {
+                    this.beforeCollapse = new ComponentDirectEvent();
+                }
+
+                return this.beforeCollapse;
             }
         }
 
@@ -116,8 +124,7 @@ namespace Ext.Net
         [ListenerArgument(0, "item", typeof(RowExpander), "this")]
         [ListenerArgument(1, "record", typeof(object))]
         [ListenerArgument(2, "body", typeof(object))]
-        [ListenerArgument(3, "row", typeof(object))]
-        [ListenerArgument(4, "rowIndex", typeof(object))]
+        [ListenerArgument(3, "rowIndex", typeof(object))]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("collapse", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -127,7 +134,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.collapse ?? (this.collapse = new ComponentDirectEvent(this));
+                if (this.collapse == null)
+                {
+                    this.collapse = new ComponentDirectEvent();
+                }
+
+                return this.collapse;
             }
         }
     }

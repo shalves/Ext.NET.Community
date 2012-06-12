@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class CommandColumn
     {
         /// <summary>
@@ -78,76 +75,50 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
-			/// True to show toolbar for over row only
+			/// (optional) Specify as false to prevent the user from hiding this column. Defaults to true.
 			/// </summary>
-            public virtual CommandColumn.Builder OverOnly(bool overOnly)
+            public virtual CommandColumn.Builder Hideable(bool hideable)
             {
-                this.ToComponent().OverOnly = overOnly;
+                this.ToComponent().Hideable = hideable;
                 return this as CommandColumn.Builder;
             }
              
- 			/// <summary>
-			/// Delay before showing over toolbar
-			/// </summary>
-            public virtual CommandColumn.Builder ShowDelay(int showDelay)
-            {
-                this.ToComponent().ShowDelay = showDelay;
-                return this as CommandColumn.Builder;
-            }
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Commands(GridCommandCollection commands)
+            // {
+            //    this.ToComponent().Commands = commands;
+            //    return this as TBuilder;
+            // }
              
- 			/// <summary>
-			/// Delay before hide over toolbar
-			/// </summary>
-            public virtual CommandColumn.Builder HideDelay(int hideDelay)
-            {
-                this.ToComponent().HideDelay = hideDelay;
-                return this as CommandColumn.Builder;
-            }
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder GroupCommands(GridCommandCollection groupCommands)
+            // {
+            //    this.ToComponent().GroupCommands = groupCommands;
+            //    return this as TBuilder;
+            // }
              
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CommandColumn.Builder</returns>
-            public virtual CommandColumn.Builder Commands(Action<GridCommandCollection> action)
-            {
-                action(this.ToComponent().Commands);
-                return this as CommandColumn.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CommandColumn.Builder</returns>
-            public virtual CommandColumn.Builder GroupCommands(Action<GridCommandCollection> action)
-            {
-                action(this.ToComponent().GroupCommands);
-                return this as CommandColumn.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CommandColumn.Builder</returns>
-            public virtual CommandColumn.Builder PrepareToolbar(Action<JFunction> action)
-            {
-                action(this.ToComponent().PrepareToolbar);
-                return this as CommandColumn.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CommandColumn.Builder</returns>
-            public virtual CommandColumn.Builder PrepareGroupToolbar(Action<JFunction> action)
-            {
-                action(this.ToComponent().PrepareGroupToolbar);
-                return this as CommandColumn.Builder;
-            }
-			 
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder PrepareToolbar(JFunction prepareToolbar)
+            // {
+            //    this.ToComponent().PrepareToolbar = prepareToolbar;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder PrepareGroupToolbar(JFunction prepareGroupToolbar)
+            // {
+            //    this.ToComponent().PrepareGroupToolbar = prepareGroupToolbar;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
 			/// Valid values are \"left\", \"center\" and \"right\" (defaults to \"left\").
 			/// </summary>
@@ -156,29 +127,7 @@ namespace Ext.Net
                 this.ToComponent().ButtonAlign = buttonAlign;
                 return this as CommandColumn.Builder;
             }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CommandColumn.Builder</returns>
-            public virtual CommandColumn.Builder Listeners(Action<ImageCommandColumnListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as CommandColumn.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CommandColumn.Builder</returns>
-            public virtual CommandColumn.Builder DirectEvents(Action<ImageCommandColumnDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as CommandColumn.Builder;
-            }
-			
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

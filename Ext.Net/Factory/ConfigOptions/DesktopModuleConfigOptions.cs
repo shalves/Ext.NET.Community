@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class DesktopModule
     {
         /// <summary>
@@ -56,11 +53,9 @@ namespace Ext.Net
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
                 list.Add("moduleID", new ConfigOption("moduleID", new SerializationOptions("id"), "", this.ModuleID ));
-                list.Add("window", new ConfigOption("window", new SerializationOptions("window", typeof(SingleItemCollectionJsonConverter)), null, this.Window ));
-                list.Add("launcher", new ConfigOption("launcher", new SerializationOptions("launcher", typeof(LazyControlJsonConverter)), null, this.Launcher ));
-                list.Add("shortcut", new ConfigOption("shortcut", new SerializationOptions(JsonMode.Object), null, this.Shortcut ));
+                list.Add("windowProxy", new ConfigOption("windowProxy", new SerializationOptions("windowID"), "", this.WindowProxy ));
+                list.Add("launcherProxy", new ConfigOption("launcherProxy", new SerializationOptions("launcher",JsonMode.Raw), "", this.LauncherProxy ));
                 list.Add("autoRun", new ConfigOption("autoRun", null, false, this.AutoRun ));
-                list.Add("autoRunHandler", new ConfigOption("autoRunHandler", new SerializationOptions(JsonMode.Raw), "", this.AutoRunHandler ));
 
                 return list;
             }

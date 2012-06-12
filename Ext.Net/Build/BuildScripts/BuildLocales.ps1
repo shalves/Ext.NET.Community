@@ -1,8 +1,8 @@
-﻿#$folder = "D:\Projects\Coolite\svn.ext.net\trunk\Ext.Net\Build\Ext.Net\extjs\locale\"
+﻿#$folder = "D:\Projects\Coolite\svn.ext.net\trunk\Ext.Net\Build\Ext.Net\extjs\src\locale\"
 #$dest = "D:\Projects\Coolite\svn.ext.net\trunk\Ext.Net\Build\Ext.Net\extjs\locale\"
 #$patchFolder = "D:\Projects\Coolite\svn.ext.net\trunk\Ext.Net\Build\BuildScripts\Locales\"
 
-$folder = "..\Ext.Net\extjs\locale"
+$folder = "..\Ext.Net\extjs\src\locale"
 $dest = "..\Ext.Net\extnet\locale\"
 $patchFolder = ".\Locales\"
 [System.Io.Directory]::CreateDirectory($dest)

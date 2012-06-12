@@ -15,19 +15,22 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
+using System;
+using System.Collections.Generic;
+using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Web;
 using Newtonsoft.Json.Linq;
+using System.Web;
 
 namespace Ext.Net
 {
@@ -47,11 +50,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("ValidationBuffer", 500);
+                object obj = this.ViewState["ValidationBuffer"];
+                return obj == null ? 500 : (int)obj;
             }
             set
             {
-                this.State.Set("ValidationBuffer", value);
+                this.ViewState["ValidationBuffer"] = value;
             }
         }
 
@@ -66,11 +70,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("ShowBusy", true);
+                object obj = this.ViewState["ShowBusy"];
+                return obj == null ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("ShowBusy", value);
+                this.ViewState["ShowBusy"] = value;
             }
         }
 
@@ -85,11 +90,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("BusyTip", "Validating...");
+                object obj = this.ViewState["BusyTip"];
+                return obj == null ? "Validating..." : (string)obj;
             }
             set
             {
-                this.State.Set("BusyTip", value);
+                this.ViewState["BusyTip"] = value;
             }
         }
 
@@ -102,11 +108,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<Icon>("BusyIcon", Icon.None);
+                object obj = this.ViewState["BusyIcon"];
+                return (obj == null) ? Icon.None : (Icon)obj;
             }
             set
             {
-                this.State.Set("BusyIcon", value);
+                this.ViewState["BusyIcon"] = value;
             }
         }
 
@@ -123,7 +130,7 @@ namespace Ext.Net
                 if (this.BusyIcon != Icon.None)
                 {
                     ResourceManager.GetInstance(HttpContext.Current).RegisterIcon(this.BusyIcon);
-                    return "#" + this.BusyIcon.ToString();
+                    return ResourceManager.GetIconClassName(this.BusyIcon);
                 }
 
                 return (!this.BusyIconCls.Equals("loading-indicator")) ? this.BusyIconCls : "";
@@ -141,11 +148,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("BusyIconCls", "loading-indicator");
+                return (string)this.ViewState["BusyIconCls"] ?? "loading-indicator";
             }
             set
             {
-                this.State.Set("BusyIconCls", value);
+                this.ViewState["BusyIconCls"] = value;
             }
         }
 
@@ -160,11 +167,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("ValidationEvent", "keyup");
+                object obj = this.ViewState["ValidationEvent"];
+                return obj == null ? "keyup" : (string)obj;
             }
             set
             {
-                this.State.Set("ValidationEvent", value);
+                this.ViewState["ValidationEvent"] = value;
             }
         }
 
@@ -172,18 +180,19 @@ namespace Ext.Net
         /// 
         /// </summary>
         [ConfigOption(JsonMode.ToLower)]
-        [DefaultValue(ValidatioEventOwner.Input)]
+        [DefaultValue(ValidatioEventOwner.Element)]
         [NotifyParentProperty(true)]
         [Description("")]
         public ValidatioEventOwner EventOwner
         {
             get
             {
-                return this.State.Get<ValidatioEventOwner>("EventOwner", ValidatioEventOwner.Input);
+                object obj = this.ViewState["EventOwner"];
+                return obj != null ? (ValidatioEventOwner)obj : ValidatioEventOwner.Element;
             }
             set
             {
-                this.State.Set("EventOwner", value);
+                this.ViewState["EventOwner"] = value;
             }
         }
 
@@ -198,11 +207,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<InitValueValidation>("InitValueValidation", InitValueValidation.Valid);
+                object obj = this.ViewState["InitValueValidation"];
+                return obj != null ? (InitValueValidation)obj : InitValueValidation.Valid;
             }
             set
             {
-                this.State.Set("InitValueValidation", value);
+                this.ViewState["InitValueValidation"] = value;
             }
         }
 
@@ -253,11 +263,6 @@ namespace Ext.Net
     {
         private JObject serviceParams;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="serviceParams"></param>
-        /// <param name="extraParams"></param>
         public RemoteValidationEventArgs(string serviceParams, ParameterCollection extraParams) : base(extraParams)
         {
             this.serviceParams = JObject.Parse(serviceParams);

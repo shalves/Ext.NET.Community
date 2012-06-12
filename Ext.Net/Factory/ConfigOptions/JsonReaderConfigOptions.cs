@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class JsonReader
     {
         /// <summary>
@@ -55,9 +52,10 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
-                list.Add("type", new ConfigOption("type", null, null, this.Type ));
-                list.Add("record", new ConfigOption("record", null, "", this.Record ));
-                list.Add("useSimpleAccessors", new ConfigOption("useSimpleAccessors", null, false, this.UseSimpleAccessors ));
+                list.Add("iDProperty", new ConfigOption("iDProperty", new SerializationOptions("idProperty"), "", this.IDProperty ));
+                list.Add("root", new ConfigOption("root", null, "", this.Root ));
+                list.Add("successProperty", new ConfigOption("successProperty", null, "", this.SuccessProperty ));
+                list.Add("totalProperty", new ConfigOption("totalProperty", null, "", this.TotalProperty ));
 
                 return list;
             }

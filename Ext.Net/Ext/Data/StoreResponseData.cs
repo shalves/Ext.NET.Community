@@ -15,19 +15,19 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
-using System.ComponentModel;
 using System.Text;
 
 using Ext.Net.Utilities;
+using System.ComponentModel;
 
 namespace Ext.Net
 {
@@ -37,45 +37,9 @@ namespace Ext.Net
 	[Description("")]
     public partial class StoreResponseData
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public StoreResponseData() { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="isTree"></param>
-        public StoreResponseData(bool isTree) 
-        {
-            this.isTree = isTree;
-        }
-
-        private bool success = true;
-        private string msg;
         private string data;
-        private int count = -1;
-        private bool isTree;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Description("")]
-        public bool Success
-        {
-            get { return success; }
-            set { success = value; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>        
-        [Description("")]
-        public string Message
-        {
-            get { return msg; }
-            set { msg = value; }
-        }
+        private int count;
+        private ConfirmationList confirmation;
 
 		/// <summary>
 		/// 
@@ -85,6 +49,16 @@ namespace Ext.Net
         {
             get { return data; }
             set { data = value; }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public ConfirmationList Confirmation
+        {
+            get { return confirmation; }
+            set { confirmation = value; }
         }
 
 		/// <summary>
@@ -112,45 +86,33 @@ namespace Ext.Net
 		[Description("")]
         public override string ToString()
         {
-            if (this.Data.IsEmpty())
+            if (this.Data.IsEmpty() && (this.Confirmation == null || this.Confirmation.Count==0))
             {
                 return null;
             }
             
             StringBuilder sb = new StringBuilder();
-            var comma = false;
             sb.Append("{");
 
-            if (!this.Success)
+            if (this.Data.IsNotEmpty())
             {
-                sb.Append("success:false");
-                comma = true;
+                sb.AppendFormat("data:{0}, total: {1},", this.Data, this.Total);
+            }
+            
+            string returnConfirmation = "";
+
+            if (this.Confirmation != null && this.Confirmation.Count>0)
+            {
+                returnConfirmation = this.Confirmation.ToJson();
             }
 
-            if (!string.IsNullOrEmpty(this.Message))
+            if (returnConfirmation.IsNotEmpty())
             {
-                if(comma){
-                    sb.Append(",");
-                }
-                sb.AppendFormat("message:{0}", JSON.Serialize(this.Message));
-                comma = true;
+                sb.AppendFormat("confirm:{0}", returnConfirmation);
             }
-
-            if (this.Data.IsNotEmpty() && this.Success)
+            else
             {
-                if (comma)
-                {
-                    sb.Append(",");
-                }
-
-                if (this.Total >= 0)
-                {
-                    sb.AppendFormat("{2}:{0}, total: {1}", this.Data, this.Total, this.isTree ? "children" : "data");
-                }
-                else
-                {
-                    sb.AppendFormat("{1}:{0}", this.Data, this.isTree ? "children" : "data");
-                }
+                sb.Remove(sb.Length - 1, 1);
             }
 
             sb.Append("}");

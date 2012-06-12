@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class JsonReader
     {
 		/*  Ctor
@@ -64,7 +61,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        new public partial class Config : AbstractReader.Config 
+        new public partial class Config : DataReader.Config 
         { 
 			/*  Implicit JsonReader.Config Conversion to JsonReader.Builder
 				-----------------------------------------------------------------------------------------------*/
@@ -81,39 +78,75 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
-			private string record = "";
+			private string iDProperty = "";
 
 			/// <summary>
-			/// The optional location within the JSON response that the record data itself can be found at. See the JsonReader intro docs for more details. This is not often needed and defaults to undefined.
+			/// [id] Name of the property within a row object that contains a record identifier value. Defaults to id
 			/// </summary>
 			[DefaultValue("")]
-			public virtual string Record 
+			public virtual string IDProperty 
 			{ 
 				get
 				{
-					return this.record;
+					return this.iDProperty;
 				}
 				set
 				{
-					this.record = value;
+					this.iDProperty = value;
 				}
 			}
 
-			private bool useSimpleAccessors = false;
+			private string root = "";
 
 			/// <summary>
-			/// True to ensure that field names/mappings are treated as literals when reading values. Defalts to false. For example, by default, using the mapping \"foo.bar.baz\" will try and read a property foo from the root, then a property bar from foo, then a property baz from bar. Setting the simple accessors to true will read the property with the name \"foo.bar.baz\" direct from the root object.
+			/// Name of the property which contains the Array of row objects.
 			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool UseSimpleAccessors 
+			[DefaultValue("")]
+			public virtual string Root 
 			{ 
 				get
 				{
-					return this.useSimpleAccessors;
+					return this.root;
 				}
 				set
 				{
-					this.useSimpleAccessors = value;
+					this.root = value;
+				}
+			}
+
+			private string successProperty = "";
+
+			/// <summary>
+			/// Name of the property from which to retrieve the success attribute used by forms.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string SuccessProperty 
+			{ 
+				get
+				{
+					return this.successProperty;
+				}
+				set
+				{
+					this.successProperty = value;
+				}
+			}
+
+			private string totalProperty = "";
+
+			/// <summary>
+			/// The DomQuery path from which to retrieve the total number of records in the dataset. This is only needed if the whole dataset is not passed in one go, but is being paged from the remote server.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string TotalProperty 
+			{ 
+				get
+				{
+					return this.totalProperty;
+				}
+				set
+				{
+					this.totalProperty = value;
 				}
 			}
 

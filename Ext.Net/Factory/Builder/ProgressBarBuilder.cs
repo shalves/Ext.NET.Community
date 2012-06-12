@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class ProgressBar
     {
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ComponentBase.Builder<ProgressBar, ProgressBar.Builder>
+        public partial class Builder : BoxComponentBase.Builder<ProgressBar, ProgressBar.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -78,16 +75,16 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
-			/// True to animate the progress bar during transitions
+			/// The base CSS class to apply to the progress bar's wrapper element (defaults to 'x-progress')
 			/// </summary>
-            public virtual ProgressBar.Builder Animate(bool animate)
+            public virtual ProgressBar.Builder BaseCls(string baseCls)
             {
-                this.ToComponent().Animate = animate;
+                this.ToComponent().BaseCls = baseCls;
                 return this as ProgressBar.Builder;
             }
              
  			/// <summary>
-			/// The text shown in the progress bar (defaults to '')
+			/// The progress bar text (defaults to '')
 			/// </summary>
             public virtual ProgressBar.Builder Text(string text)
             {
@@ -113,34 +110,30 @@ namespace Ext.Net
                 return this as ProgressBar.Builder;
             }
              
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ProgressBar.Builder</returns>
-            public virtual ProgressBar.Builder Listeners(Action<ProgressBarListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as ProgressBar.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ProgressBar.Builder</returns>
-            public virtual ProgressBar.Builder DirectEvents(Action<ProgressBarDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as ProgressBar.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(ProgressBarListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(ProgressBarDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/
 			
  			/// <summary>
-			/// 
+			/// Resets the progress bar value to 0 and text to empty string. If hide = true, the progress bar will also be hidden (using the hideMode property internally).
 			/// </summary>
             public virtual ProgressBar.Builder Reset()
             {
@@ -149,7 +142,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Resets the progress bar value to 0 and text to empty string. If hide = true, the progress bar will also be hidden (using the hideMode property internally).
 			/// </summary>
             public virtual ProgressBar.Builder Reset(bool hide)
             {
@@ -158,7 +151,16 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Synchronizes the inner bar width to the proper proportion of the total componet width based on the current progress value. This will be called automatically when the ProgressBar is resized by a layout, but if it is rendered auto width, this method can be called from another resize handler to sync the ProgressBar if necessary.
+			/// </summary>
+            public virtual ProgressBar.Builder SyncProgressBar()
+            {
+                this.ToComponent().SyncProgressBar();
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Updates the progress bar value, and optionally its text. If the text argument is not specified, any existing text value will be unchanged. To blank out existing text, pass ''. Note that even if the progress bar value exceeds 1, it will never automatically reset -- you are responsible for determining when the progress is complete and calling reset to clear and/or hide the control.
 			/// </summary>
             public virtual ProgressBar.Builder UpdateProgress(float value, string text)
             {
@@ -167,16 +169,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ProgressBar.Builder UpdateProgress(float value, string text, bool animate)
-            {
-                this.ToComponent().UpdateProgress(value, text, animate);
-                return this;
-            }
-            
- 			/// <summary>
-			/// 
+			/// Updates the progress bar text. If specified, textEl will be updated, otherwise the progress bar itself will display the updated text.
 			/// </summary>
             public virtual ProgressBar.Builder UpdateText()
             {
@@ -185,7 +178,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Updates the progress bar text. If specified, textEl will be updated, otherwise the progress bar itself will display the updated text.
 			/// </summary>
             public virtual ProgressBar.Builder UpdateText(string text)
             {
@@ -194,7 +187,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Initiates an auto-updating progress bar. A duration can be specified, in which case the progress bar will automatically reset after a fixed amount of time and optionally call a callback function if specified. If no duration is passed in, then the progress bar will run indefinitely and must be manually cleared by calling reset.
 			/// </summary>
             public virtual ProgressBar.Builder Wait()
             {
@@ -203,7 +196,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Updates the progress bar text. If specified, textEl will be updated, otherwise the progress bar itself will display the updated text.
 			/// </summary>
             public virtual ProgressBar.Builder Wait(WaitConfig config)
             {

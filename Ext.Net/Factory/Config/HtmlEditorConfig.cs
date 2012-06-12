@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class HtmlEditor
     {
 		/*  Ctor
@@ -99,36 +96,36 @@ namespace Ext.Net
 				}
 			}
         
-			private HtmlEditorListeners listeners = null;
+			private EditorListeners listeners = null;
 
 			/// <summary>
 			/// Client-side JavaScript Event Handlers
 			/// </summary>
-			public HtmlEditorListeners Listeners
+			public EditorListeners Listeners
 			{
 				get
 				{
 					if (this.listeners == null)
 					{
-						this.listeners = new HtmlEditorListeners();
+						this.listeners = new EditorListeners();
 					}
 			
 					return this.listeners;
 				}
 			}
 			        
-			private HtmlEditorDirectEvents directEvents = null;
+			private EditorDirectEvents directEvents = null;
 
 			/// <summary>
 			/// Server-side Ajax Event Handlers
 			/// </summary>
-			public HtmlEditorDirectEvents DirectEvents
+			public EditorDirectEvents DirectEvents
 			{
 				get
 				{
 					if (this.directEvents == null)
 					{
-						this.directEvents = new HtmlEditorDirectEvents();
+						this.directEvents = new EditorDirectEvents();
 					}
 			
 					return this.directEvents;
@@ -168,24 +165,6 @@ namespace Ext.Net
 				set
 				{
 					this.defaultLinkValue = value;
-				}
-			}
-
-			private string defaultValue = "";
-
-			/// <summary>
-			/// A default value to be put into the editor to resolve focus issues (defaults to   (Non-breaking space) in Opera and IE6, ​ (Zero-width space) in all other browsers).
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string DefaultValue 
-			{ 
-				get
-				{
-					return this.defaultValue;
-				}
-				set
-				{
-					this.defaultValue = value;
 				}
 			}
 
@@ -368,25 +347,7 @@ namespace Ext.Net
 					this.fontFamilies = value;
 				}
 			}
-        
-			private HtmlEditorButtonTips buttonTips = null;
 
-			/// <summary>
-			/// 
-			/// </summary>
-			public HtmlEditorButtonTips ButtonTips
-			{
-				get
-				{
-					if (this.buttonTips == null)
-					{
-						this.buttonTips = new HtmlEditorButtonTips();
-					}
-			
-					return this.buttonTips;
-				}
-			}
-			
         }
     }
 }

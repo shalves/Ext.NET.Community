@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -28,7 +28,6 @@ using System;
 using System.ComponentModel;
 using System.Text;
 using System.Web.UI;
-
 using Ext.Net.Utilities;
 using Newtonsoft.Json;
 
@@ -53,20 +52,17 @@ namespace Ext.Net
 		/// 
 		/// </summary>
 		[Description("")]
-        public override void WriteJson(Newtonsoft.Json.JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             if (value != null && value is ComponentDirectEvent)
             {
                 ComponentDirectEvent directEvent = (ComponentDirectEvent)value;
-
                 if (!directEvent.IsDefault)
                 {
                     Control owner = null;
-                    MessageBusDirectEvent busEvent = directEvent as MessageBusDirectEvent;
-
-                    if (this.Owner is BaseItem)
+                    if (this.Owner is StateManagedItem)
                     {
-                        owner = ((BaseItem)this.Owner).Owner;
+                        owner = ((StateManagedItem)this.Owner).Owner;
                     }
                     else if (this.Owner is Control)
                     {
@@ -89,30 +85,22 @@ namespace Ext.Net
                     cfgObj.Remove(cfgObj.Length - 1, 1);
                     cfgObj.AppendFormat("{0}control:this", configObject.Length > 2 ? "," : "");
 
-                    if (busEvent != null)
-                    {
-                        cfgObj.Append(",eventType:'bus'");
-                    }
-
                     if (this.PropertyName != "Click")
-                    {                        
-                        cfgObj.AppendFormat(",action:'{0}:'+name", busEvent != null ? busEvent.Name : this.PropertyName);                        
+                    {
+                        cfgObj.AppendFormat(",action:'{0}'", this.PropertyName);
                     }
 
                     cfgObj.Append("}");
 
-                    if (this.PropertyName.IsNotEmpty())
-                    {
-                        directEvent.SetArgumentList(this.Owner.GetType().GetProperty(this.PropertyName));
-                    }
-
-                    JFunction jFunction = new JFunction("Ext.net.directRequest(".ConcatWith(cfgObj.ToString(), ");"), directEvent.ArgumentList.ToArray());
+                    directEvent.SetArgumentList(this.Owner.GetType().GetProperty(this.PropertyName));
+                    
+                    JFunction jFunction = new JFunction("var params=arguments;Ext.net.DirectEvent.confirmRequest(".ConcatWith(cfgObj.ToString(), ");"), directEvent.ArgumentList.ToArray());
                     HandlerConfig cfg = directEvent.GetListenerConfig();
                     string scope = directEvent.Scope.IsEmpty() || directEvent.Scope == "this" ? "" : directEvent.Scope;
 
                     StringBuilder sb = new StringBuilder();
-                    
                     sb.Append("{");
+
                     sb.Append("fn:").Append(jFunction.ToScript()).Append(",");
 
                     if (scope.Length > 0)
@@ -120,20 +108,7 @@ namespace Ext.Net
                         sb.Append("scope:").Append(scope).Append(",");
                     }
 
-                    if (busEvent != null)
-                    {
-                        if (busEvent.Bus.IsNotEmpty())
-                        {
-                            sb.Append("bus:'").Append(busEvent.Bus).Append("',");
-                        }
-                        if (busEvent.Name.IsNotEmpty())
-                        {
-                            sb.Append("name:'").Append(busEvent.Name).Append("',");
-                        }                                                
-                    }
-
-                    string cfgStr = cfg.Serialize();
-
+                    string cfgStr = cfg.ToJsonString();
                     if (cfgStr != "{}")
                     {
                         sb.Append(cfgStr.Chop());
@@ -147,11 +122,9 @@ namespace Ext.Net
                     sb.Append("}");
 
                     writer.WriteRawValue(sb.ToString());
-
                     return;
                 }
             }
-
             writer.WriteRawValue("{}");
         }
 

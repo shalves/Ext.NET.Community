@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class DateMenu
     {
         /// <summary>
@@ -86,39 +83,33 @@ namespace Ext.Net
                 return this as DateMenu.Builder;
             }
              
- 			/// <summary>
-			/// The Ext.DatePicker object
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DateMenu.Builder</returns>
-            public virtual DateMenu.Builder Picker(Action<DatePicker> action)
-            {
-                action(this.ToComponent().Picker);
-                return this as DateMenu.Builder;
-            }
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DateMenu.Builder</returns>
-            public virtual DateMenu.Builder Listeners(Action<DateMenuListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as DateMenu.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEventHandlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DateMenu.Builder</returns>
-            public virtual DateMenu.Builder DirectEvents(Action<DateMenuDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as DateMenu.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// The Ext.DatePicker object
+			// /// </summary>
+            // public virtual TBuilder Picker(DatePicker picker)
+            // {
+            //    this.ToComponent().Picker = picker;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(DateMenuListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side DirectEventHandlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(DateMenuDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

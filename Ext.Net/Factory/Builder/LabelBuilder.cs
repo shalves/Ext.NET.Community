@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class Label
     {
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ComponentBase.Builder<Label, Label.Builder>
+        public partial class Builder : BoxComponentBase.Builder<Label, Label.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -96,11 +93,20 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The id of the input element to which this label will be bound via the standard HTML 'for' attribute. If not specified, the attribute will not be added to the label. In most cases you will be associating the label with a Ext.form.field.Base component, so you should make sure this matches the inputId of that field.
+			/// The id of the input element to which this label will be bound via the standard 'htmlFor' attribute. If not specified, the attribute will not be added to the label.
 			/// </summary>
             public virtual Label.Builder ForID(string forID)
             {
                 this.ToComponent().ForID = forID;
+                return this as Label.Builder;
+            }
+             
+ 			/// <summary>
+			/// An HTML fragment that will be used as the label's innerHTML (defaults to ''). Note that if text is specified it will take precedence and this value will be ignored.
+			/// </summary>
+            public virtual Label.Builder Html(string html)
+            {
+                this.ToComponent().Html = html;
                 return this as Label.Builder;
             }
              
@@ -140,39 +146,33 @@ namespace Ext.Net
                 return this as Label.Builder;
             }
              
- 			/// <summary>
-			/// Inline editor
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Label.Builder</returns>
-            public virtual Label.Builder Editor(Action<ItemsCollection<Editor>> action)
-            {
-                action(this.ToComponent().Editor);
-                return this as Label.Builder;
-            }
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Label.Builder</returns>
-            public virtual Label.Builder Listeners(Action<AbstractComponentListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as Label.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Label.Builder</returns>
-            public virtual Label.Builder DirectEvents(Action<AbstractComponentDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as Label.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// Inline editor
+			// /// </summary>
+            // public virtual TBuilder Editor(ItemsCollection<Editor> editor)
+            // {
+            //    this.ToComponent().Editor = editor;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(BoxComponentListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(BoxComponentDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

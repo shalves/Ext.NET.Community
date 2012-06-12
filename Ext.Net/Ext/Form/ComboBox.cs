@@ -15,29 +15,27 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
+using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
 
+using Ext.Net.Utilities;
+
 namespace Ext.Net
 {
     /// <summary>
-    /// A combobox control with support for autocomplete, remote loading, and many other features.
-    ///
-    /// A ComboBox is like a combination of a traditional HTML text 'input' field and a 'select' field; the user is able to type freely into the field, and/or pick values from a dropdown selection list. The user can input any value by default, even if it does not appear in the selection list; to prevent free-form values and restrict them to items in the list, set forceSelection to true.
-    ///
-    /// The selection list's options are populated from any Ext.data.Store, including remote stores. The data items in the store are mapped to each option's displayed text and backing value via the valueField and displayField configurations, respectively.
-    ///
-    /// If your store is not remote, i.e. it depends only on local data and is loaded up front, you should be sure to set the queryMode to 'local', as this will improve responsiveness for the user.
+    /// A combobox control with support for autocomplete, remote-loading, paging and many other features.
     /// </summary>
     [Meta]
     [ToolboxData("<{0}:ComboBox runat=\"server\"></{0}:ComboBox>")]
@@ -48,7 +46,7 @@ namespace Ext.Net
     [Designer(typeof(EmptyDesigner))]
     [ToolboxBitmap(typeof(ComboBox), "Build.ToolboxIcons.ComboBox.bmp")]
     [Description("A combobox control with support for autocomplete, remote-loading, paging and many other features.")]
-    public partial class ComboBox : ComboBoxBase, IPostBackEventHandler
+    public partial class ComboBox : ComboBoxBaseSingle<ListItem>, IPostBackEventHandler
     {
         /// <summary>
         /// 
@@ -65,20 +63,133 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.form.field.ComboBox";
+                return "Ext.form.ComboBox";
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        [Category("0. About")]
+        /// <param name="sender"></param>
         [Description("")]
-        public override string XType
+        protected override void OnBeforeClientInit(Observable sender)
         {
-            get
+            this.InitPostBack();
+
+            if ((this.StoreID.IsNotEmpty() || this.Store.Primary != null))
             {
-                return "combobox";
+                if(this.IsDynamic)
+                {
+                    return;
+                }
+
+                Store store = this.Store.Primary ?? ControlUtils.FindControl<Store>(this, this.StoreID, true);
+
+                if (store == null)
+                {
+                    throw new InvalidOperationException("The Control '{0}' could not find the StoreID of '{1}'.".FormatWith(this.ID, this.StoreID));
+                }
+            }
+            else
+            {
+                this.TriggerAction = TriggerAction.All;
+                this.Mode = DataLoadMode.Local;
+            }
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="postDataKey"></param>
+        /// <param name="postCollection"></param>
+        /// <returns></returns>
+        [Description("")]
+        protected override bool LoadPostData(string postDataKey, NameValueCollection postCollection)
+        {
+            this.HasLoadPostData = true;
+
+            string val = postCollection[this.HiddenName];
+            string text = postCollection[this.UniqueName];
+            string index = postCollection[this.UniqueName.ConcatWith("_SelIndex")] ?? "";
+
+            this.SuspendScripting();
+            this.RawValue = val;
+            this.ResumeScripting();
+
+            if (val == null && text == null)
+            {
+                return false;
+            }
+
+            if (!this.EmptyText.Equals(text) && (this.SelectedItem.Value == null || !this.SelectedItem.Value.Equals(val) || this.SelectedItem.Text == null || !this.SelectedItem.Text.Equals(text)))
+            {
+                try
+                {
+                    this.SuspendScripting();
+                    this.SelectedItem.Text = text;
+                    this.SelectedItem.Value = val;
+
+                    int tmpIndex;
+
+                    if (int.TryParse(index, out tmpIndex))
+                    {
+                        this.SelectedIndex = tmpIndex;
+                    }
+                }
+                finally
+                {
+                    this.ResumeScripting();
+                }
+
+                return true;
+            }
+            else
+            {
+                if (this.EmptyText.Equals(text) && (this.SelectedItem.Value.IsNotEmpty() || this.SelectedItem.Text.IsNotEmpty()))
+                {
+                    try
+                    {
+                        this.SuspendScripting();
+                        this.SelectedItem.Text = "";
+                        this.SelectedItem.Value = null;
+                        this.SelectedIndex = -1;
+                    }
+                    finally
+                    {
+                        this.RawValue = val;
+                        this.ResumeScripting();
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        protected override void RaisePostDataChangedEvent()
+        {
+            this.OnValueChanged(EventArgs.Empty);
+        }
+
+        public override void RaisePostBackEvent(string eventArgument)
+        {
+            switch (eventArgument)
+            {
+                case "select":
+                    this.OnItemSelected(EventArgs.Empty);
+                    break;
+                case "change":
+                    this.OnValueChanged(EventArgs.Empty);
+                    break;
+                default:
+                    int index;
+
+                    if (int.TryParse(eventArgument, out index))
+                    {
+                        this.OnTriggerClicked(new TriggerEventArgs(index));
+                    }
+                    break;
             }
         }
 
@@ -93,6 +204,7 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public ComboBoxListeners Listeners
         {
@@ -118,6 +230,7 @@ namespace Ext.Net
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public ComboBoxDirectEvents DirectEvents
         {
@@ -125,28 +238,23 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new ComboBoxDirectEvents(this);
+                    this.directEvents = new ComboBoxDirectEvents();
                 }
 
                 return this.directEvents;
             }
         }
 
-        /// <summary>
-        /// Server-side DirectEvent handler. Method signature is (object sender, DirectEventArgs e).
-        /// </summary>
-        [Description("Server-side DirectEvent handler. Method signature is (object sender, DirectEventArgs e).")]
-        public event ComponentDirectEvent.DirectEventHandler DirectChange
+
+        /*  DirectEvent Handler
+            -----------------------------------------------------------------------------------------------*/
+
+        static ComboBox()
         {
-            add
-            {
-                this.DirectEvents.Change.Event += value;
-            }
-            remove
-            {
-                this.DirectEvents.Change.Event -= value;
-            }
+            DirectEventSelect = new object();
         }
+
+        private static readonly object DirectEventSelect;
 
         /// <summary>
         /// Server-side DirectEvent handler. Method signature is (object sender, DirectEventArgs e).

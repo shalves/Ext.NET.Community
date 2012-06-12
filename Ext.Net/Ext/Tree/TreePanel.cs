@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -31,9 +31,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Web.UI;
+using System.Xml;
 
 using Ext.Net.Utilities;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Ext.Net
@@ -63,7 +63,7 @@ namespace Ext.Net
         {
             get
             {
-                return "treepanel";
+                return "nettreepanel";
             }
         }
 
@@ -76,7 +76,7 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.tree.Panel";
+                return "Ext.net.TreePanel";
             }
         }
 
@@ -92,11 +92,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("RemoteRenameUrl", "");
+                return (string)this.ViewState["RemoteRenameUrl"] ?? "";
             }
             set
             {
-                this.State.Set("RemoteRenameUrl", value);
+                this.ViewState["RemoteRenameUrl"] = value;
             }
         }
 
@@ -112,11 +112,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("RemoteRemoveUrl", "");
+                return (string)this.ViewState["RemoteRemoveUrl"] ?? "";
             }
             set
             {
-                this.State.Set("RemoteRemoveUrl", value);
+                this.ViewState["RemoteRemoveUrl"] = value;
             }
         }
 
@@ -132,11 +132,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("RemoteAppendUrl", "");
+                return (string)this.ViewState["RemoteAppendUrl"] ?? "";
             }
             set
             {
-                this.State.Set("RemoteAppendUrl", value);
+                this.ViewState["RemoteAppendUrl"] = value;
             }
         }
 
@@ -152,11 +152,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("RemoteInsertUrl", "");
+                return (string)this.ViewState["RemoteInsertUrl"] ?? "";
             }
             set
             {
-                this.State.Set("RemoteInsertUrl", value);
+                this.ViewState["RemoteInsertUrl"] = value;
             }
         }
 
@@ -173,11 +173,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("RemoteMoveUrl", "");
+                return (string)this.ViewState["RemoteMoveUrl"] ?? "";
             }
             set
             {
-                this.State.Set("RemoteMoveUrl", value);
+                this.ViewState["RemoteMoveUrl"] = value;
             }
         }
 
@@ -367,6 +367,30 @@ namespace Ext.Net
                 return;
             }
 
+            if (this.Loader.Primary != null && this.Loader.Primary.BaseParams.Count > 0)
+            {
+                TreeLoader loader = this.Loader.Primary as TreeLoader;
+
+                if (loader != null)
+                {
+                    if (loader.Listeners.BeforeLoad.IsDefault)
+                    {
+                        loader.Listeners.BeforeLoad.Fn = BuildParams(this.Loader.Primary.BaseParams, null, true);     
+                    }
+                    else
+                    {
+                        if (loader.Listeners.BeforeLoad.Fn.IsNotEmpty())
+                        {
+                            loader.Listeners.BeforeLoad.Fn = BuildParams(this.Loader.Primary.BaseParams, loader.Listeners.BeforeLoad.Fn, true);     
+                        }
+                        else
+                        {
+                            loader.Listeners.BeforeLoad.Fn = BuildParams(this.Loader.Primary.BaseParams, loader.Listeners.BeforeLoad.Handler, false);     
+                        }
+                    }
+                }
+            }
+
             if (this.RemoteExtraParams.Count > 0)
             {
                 if (this.Listeners.BeforeRemoteAction.IsDefault)
@@ -413,7 +437,7 @@ namespace Ext.Net
         {
             StringBuilder sb = new StringBuilder("function(loader,node){if (!loader.baseParams){loader.baseParams = {};};");
 
-            sb.AppendFormat("Ext.apply(loader.baseParams,{0});", parameters.ToJson());
+            sb.AppendFormat("Ext.apply(loader.baseParams,{0});", parameters.ToJson(0));
 
             if (userHandler.IsNotEmpty())
             {
@@ -438,7 +462,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public TreePanelListeners Listeners
         {
@@ -463,7 +488,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side DirectEventHandlers")]
         public TreePanelDirectEvents DirectEvents
         {
@@ -471,7 +497,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new TreePanelDirectEvents(this);
+                    this.directEvents = new TreePanelDirectEvents();
                 }
 
                 return this.directEvents;
@@ -490,19 +516,19 @@ namespace Ext.Net
             bool result = base.LoadPostData(postDataKey, postCollection);
             string val = postCollection[this.ConfigID.ConcatWith("_SM")];
 
-            //if (val != null && this.SelectionModel.Primary != null)
-            //{
-            //    if (this.SelectionModel.Primary is DefaultSelectionModel)
-            //    {
-            //        SubmittedNode node = JSON.Deserialize<SubmittedNode>(val, new CamelCasePropertyNamesContractResolver());
-            //        ((DefaultSelectionModel) this.SelectionModel.Primary).SelectedNode = node;
-            //    }
-            //    else if (this.SelectionModel.Primary is MultiSelectionModel)
-            //    {
-            //        List<SubmittedNode> nodes = JSON.Deserialize<List<SubmittedNode>>(val, new CamelCasePropertyNamesContractResolver());
-            //        ((MultiSelectionModel)this.SelectionModel.Primary).SelectedNodes = nodes;
-            //    }
-            //}
+            if (val != null && this.SelectionModel.Primary != null)
+            {
+                if (this.SelectionModel.Primary is DefaultSelectionModel)
+                {
+                    SubmittedNode node = JSON.Deserialize<SubmittedNode>(val, new CamelCasePropertyNamesContractResolver());
+                    ((DefaultSelectionModel) this.SelectionModel.Primary).SelectedNode = node;
+                }
+                else if (this.SelectionModel.Primary is MultiSelectionModel)
+                {
+                    List<SubmittedNode> nodes = JSON.Deserialize<List<SubmittedNode>>(val, new CamelCasePropertyNamesContractResolver());
+                    ((MultiSelectionModel)this.SelectionModel.Primary).SelectedNodes = nodes;
+                }
+            }
 
             val = postCollection[this.ConfigID.ConcatWith("_CheckNodes")];
             if (val != null)
@@ -514,24 +540,22 @@ namespace Ext.Net
             return result;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="nodes"></param>
-        protected virtual void RegisterNodesIcons(NodeCollection nodes)
+        protected virtual void RegisterNodesIcons(TreeNodeCollection nodes)
         {
             if (ResourceManager.HasResourceManager)
             {
-                foreach (Node node in nodes)
+                foreach (TreeNodeBase node in nodes)
                 {
                     if (node.Icon != Icon.None)
                     {
                         ResourceManager.GetInstance().RegisterIcon(node.Icon);
                     }
 
-                    if (node.Children.Count > 0)
+                    TreeNode treeNode = node as TreeNode;
+
+                    if (treeNode != null && treeNode.Nodes.Count > 0)
                     {
-                        this.RegisterNodesIcons(node.Children);
+                        this.RegisterNodesIcons(treeNode.Nodes);
                     }
                 }
             }
@@ -557,28 +581,29 @@ namespace Ext.Net
                     throw new ArgumentNullException("eventArgument");
                 }
 
+                XmlNode xmlData = this.SubmitConfig;
                 string data = null;
 
-                if (this.DirectConfig != null)
+                if (xmlData != null)
                 {
-                    JToken serviceToken = this.DirectConfig.SelectToken("config.serviceParams", false);
+                    XmlNode serviceNode = xmlData.SelectSingleNode("config/serviceParams");
 
-                    if (serviceToken != null)
+                    if (serviceNode != null)
                     {
-                        data = JSON.ToString(serviceToken);
+                        data = serviceNode.InnerText;
                     }
                 }
 
                 switch(eventArgument)
                 {
                     case "nodeload":
-                        //NodeLoadEventArgs e = new NodeLoadEventArgs(extraParams);
-                        //PageTreeLoader loader = (PageTreeLoader) this.Loader.Primary;
-                        //loader.OnNodeLoad(e);
-                        //TreeNodeCollection nodes = e.Nodes;
-                        //success = e.Success;
-                        //msg = e.ErrorMessage;
-                        //response.Data = nodes != null ? nodes.ToJson() : null;
+                        NodeLoadEventArgs e = new NodeLoadEventArgs(extraParams);
+                        PageTreeLoader loader = (PageTreeLoader) this.Loader.Primary;
+                        loader.OnNodeLoad(e);
+                        TreeNodeCollection nodes = e.Nodes;
+                        success = e.Success;
+                        msg = e.ErrorMessage;
+                        response.Data = nodes != null ? nodes.ToJson() : null;
                         break;
                     case "submit":
                         SubmitEventArgs se = new SubmitEventArgs(extraParams, JSON.Deserialize<SubmittedNode>(data, new CamelCasePropertyNamesContractResolver()));

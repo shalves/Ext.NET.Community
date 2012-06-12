@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class FileUploadField
     {
 		/*  Ctor
@@ -80,29 +77,29 @@ namespace Ext.Net
 			
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
-			        
-			private Button button = null;
+			
+			private string text = null;
 
 			/// <summary>
-			/// A standard Ext.button.Button config object.
+			/// The Text value to initialize this field with.
 			/// </summary>
-			public Button Button
-			{
+			[DefaultValue(null)]
+			public override string Text 
+			{ 
 				get
 				{
-					if (this.button == null)
-					{
-						this.button = new Button();
-					}
-			
-					return this.button;
+					return this.text;
+				}
+				set
+				{
+					this.text = value;
 				}
 			}
-			
+
 			private string buttonText = "Browse...";
 
 			/// <summary>
-			/// The button text to display on the upload button (defaults to 'Browse...'). Note that if you supply a value for buttonConfig, the buttonConfig.text value will be used instead if available.
+			/// The button text to display on the upload button (defaults to 'Browse...'). Note that if you supply a value for ButtonCfg, the ButtonCfg.Text value will be used instead if available.
 			/// </summary>
 			[DefaultValue("Browse...")]
 			public virtual string ButtonText 
@@ -120,7 +117,7 @@ namespace Ext.Net
 			private bool buttonOnly = false;
 
 			/// <summary>
-			/// True to display the file upload field as a button with no visible text field (defaults to false). If true, all inherited Text members will still be available.
+			/// True to display the file upload field as a button with no visible text field (defaults to false).
 			/// </summary>
 			[DefaultValue(false)]
 			public virtual bool ButtonOnly 
@@ -135,21 +132,75 @@ namespace Ext.Net
 				}
 			}
 
-			private int buttonMargin = 3;
+			private int buttonOffset = 3;
 
 			/// <summary>
-			/// The number of pixels of space reserved between the button and the text field (defaults to 3). Note that this only applies if buttonOnly = false.
+			/// The number of pixels of space reserved between the button and the text field (defaults to 3).  Note that this only applies if ButtonOnly=false.
 			/// </summary>
 			[DefaultValue(3)]
-			public virtual int ButtonMargin 
+			public virtual int ButtonOffset 
 			{ 
 				get
 				{
-					return this.buttonMargin;
+					return this.buttonOffset;
 				}
 				set
 				{
-					this.buttonMargin = value;
+					this.buttonOffset = value;
+				}
+			}
+
+			private bool readOnly = true;
+
+			/// <summary>
+			/// True to mark the field as readOnly in HTML (defaults to false) -- Note: this only sets the element's readOnly DOM attribute.
+			/// </summary>
+			[DefaultValue(true)]
+			public override bool ReadOnly 
+			{ 
+				get
+				{
+					return this.readOnly;
+				}
+				set
+				{
+					this.readOnly = value;
+				}
+			}
+
+			private Icon icon = Icon.None;
+
+			/// <summary>
+			/// The icon to use in the Button. See also, IconCls to set an icon with a custom Css class.
+			/// </summary>
+			[DefaultValue(Icon.None)]
+			public override Icon Icon 
+			{ 
+				get
+				{
+					return this.icon;
+				}
+				set
+				{
+					this.icon = value;
+				}
+			}
+
+			private string iconCls = "";
+
+			/// <summary>
+			/// A css class which sets a background image to be used as the icon for this button.
+			/// </summary>
+			[DefaultValue("")]
+			public override string IconCls 
+			{ 
+				get
+				{
+					return this.iconCls;
+				}
+				set
+				{
+					this.iconCls = value;
 				}
 			}
         

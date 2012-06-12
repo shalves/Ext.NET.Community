@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class CheckboxSelectionModel
     {
         /// <summary>
@@ -87,11 +84,47 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// Instructs the SelectionModel whether or not to inject the checkbox header automatically or not. (Note: By not placing the checkbox in manually, the grid view will need to be rendered 2x on initial render.) Supported values are a Number index, false and the strings 'first' and 'last'. Default is 0.
+			/// Any valid text or HTML fragment to display in the header cell for the checkbox column (defaults to '<div class='x-grid3-hd-checker'> </div>'). The default CSS class of 'x-grid3-hd-checker' displays a checkbox in the header and provides support for automatic check all/none behavior on header click. This string can be replaced by any valid HTML fragment, including a simple text string (e.g., 'Select Rows'), but the automatic check all/none behavior will only work if the 'x-grid3-hd-checker' class is supplied.
 			/// </summary>
-            public virtual CheckboxSelectionModel.Builder InjectCheckbox(string injectCheckbox)
+            public virtual CheckboxSelectionModel.Builder Header(string header)
             {
-                this.ToComponent().InjectCheckbox = injectCheckbox;
+                this.ToComponent().Header = header;
+                return this as CheckboxSelectionModel.Builder;
+            }
+             
+ 			/// <summary>
+			/// True if the checkbox column is sortable (defaults to false).
+			/// </summary>
+            public virtual CheckboxSelectionModel.Builder Sortable(bool sortable)
+            {
+                this.ToComponent().Sortable = sortable;
+                return this as CheckboxSelectionModel.Builder;
+            }
+             
+ 			/// <summary>
+			/// True if need hide the checkbox in the header (defaults to false).
+			/// </summary>
+            public virtual CheckboxSelectionModel.Builder HideCheckAll(bool hideCheckAll)
+            {
+                this.ToComponent().HideCheckAll = hideCheckAll;
+                return this as CheckboxSelectionModel.Builder;
+            }
+             
+ 			/// <summary>
+			/// False if need disable deselection
+			/// </summary>
+            public virtual CheckboxSelectionModel.Builder AllowDeselect(bool allowDeselect)
+            {
+                this.ToComponent().AllowDeselect = allowDeselect;
+                return this as CheckboxSelectionModel.Builder;
+            }
+             
+ 			/// <summary>
+			/// The default width in pixels of the checkbox column (defaults to 20).
+			/// </summary>
+            public virtual CheckboxSelectionModel.Builder Width(int width)
+            {
+                this.ToComponent().Width = width;
                 return this as CheckboxSelectionModel.Builder;
             }
              
@@ -105,11 +138,20 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// (optional) A function used to generate HTML markup for a cell given the cell's data value. If not specified, the default renderer uses the raw data value.
+			/// 
 			/// </summary>
-            public virtual CheckboxSelectionModel.Builder Renderer(Renderer renderer)
+            public virtual CheckboxSelectionModel.Builder ColumnPosition(int columnPosition)
             {
-                this.ToComponent().Renderer = renderer;
+                this.ToComponent().ColumnPosition = columnPosition;
+                return this as CheckboxSelectionModel.Builder;
+            }
+             
+ 			/// <summary>
+			/// Selection Mode
+			/// </summary>
+            public virtual CheckboxSelectionModel.Builder KeepSelectionOnClick(KeepSelectionMode keepSelectionOnClick)
+            {
+                this.ToComponent().KeepSelectionOnClick = keepSelectionOnClick;
                 return this as CheckboxSelectionModel.Builder;
             }
             

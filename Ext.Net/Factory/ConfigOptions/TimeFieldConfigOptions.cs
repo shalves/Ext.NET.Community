@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class TimeField
     {
         /// <summary>
@@ -55,20 +52,24 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
+                list.Add("itemsProxy", new ConfigOption("itemsProxy", new SerializationOptions("store", JsonMode.Raw), "", this.ItemsProxy ));
                 list.Add("valueProxy", new ConfigOption("valueProxy", new SerializationOptions("value"), null, this.ValueProxy ));
                 list.Add("altFormatsProxy", new ConfigOption("altFormatsProxy", new SerializationOptions("altFormats"), "", this.AltFormatsProxy ));
                 list.Add("formatProxy", new ConfigOption("formatProxy", new SerializationOptions("format"), "", this.FormatProxy ));
                 list.Add("increment", new ConfigOption("increment", null, 15, this.Increment ));
-                list.Add("invalidText", new ConfigOption("invalidText", null, "{value} is not a valid time", this.InvalidText ));
-                list.Add("maxText", new ConfigOption("maxText", null, "The time in this field must be equal to or before {0}", this.MaxText ));
+                list.Add("maxText", new ConfigOption("maxText", null, "", this.MaxText ));
                 list.Add("maxTimeProxy", new ConfigOption("maxTimeProxy", new SerializationOptions("maxValue"), "", this.MaxTimeProxy ));
                 list.Add("minTimeProxy", new ConfigOption("minTimeProxy", new SerializationOptions("minValue"), "", this.MinTimeProxy ));
-                list.Add("minText", new ConfigOption("minText", null, "The time in this field must be equal to or after {0}", this.MinText ));
-                list.Add("pickerMaxHeight", new ConfigOption("pickerMaxHeight", null, 300, this.PickerMaxHeight ));
-                list.Add("selectOnTab", new ConfigOption("selectOnTab", null, true, this.SelectOnTab ));
-                list.Add("submitFormatProxy", new ConfigOption("submitFormatProxy", new SerializationOptions("submitFormat"), "", this.SubmitFormatProxy ));
-                list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
-                list.Add("directEvents", new ConfigOption("directEvents", new SerializationOptions("directEvents", JsonMode.Object), null, this.DirectEvents ));
+                list.Add("minText", new ConfigOption("minText", null, "", this.MinText ));
+                list.Add("allQuery", new ConfigOption("allQuery", new SerializationOptions(JsonMode.Ignore), null, this.AllQuery ));
+                list.Add("queryDelay", new ConfigOption("queryDelay", new SerializationOptions(JsonMode.Ignore), null, this.QueryDelay ));
+                list.Add("queryParam", new ConfigOption("queryParam", new SerializationOptions(JsonMode.Ignore), null, this.QueryParam ));
+                list.Add("storeID", new ConfigOption("storeID", new SerializationOptions(JsonMode.Ignore), null, this.StoreID ));
+                list.Add("selectedItem", new ConfigOption("selectedItem", new SerializationOptions(JsonMode.Ignore), null, this.SelectedItem ));
+                list.Add("valueField", new ConfigOption("valueField", null, "", this.ValueField ));
+                list.Add("displayField", new ConfigOption("displayField", new SerializationOptions(JsonMode.Ignore), null, this.DisplayField ));
+                list.Add("triggerAction", new ConfigOption("triggerAction", new SerializationOptions(JsonMode.Ignore), null, this.TriggerAction ));
+                list.Add("mode", new ConfigOption("mode", new SerializationOptions(JsonMode.Ignore), null, this.Mode ));
 
                 return list;
             }

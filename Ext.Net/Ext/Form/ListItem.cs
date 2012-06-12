@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -26,7 +26,7 @@
 
 using System.ComponentModel;
 
-using System.Text;
+using Ext.Net.Utilities;
 
 namespace Ext.Net
 {
@@ -35,17 +35,21 @@ namespace Ext.Net
     /// </summary>
     [Meta]
     [Description("")]
-    public partial class ListItem : BaseItem
+    public partial class ListItem : StateManagedItem
     {
         /// <summary>
         /// 
         /// </summary>
+        [Description("")]
         public ListItem() { }
+
+        private XControl parent;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="text"></param>
+        [Description("")]
         public ListItem(string text)
         {
             this.Text = text;
@@ -57,42 +61,40 @@ namespace Ext.Net
         /// </summary>
         /// <param name="text"></param>
         /// <param name="value"></param>
+        [Description("")]
         public ListItem(string text, string value)
         {
             this.Value = value;
             this.Text = text;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="value"></param>
-        /// <param name="index"></param>
-        public ListItem(string text, string value, int index)
+        
+        internal ListItem(XControl parent)
         {
-            this.Value = value;
-            this.Text = text;
-            this.Index = index;
-        }        
+            this.parent = parent;
+        }
 
         /// <summary>
         /// 
         /// </summary>
         [Meta]
-        [ConfigOption]
-        [DefaultValue(null)]
+        [DefaultValue("")]
         [NotifyParentProperty(true)]
         [Description("")]
         public string Text
         {
             get
             {
-                return this.State.Get<string>("Text", null);
+                return (string)this.ViewState["Text"] ?? "";
             }
             set
             {
-                this.State.Set("Text", value);
+                string oldValue = this.Text;
+                this.ViewState["Text"] = value;
+
+                if (this.Value == null || (!this.Value.IsEmpty() && oldValue == this.Value))
+                {
+                    this.Value = value;
+                }
             }
         }
 
@@ -107,109 +109,33 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Value", null);
+                return (string)this.ViewState["Value"] ?? null;
             }
             set
             {
-                this.State.Set("Value", value);                
+                this.ViewState["Value"] = value;
+                this.SetValue(value);
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        [ConfigOption("value", JsonMode.Raw)]
-        [DefaultValue(null)]
-        protected virtual string ValueProxy
-        {
-            get
-            {
-                if (this.Value == null)
-                {
-                    return null;
-                }
-
-                return this.Mode == ParameterMode.Value ? JSON.Serialize(this.Value) : this.Value;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [DefaultValue(-1)]
-        [NotifyParentProperty(true)]
+        /// <param name="value"></param>
         [Description("")]
-        public int Index
+        protected void SetValue(string value)
         {
-            get
+            if (parent != null && parent.AllowCallbackScriptMonitoring && RequestManager.IsAjaxRequest)
             {
-                return this.State.Get<int>("Index", -1);
-            }
-            set
-            {
-                this.State.Set("Index", value);
-            }
-        }
-
-        /// <summary>
-        /// Wrap in quotes or not
-        /// </summary>
-        [Meta]
-        [DefaultValue(ParameterMode.Value)]
-        [Description("Wrap in quotes or not")]
-        public virtual ParameterMode Mode
-        {
-            get
-            {
-                return this.State.Get<ParameterMode>("Mode", ParameterMode.Value);
-            }
-            set
-            {
-                this.State.Set("Mode", value);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public override bool IsDefault
-        {
-            get
-            {
-                return this.Text == null && this.Value == null && this.Index < 0;
+                parent.Call("setValue", value);
             }
         }
     }
 
     /// <summary>
     /// 
-    /// </summary>    
-    public partial class ListItemCollection : BaseItemCollection<ListItem>
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public override string Serialize()
-        {
-            var comma = false;
-            StringBuilder sb = new StringBuilder();
-            sb.Append("[");
-            foreach (var item in this)
-            {
-                if (comma)
-                {
-                    sb.Append(",");
-                }
-                comma = true;
-
-                sb.Append(new ClientConfig().Serialize(item));
-            }
-            sb.Append("]");
-
-            return sb.ToString();
-        }
-    }
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    [Description("")]
+    public partial class ListItemCollection<T> : StateManagedCollection<T> where T : StateManagedItem { }
 }

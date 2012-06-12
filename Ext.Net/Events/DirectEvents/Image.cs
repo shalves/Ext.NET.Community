@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,18 +33,14 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class ImageDirectEvents : AbstractComponentDirectEvents
+    public partial class ImageDirectEvents : BoxComponentDirectEvents
     {
-        public ImageDirectEvents() { }
-
-        public ImageDirectEvents(Observable parent) { this.Parent = parent; }
-
         private ComponentDirectEvent complete;
 
         /// <summary>
         /// Fires after the image is loaded.
         /// </summary>
-        [ListenerArgument(0, "item", typeof(AbstractComponent), "this")]
+        [ListenerArgument(0, "item", typeof(Component), "this")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("complete", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -56,7 +52,7 @@ namespace Ext.Net
             {
                 if (this.complete == null)
                 {
-                    this.complete = new ComponentDirectEvent(this);
+                    this.complete = new ComponentDirectEvent();
                 }
 
                 return this.complete;
@@ -68,7 +64,7 @@ namespace Ext.Net
         /// <summary>
         /// Fires before the image is loaded.
         /// </summary>
-        [ListenerArgument(0, "item", typeof(AbstractComponent), "this")]
+        [ListenerArgument(0, "item", typeof(Component), "this")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("beforeload", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -80,7 +76,7 @@ namespace Ext.Net
             {
                 if (this.beforeLoad == null)
                 {
-                    this.beforeLoad = new ComponentDirectEvent(this);
+                    this.beforeLoad = new ComponentDirectEvent();
                 }
 
                 return this.beforeLoad;
@@ -92,7 +88,7 @@ namespace Ext.Net
         /// <summary>
         /// Fired after a resizer resize.
         /// </summary>
-        [ListenerArgument(0, "item", typeof(AbstractComponent), "this")]
+        [ListenerArgument(0, "item", typeof(Component), "this")]
         [ListenerArgument(1, "width", typeof(int), "width")]
         [ListenerArgument(2, "height", typeof(int), "height")]
         [ListenerArgument(3, "e", typeof(object), "e")]
@@ -107,7 +103,7 @@ namespace Ext.Net
             {
                 if (this.resizerResize == null)
                 {
-                    this.resizerResize = new ComponentDirectEvent(this);
+                    this.resizerResize = new ComponentDirectEvent();
                 }
 
                 return this.resizerResize;
@@ -119,7 +115,7 @@ namespace Ext.Net
         /// <summary>
         /// Fired before resize is allowed. Set enabled to false to cancel resize.
         /// </summary>
-        [ListenerArgument(0, "item", typeof(AbstractComponent), "this")]
+        [ListenerArgument(0, "item", typeof(Component), "this")]
         [ListenerArgument(1, "e", typeof(object), "e")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("resizerbeforeresize", typeof(DirectEventJsonConverter))]
@@ -132,7 +128,7 @@ namespace Ext.Net
             {
                 if (this.resizerBeforeResize == null)
                 {
-                    this.resizerBeforeResize = new ComponentDirectEvent(this);
+                    this.resizerBeforeResize = new ComponentDirectEvent();
                 }
 
                 return this.resizerBeforeResize;
@@ -144,7 +140,7 @@ namespace Ext.Net
         /// <summary>
         /// Fired after a pan.
         /// </summary>
-        [ListenerArgument(0, "item", typeof(AbstractComponent), "this")]
+        [ListenerArgument(0, "item", typeof(Component), "this")]
         [ListenerArgument(1, "x", typeof(int), "x")]
         [ListenerArgument(2, "y", typeof(int), "yDeylta")]
         [ListenerArgument(3, "xDelta", typeof(int), "xDelta")]
@@ -160,7 +156,7 @@ namespace Ext.Net
             {
                 if (this.pan == null)
                 {
-                    this.pan = new ComponentDirectEvent(this);
+                    this.pan = new ComponentDirectEvent();
                 }
 
                 return this.pan;
@@ -172,7 +168,7 @@ namespace Ext.Net
         /// <summary>
         /// Fired after a click.
         /// </summary>
-        [ListenerArgument(0, "item", typeof(AbstractComponent), "this")]
+        [ListenerArgument(0, "item", typeof(Component), "this")]
         [ListenerArgument(1, "e", typeof(object), "e")]
         [ListenerArgument(2, "t", typeof(object), "t")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
@@ -186,7 +182,7 @@ namespace Ext.Net
             {
                 if (this.click == null)
                 {
-                    this.click = new ComponentDirectEvent(this);
+                    this.click = new ComponentDirectEvent();
                 }
 
                 return this.click;
@@ -198,7 +194,7 @@ namespace Ext.Net
         /// <summary>
         /// Fired after a double click.
         /// </summary>
-        [ListenerArgument(0, "item", typeof(AbstractComponent), "this")]
+        [ListenerArgument(0, "item", typeof(Component), "this")]
         [ListenerArgument(1, "e", typeof(object), "e")]
         [ListenerArgument(2, "t", typeof(object), "t")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
@@ -212,7 +208,7 @@ namespace Ext.Net
             {
                 if (this.dblClick == null)
                 {
-                    this.dblClick = new ComponentDirectEvent(this);
+                    this.dblClick = new ComponentDirectEvent();
                 }
 
                 return this.dblClick;

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -35,9 +35,29 @@ namespace Ext.Net
 	[Description("")]
     public partial class CheckboxDirectEvents : FieldDirectEvents
     {
-        public CheckboxDirectEvents() { }
+        private ComponentDirectEvent check;
 
-        public CheckboxDirectEvents(Observable parent) { this.Parent = parent; }
-       
+        /// <summary>
+        /// Fires when the Checkbox is checked or unchecked.
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(Checkbox), "this")]
+        [ListenerArgument(1, "checked", typeof(bool), "The new checked value")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("check", typeof(DirectEventJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when the Checkbox is checked or unchecked.")]
+        public virtual ComponentDirectEvent Check
+        {
+            get
+            {
+                if (this.check == null)
+                {
+                    this.check = new ComponentDirectEvent();
+                }
+
+                return this.check;
+            }
+        }
     }
 }

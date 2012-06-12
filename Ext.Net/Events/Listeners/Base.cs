@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -34,7 +34,7 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class BaseListener : BaseItem
+    public partial class BaseListener : StateManagedItem
     {
         /// <summary>
         /// The scope in which to execute the handler function. The handler function's 'this' context.
@@ -47,11 +47,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Scope", "this");
+                return (string)this.ViewState["Scope"] ?? "this";
             }
             set
             {
-                this.State.Set("Scope", value);
+                this.ViewState["Scope"] = value;
             }
         }
 
@@ -66,11 +66,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Delegate", "");
+                return (string)this.ViewState["Delegate"] ?? "";
             }
             set
             {
-                this.State.Set("Delegate", value);
+                this.ViewState["Delegate"] = value;
             }
         }
 
@@ -85,11 +85,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("StopEvent", false);
+                object obj = this.ViewState["StopEvent"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("StopEvent", value);
+                this.ViewState["StopEvent"] = value;
             }
         }
 
@@ -104,11 +105,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("PreventDefault", false);
+                object obj = this.ViewState["PreventDefault"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("PreventDefault", value);
+                this.ViewState["PreventDefault"] = value;
             }
         }
 
@@ -123,11 +125,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("StopPropagation", false);
+                object obj = this.ViewState["StopPropagation"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("StopPropagation", value);
+                this.ViewState["StopPropagation"] = value;
             }
         }
 
@@ -142,11 +145,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Normalized", false);
+                object obj = this.ViewState["Normalized"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Normalized", value);
+                this.ViewState["Normalized"] = value;
             }
         }
 
@@ -161,11 +165,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("Delay", 20);
+                object obj = this.ViewState["Delay"];
+                return (obj == null) ? 20 : (int)obj;
             }
             set
             {
-                this.State.Set("Delay", value);
+                this.ViewState["Delay"] = value;
             }
         }
 
@@ -180,11 +185,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Single", false);
+                object obj = this.ViewState["Single"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Single", value);
+                this.ViewState["Single"] = value;
             }
         }
 
@@ -199,11 +205,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("Buffer", 0);
+                object obj = this.ViewState["Buffer"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("Buffer", value);
+                this.ViewState["Buffer"] = value;
             }
         }
 
@@ -214,11 +221,11 @@ namespace Ext.Net
         public HandlerConfig GetListenerConfig()
         {
             HandlerConfig cfg = new HandlerConfig();
-            cfg.Scope = this.Scope == "this" ? null : this.Scope;
+            cfg.Scope = this.Scope;
             cfg.Buffer = this.Buffer;
             cfg.Delay = this.Delay;
             cfg.Single = this.Single;
-            cfg.Delegate = this.Delegate == "" ? null : this.Delegate;
+            cfg.Delegate = this.Delegate;
             cfg.Normalized = this.Normalized;
             cfg.PreventDefault = this.PreventDefault;
             cfg.StopEvent = this.StopEvent;

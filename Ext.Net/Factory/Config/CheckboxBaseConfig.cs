@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public abstract partial class CheckboxBase
     {
         /// <summary>
@@ -49,7 +46,7 @@ namespace Ext.Net
 			private string boxLabel = "";
 
 			/// <summary>
-			/// An optional text label that will appear next to the checkbox. Whether it appears before or after the checkbox is determined by the boxLabelAlign config (defaults to after).
+			/// The text that appears beside the checkbox (defaults to '').
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string BoxLabel 
@@ -61,24 +58,6 @@ namespace Ext.Net
 				set
 				{
 					this.boxLabel = value;
-				}
-			}
-
-			private BoxLabelAlign boxLabelAlign = BoxLabelAlign.After;
-
-			/// <summary>
-			/// The position relative to the checkbox where the boxLabel should appear. Recognized values are 'before' and 'after'. Defaults to 'after'.
-			/// </summary>
-			[DefaultValue(BoxLabelAlign.After)]
-			public virtual BoxLabelAlign BoxLabelAlign 
-			{ 
-				get
-				{
-					return this.boxLabelAlign;
-				}
-				set
-				{
-					this.boxLabelAlign = value;
 				}
 			}
 
@@ -121,7 +100,7 @@ namespace Ext.Net
 			private bool _checked = false;
 
 			/// <summary>
-			/// True if the the checkbox should render already checked (defaults to false).
+			/// True if the checkbox should render already checked (defaults to false).
 			/// </summary>
 			[DefaultValue(false)]
 			public virtual bool Checked 
@@ -136,12 +115,12 @@ namespace Ext.Net
 				}
 			}
 
-			private string checkedCls = "";
+			private string checkedCls = "x-form-check-checked";
 
 			/// <summary>
-			/// The CSS class added to the component's main element when it is in the checked state.
+			/// The CSS class to use when the control is checked (defaults to 'x-form-check-checked'). Note that this class applies to both checkboxes and radio buttons and is added to the control's wrapper element.
 			/// </summary>
-			[DefaultValue("")]
+			[DefaultValue("x-form-check-checked")]
 			public virtual string CheckedCls 
 			{ 
 				get
@@ -151,6 +130,78 @@ namespace Ext.Net
 				set
 				{
 					this.checkedCls = value;
+				}
+			}
+
+			private string focusCls = "x-form-check-focus";
+
+			/// <summary>
+			/// The CSS class to use when the control receives input focus (defaults to 'x-form-check-focus'). Note that this class applies to both checkboxes and radio buttons and is added to the control's wrapper element.
+			/// </summary>
+			[DefaultValue("x-form-check-focus")]
+			public virtual string FocusCls 
+			{ 
+				get
+				{
+					return this.focusCls;
+				}
+				set
+				{
+					this.focusCls = value;
+				}
+			}
+
+			private string inputValue = "";
+
+			/// <summary>
+			/// The value that should go into the generated input element's value attribute (defaults to undefined, with no value attribute)
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string InputValue 
+			{ 
+				get
+				{
+					return this.inputValue;
+				}
+				set
+				{
+					this.inputValue = value;
+				}
+			}
+
+			private string mouseDownCls = "x-form-check-down";
+
+			/// <summary>
+			/// The CSS class to use when the control is being actively clicked (defaults to 'x-form-check-down'). Note that this class applies to both checkboxes and radio buttons and is added to the control's wrapper element.
+			/// </summary>
+			[DefaultValue("x-form-check-down")]
+			public virtual string MouseDownCls 
+			{ 
+				get
+				{
+					return this.mouseDownCls;
+				}
+				set
+				{
+					this.mouseDownCls = value;
+				}
+			}
+
+			private string overCls = "x-form-check-over";
+
+			/// <summary>
+			/// The CSS class to use when the control is hovered over (defaults to 'x-form-check-over'). Note that this class applies to both checkboxes and radio buttons and is added to the control's wrapper element.
+			/// </summary>
+			[DefaultValue("x-form-check-over")]
+			public override string OverCls 
+			{ 
+				get
+				{
+					return this.overCls;
+				}
+				set
+				{
+					this.overCls = value;
 				}
 			}
 
@@ -169,24 +220,6 @@ namespace Ext.Net
 				set
 				{
 					this.tag = value;
-				}
-			}
-
-			private string uncheckedValue = null;
-
-			/// <summary>
-			/// If configured, this will be submitted as the checkbox's value during form submit if the checkbox is unchecked. By default this is undefined, which results in nothing being submitted for the checkbox field when the form is submitted (the default behavior of HTML checkboxes).
-			/// </summary>
-			[DefaultValue(null)]
-			public virtual string UncheckedValue 
-			{ 
-				get
-				{
-					return this.uncheckedValue;
-				}
-				set
-				{
-					this.uncheckedValue = value;
 				}
 			}
 

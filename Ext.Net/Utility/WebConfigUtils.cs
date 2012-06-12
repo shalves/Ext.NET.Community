@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -42,7 +42,7 @@ namespace Ext.Net
 		[Description("")]
         public static IDMode GetIDModeFromWebConfig(ISite site)
         {
-            IDMode idMode = IDMode.Explicit;
+            IDMode idMode = IDMode.Inherit;
 
             GlobalConfig extnet = GetExtNetSection(site);
 
@@ -165,6 +165,24 @@ namespace Ext.Net
 		/// 
 		/// </summary>
 		[Description("")]
+        public static ScriptAdapter GetScriptAdapterFromWebConfig(ISite site)
+        {
+            ScriptAdapter scriptAdapter = ScriptAdapter.Ext;
+
+            GlobalConfig extnet = GetExtNetSection(site);
+
+            if (extnet != null)
+            {
+                scriptAdapter = extnet.ScriptAdapter;
+            }
+
+            return scriptAdapter;
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
         public static StateProvider GetStateProviderFromWebConfig(ISite site)
         {
             StateProvider stateProvider = StateProvider.PostBack;
@@ -191,7 +209,7 @@ namespace Ext.Net
 
                 if (app != null)
                 {
-                    Configuration config = app.OpenWebConfiguration(false);
+                    Configuration config = app.OpenWebConfiguration(true);
 
                     if (config != null)
                     {
@@ -206,6 +224,24 @@ namespace Ext.Net
             }
 
             return null;
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public static DebugConsole GetDebugFromWebConfig(ISite site)
+        {
+            DebugConsole debug = DebugConsole.None;
+
+            GlobalConfig extnet = GetExtNetSection(site);
+
+            if (extnet != null)
+            {
+                debug = extnet.DebugConsole;
+            }
+
+            return debug;
         }
 
 		/// <summary>

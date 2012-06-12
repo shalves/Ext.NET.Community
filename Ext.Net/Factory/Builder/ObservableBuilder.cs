@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class Observable
     {
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TObservable, TBuilder> : BaseControl.Builder<TObservable, TBuilder>
+        new public abstract partial class Builder<TObservable, TBuilder> : XControl.Builder<TObservable, TBuilder>
             where TObservable : Observable
             where TBuilder : Builder<TObservable, TBuilder>
         {
@@ -57,54 +54,30 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
- 			/// <summary>
-			/// Collection of custom js config
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder CustomConfig(Action<ConfigItemCollection> action)
-            {
-                action(this.ToComponent().CustomConfig);
-                return this as TBuilder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder MessageBusListeners(Action<MessageBusListeners> action)
-            {
-                action(this.ToComponent().MessageBusListeners);
-                return this as TBuilder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder MessageBusDirectEvents(Action<MessageBusDirectEvents> action)
-            {
-                action(this.ToComponent().MessageBusDirectEvents);
-                return this as TBuilder;
-            }
-			
+ 			// /// <summary>
+			// /// Collection of custom js config
+			// /// </summary>
+            // public virtual TBuilder CustomConfig(ConfigItemCollection customConfig)
+            // {
+            //    this.ToComponent().CustomConfig = customConfig;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/
 			
  			/// <summary>
-			/// 
+			/// Used to define events on this Observable
 			/// </summary>
-            public virtual TBuilder AddEvents(params string[] events)
+            public virtual TBuilder AddEvents(string events)
             {
                 this.ToComponent().AddEvents(events);
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// Appends an event handler to this component
 			/// </summary>
             public virtual TBuilder AddListener(string eventName, JFunction fn)
             {
@@ -113,7 +86,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Appends an event handler to this component
 			/// </summary>
             public virtual TBuilder AddListener(string eventName, JFunction fn, string scope)
             {
@@ -122,7 +95,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Appends an event handler to this component
 			/// </summary>
             public virtual TBuilder AddListener(string eventName, JFunction fn, string scope, HandlerConfig options)
             {
@@ -131,7 +104,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Appends an event handler to this component
 			/// </summary>
             public virtual TBuilder AddListener(string eventName, string fn)
             {
@@ -140,7 +113,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Appends an event handler to this component
 			/// </summary>
             public virtual TBuilder AddListener(string eventName, string fn, string scope)
             {
@@ -149,7 +122,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Appends an event handler to this component
 			/// </summary>
             public virtual TBuilder AddListener(string eventName, string fn, string scope, HandlerConfig options)
             {
@@ -158,61 +131,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder AddManagedListener(string item, string eventName, string fn, string scope, HandlerConfig options)
-            {
-                this.ToComponent().AddManagedListener(item, eventName, fn, scope, options);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder AddManagedListener(string item, string eventName, string fn, string scope)
-            {
-                this.ToComponent().AddManagedListener(item, eventName, fn, scope);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder AddManagedListener(string item, string eventName, string fn)
-            {
-                this.ToComponent().AddManagedListener(item, eventName, fn);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder ClearListeners()
-            {
-                this.ToComponent().ClearListeners();
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder ClearManagedListeners()
-            {
-                this.ToComponent().ClearManagedListeners();
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder EnableBubble(params string[] events)
-            {
-                this.ToComponent().EnableBubble(events);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
+			/// Fires the specified event with the passed parameters (minus the event name)
 			/// </summary>
             public virtual TBuilder FireEvent(string eventName, params object[] args)
             {
@@ -221,7 +140,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Appends an event handler to this element (shorthand for addListener)
 			/// </summary>
             public virtual TBuilder On(string eventName, string fn)
             {
@@ -230,7 +149,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Appends an event handler to this element (shorthand for addListener)
 			/// </summary>
             public virtual TBuilder On(string eventName, string fn, string scope)
             {
@@ -239,7 +158,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Appends an event handler to this element (shorthand for addListener)
 			/// </summary>
             public virtual TBuilder On(string eventName, string fn, string scope, HandlerConfig options)
             {
@@ -248,7 +167,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Appends an event handler to this element (shorthand for addListener)
 			/// </summary>
             public virtual TBuilder On(string eventName, JFunction fn)
             {
@@ -257,7 +176,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Appends an event handler to this element (shorthand for addListener)
 			/// </summary>
             public virtual TBuilder On(string eventName, JFunction fn, string scope)
             {
@@ -266,7 +185,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Appends an event handler to this element (shorthand for addListener)
 			/// </summary>
             public virtual TBuilder On(string eventName, JFunction fn, string scope, HandlerConfig options)
             {
@@ -275,16 +194,16 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Removes all listeners for this object
 			/// </summary>
-            public virtual TBuilder RelayEvents(string origin, string[] events)
+            public virtual TBuilder PurgeListeners()
             {
-                this.ToComponent().RelayEvents(origin, events);
+                this.ToComponent().PurgeListeners();
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// Removes a listener
 			/// </summary>
             public virtual TBuilder RemoveListener(string eventName, string fn)
             {
@@ -293,7 +212,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Removes a listener
 			/// </summary>
             public virtual TBuilder RemoveListener(string eventName, string fn, string scope)
             {
@@ -302,25 +221,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder RemoveManagedListener(string item, string eventName, string fn)
-            {
-                this.ToComponent().RemoveManagedListener(item, eventName, fn);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder RemoveManagedListener(string item, string eventName, string fn, string scope)
-            {
-                this.ToComponent().RemoveManagedListener(item, eventName, fn, scope);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
+			/// Resume firing events. (see suspendEvents)
 			/// </summary>
             public virtual TBuilder ResumeEvents()
             {
@@ -334,15 +235,6 @@ namespace Ext.Net
             public virtual TBuilder SuspendEvents(bool queueSuspended)
             {
                 this.ToComponent().SuspendEvents(queueSuspended);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// Suspend the firing of all events. (see resumeEvents)
-			/// </summary>
-            public virtual TBuilder SuspendEvents()
-            {
-                this.ToComponent().SuspendEvents();
                 return this as TBuilder;
             }
             
@@ -361,96 +253,6 @@ namespace Ext.Net
             public virtual TBuilder Un(string eventName, string fn, string scope)
             {
                 this.ToComponent().Un(eventName, fn, scope);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Mon(Element el, string eventName, JFunction fn)
-            {
-                this.ToComponent().Mon(el, eventName, fn);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Mon(Observable el, string eventName, JFunction fn)
-            {
-                this.ToComponent().Mon(el, eventName, fn);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Mon(Element el, string eventName, JFunction fn, string scope)
-            {
-                this.ToComponent().Mon(el, eventName, fn, scope);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Mon(Observable el, string eventName, JFunction fn, string scope)
-            {
-                this.ToComponent().Mon(el, eventName, fn, scope);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Mon(Element el, string eventName, string fn, string scope, HandlerConfig options)
-            {
-                this.ToComponent().Mon(el, eventName, fn, scope, options);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Mon(Observable el, string eventName, string fn, string scope, HandlerConfig options)
-            {
-                this.ToComponent().Mon(el, eventName, fn, scope, options);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Mun(Element el, string eventName, string fn)
-            {
-                this.ToComponent().Mun(el, eventName, fn);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Mun(Observable el, string eventName, string fn)
-            {
-                this.ToComponent().Mun(el, eventName, fn);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Mun(Element el, string eventName, string fn, string scope)
-            {
-                this.ToComponent().Mun(el, eventName, fn, scope);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Mun(Observable el, string eventName, string fn, string scope)
-            {
-                this.ToComponent().Mun(el, eventName, fn, scope);
                 return this as TBuilder;
             }
             

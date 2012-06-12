@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class Editor
     {
 		/*  Ctor
@@ -64,7 +61,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        new public partial class Config : ComponentBase.Config 
+        new public partial class Config : Component.Config 
         { 
 			/*  Implicit Editor.Config Conversion to Editor.Builder
 				-----------------------------------------------------------------------------------------------*/
@@ -99,31 +96,13 @@ namespace Ext.Net
 				}
 			}
 
-			private string alignment = "c-c?";
+			private EditorAutoSize autoSize = EditorAutoSize.Disable;
 
 			/// <summary>
-			/// The position to align to (see Ext.Element.alignTo for more details, defaults to \"c-c?\").
+			/// Size for the editor to automatically adopt the size of the underlying field, Width to adopt the width only, or Height to adopt the height only (defaults to Disable)
 			/// </summary>
-			[DefaultValue("c-c?")]
-			public virtual string Alignment 
-			{ 
-				get
-				{
-					return this.alignment;
-				}
-				set
-				{
-					this.alignment = value;
-				}
-			}
-
-			private bool autoSize = false;
-
-			/// <summary>
-			/// True for the editor to automatically adopt the size of the underlying field. Otherwise, an object can be passed to indicate where to get each dimension. The available properties are 'boundEl' and 'field'. If a dimension is not specified, it will use the underlying height/width specified on the editor object. 
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool AutoSize 
+			[DefaultValue(EditorAutoSize.Disable)]
+			public virtual EditorAutoSize AutoSize 
 			{ 
 				get
 				{
@@ -135,10 +114,28 @@ namespace Ext.Net
 				}
 			}
 
+			private int zIndex = 0;
+
+			/// <summary>
+			/// Editor z-index
+			/// </summary>
+			[DefaultValue(0)]
+			public virtual int ZIndex 
+			{ 
+				get
+				{
+					return this.zIndex;
+				}
+				set
+				{
+					this.zIndex = value;
+				}
+			}
+
 			private bool allowBlur = true;
 
 			/// <summary>
-			/// True to complete the editing process if in edit mode when the field is blurred. Defaults to true.
+			/// True to complete edit complete the editing process if in edit mode when the field is blurred. Defaults to true.
 			/// </summary>
 			[DefaultValue(true)]
 			public virtual bool AllowBlur 
@@ -171,12 +168,12 @@ namespace Ext.Net
 				}
 			}
 
-			private bool cancelOnEsc = true;
+			private bool cancelOnEsc = false;
 
 			/// <summary>
-			/// True to cancel the edit when the escape key is pressed. Defaults to: true
+			/// True to cancel the edit when the escape key is pressed (defaults to false)
 			/// </summary>
-			[DefaultValue(true)]
+			[DefaultValue(false)]
 			public virtual bool CancelOnEsc 
 			{ 
 				get
@@ -189,12 +186,12 @@ namespace Ext.Net
 				}
 			}
 
-			private bool completeOnEnter = true;
+			private bool completeOnEnter = false;
 
 			/// <summary>
 			/// True to complete the edit when the enter key is pressed (defaults to false)
 			/// </summary>
-			[DefaultValue(true)]
+			[DefaultValue(false)]
 			public virtual bool CompleteOnEnter 
 			{ 
 				get
@@ -207,28 +204,10 @@ namespace Ext.Net
 				}
 			}
 
-			private bool constrain = false;
-
-			/// <summary>
-			/// True to constrain the editor to the viewport. Defaults to: false
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool Constrain 
-			{ 
-				get
-				{
-					return this.constrain;
-				}
-				set
-				{
-					this.constrain = value;
-				}
-			}
-
 			private bool hideEl = true;
 
 			/// <summary>
-			/// False to keep the bound element visible while the editor is displayed. Defaults to: true
+			/// False to keep the bound element visible while the editor is displayed (defaults to true)
 			/// </summary>
 			[DefaultValue(true)]
 			public virtual bool HideEl 
@@ -242,29 +221,11 @@ namespace Ext.Net
 					this.hideEl = value;
 				}
 			}
-        
-			private ItemsCollection<Field> field = null;
 
-			/// <summary>
-			/// The Field object (or descendant)
-			/// </summary>
-			public ItemsCollection<Field> Field
-			{
-				get
-				{
-					if (this.field == null)
-					{
-						this.field = new ItemsCollection<Field>();
-					}
-			
-					return this.field;
-				}
-			}
-			
 			private bool ignoreNoChange = false;
 
 			/// <summary>
-			/// True to skip the edit completion process (no save, no events fired) if the user completes an edit and the value has not changed. Applies only to string values - edits for other data types will never be ignored. Defaults to: false
+			/// True to skip the edit completion process (no save, no events fired) if the user completes an edit and the value has not changed (defaults to false). Applies only to string values - edits for other data types will never be ignored.
 			/// </summary>
 			[DefaultValue(false)]
 			public virtual bool IgnoreNoChange 
@@ -276,24 +237,6 @@ namespace Ext.Net
 				set
 				{
 					this.ignoreNoChange = value;
-				}
-			}
-
-			private string parentElement = "";
-
-			/// <summary>
-			/// An element to render to. Defaults to the document.body.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string ParentElement 
-			{ 
-				get
-				{
-					return this.parentElement;
-				}
-				set
-				{
-					this.parentElement = value;
 				}
 			}
 
@@ -312,6 +255,24 @@ namespace Ext.Net
 				set
 				{
 					this.revertInvalid = value;
+				}
+			}
+
+			private ShadowMode shadow = ShadowMode.Frame;
+
+			/// <summary>
+			/// \"sides\" for sides/bottom only, \"frame\" for 4-way shadow, and \"drop\" for bottom-right shadow (defaults to \"frame\")
+			/// </summary>
+			[DefaultValue(ShadowMode.Frame)]
+			public virtual ShadowMode Shadow 
+			{ 
+				get
+				{
+					return this.shadow;
+				}
+				set
+				{
+					this.shadow = value;
 				}
 			}
 
@@ -369,6 +330,24 @@ namespace Ext.Net
 				}
 			}
         
+			private ItemsCollection<Field> field = null;
+
+			/// <summary>
+			/// The Field object (or descendant)
+			/// </summary>
+			public ItemsCollection<Field> Field
+			{
+				get
+				{
+					if (this.field == null)
+					{
+						this.field = new ItemsCollection<Field>();
+					}
+			
+					return this.field;
+				}
+			}
+			        
 			private Control targetControl = null;
 
 			/// <summary>

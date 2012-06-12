@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class Desktop
     {
 		/*  Ctor
@@ -64,7 +61,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        new public partial class Config : Observable.Config 
+        new public partial class Config : Component.Config 
         { 
 			/*  Implicit Desktop.Config Conversion to Desktop.Builder
 				-----------------------------------------------------------------------------------------------*/
@@ -99,60 +96,132 @@ namespace Ext.Net
 				}
 			}
 			        
-			private DesktopConfig desktopConfig = null;
+			private DesktopShortcuts shortcuts = null;
 
 			/// <summary>
 			/// 
 			/// </summary>
-			public DesktopConfig DesktopConfig
+			public DesktopShortcuts Shortcuts
 			{
 				get
 				{
-					if (this.desktopConfig == null)
+					if (this.shortcuts == null)
 					{
-						this.desktopConfig = new DesktopConfig();
+						this.shortcuts = new DesktopShortcuts();
 					}
 			
-					return this.desktopConfig;
+					return this.shortcuts;
 				}
 			}
-			        
-			private DesktopStartMenu startMenu = null;
+			
+			private int xTickSize = 1;
 
 			/// <summary>
 			/// 
 			/// </summary>
-			public DesktopStartMenu StartMenu
-			{
+			[DefaultValue(1)]
+			public virtual int XTickSize 
+			{ 
 				get
 				{
-					if (this.startMenu == null)
-					{
-						this.startMenu = new DesktopStartMenu();
-					}
-			
-					return this.startMenu;
+					return this.xTickSize;
+				}
+				set
+				{
+					this.xTickSize = value;
 				}
 			}
-			        
-			private DesktopTaskBar taskBar = null;
+
+			private int yTickSize = 1;
 
 			/// <summary>
 			/// 
 			/// </summary>
-			public DesktopTaskBar TaskBar
-			{
+			[DefaultValue(1)]
+			public virtual int YTickSize 
+			{ 
 				get
 				{
-					if (this.taskBar == null)
-					{
-						this.taskBar = new DesktopTaskBar();
-					}
-			
-					return this.taskBar;
+					return this.yTickSize;
+				}
+				set
+				{
+					this.yTickSize = value;
 				}
 			}
-			        
+
+			private string backgroundColor = "";
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string BackgroundColor 
+			{ 
+				get
+				{
+					return this.backgroundColor;
+				}
+				set
+				{
+					this.backgroundColor = value;
+				}
+			}
+
+			private string shortcutTextColor = "";
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string ShortcutTextColor 
+			{ 
+				get
+				{
+					return this.shortcutTextColor;
+				}
+				set
+				{
+					this.shortcutTextColor = value;
+				}
+			}
+
+			private string wallpaper = "";
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string Wallpaper 
+			{ 
+				get
+				{
+					return this.wallpaper;
+				}
+				set
+				{
+					this.wallpaper = value;
+				}
+			}
+
+			private int textLengthToTruncate = 12;
+
+			/// <summary>
+			/// The maximum length of Ext.ux.TaskBar.TaskButton's text to allow before truncating
+			/// </summary>
+			[DefaultValue(12)]
+			public virtual int TextLengthToTruncate 
+			{ 
+				get
+				{
+					return this.textLengthToTruncate;
+				}
+				set
+				{
+					this.textLengthToTruncate = value;
+				}
+			}
+        
 			private DesktopListeners listeners = null;
 
 			/// <summary>

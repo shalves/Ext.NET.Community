@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class MultiCombo
     {
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ComboBoxBase.Builder<MultiCombo, MultiCombo.Builder>
+        public partial class Builder : ComboBoxBaseMulti<ListItem>.Builder<MultiCombo, MultiCombo.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -78,45 +75,32 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
-			/// True to wrap by square brackets.
+			/// False to prevent the user from typing text directly into the field, just like a traditional select (defaults to true).
 			/// </summary>
-            public virtual MultiCombo.Builder WrapBySquareBrackets(bool wrapBySquareBrackets)
+            public virtual MultiCombo.Builder Editable(bool editable)
             {
-                this.ToComponent().WrapBySquareBrackets = wrapBySquareBrackets;
+                this.ToComponent().Editable = editable;
                 return this as MultiCombo.Builder;
             }
              
- 			/// <summary>
-			/// Selection UI mode
-			/// </summary>
-            public virtual MultiCombo.Builder SelectionMode(MultiSelectMode selectionMode)
-            {
-                this.ToComponent().SelectionMode = selectionMode;
-                return this as MultiCombo.Builder;
-            }
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(ComboBoxListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
              
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of MultiCombo.Builder</returns>
-            public virtual MultiCombo.Builder Listeners(Action<ComboBoxListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as MultiCombo.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of MultiCombo.Builder</returns>
-            public virtual MultiCombo.Builder DirectEvents(Action<ComboBoxDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as MultiCombo.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(ComboBoxDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/
@@ -127,6 +111,15 @@ namespace Ext.Net
             public virtual MultiCombo.Builder SelectAll()
             {
                 this.ToComponent().SelectAll();
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Clear selection
+			/// </summary>
+            public virtual MultiCombo.Builder ClearSelections()
+            {
+                this.ToComponent().ClearSelections();
                 return this;
             }
             

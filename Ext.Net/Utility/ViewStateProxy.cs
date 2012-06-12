@@ -15,16 +15,15 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
-using System;
 using System.ComponentModel;
 using System.Reflection;
 using System.Threading;
@@ -38,37 +37,15 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class ControlState : BaseItem
+    public partial class ViewStateProxy : StateManagedItem
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="name"></param>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        public virtual T Get<T>(string name, T defaultValue)
-        {
-            return (T)(this[name].IfNull(defaultValue));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        public virtual void Set(string name, object value)
-        {
-            this[name] = value;
-        }
-
-        private readonly BaseControl control;
+        private readonly XControl control;
 
 		/// <summary>
 		/// 
 		/// </summary>
 		[Description("")]
-        public ControlState(BaseControl control, StateBag viewState)
+        public ViewStateProxy(XControl control, StateBag viewState)
         {
             this.control = control;
             this.ViewState = viewState;
@@ -82,7 +59,6 @@ namespace Ext.Net
         {
             bool oldValue = control.AllowCallbackScriptMonitoring;
             this.control.AllowCallbackScriptMonitoring = false;
-            this.control.ScriptSuspended = true;
             Monitor.Enter(this.control);
 
             return oldValue;
@@ -95,7 +71,6 @@ namespace Ext.Net
         public virtual void Resume(bool oldValue)
         {
             this.control.AllowCallbackScriptMonitoring = oldValue;
-            this.control.ScriptSuspended = false;
             Monitor.Exit(this.control);
         }
 
@@ -121,51 +96,44 @@ namespace Ext.Net
             set
             {
                 this.ViewState[key] = value;
-                this.SetDirectEventUpdate(key, value);
-                
-            }
-        }
 
-        private void CheckID()
-        {
-            if (((control.IDMode == Ext.Net.IDMode.Explicit || control.IDMode == Ext.Net.IDMode.Static) && !control.IsIdRequired) || control.IDMode == Ext.Net.IDMode.Ignore)
-            {
-                throw new Exception("You have to set widget's ID to call its methods (widget - " + control.GetType().ToString() + ")");
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        public void SetDirectEventUpdate(string key, object value)
-        {
-            if ((control.IsProxy && !control.ScriptSuspended) || (RequestManager.IsAjaxRequest && control.AllowCallbackScriptMonitoring && !control.IsDynamic))
-            {
-                PropertyInfo pi = control.GetType().GetProperty(key);
-
-                if (pi == null)
+                if ((control.GenerateMethodsCalling) || (RequestManager.IsAjaxRequest && (control.AllowCallbackScriptMonitoring && (!control.IsDynamic || control.IsProxy))))
                 {
-                    return;
-                }
+                    PropertyInfo pi = control.GetType().GetProperty(key);
 
-                object[] attrs = pi.GetCustomAttributes(typeof(DirectEventUpdateAttribute), true);
-
-                if (attrs.Length > 0)
-                {
-                    this.CheckID();
-                    this.control.CallbackValues[key] = value;
-                    ((DirectEventUpdateAttribute)attrs[0]).RegisterScript(this.control, pi);
-                }
-                else
-                {
-                    ConfigOptionAttribute attr = ClientConfig.GetClientConfigAttribute(pi);
-                    if (attr != null)
+                    if (pi == null)
                     {
-                        this.CheckID();
-                        this.control.CallbackValues[key] = value;                        
-                        this.control.AddScript(string.Format(DirectEventUpdateAttribute.AutoGenerateFormat, this.control.ClientID, JSON.Serialize(value), pi.Name.ToLowerCamelCase()));
+                        return;
+                    }
+
+                    object[] attrs = pi.GetCustomAttributes(typeof(DirectEventUpdateAttribute), true);
+
+                    if (attrs.Length > 0)
+                    {
+                        this.control.CallbackValues[key] = value;
+
+                        if (value is Icon)
+                        {
+                            if (this.ResourceManager != null)
+                            {
+                                this.ResourceManager.RegisterIcon((Icon)value);
+                            }
+                            else
+                            {
+                                this.control.AddScript("Ext.net.ResourceMgr.registerIcon({0});", JSON.Serialize(value));
+                            }
+                        }
+
+                        ((DirectEventUpdateAttribute)attrs[0]).RegisterScript(this.control, pi); 
+                    }
+                    else
+                    {
+                        ConfigOptionAttribute attr = ClientConfig.GetClientConfigAttribute(pi);
+                        if (attr != null)
+                        {
+                            this.control.CallbackValues[key] = value;
+                            this.control.AddScript(string.Format(DirectEventUpdateAttribute.AutoGenerateFormat, this.control.ClientID, JSON.Serialize(value), pi.Name.ToLowerCamelCase()));
+                        }
                     }
                 }
             }

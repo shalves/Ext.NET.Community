@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,19 +33,34 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public abstract partial class ButtonBase
     {
         /// <summary>
         /// 
         /// </summary>
-        new public abstract partial class Config : ComponentBase.Config 
+        new public abstract partial class Config : BoxComponentBase.Config 
         { 
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
+			private bool autoWidth = true;
+
+			/// <summary>
+			/// By default, if a width is not specified the button will attempt to stretch horizontally to fit its content. If the button is being managed by a width sizing layout (hbox, fit, anchor), set this to false to prevent the button from doing this automatic sizing. Defaults to <tt>undefined</tt>.
+			/// </summary>
+			[DefaultValue(true)]
+			public override bool AutoWidth 
+			{ 
+				get
+				{
+					return this.autoWidth;
+				}
+				set
+				{
+					this.autoWidth = value;
+				}
+			}
+
 			private bool standOut = false;
 
 			/// <summary>
@@ -136,46 +151,10 @@ namespace Ext.Net
 				}
 			}
 
-			private string arrowCls = "arrow";
-
-			/// <summary>
-			/// The className used for the inner arrow element if the button has a menu.
-			/// </summary>
-			[DefaultValue("arrow")]
-			public virtual string ArrowCls 
-			{ 
-				get
-				{
-					return this.arrowCls;
-				}
-				set
-				{
-					this.arrowCls = value;
-				}
-			}
-        
-			private ParameterCollection baseParams = null;
-
-			/// <summary>
-			/// An object literal of parameters to pass to the url when the href property is specified.
-			/// </summary>
-			public ParameterCollection BaseParams
-			{
-				get
-				{
-					if (this.baseParams == null)
-					{
-						this.baseParams = new ParameterCollection();
-					}
-			
-					return this.baseParams;
-				}
-			}
-			
 			private string clickEvent = "click";
 
 			/// <summary>
-			/// The DOM event that will fire the handler of the button. This can be any valid event name (dblclick, contextmenu). Defaults to: \"click\"
+			/// The type of event to map to the button's event handler (defaults to 'click').
 			/// </summary>
 			[DefaultValue("click")]
 			public virtual string ClickEvent 
@@ -208,24 +187,6 @@ namespace Ext.Net
 				}
 			}
 
-			private string focusCls = "focus";
-
-			/// <summary>
-			/// The CSS class to add to a button when it is in the focussed state. Defaults to: \"focus\"
-			/// </summary>
-			[DefaultValue("focus")]
-			public virtual string FocusCls 
-			{ 
-				get
-				{
-					return this.focusCls;
-				}
-				set
-				{
-					this.focusCls = value;
-				}
-			}
-
 			private bool flat = false;
 
 			/// <summary>
@@ -241,6 +202,24 @@ namespace Ext.Net
 				set
 				{
 					this.flat = value;
+				}
+			}
+
+			private bool formBind = false;
+
+			/// <summary>
+			/// Buttons in the footer of a FormPanel may be configured with the option formBind: true. This causes the form's valid state monitor task to enable/disable those Buttons depending on the form's valid/invalid state.
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool FormBind 
+			{ 
+				get
+				{
+					return this.formBind;
+				}
+				set
+				{
+					this.formBind = value;
 				}
 			}
 
@@ -280,46 +259,10 @@ namespace Ext.Net
 				}
 			}
 
-			private string href = "";
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string Href 
-			{ 
-				get
-				{
-					return this.href;
-				}
-				set
-				{
-					this.href = value;
-				}
-			}
-
-			private string target = "";
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string Target 
-			{ 
-				get
-				{
-					return this.target;
-				}
-				set
-				{
-					this.target = value;
-				}
-			}
-
 			private Icon icon = Icon.None;
 
 			/// <summary>
-			/// The path to an image to display in the button (the image will be set as the background-image CSS property of the button by default, so if you want a mixed icon/text button, set cls:'x-btn-text-icon')
+			/// The icon to use in the Button. See also, IconCls to set an icon with a custom Css class.
 			/// </summary>
 			[DefaultValue(Icon.None)]
 			public virtual Icon Icon 
@@ -370,24 +313,6 @@ namespace Ext.Net
 				}
 			}
 
-			private string iconUrl = "";
-
-			/// <summary>
-			/// The path to an image to display in the button (the image will be set as the background-image CSS property of the button by default, so if you want a mixed icon/text button, set cls:'x-btn-text-icon')
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string IconUrl 
-			{ 
-				get
-				{
-					return this.iconUrl;
-				}
-				set
-				{
-					this.iconUrl = value;
-				}
-			}
-
 			private bool menuArrow = true;
 
 			/// <summary>
@@ -424,24 +349,6 @@ namespace Ext.Net
 				}
 			}
 			
-			private string menuActiveCls = "menu-active";
-
-			/// <summary>
-			/// The CSS class to add to a button when it's menu is active. Defaults to: \"menu-active\"
-			/// </summary>
-			[DefaultValue("menu-active")]
-			public virtual string MenuActiveCls 
-			{ 
-				get
-				{
-					return this.menuActiveCls;
-				}
-				set
-				{
-					this.menuActiveCls = value;
-				}
-			}
-
 			private string menuAlign = "tl-bl?";
 
 			/// <summary>
@@ -457,6 +364,24 @@ namespace Ext.Net
 				set
 				{
 					this.menuAlign = value;
+				}
+			}
+
+			private Unit minWidth = Unit.Pixel(16);
+
+			/// <summary>
+			/// The minimum width for this button (used to give a set of buttons a common width).
+			/// </summary>
+			[DefaultValue(typeof(Unit), "16")]
+			public override Unit MinWidth 
+			{ 
+				get
+				{
+					return this.minWidth;
+				}
+				set
+				{
+					this.minWidth = value;
 				}
 			}
 
@@ -477,25 +402,7 @@ namespace Ext.Net
 					this.overflowText = value;
 				}
 			}
-        
-			private ParameterCollection _params = null;
 
-			/// <summary>
-			/// An object literal of parameters to pass to the url when the href property is specified. Any params override baseParams. New params can be set using the setParams method.
-			/// </summary>
-			public ParameterCollection Params
-			{
-				get
-				{
-					if (this._params == null)
-					{
-						this._params = new ParameterCollection();
-					}
-			
-					return this._params;
-				}
-			}
-			
 			private bool pressed = false;
 
 			/// <summary>
@@ -511,42 +418,6 @@ namespace Ext.Net
 				set
 				{
 					this.pressed = value;
-				}
-			}
-
-			private string pressedCls = "pressed";
-
-			/// <summary>
-			/// The CSS class to add to a button when it is in the pressed state. Defaults to: \"pressed\"
-			/// </summary>
-			[DefaultValue("pressed")]
-			public virtual string PressedCls 
-			{ 
-				get
-				{
-					return this.pressedCls;
-				}
-				set
-				{
-					this.pressedCls = value;
-				}
-			}
-
-			private bool preventDefault = true;
-
-			/// <summary>
-			/// True to prevent the default action when the clickEvent is processed. Defaults to: true
-			/// </summary>
-			[DefaultValue(true)]
-			public virtual bool PreventDefault 
-			{ 
-				get
-				{
-					return this.preventDefault;
-				}
-				set
-				{
-					this.preventDefault = value;
 				}
 			}
 
@@ -568,13 +439,13 @@ namespace Ext.Net
 				}
 			}
 
-			private string scope = null;
+			private object scope = null;
 
 			/// <summary>
-			/// The scope (this reference) in which the handler and toggleHandler is executed. Defaults to this Button.
+			/// The scope of the handler.
 			/// </summary>
 			[DefaultValue(null)]
-			public virtual string Scope 
+			public virtual object Scope 
 			{ 
 				get
 				{
@@ -625,7 +496,7 @@ namespace Ext.Net
 			private string text = "";
 
 			/// <summary>
-			/// The button text to be used as innerHTML (html tags are accepted).
+			/// The position to align the menu to (see Ext.Element.alignTo for more details, defaults to 'tl-bl?').
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string Text 
@@ -637,24 +508,6 @@ namespace Ext.Net
 				set
 				{
 					this.text = value;
-				}
-			}
-
-			private ButtonTextAlign textAlign = ButtonTextAlign.Center;
-
-			/// <summary>
-			/// The text alignment for this button (center, left, right). Defaults to: \"center\"
-			/// </summary>
-			[DefaultValue(ButtonTextAlign.Center)]
-			public virtual ButtonTextAlign TextAlign 
-			{ 
-				get
-				{
-					return this.textAlign;
-				}
-				set
-				{
-					this.textAlign = value;
 				}
 			}
 
@@ -733,7 +586,7 @@ namespace Ext.Net
 			private ButtonType type = ButtonType.Button;
 
 			/// <summary>
-			/// The type of input to create: submit, reset or button. Defaults to: \"button\"
+			/// submit, reset or button - defaults to 'button'.
 			/// </summary>
 			[DefaultValue(ButtonType.Button)]
 			public virtual ButtonType Type 
@@ -763,24 +616,6 @@ namespace Ext.Net
 				set
 				{
 					this.autoPostBack = value;
-				}
-			}
-
-			private string postBackEvent = "click";
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue("click")]
-			public virtual string PostBackEvent 
-			{ 
-				get
-				{
-					return this.postBackEvent;
-				}
-				set
-				{
-					this.postBackEvent = value;
 				}
 			}
 
@@ -817,6 +652,42 @@ namespace Ext.Net
 				set
 				{
 					this.validationGroup = value;
+				}
+			}
+
+			private string navigateUrl = "";
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string NavigateUrl 
+			{ 
+				get
+				{
+					return this.navigateUrl;
+				}
+				set
+				{
+					this.navigateUrl = value;
+				}
+			}
+
+			private string target = "";
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string Target 
+			{ 
+				get
+				{
+					return this.target;
+				}
+				set
+				{
+					this.target = value;
 				}
 			}
 

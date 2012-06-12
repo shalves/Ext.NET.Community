@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,22 +41,6 @@ namespace Ext.Net
     [Description("")]
     public partial class ComponentDirectEvent : ObservableDirectEvent
     {
-        public ComponentDirectEvent() { }
-
-        public ComponentDirectEvent(ComponentDirectEvents parent) 
-        { 
-            this.Parent = parent; 
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual ComponentDirectEvents Parent
-        {
-            get;
-            internal set;
-        }
-        
         /// <summary>
         /// 
         /// </summary>
@@ -81,86 +65,11 @@ namespace Ext.Net
             add
             {
                 this.Handler = (DirectEventHandler) System.Delegate.Combine(this.Handler, value);
-                this.MarkAsDirty();
             }
             [MethodImpl(MethodImplOptions.Synchronized)]
             remove
             {
                 this.Handler = (DirectEventHandler)System.Delegate.Remove(this.Handler, value);
-            }
-        }
-
-        protected internal virtual void MarkAsDirty()
-        {
-            this.isDefault = this.Handler == null && this.Url.IsEmpty() && this.Type == DirectEventType.Submit;
-
-            var obs = this.Owner as Observable;
-            if(obs != null)
-            {
-                obs.ForceIdRendering = !this.isDefault && !obs.IsDynamic;
-            }
-
-            if (this.Parent != null && this.Parent.Parent != null)
-            {
-                this.Parent.Parent.ForceIdRendering = !this.isDefault && !this.Parent.Parent.IsDynamic;
-            }
-        }
-
-        /// <summary>
-        /// The default URL to be used for requests to the server. (defaults to '')
-        /// </summary>
-        [DefaultValue("")]
-        [NotifyParentProperty(true)]
-        [Description("The default URL to be used for requests to the server if DirectEventType.Request. (defaults to '')")]
-        public override string Url
-        {
-            get
-            {
-                return this.State.Get<string>("Url", "");
-            }
-            set
-            {
-                this.State.Set("Url", value);
-                this.MarkAsDirty();
-            }
-        }
-
-        /// <summary>
-        /// True to disable control during direct request
-        /// </summary>
-        [DefaultValue(false)]
-        [ConfigOption]
-        [NotifyParentProperty(true)]
-        [Description("True to disable control during direct request")]
-        public virtual bool DisableControl
-        {
-            get
-            {
-                return this.State.Get<bool>("DisableControl", false);
-            }
-            set
-            {
-                this.State.Set("DisableControl", value);
-            }
-        }
-
-        /// <summary>
-        /// The type of DirectEvent to perform. The 'Submit' type will submit the &lt;form> and 'Load' will make a POST request to url set in the .Url property, or the current url if the .Url property has not been set.
-        /// </summary>
-        [ConfigOption(JsonMode.ToLower)]
-        [DefaultValue(DirectEventType.Submit)]
-        [NotifyParentProperty(true)]
-        [Description("The type of DirectEvent to perform. The 'Submit' type will submit the &lt;form> and 'Load' will make a POST request to url set in the .Url property, or the current url if the .Url property has not been set.")]
-        public override DirectEventType Type
-        {
-            get
-            {
-                return this.State.Get<DirectEventType>("Type", DirectEventType.Submit);
-            }
-            set
-            {
-                this.State.Set("Type", value);
-                this.MarkAsDirty();
             }
         }
 
@@ -172,9 +81,6 @@ namespace Ext.Net
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public bool HandlerIsNotEmpty
         {
             get
@@ -191,7 +97,6 @@ namespace Ext.Net
             }
         }
 
-        private bool isDefault = true;
         /// <summary>
         /// 
         /// </summary>
@@ -200,7 +105,7 @@ namespace Ext.Net
         {
             get
             {
-                return this.isDefault;                
+                return this.Handler == null && this.Url.IsEmpty() && this.Type == DirectEventType.Submit;
             }
         }
         
@@ -213,6 +118,7 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("")]
         public DirectEventConfirmation Confirmation
         {
@@ -232,7 +138,7 @@ namespace Ext.Net
     /// 
     /// </summary>
     [Description("")]
-    public partial class DirectEventConfirmation : BaseItem
+    public partial class DirectEventConfirmation : StateManagedItem
     {
         /// <summary>
         /// If true show confirmation dialog
@@ -245,11 +151,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("ConfirmRequest", false);
+                object obj = this.ViewState["ConfirmRequest"];
+                return obj != null ? (bool)obj : false;
             }
             set
             {
-                this.State.Set("ConfirmRequest", value);
+                this.ViewState["ConfirmRequest"] = value;
             }
         }
 
@@ -264,11 +171,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Title", "Confirmation");
+                return (string)this.ViewState["Title"] ?? "Confirmation";
             }
             set
             {
-                this.State.Set("Title", value);
+                this.ViewState["Title"] = value;
             }
         }
 
@@ -283,11 +190,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Message", "Are you sure?");
+                return (string)this.ViewState["Message"] ?? "Are you sure?";
             }
             set
             {
-                this.State.Set("Message", value);
+                this.ViewState["Message"] = value;
             }
         }
 
@@ -301,11 +208,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("BeforeConfirm", "");
+                return (string)this.ViewState["BeforeConfirm"] ?? "";
             }
             set
             {
-                this.State.Set("BeforeConfirm", value);
+                this.ViewState["BeforeConfirm"] = value;
             }
         }
 
@@ -338,11 +245,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Cancel", "");
+                return (string)this.ViewState["Cancel"] ?? "";
             }
             set
             {
-                this.State.Set("Cancel", value);
+                this.ViewState["Cancel"] = value;
             }
         }
 
@@ -382,35 +289,6 @@ namespace Ext.Net
         public DirectEventArgs(ParameterCollection extraParams)
         {
             this.extraParams = extraParams;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public DirectEventArgs(string token, string name, ParameterCollection extraParams)
-            : this(extraParams)
-        {
-            this.Token = token;
-            this.Name = name;            
-            this.IsBusEvent = true;
-        }
-
-        public bool IsBusEvent
-        {
-            get;
-            set;
-        }
-
-        public string Name
-        {
-            get;
-            set;
-        }
-
-        public string Token
-        {
-            get;
-            set;
         }
 
         /// <summary>

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,29 +33,15 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class PagingToolbarListeners : AbstractComponentListeners
+    public partial class PagingToolbarListeners : BoxComponentListeners
     {
         private ComponentListener change;
 
         /// <summary>
-        /// Fires after the active page has been changed.
-        /// Parameters
-        /// item : Ext.toolbar.Paging
-        /// pageData : Object
-        ///     An object that has these properties:
-        ///         - total : Number
-        ///             The total number of records in the dataset as returned by the server
-        ///         - currentPage : Number
-        ///             The current page number
-        ///         - pageCount : Number
-        ///             The total number of pages (calculated from the total number of records in the dataset as returned by the server and the current pageSize)
-        ///         - toRecord : Number
-        ///             The starting record index for the current page
-        ///         - fromRecord : Number
-        ///             The ending record index for the current page
+        /// Fires after page changing
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
-        [ListenerArgument(1, "pageData")]
+        [ListenerArgument(1, "data", typeof(object), "{total, activePage, pages}")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("change", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -65,21 +51,22 @@ namespace Ext.Net
         {
             get
             {
-                return this.change ?? (this.change = new ComponentListener());
+                if (this.change == null)
+                {
+                    this.change = new ComponentListener();
+                }
+
+                return this.change;
             }
         }
 
         private ComponentListener beforeChange;
 
         /// <summary>
-        /// Fires just before the active page is changed. Return false to prevent the active page from being changed.
-        /// Parameters
-        /// this : Ext.toolbar.Paging
-        /// page : Number
-        ///     The page number that will be loaded on change
+        /// Fires before page changing
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
-        [ListenerArgument(1, "page")]
+        [ListenerArgument(1, "o", typeof(object), "{start, limit}")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("beforechange", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -89,7 +76,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.beforeChange ?? (this.beforeChange = new ComponentListener());
+                if (this.beforeChange == null)
+                {
+                    this.beforeChange = new ComponentListener();
+                }
+
+                return this.beforeChange;
             }
         }
     }

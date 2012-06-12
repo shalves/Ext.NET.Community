@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class FormPanelBase
     {
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TFormPanelBase, TBuilder> : AbstractPanel.Builder<TFormPanelBase, TBuilder>
+        new public abstract partial class Builder<TFormPanelBase, TBuilder> : PanelBase.Builder<TFormPanelBase, TBuilder>
             where TFormPanelBase : FormPanelBase
             where TBuilder : Builder<TFormPanelBase, TBuilder>
         {
@@ -58,47 +55,79 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
-			/// Interval in milliseconds at which the form's fields are checked for value changes. Only used if the pollForChanges option is set to true. Defaults to 500 milliseconds.
+			/// (optional) The id of the FORM tag (defaults to an auto-generated id).
 			/// </summary>
-            public virtual TBuilder PollInterval(int pollInterval)
+            public virtual TBuilder FormID(string formID)
             {
-                this.ToComponent().PollInterval = pollInterval;
+                this.ToComponent().FormID = formID;
                 return this as TBuilder;
             }
              
  			/// <summary>
-			/// If set to true, sets up an interval task (using the pollInterval) in which the panel's fields are repeatedly checked for changes in their values. This is in addition to the normal detection each field does on its own input element, and is not needed in most cases. It does, however, provide a means to absolutely guarantee detection of all changes including some edge cases in some browsers which do not fire native events. Defaults to false.
+			/// A css class to apply to the x-form-item of fields. This property cascades to child containers.
 			/// </summary>
-            public virtual TBuilder PollForChanges(bool pollForChanges)
+            public virtual TBuilder ItemCls(string itemCls)
             {
-                this.ToComponent().PollForChanges = pollForChanges;
+                this.ToComponent().ItemCls = itemCls;
                 return this as TBuilder;
             }
              
  			/// <summary>
-			/// Parameters to pass with all requests. e.g. baseParams: {id: '123', foo: 'bar'}.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder BaseParams(Action<ParameterCollection> action)
+			/// The milliseconds to poll valid state, ignored if monitorValid is not true (defaults to 200)
+			/// </summary>
+            public virtual TBuilder MonitorPoll(int monitorPoll)
             {
-                action(this.ToComponent().BaseParams);
+                this.ToComponent().MonitorPoll = monitorPoll;
                 return this as TBuilder;
             }
-			 
+             
  			/// <summary>
-			/// An Ext.data.DataReader (e.g. Ext.data.reader.Xml) to be used to read field error messages returned from 'submit' actions. This is optional as there is built-in support for processing JSON responses.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder ErrorReader(Action<ReaderCollection> action)
+			/// If true the form monitors its valid state client-side and fires a looping event with that state. This is required to bind buttons to the valid state using the config value formBind:true on the button.
+			/// </summary>
+            public virtual TBuilder MonitorValid(bool monitorValid)
             {
-                action(this.ToComponent().ErrorReader);
+                this.ToComponent().MonitorValid = monitorValid;
                 return this as TBuilder;
             }
-			 
+             
  			/// <summary>
-			/// The request method to use (GET or POST) for form actions if one isn't supplied in the action options.
+			/// 
+			/// </summary>
+            public virtual TBuilder RenderFormElement(bool renderFormElement)
+            {
+                this.ToComponent().RenderFormElement = renderFormElement;
+                return this as TBuilder;
+            }
+             
+ 			// /// <summary>
+			// /// Parameters to pass with all requests. e.g. baseParams: {id: '123', foo: 'bar'}.
+			// /// </summary>
+            // public virtual TBuilder BaseParams(ParameterCollection baseParams)
+            // {
+            //    this.ToComponent().BaseParams = baseParams;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// An Ext.data.DataReader (e.g. Ext.data.XmlReader) to be used to read data when reading validation errors on \"submit\" actions. This is completely optional as there is built-in support for processing JSON.
+			// /// </summary>
+            // public virtual TBuilder ErrorReader(ReaderCollection errorReader)
+            // {
+            //    this.ToComponent().ErrorReader = errorReader;
+            //    return this as TBuilder;
+            // }
+             
+ 			/// <summary>
+			/// Set to true if this form is a file upload.
+			/// </summary>
+            public virtual TBuilder FileUpload(bool fileUpload)
+            {
+                this.ToComponent().FileUpload = fileUpload;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The HTTP method to use. Defaults to POST if params are present, or GET if not.
 			/// </summary>
             public virtual TBuilder Method(HttpMethod method)
             {
@@ -106,19 +135,17 @@ namespace Ext.Net
                 return this as TBuilder;
             }
              
+ 			// /// <summary>
+			// /// An Ext.data.DataReader (e.g. Ext.data.XmlReader) to be used to read data when executing \"load\" actions. This is optional as there is built-in support for processing JSON.
+			// /// </summary>
+            // public virtual TBuilder Reader(ReaderCollection reader)
+            // {
+            //    this.ToComponent().Reader = reader;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
-			/// An Ext.data.DataReader (e.g. Ext.data.reader.Xml) to be used to read data when executing 'load' actions. This is optional as there is built-in support for processing JSON responses.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder Reader(Action<ReaderCollection> action)
-            {
-                action(this.ToComponent().Reader);
-                return this as TBuilder;
-            }
-			 
- 			/// <summary>
-			/// If set to true, a standard HTML form submit is used instead of a XHR (Ajax) style form submission. All of the field values, plus any additional params configured via baseParams and/or the options to submit, will be included in the values submitted in the form.
+			/// If set to true, standard HTML form submits are used instead of XHR (Ajax) style form submissions. (defaults to false).
 			/// </summary>
             public virtual TBuilder StandardSubmit(bool standardSubmit)
             {
@@ -136,7 +163,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// If set to true, reset() resets to the last loaded or setValues() data instead of when the form was first created.
+			/// If set to true, form.reset() resets to the last loaded or setValues() data instead of when the form was first created.
 			/// </summary>
             public virtual TBuilder TrackResetOnLoad(bool trackResetOnLoad)
             {
@@ -145,7 +172,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The URL to use for form actions if one isn't supplied in the doAction options.
+			/// The URL to use for form actions if one isn't supplied in the action options.
 			/// </summary>
             public virtual TBuilder Url(string url)
             {
@@ -154,58 +181,29 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// By default wait messages are displayed with Ext.MessageBox.wait. You can target a specific element by passing it or its id or mask the form itself by passing in true.
+			/// A CSS style specification string to add to each field element in this layout (defaults to '').
 			/// </summary>
-            public virtual TBuilder WaitMsgTarget(string waitMsgTarget)
+            public virtual TBuilder ElementStyle(string elementStyle)
             {
-                this.ToComponent().WaitMsgTarget = waitMsgTarget;
+                this.ToComponent().ElementStyle = elementStyle;
                 return this as TBuilder;
             }
              
  			/// <summary>
-			/// The default title to show for the waiting message box
+			/// The layout type to be used in this container.
 			/// </summary>
-            public virtual TBuilder WaitTitle(string waitTitle)
+            public virtual TBuilder Layout(string layout)
             {
-                this.ToComponent().WaitTitle = waitTitle;
+                this.ToComponent().Layout = layout;
                 return this as TBuilder;
             }
-             
- 			/// <summary>
-			/// If specified, the properties in this object are used as default config values for each Ext.form.Labelable instance (e.g. Ext.form.field.Base or Ext.form.FieldContainer) that is added as a descendant of this container. Corresponding values specified in an individual field's own configuration, or from the defaults config of its parent container, will take precedence. See the documentation for Ext.form.Labelable to see what config options may be specified in the fieldDefaults.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder FieldDefaults(Action<Labelable> action)
-            {
-                action(this.ToComponent().FieldDefaults);
-                return this as TBuilder;
-            }
-			
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/
 			
  			/// <summary>
-			/// Calls Ext.apply for all fields in this form with the passed object.
-			/// </summary>
-            public virtual TBuilder ApplyToFields(object values)
-            {
-                this.ToComponent().ApplyToFields(values);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// Calls Ext.applyIf for all fields in this form with the passed object.
-			/// </summary>
-            public virtual TBuilder ApplyIfToFields(object values)
-            {
-                this.ToComponent().ApplyIfToFields(values);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// Clears all invalid field messages in this form.
+			/// Clears all invalid messages in this form.
 			/// </summary>
             public virtual TBuilder ClearInvalid()
             {
@@ -237,6 +235,33 @@ namespace Ext.Net
             public virtual TBuilder SetValues(object values)
             {
                 this.ToComponent().SetValues(values);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Calls Ext.apply for all fields in this form with the passed object.
+			/// </summary>
+            public virtual TBuilder ApplyToFields(object values)
+            {
+                this.ToComponent().ApplyToFields(values);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Calls Ext.applyIf for all fields in this form with the passed object.
+			/// </summary>
+            public virtual TBuilder ApplyIfToFields(object values)
+            {
+                this.ToComponent().ApplyIfToFields(values);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Calls required method for all fields in this form with the passed args.
+			/// </summary>
+            public virtual TBuilder CallFieldMethod(string fnName, object[] args)
+            {
+                this.ToComponent().CallFieldMethod(fnName, args);
                 return this as TBuilder;
             }
             

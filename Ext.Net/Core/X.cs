@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -264,40 +264,27 @@ namespace Ext.Net
             -----------------------------------------------------------------------------------------------*/
 
         /// <summary>
-        /// Returns a AbstractComponent by id.
+        /// Returns a Component by id.
         /// </summary>
-        /// <param name="id">The AbstractComponent id</param>
-        /// <returns>The AbstractComponent, or throws ArgumentNullException if not found</returns>        
-        public static AbstractComponent GetCmp(string id)
+        /// <param name="id">The Component id</param>
+        /// <returns>The Component, or throws ArgumentNullException if not found</returns>        
+        public static Component GetCmp(string id)
         {
-            AbstractComponent component = ComponentManager.Get(id);
+            Component component = ComponentManager.Get(id);
 
-            return X.SetValue<AbstractComponent>(component, X.GetValue(id));
+            return X.SetValue<Component>(component, X.GetValue(id));
         }
 
         /// <summary>
-        /// Returns the AbstractComponent by id and sets the .Value related fields by calling if available from the Request.
+        /// Returns the Component by id and sets the .Value related fields by calling if available from the Request.
         /// </summary>
-        /// <param name="id">The AbstractComponent id</param>
-        /// <typeparam name="T">The Type of AbstractComponent to return.</typeparam>
-        /// <returns>The AbstractComponent, or throws ArgumentNullException if not found</returns>
+        /// <param name="id">The Component id</param>
+        /// <typeparam name="T">The Type of Component to return.</typeparam>
+        /// <returns>The Component, or throws ArgumentNullException if not found</returns>
         [Description("")]
-        public static T GetCmp<T>(string id) where T : AbstractComponent, new()
+        public static T GetCmp<T>(string id) where T : Component, new()
         {
-            return X.GetCmp<T>(id, ResourceManager.GlobalNormalizedNamespace);
-        }
-
-        /// <summary>
-        /// Returns the AbstractComponent by id and sets the .Value related fields by calling if available from the Request.
-        /// </summary>
-        /// <param name="id">The AbstractComponent id</param>
-        /// <param name="ns">Namespace</param>
-        /// <typeparam name="T">The Type of AbstractComponent to return.</typeparam>
-        /// <returns>The AbstractComponent, or throws ArgumentNullException if not found</returns>
-        [Description("")]
-        public static T GetCmp<T>(string id, string ns) where T : AbstractComponent, new()
-        {
-            T component = ComponentManager.Get<T>(id) ?? new T { ID = id, IsProxy = true, Namespace = ns};
+            T component = ComponentManager.Get<T>(id) ?? new T { ID = id, IsProxy = true };
 
             if (X.IsAjaxRequest)
             {
@@ -320,12 +307,12 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// Returns the AbstractComponent and sets the .Value related fields by calling if available from the Request.
+        /// Returns the Component and sets the .Value related fields by calling if available from the Request.
         /// </summary>
-        /// <typeparam name="T">The Type of AbstractComponent to return</typeparam>
-        /// <param name="component">The AbstractComponent instance</param>
+        /// <typeparam name="T">The Type of Component to return</typeparam>
+        /// <param name="component">The Component instance</param>
         /// <returns></returns>
-        public static T GetCmp<T>(T component) where T : AbstractComponent, new()
+        public static T GetCmp<T>(T component) where T : Component, new()
         {
             return X.GetCmp<T>(component.ClientID);
         }
@@ -333,11 +320,11 @@ namespace Ext.Net
         /// <summary>
         /// Sets the value of the component if the component is a typeof IField. 
         /// </summary>
-        /// <typeparam name="T">The Type of AbstractComponent to return.</typeparam>
+        /// <typeparam name="T">The Type of Component to return.</typeparam>
         /// <param name="component">The component</param>
         /// <param name="value">The value to set</param>
         /// <returns>Returns the component</returns>
-        public static T SetValue<T>(T component, string value) where T : AbstractComponent
+        public static T SetValue<T>(T component, string value) where T : Component
         {
             if (component is IField && value != null)
             {
@@ -560,6 +547,274 @@ namespace Ext.Net
         public static void Set(string name, object value)
         {
             ExtNet.Js.Set(name, value);
+        }
+
+
+        /*  User Agent Detection (browser)
+            -----------------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsOpera
+        {
+            get
+            {
+                return RequestManager.IsOpera;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsChrome
+        {
+            get
+            {
+                return RequestManager.IsChrome;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsWebKit
+        {
+            get
+            {
+                return RequestManager.IsWebKit;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsSafari
+        {
+            get
+            {
+                return RequestManager.IsSafari;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsSafari3
+        {
+            get
+            {
+                return RequestManager.IsSafari3;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsSafari4
+        {
+            get
+            {
+                return RequestManager.IsSafari4;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsIE
+        {
+            get
+            {
+                return RequestManager.IsIE;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsIE6
+        {
+            get
+            {
+
+                return RequestManager.IsIE6;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsIE7
+        {
+            get
+            {
+                return RequestManager.IsIE7;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsIE8
+        {
+            get
+            {
+                return RequestManager.IsIE8;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsIE9
+        {
+            get
+            {
+                return RequestManager.IsIE9;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsGecko
+        {
+            get
+            {
+                return RequestManager.IsGecko;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsGecko3
+        {
+            get
+            {
+                return RequestManager.IsGecko3;
+            }
+        }
+
+
+        /*  User Agent Detection (operating system)
+            -----------------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsWindows
+        {
+            get
+            {
+                return RequestManager.IsWindows;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsMac
+        {
+            get
+            {
+                return RequestManager.IsMac;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsIOS
+        {
+            get
+            {
+                return RequestManager.IsIOS;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsLinux
+        {
+            get
+            {
+                return RequestManager.IsLinux;
+            }
+        }
+
+
+        /*  User Agent Detection (device)
+            -----------------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsIPad
+        {
+            get
+            {
+                return RequestManager.IsIPad;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsIPhone
+        {
+            get
+            {
+                return RequestManager.IsIPhone;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsIPod
+        {
+            get
+            {
+                return RequestManager.IsIPod;
+            }
+        }
+
+        /*  Secure Connection Detection
+            -----------------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public static bool IsSecureConnection
+        {
+            get
+            {
+                return RequestManager.IsSecureConnection;
+            }
         }
     }
 }

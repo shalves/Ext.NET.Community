@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class HandlerConfig
     {
         /// <summary>
@@ -55,8 +52,8 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
-                list.Add("scope", new ConfigOption("scope", new SerializationOptions(JsonMode.Raw), null, this.Scope ));
-                list.Add("delegate", new ConfigOption("delegate", null, null, this.Delegate ));
+                list.Add("scope", new ConfigOption("scope", new SerializationOptions(JsonMode.Raw), "this", this.Scope ));
+                list.Add("delegate", new ConfigOption("delegate", null, "", this.Delegate ));
                 list.Add("stopEvent", new ConfigOption("stopEvent", null, false, this.StopEvent ));
                 list.Add("preventDefault", new ConfigOption("preventDefault", null, false, this.PreventDefault ));
                 list.Add("stopPropagation", new ConfigOption("stopPropagation", null, false, this.StopPropagation ));
@@ -64,8 +61,6 @@ namespace Ext.Net
                 list.Add("delay", new ConfigOption("delay", null, 0, this.Delay ));
                 list.Add("single", new ConfigOption("single", null, false, this.Single ));
                 list.Add("buffer", new ConfigOption("buffer", null, 0, this.Buffer ));
-                list.Add("targetID", new ConfigOption("targetID", null, null, this.TargetID ));
-                list.Add("element", new ConfigOption("element", null, null, this.Element ));
                 list.Add("targetProxy", new ConfigOption("targetProxy", new SerializationOptions("taget"), "", this.TargetProxy ));
 
                 return list;

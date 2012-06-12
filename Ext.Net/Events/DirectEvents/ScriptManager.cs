@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -35,10 +35,6 @@ namespace Ext.Net
 	[Description("")]
     public partial class ResourceManagerDirectEvents : ComponentDirectEvents
     {
-        public ResourceManagerDirectEvents() { }
-
-        public ResourceManagerDirectEvents(Observable parent) { this.Parent = parent; }
-
         private ComponentDirectEvent documentReady;
 
         /// <summary>
@@ -54,7 +50,7 @@ namespace Ext.Net
             {
                 if (this.documentReady == null)
                 {
-                    this.documentReady = new ComponentDirectEvent(this);
+                    this.documentReady = new ComponentDirectEvent();
                 }
 
                 return this.documentReady;
@@ -78,7 +74,7 @@ namespace Ext.Net
             {
                 if (this.textResize == null)
                 {
-                    this.textResize = new ComponentDirectEvent(this);
+                    this.textResize = new ComponentDirectEvent();
                 }
 
                 return this.textResize;
@@ -102,7 +98,7 @@ namespace Ext.Net
             {
                 if (this.windowResize == null)
                 {
-                    this.windowResize = new ComponentDirectEvent(this);
+                    this.windowResize = new ComponentDirectEvent();
                 }
 
                 return this.windowResize;
@@ -126,7 +122,7 @@ namespace Ext.Net
             {
                 if (this.windowUnload == null)
                 {
-                    this.windowUnload = new ComponentDirectEvent(this);
+                    this.windowUnload = new ComponentDirectEvent();
                 }
 
                 return this.windowUnload;
@@ -152,7 +148,7 @@ namespace Ext.Net
             {
                 if (this.windowScroll == null)
                 {
-                    this.windowScroll = new ComponentDirectEvent(this);
+                    this.windowScroll = new ComponentDirectEvent();
                 }
 
                 return this.windowScroll;

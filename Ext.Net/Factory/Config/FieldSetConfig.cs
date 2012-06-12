@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class FieldSet
     {
 		/*  Ctor
@@ -64,7 +61,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        new public partial class Config : AbstractContainer.Config 
+        new public partial class Config : Panel.Config 
         { 
 			/*  Implicit FieldSet.Config Conversion to FieldSet.Builder
 				-----------------------------------------------------------------------------------------------*/
@@ -81,10 +78,28 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
+			private bool animCollapse = false;
+
+			/// <summary>
+			/// True to render a checkbox into the fieldset frame just in front of the legend (defaults to false). The fieldset will be expanded or collapsed when the checkbox is toggled.
+			/// </summary>
+			[DefaultValue(false)]
+			public override bool AnimCollapse 
+			{ 
+				get
+				{
+					return this.animCollapse;
+				}
+				set
+				{
+					this.animCollapse = value;
+				}
+			}
+
 			private string checkboxName = "";
 
 			/// <summary>
-			/// The name to assign to the fieldset's checkbox if checkboxToggle = true (defaults to '[fieldset id]-checkbox').
+			/// True to render a checkbox into the fieldset frame just in front of the legend (defaults to false). The fieldset will be expanded or collapsed when the checkbox is toggled.
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string CheckboxName 
@@ -102,7 +117,7 @@ namespace Ext.Net
 			private bool checkboxToggle = false;
 
 			/// <summary>
-			/// Set to true to render a checkbox into the fieldset frame just in front of the legend to expand/collapse the fieldset when the checkbox is toggled. (defaults to false). This checkbox will be included in form submits using the checkboxName.
+			/// True to render a checkbox into the fieldset frame just in front of the legend (defaults to false). The fieldset will be expanded or collapsed when the checkbox is toggled.
 			/// </summary>
 			[DefaultValue(false)]
 			public virtual bool CheckboxToggle 
@@ -117,96 +132,60 @@ namespace Ext.Net
 				}
 			}
 
-			private bool collapsed = false;
+			private string itemCls = "";
 
 			/// <summary>
-			/// Set to true to render the fieldset as collapsed by default. If checkboxToggle is specified, the checkbox will also be unchecked by default.
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool Collapsed 
-			{ 
-				get
-				{
-					return this.collapsed;
-				}
-				set
-				{
-					this.collapsed = value;
-				}
-			}
-
-			private bool collapsible = false;
-
-			/// <summary>
-			/// Set to true to make the fieldset collapsible and have the expand/collapse toggle button automatically rendered into the legend element, false to keep the fieldset statically sized with no collapse button (defaults to false). Another option is to configure checkboxToggle. Use the collapsed config to collapse the fieldset by default.
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool Collapsible 
-			{ 
-				get
-				{
-					return this.collapsible;
-				}
-				set
-				{
-					this.collapsible = value;
-				}
-			}
-
-			private string title = "";
-
-			/// <summary>
-			/// A title to be displayed in the fieldset's legend. May contain HTML markup.
+			/// A css class to apply to the x-form-items of fields. This property cascades to child containers.
 			/// </summary>
 			[DefaultValue("")]
-			public virtual string Title 
+			public override string ItemCls 
 			{ 
 				get
 				{
-					return this.title;
+					return this.itemCls;
 				}
 				set
 				{
-					this.title = value;
+					this.itemCls = value;
 				}
 			}
-        
-			private FieldSetListeners listeners = null;
+
+			private int labelWidth = 75;
 
 			/// <summary>
-			/// Client-side JavaScript Event Handlers
+			/// The width of labels. This property cascades to child containers.
 			/// </summary>
-			public FieldSetListeners Listeners
-			{
+			[DefaultValue(75)]
+			public override int LabelWidth 
+			{ 
 				get
 				{
-					if (this.listeners == null)
-					{
-						this.listeners = new FieldSetListeners();
-					}
-			
-					return this.listeners;
+					return this.labelWidth;
+				}
+				set
+				{
+					this.labelWidth = value;
 				}
 			}
-			        
-			private FieldSetDirectEvents directEvents = null;
+
+			private string layout = "form";
 
 			/// <summary>
-			/// Server-side Ajax Event Handlers
+			/// The Ext.Container.layout to use inside the fieldset (defaults to 'form').
 			/// </summary>
-			public FieldSetDirectEvents DirectEvents
-			{
+			[DefaultValue("form")]
+			public override string Layout 
+			{ 
 				get
 				{
-					if (this.directEvents == null)
-					{
-						this.directEvents = new FieldSetDirectEvents();
-					}
-			
-					return this.directEvents;
+					return this.layout;
+				}
+				set
+				{
+					this.layout = value;
 				}
 			}
-			
+
         }
     }
 }

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class CellSelectionModel
     {
 		/*  Ctor
@@ -80,43 +77,7 @@ namespace Ext.Net
 			
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
-			
-			private bool enableKeyNav = true;
-
-			/// <summary>
-			/// Turns on/off keyboard navigation within the grid. Defaults to true.
-			/// </summary>
-			[DefaultValue(true)]
-			public virtual bool EnableKeyNav 
-			{ 
-				get
-				{
-					return this.enableKeyNav;
-				}
-				set
-				{
-					this.enableKeyNav = value;
-				}
-			}
-
-			private bool preventWrap = false;
-
-			/// <summary>
-			/// Set this configuration to true to prevent wrapping around of selection as a user navigates to the first or last column. Defaults to false.
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool PreventWrap 
-			{ 
-				get
-				{
-					return this.preventWrap;
-				}
-				set
-				{
-					this.preventWrap = value;
-				}
-			}
-        
+			        
 			private CellSelectionModelListeners listeners = null;
 
 			/// <summary>

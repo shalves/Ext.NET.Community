@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,52 +33,31 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public abstract partial class SliderBase
     {
         /// <summary>
         /// 
         /// </summary>
-        new public abstract partial class Config : Field.Config 
+        new public abstract partial class Config : BoxComponentBase.Config 
         { 
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
-			private bool single = false;
+			private int value = int.MinValue;
 
 			/// <summary>
-			/// True for single thumb slider
+			/// The Number (int) to initialize this field with.
 			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool Single 
+			[DefaultValue(int.MinValue)]
+			public virtual int Value 
 			{ 
 				get
 				{
-					return this.single;
+					return this.value;
 				}
 				set
 				{
-					this.single = value;
-				}
-			}
-
-			private double? number = null;
-
-			/// <summary>
-			/// Thumbs value
-			/// </summary>
-			[DefaultValue(null)]
-			public virtual double? Number 
-			{ 
-				get
-				{
-					return this.number;
-				}
-				set
-				{
-					this.number = value;
+					this.value = value;
 				}
 			}
 
@@ -190,13 +169,13 @@ namespace Ext.Net
 				}
 			}
 
-			private double maxValue = 100d;
+			private int maxValue = 100;
 
 			/// <summary>
 			/// The maximum value for the Slider. Defaults to 100.
 			/// </summary>
-			[DefaultValue(100d)]
-			public virtual double MaxValue 
+			[DefaultValue(100)]
+			public virtual int MaxValue 
 			{ 
 				get
 				{
@@ -208,13 +187,13 @@ namespace Ext.Net
 				}
 			}
 
-			private double minValue = 0d;
+			private int minValue = 0;
 
 			/// <summary>
 			/// The minimum value for the Slider. Defaults to 0.
 			/// </summary>
-			[DefaultValue(0d)]
-			public virtual double MinValue 
+			[DefaultValue(0)]
+			public virtual int MinValue 
 			{ 
 				get
 				{
@@ -244,39 +223,21 @@ namespace Ext.Net
 				}
 			}
 
-			private bool useTips = true;
+			private int topThumbZIndex = 10000;
 
 			/// <summary>
-			/// True to use an Ext.slider.Tip to display tips for the value. Defaults to: true
+			/// The number used to set the z index of the top thumb
 			/// </summary>
-			[DefaultValue(true)]
-			public virtual bool UseTips 
+			[DefaultValue(10000)]
+			public virtual int TopThumbZIndex 
 			{ 
 				get
 				{
-					return this.useTips;
+					return this.topThumbZIndex;
 				}
 				set
 				{
-					this.useTips = value;
-				}
-			}
-
-			private object value = null;
-
-			/// <summary>
-			/// A value to initialize this field with.
-			/// </summary>
-			[DefaultValue(null)]
-			public override object Value 
-			{ 
-				get
-				{
-					return this.value;
-				}
-				set
-				{
-					this.value = value;
+					this.topThumbZIndex = value;
 				}
 			}
 

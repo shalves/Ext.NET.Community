@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -44,9 +44,11 @@ namespace Ext.Net
     [Description("")]
     public partial class Element : ScriptClass
     {
-        /// <new date="2010-01-04" owner="geoff" key="Element">
-        /// New WebControl to Element implicit conversion operator which enables direct cast of Control objects to Ext.Net.Element objects.
-        /// </new>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="control"></param>
+        /// <returns></returns>
         public static implicit operator Element(Control control)
         {
             return control.ToElement();
@@ -79,7 +81,7 @@ namespace Ext.Net
         /// 
         /// </summary>
         [Description("")]
-        public Element(AbstractComponent el)
+        public Element(Component el)
         {
             this.el = el.ClientID.ConcatWith(".el");
             this.id = "_e" + this.GetID();
@@ -89,7 +91,7 @@ namespace Ext.Net
         /// 
         /// </summary>
         [Description("")]
-        public Element(AbstractComponent el, bool chaining)
+        public Element(Component el, bool chaining)
             : this(el)
         {
             this.Chaining = chaining;
@@ -592,9 +594,9 @@ namespace Ext.Net
         /// <param name="className">The CSS class to add</param>
         /// <returns>This element</returns>
         [Description("Adds one or more CSS classes to the element. Duplicate classes are automatically filtered out.")]
-        public virtual Element AddCls(string className)
+        public virtual Element AddClass(string className)
         {
-            this.Call("addCls", className);
+            this.Call("addClass", className);
             return this;
         }
 
@@ -604,9 +606,9 @@ namespace Ext.Net
         /// <param name="classNames">The array of CSS classes to add</param>
         /// <returns>This element</returns>
         [Description("Adds one or more CSS classes to the element. Duplicate classes are automatically filtered out.")]
-        public virtual Element AddCls(string[] classNames)
+        public virtual Element AddClass(string[] classNames)
         {
-            this.Call("addCls", classNames);
+            this.Call("addClass", classNames);
             return this;
         }
 
@@ -616,9 +618,9 @@ namespace Ext.Net
         /// <param name="className">The CSS class to add on click</param>
         /// <returns>This element</returns>
         [Description("Sets up event handlers to add and remove a css class when the mouse is down and then up on this element (a click effect)")]
-        public virtual Element AddClsOnClick(string className)
+        public virtual Element AddClassOnClick(string className)
         {
-            this.Call("addClsOnClick", className);
+            this.Call("addClassOnClick", className);
             return this;
         }
 
@@ -628,9 +630,9 @@ namespace Ext.Net
         /// <param name="className">The CSS class to add on focus</param>
         /// <returns>This element</returns>
         [Description("Sets up event handlers to add and remove a css class when this element has the focus")]
-        public virtual Element AddClsOnFocus(string className)
+        public virtual Element AddClassOnFocus(string className)
         {
-            this.Call("addClsOnFocus", className);
+            this.Call("addClassOnFocus", className);
             return this;
         }
 
@@ -640,9 +642,9 @@ namespace Ext.Net
         /// <param name="className">The CSS class to add on over</param>
         /// <returns>This element</returns>
         [Description("Sets up event handlers to add and remove a css class when the mouse is over this element")]
-        public virtual Element AddClsOnOver(string className)
+        public virtual Element AddClassOnOver(string className)
         {
-            this.Call("addClsOnOver", className);
+            this.Call("addClassOnOver", className);
             return this;
         }
 
@@ -686,7 +688,7 @@ namespace Ext.Net
         [Description("Appends an event handler to this element.")]
         public virtual Element AddListener(string eventName, string fn)
         {
-            this.Call("on", eventName.ToLowerInvariant(), new JRawValue(TokenUtils.ParseAndNormalize(fn).Trim('"')));
+            this.Call("on", eventName.ToLower(), new JRawValue(TokenUtils.ParseAndNormalize(fn).Trim('"')));
             return this;
         }
 
@@ -698,7 +700,7 @@ namespace Ext.Net
         [Description("Appends an event handler to this element.")]
         public virtual Element AddListener(string eventName, JFunction fn)
         {
-            this.Call("on", eventName.ToLowerInvariant(), fn);
+            this.Call("on", eventName.ToLower(), fn);
             return this;
         }
 
@@ -719,7 +721,7 @@ namespace Ext.Net
         [Description("Appends an event handler to this element.")]
         public virtual Element AddListener(string eventName, string fn, string scope)
         {
-            this.Call("on", eventName.ToLowerInvariant(), new JRawValue(TokenUtils.ParseAndNormalize(fn).Trim('"')), new JRawValue(scope));
+            this.Call("on", eventName.ToLower(), new JRawValue(TokenUtils.ParseAndNormalize(fn).Trim('"')), new JRawValue(scope));
             return this;
         }
 
@@ -732,7 +734,7 @@ namespace Ext.Net
         [Description("Appends an event handler to this element.")]
         public virtual Element AddListener(string eventName, JFunction fn, string scope)
         {
-            this.Call("on", eventName.ToLowerInvariant(), fn, new JRawValue(scope));
+            this.Call("on", eventName.ToLower(), fn, new JRawValue(scope));
             return this;
         }
 
@@ -754,7 +756,7 @@ namespace Ext.Net
         [Description("Appends an event handler to this element.")]
         public virtual Element AddListener(string eventName, string fn, string scope, HandlerConfig options)
         {
-            this.Call("on", eventName, new JRawValue(TokenUtils.ParseAndNormalize(fn).Trim('"')), new JRawValue(scope), new JRawValue(options.Serialize()));
+            this.Call("on", eventName, new JRawValue(TokenUtils.ParseAndNormalize(fn).Trim('"')), new JRawValue(scope), new JRawValue(options.ToJsonString()));
             return this;
         }
 
@@ -768,7 +770,7 @@ namespace Ext.Net
         [Description("Appends an event handler to this element.")]
         public virtual Element AddListener(string eventName, JFunction fn, string scope, HandlerConfig options)
         {
-            this.Call("on", eventName, fn, new JRawValue(scope), new JRawValue(options.Serialize()));
+            this.Call("on", eventName, fn, new JRawValue(scope), new JRawValue(options.ToJsonString()));
             return this;
         }
 
@@ -924,7 +926,7 @@ namespace Ext.Net
         ///    align the center of el with the bottom left corner of other-el and
         ///    adjust the x position by -6 pixels (and the y position by 0)
         ///    el.alignTo("other-el", "c-bl", [-6, 0]);
-        ///
+
         /// </param>
         /// <param name="offsets">Offset the positioning by [x, y]</param>
         /// <param name="animate">True for the default animation</param>
@@ -985,7 +987,7 @@ namespace Ext.Net
         ///    align the center of el with the bottom left corner of other-el and
         ///    adjust the x position by -6 pixels (and the y position by 0)
         ///    el.alignTo("other-el", "c-bl", [-6, 0]);
-        ///
+
         /// </param>
         /// <param name="offsets">Offset the positioning by [x, y]</param>
         /// <returns>This element</returns>
@@ -1030,7 +1032,7 @@ namespace Ext.Net
         ///    align the center of el with the bottom left corner of other-el and
         ///    adjust the x position by -6 pixels (and the y position by 0)
         ///    el.alignTo("other-el", "c-bl", [-6, 0]);
-        ///
+
         /// </param>
         /// <returns>This element</returns>
         [Description("Aligns this element with another element relative to the specified anchor points. If the other element is the document it aligns it to the viewport. ")]
@@ -1905,7 +1907,7 @@ namespace Ext.Net
         [Description("Sets up event handlers to call the passed functions when the mouse is moved into and out of the Element.")]
         public virtual Element Hover(JFunction overFn, JFunction outFn, string scope, HandlerConfig options)
         {
-            this.Call("hover", overFn, outFn, new JRawValue(scope), new JRawValue(options.Serialize()));
+            this.Call("hover", overFn, outFn, new JRawValue(scope), new JRawValue(options.ToJsonString()));
             return this;
         }
 
@@ -2477,9 +2479,9 @@ namespace Ext.Net
         /// <param name="className">The CSS class to remove</param>
         /// <returns>This element</returns>
         [Description("Removes one or more CSS classes from the element.")]
-        public virtual Element RemoveCls(string className)
+        public virtual Element RemoveClass(string className)
         {
-            this.Call("removeCls", className);
+            this.Call("removeClass", className);
             return this;
         }
 
@@ -2489,9 +2491,9 @@ namespace Ext.Net
         /// <param name="classNames">The array of CSS classes to remove</param>
         /// <returns>This element</returns>
         [Description("Removes one or more CSS classes from the element.")]
-        public virtual Element RemoveCls(string[] classNames)
+        public virtual Element RemoveClass(string[] classNames)
         {
-            this.Call("removeCls", classNames);
+            this.Call("removeClass", classNames);
             return this;
         }
 
@@ -3586,9 +3588,9 @@ namespace Ext.Net
         /// <param name="className">The CSS class to toggle</param>
         /// <returns>This element</returns>
         [Description("Toggles the specified CSS class on this element (removes it if it already exists, otherwise adds it).")]
-        public virtual Element ToggleCls(string className)
+        public virtual Element ToggleClass(string className)
         {
-            this.Call("toggleCls", className);
+            this.Call("toggleClass", className);
             return this;
         }
 

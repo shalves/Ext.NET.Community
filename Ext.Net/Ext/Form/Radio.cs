@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -35,17 +35,7 @@ using Ext.Net.Utilities;
 namespace Ext.Net
 {
     /// <summary>
-    /// Single radio field. Similar to checkbox, but automatically handles making sure only one radio is checked at a time within a group of radios with the same name.
-    /// 
-    /// Labeling: In addition to the standard field labeling options, radio buttons may be given an optional boxLabel which will be displayed immediately to the right of the input. Also see Ext.form.RadioGroup for a convenient method of grouping related radio buttons.
-    /// 
-    /// Values: The main value of a Radio field is a boolean, indicating whether or not the radio is checked.
-    /// 
-    /// The following values will check the radio: true 'true' '1' 'on'
-    /// 
-    /// Any other value will uncheck it.
-    /// 
-    /// In addition to the main boolean value, you may also specify a separate inputValue. This will be sent as the parameter value when the form is submitted. You will want to set this value if you have multiple radio buttons with the same name, as is almost always the case.
+    /// Single radio field. Can be used as a direct replacement for traditional Radio controls.
     /// </summary>
     [Meta]
     [ToolboxData("<{0}:Radio runat=\"server\" />")]
@@ -56,8 +46,9 @@ namespace Ext.Net
     [ParseChildren(true)]
     [PersistChildren(false)]
     [SupportsEventValidation]
+    [Designer(typeof(RadioDesigner))]
     [ToolboxBitmap(typeof(Radio), "Build.ToolboxIcons.Radio.bmp")]
-    [Description("Single radio field. Similar to checkbox, but automatically handles making sure only one radio is checked at a time within a group of radios with the same name.")]
+    [Description("Single radio field. Can be used as a direct replacement for traditional Radio controls.")]
     public partial class Radio : CheckboxBase, IPostBackEventHandler, ICheckBoxControl
     {
         /// <summary>
@@ -75,7 +66,7 @@ namespace Ext.Net
         {
             get
             {
-                return "radiofield";
+                return "radio";
             }
         }
 
@@ -88,7 +79,20 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.form.field.Radio";
+                return "Ext.form.Radio";
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        [Description("")]
+        protected override void OnBeforeClientInit(Observable sender)
+        {
+            if (this.AutoPostBack)
+            {
+                this.On("check", new JFunction(this.PostBackFunction));
             }
         }
 
@@ -102,7 +106,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public RadioListeners Listeners
         {
@@ -127,7 +132,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public RadioDirectEvents DirectEvents
         {
@@ -135,7 +141,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new RadioDirectEvents(this);
+                    this.directEvents = new RadioDirectEvents();
                 }
 
                 return this.directEvents;
@@ -191,27 +197,50 @@ namespace Ext.Net
         {
             this.HasLoadPostData = true;
 
+            bool isChecked = false;
+            
             string val = postCollection[this.UniqueName];
 
             this.SuspendScripting();
             this.RawValue = val;
+            this.ResumeScripting();
+
+            if (val.IsNotEmpty() && val.Equals(this.InputValue))
+            {
+
+                try
+                {
+                    this.SuspendScripting();
+
+                    if (!this.Checked)
+                    {
+                        this.Checked = true;
+                        isChecked = true;
+                    }
+                }
+                finally
+                {
+                    this.ResumeScripting();
+                }
+
+                return isChecked;
+            }
 
             try
             {
-                bool newValue = (this.UncheckedValue == val || !val.Equals(this.InputValue)) ? false : val.IsNotEmpty();
-                bool result = this.Checked != newValue;
-                this.Checked = newValue;
-                return result;
-            }
-            catch
-            {
+                this.SuspendScripting();
+
+                if (this.Checked)
+                {
+                    this.Checked = false;
+                }
             }
             finally
             {
                 this.ResumeScripting();
             }
 
-            return true;
+            return isChecked;
         }
 
         void IPostBackEventHandler.RaisePostBackEvent(string eventArgument)
@@ -222,6 +251,13 @@ namespace Ext.Net
 
         /*  DirectEvent Handler
             -----------------------------------------------------------------------------------------------*/
+        
+        static Radio()
+        {
+            DirectEventCheck = new object();
+        }
+
+        private static readonly object DirectEventCheck;
 
         /// <summary>
         /// Server-side DirectEvent handler. Method signature is (object sender, DirectEventArgs e).
@@ -231,11 +267,11 @@ namespace Ext.Net
         {
             add
             {
-                this.DirectEvents.Change.Event += value;
+                this.DirectEvents.Check.Event += value;
             }
             remove
             {
-                this.DirectEvents.Change.Event -= value;
+                this.DirectEvents.Check.Event -= value;
             }
         }
     }

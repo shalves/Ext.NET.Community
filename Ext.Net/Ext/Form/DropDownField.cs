@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -76,7 +76,7 @@ namespace Ext.Net
             }
         }
 
-        private PickerFieldListeners listeners;
+        private DropDownFieldListeners listeners;
 
         /// <summary>
         /// Client-side JavaScript Event Handlers
@@ -86,22 +86,23 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
-        public PickerFieldListeners Listeners
+        public DropDownFieldListeners Listeners
         {
             get
             {
                 if (this.listeners == null)
                 {
-                    this.listeners = new PickerFieldListeners();
+                    this.listeners = new DropDownFieldListeners();
                 }
 
                 return this.listeners;
             }
         }
 
-        private PickerFieldDirectEvents directEvents;
+        private DropDownFieldDirectEvents directEvents;
 
         /// <summary>
         /// Server-side Ajax Event Handlers
@@ -111,15 +112,16 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
-        public PickerFieldDirectEvents DirectEvents
+        public DropDownFieldDirectEvents DirectEvents
         {
             get
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new PickerFieldDirectEvents(this);
+                    this.directEvents = new DropDownFieldDirectEvents();
                 }
 
                 return this.directEvents;

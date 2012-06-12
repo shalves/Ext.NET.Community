@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -28,7 +28,6 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
-using System.Collections.Generic;
 
 namespace Ext.Net
 {
@@ -37,6 +36,7 @@ namespace Ext.Net
     /// </summary>
     [ToolboxData("<{0}:ResourcePlaceHolder runat=\"server\" />")]
     [NonVisualControl]
+    [Designer(typeof(ResourcePlaceHolderDesigner))]
     [ToolboxBitmap(typeof(ResourcePlaceHolder), "Build.ToolboxIcons.ResourceContainer.bmp")]
     [Description("Simple Container Control to allow for custom placement of Scripts and Styles in the &lt;head> of the Page by the ResourceManager. If the Page does not contain a &lt;ext:ResourcePlaceHolder> control, the &lt;script>'s and &lt;style>'s will be added as the last items in the &lt;head>. The ResourceContainer does not render any HTML to the Page.")]
     public partial class ResourcePlaceHolder : Control
@@ -56,6 +56,25 @@ namespace Ext.Net
             this.Mode = mode;
         }
 
+        internal ResourcePlaceHolder(bool configResourcePlaceHolder)
+        {
+            this.configResourcePlaceHolder = configResourcePlaceHolder;
+        }
+
+        private bool configResourcePlaceHolder;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public bool ConfigResourcePlaceHolder
+        {
+            get
+            {
+                return this.configResourcePlaceHolder;
+            }
+        }
+
         private ResourceMode resourceMode = ResourceMode.Script;
 
 		/// <summary>
@@ -66,22 +85,22 @@ namespace Ext.Net
         {
             base.Render(writer);
 
+            if (this.configResourcePlaceHolder)
+            {
+                writer.Write(InitScriptFilter.CONFIG_SCRIPT_PLACEHOLDER);
+                return;
+            }
+
             switch (this.Mode)
             {
                 case ResourceMode.Style:
-                    writer.Write(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{                        
-                        {"id", "ext.net.initstyle"}
-                    }));
+                    writer.Write(InitScriptFilter.INIT_STYLE_PLACEHOLDER);
                     break;
                 case ResourceMode.Script:
-                    writer.Write(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{
-                        {"id", "ext.net.initscript"}
-                    }));                    
+                    writer.Write(InitScriptFilter.INIT_SCRIPT_PLACEHOLDER);
                     break;
                 case ResourceMode.ScriptFiles:
-                    writer.Write(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{
-                        {"id", "ext.net.initscriptfiles"}
-                    }));                    
+                    writer.Write(InitScriptFilter.INIT_SCRIPT_FILES_PLACEHOLDER);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

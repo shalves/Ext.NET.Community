@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -31,11 +31,11 @@ using System.Web.UI.WebControls;
 namespace Ext.Net
 {
     /// <summary>
-    /// This is the base class for Ext.tip.QuickTip and Ext.tip.ToolTip that provides the basic layout and positioning that all tip-based classes require. This class can be used directly for simple, statically-positioned tips that are displayed programmatically, or it can be extended to provide custom tip implementations.
+    /// 
     /// </summary>
     [Meta]
     [Description("")]
-    public abstract partial class Tip : AbstractPanel
+    public abstract partial class Tip : PanelBase
     {
         /// <summary>
 		/// 
@@ -46,7 +46,7 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.tip.Tip";
+                return "Ext.Tip";
             }
         }
 
@@ -79,8 +79,31 @@ namespace Ext.Net
         }
 
         /// <summary>
+        /// True to use height:'auto', false to use fixed height (defaults to false).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("4. BoxComponent")]
+        [DefaultValue(true)]
+        [NotifyParentProperty(true)]
+        [Description("True to use height:'auto', false to use fixed height (defaults to true).")]
+        public override bool AutoHeight
+        {
+            get
+            {
+                object obj = this.ViewState["AutoHeight"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["AutoHeight"] = value;
+            }
+        }
+
+        /// <summary>
         /// True to render a close tool button into the tooltip header (defaults to false).
         /// </summary>
+        [Meta]
         [ConfigOption]
         [Category("7. Tip")]
         [DefaultValue(false)]
@@ -90,93 +113,97 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Closable", false);
+                object obj = this.ViewState["Closable"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Closable", value);
+                this.ViewState["Closable"] = value;
             }
         }
 
         /// <summary>
-        /// If true, then the tooltip will be automatically constrained to stay within the browser viewport. Defaults to: true
+        /// 
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("7. Tip")]
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         [NotifyParentProperty(true)]
-        [Description("If true, then the tooltip will be automatically constrained to stay within the browser viewport. Defaults to: true")]
+        [Description("")]
         public virtual bool ConstrainPosition
         {
             get
             {
-                return this.State.Get<bool>("ConstrainPosition", true);
+                object obj = this.ViewState["ConstrainPosition"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("ConstrainPosition", value);
+                this.ViewState["ConstrainPosition"] = value;
             }
         }
 
         /// <summary>
-        /// Experimental. The default Ext.Element.alignTo anchor position value for this tip relative to its element of origin. Defaults to: "tl-bl?"
+        /// Experimental. The default Ext.Element.alignTo anchor position value for this tip relative to its element of origin (defaults to 'tl-bl?').
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("7. Tip")]
         [DefaultValue("")]
         [NotifyParentProperty(true)]
-        [Description("Experimental. The default Ext.Element.alignTo anchor position value for this tip relative to its element of origin. Defaults to: \"tl-bl?\"")]
+        [Description("Experimental. The default Ext.Element.alignTo anchor position value for this tip relative to its element of origin (defaults to 'tl-bl?').")]
         public virtual string DefaultAlign
         {
             get
             {
-                return this.State.Get<string>("DefaultAlign", "");
+                return (string)this.ViewState["DefaultAlign"] ?? "";
             }
             set
             {
-                this.State.Set("DefaultAlign", value);
+                this.ViewState["DefaultAlign"] = value;
             }
         }
 
         /// <summary>
-        /// The maximum width of the tip in pixels. The maximum supported value is 500.
+        /// The maximum width of the tip in pixels (defaults to 300). The maximum supported value is 500.
         /// </summary>
+        [Meta]
         [ConfigOption]
         [Category("7. Tip")]
-        [DefaultValue(500)]
+        [DefaultValue(typeof(Unit), "300")]
         [NotifyParentProperty(true)]
-        [Description("The maximum width of the tip in pixels. The maximum supported value is 500.")]
-        public override int? MaxWidth
+        [Description("The maximum width of the tip in pixels (defaults to 300). The maximum supported value is 500.")]
+        public override Unit MaxWidth
         {
             get
             {
-                return this.State.Get<int?>("MaxWidth", 500);
+                return this.UnitPixelTypeCheck(ViewState["MaxWidth"], Unit.Pixel(300), "MaxWidth");
             }
             set
             {
-                this.State.Set("MaxWidth", value);
+                this.ViewState["MaxWidth"] = value;
             }
         }
 
         /// <summary>
         /// The minimum width of the tip in pixels (defaults to 40).
         /// </summary>
+        [Meta]
         [ConfigOption]
         [Category("7. Tip")]
-        [DefaultValue(40)]
+        [DefaultValue(typeof(Unit), "40")]
         [NotifyParentProperty(true)]
         [Description("The minimum width of the tip in pixels (defaults to 40).")]
-        public override int? MinWidth
+        public override Unit MinWidth
         {
             get
             {
-                return this.State.Get<int?>("MinWidth", 40);
+                return this.UnitPixelTypeCheck(ViewState["MinWidth"], Unit.Pixel(40), "MinWidth");
             }
             set
             {
-                this.State.Set("MinWidth", value);
+                this.ViewState["MinWidth"] = value;
             }
         }
 
@@ -187,9 +214,8 @@ namespace Ext.Net
         /// <summary>
         /// Shows this tip at the specified XY position.
         /// </summary>
-        /// <param name="x">x coordinate</param>
-        /// <param name="y">y coordinate</param>
         [Meta]
+        [Description("Shows this tip at the specified XY position.")]
         public virtual void ShowAt(Unit x, Unit y)
         {
             this.Call("showAt", new int[] { Convert.ToInt32(x.Value), Convert.ToInt32(y.Value) });
@@ -198,8 +224,8 @@ namespace Ext.Net
         /// <summary>
         /// Experimental. Shows this tip at a position relative to another element using a standard Ext.Element.alignTo anchor position value.
         /// </summary>
-        /// <param name="id">String id of the target element to align to</param>
         [Meta]
+        [Description("Experimental. Shows this tip at a position relative to another element using a standard Ext.Element.alignTo anchor position value.")]
         public virtual void ShowBy(string id)
         {
             this.Call("showBy", id);
@@ -208,9 +234,8 @@ namespace Ext.Net
         /// <summary>
         /// Experimental. Shows this tip at a position relative to another element using a standard Ext.Element.alignTo anchor position value.
         /// </summary>
-        /// <param name="id">String id of the target element to align to</param>
-        /// <param name="position">A valid Ext.Element.alignTo anchor position (defaults to 'tl-br?' or defaultAlign if specified).</param>
         [Meta]
+        [Description("Experimental. Shows this tip at a position relative to another element using a standard Ext.Element.alignTo anchor position value.")]
         public virtual void ShowBy(string id, string position)
         {
             this.Call("showBy", id, position);

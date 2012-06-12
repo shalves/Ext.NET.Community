@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class ImageCommandColumn
     {
 		/*  Ctor
@@ -64,7 +61,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        new public partial class Config : CellCommandColumn.Config 
+        new public partial class Config : Column.Config 
         { 
 			/*  Implicit ImageCommandColumn.Config Conversion to ImageCommandColumn.Builder
 				-----------------------------------------------------------------------------------------------*/
@@ -80,7 +77,43 @@ namespace Ext.Net
 			
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
-			        
+			
+			private bool hideable = true;
+
+			/// <summary>
+			/// (optional) Specify as false to prevent the user from hiding this column. Defaults to true.
+			/// </summary>
+			[DefaultValue(true)]
+			public override bool Hideable 
+			{ 
+				get
+				{
+					return this.hideable;
+				}
+				set
+				{
+					this.hideable = value;
+				}
+			}
+
+			private bool rightCommandAlign = false;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue(false)]
+			public override bool RightCommandAlign 
+			{ 
+				get
+				{
+					return this.rightCommandAlign;
+				}
+				set
+				{
+					this.rightCommandAlign = value;
+				}
+			}
+        
 			private GroupImageCommandCollection groupCommands = null;
 
 			/// <summary>
@@ -135,39 +168,39 @@ namespace Ext.Net
 				}
 			}
 			        
-			private ImageCommandColumnListeners listeners = null;
+			private JFunction prepareCommand = null;
 
 			/// <summary>
-			/// Client-side JavaScript Event Handlers
+			/// 
 			/// </summary>
-			public ImageCommandColumnListeners Listeners
+			public JFunction PrepareCommand
 			{
 				get
 				{
-					if (this.listeners == null)
+					if (this.prepareCommand == null)
 					{
-						this.listeners = new ImageCommandColumnListeners();
+						this.prepareCommand = new JFunction();
 					}
 			
-					return this.listeners;
+					return this.prepareCommand;
 				}
 			}
 			        
-			private ImageCommandColumnDirectEvents directEvents = null;
+			private JFunction prepareCommands = null;
 
 			/// <summary>
-			/// Server-side Ajax Event Handlers
+			/// 
 			/// </summary>
-			public ImageCommandColumnDirectEvents DirectEvents
+			public JFunction PrepareCommands
 			{
 				get
 				{
-					if (this.directEvents == null)
+					if (this.prepareCommands == null)
 					{
-						this.directEvents = new ImageCommandColumnDirectEvents();
+						this.prepareCommands = new JFunction();
 					}
 			
-					return this.directEvents;
+					return this.prepareCommands;
 				}
 			}
 			

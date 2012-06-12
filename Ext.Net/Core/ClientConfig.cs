@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,9 +25,9 @@
  ********/
 
 using System;
+using System.ComponentModel;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -70,22 +70,12 @@ namespace Ext.Net
             return this.Serialize(obj, false);
         }
 
-        /// <summary>
-		/// 
-		/// </summary>
-        [Description("")]
-        public string Serialize(object obj, bool ignoreCustomSerialization)
-        {
-            return this.Serialize(obj, ignoreCustomSerialization, false);
-        }
-
 		/// <summary>
 		/// 
 		/// </summary>
 		[Description("")]
-        public string Serialize(object obj, bool ignoreCustomSerialization, bool quoteName)
+        public string Serialize(object obj, bool ignoreCustomSerialization)
         {
-            var baseItem = obj as BaseItem;
             if (this.owner == null)
             {
                 if (obj is Control)
@@ -100,15 +90,10 @@ namespace Ext.Net
                         }
                     }
                 }
-                else if (baseItem != null)
+                else if (obj is StateManagedItem)
                 {
-                    this.owner = baseItem.Owner;
+                    this.owner = ((StateManagedItem)obj).Owner;
                 }
-            }
-
-            if(baseItem != null)
-            {
-                baseItem.BeforeSerialization();
             }
 
             if (obj is ICustomConfigSerialization && !ignoreCustomSerialization)
@@ -120,11 +105,11 @@ namespace Ext.Net
             this.sw = new StringWriter(sb);
             this.writer = new JsonTextWriter(sw);
 
-            this.writer.QuoteName = quoteName || obj is IQuotable;
+            this.writer.QuoteName = false;
 
-            if (this.owner is BaseControl)
+            if (this.owner is XControl)
             {
-                BaseControl wc = (BaseControl)this.owner;
+                XControl wc = (XControl)this.owner;
 
                 if (wc != null)
                 {
@@ -152,7 +137,7 @@ namespace Ext.Net
         internal string SerializeInternal(object obj, Control owner)
         {
             this.owner = owner;
-            BaseItem smi = obj as BaseItem;
+            StateManagedItem smi = obj as StateManagedItem;
 
             if (smi != null)
             {
@@ -505,11 +490,11 @@ namespace Ext.Net
                                 if (name.StartsWith("{raw}"))
                                 {
                                     name = name.Substring(5);
-                                    this.WriteValue(name, control != null ? (control is BaseControl ? ((BaseControl)control).ConfigID : control.ClientID) : controlID);
+                                    this.WriteValue(name, control != null ? control.ClientID : controlID);
                                 }
                                 else
                                 {
-                                    this.WriteRawValue(name, control != null ? "window." + control.ClientID : controlID);
+                                    this.WriteRawValue(name, control != null ? control.ClientID : controlID);
                                 }
                             }
                             else
@@ -518,16 +503,16 @@ namespace Ext.Net
                             }
 
                             break;
-                        case JsonMode.Serialize:
-                            this.WriteRawValue(name, JSON.Serialize(originalValue));
-                            break;
                         case JsonMode.ToString:
-                            this.WriteValue(name, originalValue != null ? originalValue.ToString() : "");
+                            this.WriteValue(name, originalValue.ToString());
                             break;
                         case JsonMode.Url:
                             string url = originalValue.ToString();
 
                             this.WriteValue(name, this.owner == null ? url : this.owner.ResolveClientUrl(url));
+                            break;
+                        case JsonMode.Serialize:
+                            this.WriteRawValue(name, JSON.Serialize(originalValue));
                             break;
                         case JsonMode.Value:
                         default:
@@ -540,14 +525,14 @@ namespace Ext.Net
 
         private string GetInstanceOf(object originalValue)
         {
-            if (originalValue is BaseControl)
+            if (originalValue is XControl)
             {
-                return ((BaseControl)originalValue).InstanceOf;
+                return ((XControl)originalValue).InstanceOf;
             }
 
-            if (originalValue is BaseItem)
+            if (originalValue is StateManagedItem)
             {
-                return ((BaseItem)originalValue).InstanceOf;
+                return ((StateManagedItem)originalValue).InstanceOf;
             }
 
             return "";
@@ -564,7 +549,19 @@ namespace Ext.Net
 
             if (value is string)
             {
-                value = TokenUtils.ParseTokens(value.ToString(), this.owner);
+                if (value.ToString().StartsWith("<!token>"))
+                {
+                    value = value.ToString().Substring(8);
+                }
+                else
+                {
+                    value = TokenUtils.ParseTokens(value.ToString(), this.owner);
+                }
+
+                if (value.ToString().StartsWith("<raw>"))
+                {
+                    value = value.ToString().Substring(5);
+                }
             }
             else
             {
@@ -574,16 +571,21 @@ namespace Ext.Net
                 }
             }
 
-            string temp = value.ToString();
-
-            this.writer.WriteRawValue(TokenUtils.IsRawToken(temp) ? TokenUtils.ReplaceRawToken(temp) : temp);
+            this.writer.WriteRawValue(value.ToString());
         }
 
         private void WriteValue(string name, object value)
         {
             if (value is string)
             {
-                value = TokenUtils.ParseTokens(value.ToString(), this.owner);
+                if (value.ToString().StartsWith("<!token>"))
+                {
+                    value = value.ToString().Substring(8);
+                }
+                else
+                {
+                    value = TokenUtils.ParseTokens(value.ToString(), this.owner);
+                }
 
                 string temp = value.ToString();
 
@@ -601,9 +603,9 @@ namespace Ext.Net
                     return;
                 }
 
-                if (TokenUtils.IsRawToken(temp))
+                if (temp.StartsWith("<raw>"))
                 {
-                    this.WriteRawValue(name, TokenUtils.ReplaceRawToken(temp));
+                    this.WriteRawValue(name, temp.Substring(5));
                     return;
                 }
             }
@@ -643,7 +645,6 @@ namespace Ext.Net
         /// </summary>
         /// <param name="defaultValue"></param>
         /// <param name="originalValue"></param>
-        /// <param name="configOption"></param>
         /// <returns></returns>
         public bool IsNullEmptyOrDefault(ref object defaultValue, ref object originalValue, ConfigOption configOption)
         {
@@ -656,7 +657,7 @@ namespace Ext.Net
             {
                 originalValue = "NULL";
             }
-            else if (configOption.Serialization.Mode == JsonMode.Custom && 
+            else if(configOption.Serialization.Mode == JsonMode.Custom && 
                     configOption.Serialization.JsonConverter == typeof(LazyControlJsonConverter) &&
                     originalValue is Control &&
                     !((Control)originalValue).Visible)
@@ -689,13 +690,13 @@ namespace Ext.Net
                     return true;
                 }
             }
-            else if (originalValue is BaseControl)
+            else if (originalValue is XControl)
             {
-                return ((BaseControl)originalValue).IsDefault;
+                return ((XControl)originalValue).IsDefault;
             }
-            else if (originalValue is BaseItem)
+            else if (originalValue is StateManagedItem)
             {
-                return ((BaseItem)originalValue).IsDefault;
+                return ((StateManagedItem)originalValue).IsDefault;
             }
             else if (originalValue is Margins)
             {

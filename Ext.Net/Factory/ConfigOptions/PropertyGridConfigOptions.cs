@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class PropertyGrid
     {
         /// <summary>
@@ -60,7 +57,7 @@ namespace Ext.Net
                 list.Add("customRenderers", new ConfigOption("customRenderers", new SerializationOptions(JsonMode.Raw), null, this.CustomRenderers ));
                 list.Add("propertyNames", new ConfigOption("propertyNames", new SerializationOptions(JsonMode.Raw), null, this.PropertyNames ));
                 list.Add("editable", new ConfigOption("editable", null, true, this.Editable ));
-                list.Add("nameColumnWidth", new ConfigOption("nameColumnWidth", null, 115, this.NameColumnWidth ));
+                list.Add("directEventConfig", new ConfigOption("directEventConfig", new SerializationOptions(JsonMode.Object), null, this.DirectEventConfig ));
                 list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
                 list.Add("directEvents", new ConfigOption("directEvents", new SerializationOptions("directEvents", JsonMode.Object), null, this.DirectEvents ));
 

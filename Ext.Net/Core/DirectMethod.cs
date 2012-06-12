@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -194,7 +194,7 @@ namespace Ext.Net
             {
                 foreach (string value in values)
                 {
-                    if (value.ToLowerInvariant().Contains("staticmethod=true"))
+                    if (value.ToLower().Contains("staticmethod=true"))
                     {
                         return true;
                     }
@@ -291,7 +291,7 @@ namespace Ext.Net
 
                 if (this.Attribute.Target != MaskTarget.Page)
                 {
-                    sb.Append(",target:").Append(JSON.Serialize(this.Attribute.Target.ToString().ToLowerInvariant()));
+                    sb.Append(",target:").Append(JSON.Serialize(this.Attribute.Target.ToString().ToLower()));
                 }
 
                 if (this.Attribute.Target == MaskTarget.CustomTarget && this.Attribute.CustomTarget.IsNotEmpty())
@@ -404,35 +404,8 @@ namespace Ext.Net
         private int timeout = 30000;
         private bool rethrowException = false;
         private string alias;
-        private string idAlias;
         private bool? disableCaching;
         private string disableCachingParam = "_dc";
-        private DirectMethodProxyIDMode? idMode;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual DirectMethodProxyIDMode? IDMode
-        {
-            get
-            {
-                return this.idMode;
-            }
-            set
-            {
-                this.idMode = value;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Description("")]
-        public virtual string IDAlias
-        {
-            get { return this.idAlias; }
-            set { this.idAlias = value; }
-        }
 
         /// <summary>
         /// 
@@ -669,11 +642,9 @@ namespace Ext.Net
         {
             get
             {
-                string ns = this.directMethodNamespace;               
-
-                if (ns.IsEmpty())
+                if (this.directMethodNamespace.IsEmpty())
                 {
-                    string defaultDirectMethodNamespace = ResourceManager.GlobalNormalizedDirectMethodNamespace;
+                    string defaultDirectMethodNamespace = "Ext.net.DirectMethods";
 
                     if (HttpContext.Current != null)
                     {
@@ -683,37 +654,15 @@ namespace Ext.Net
                         {
                             return defaultDirectMethodNamespace;
                         }
-
-                        string smValue = sm.NormalizedDirectMethodNamespace;
+                        
+                        string smValue = sm.DirectMethodNamespace;
 
                         return smValue.IsEmpty() ? defaultDirectMethodNamespace : smValue;
                     }
                     return defaultDirectMethodNamespace;
                 }
-
-                if (ns.StartsWith("."))
-                {
-                    string globalNs = ResourceManager.GlobalNormalizedNamespace;
-                    if (HttpContext.Current != null)
-                    {
-                        ResourceManager sm = ResourceManager.GetInstance(HttpContext.Current);
-
-                        if (sm == null)
-                        {
-                            return globalNs + ns;
-                        }
-
-                        // sm.DirectMethodNamespace == ".direct" - means that there is no explicit value for DirectMethodNamespace
-                        // TODO: need to refactor it (find new approach that developer doesn't define direct namespace in resource manager or web.config)
-                        return (sm.DirectMethodNamespace == ".direct" ? sm.NormalizedNamespace : sm.NormalizedDirectMethodNamespace) + ns;
-                    }                    
-                    else
-                    {
-                        return globalNs + ns;
-                    }
-                }
-
-                return ns;                
+                
+                return this.directMethodNamespace;
             }
             set
             {

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -34,17 +34,15 @@ using System.Web;
 using System.Web.UI;
 
 using Ext.Net.Utilities;
-using System.IO;
-using Newtonsoft.Json;
 
 namespace Ext.Net
 {
     /// <summary>
-    /// Base class that provides a common interface for publishing events. Subclasses are expected to to have a property "events" with all the events defined, and, optionally, a property "listeners" with configured listeners defined.
+    /// Abstract base class that provides a common interface for publishing events
     /// </summary>
     [Meta]
     [Description("Abstract base class that provides a common interface for publishing events")]
-    public abstract partial class Observable : BaseControl, ILazyItems, IObservable
+    public abstract partial class Observable : XControl, ILazyItems
     {
         /*  ILazyItems
            -----------------------------------------------------------------------------------------------*/
@@ -61,7 +59,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.lazyItems ?? (this.lazyItems = new List<Observable>());
+                if (this.lazyItems == null)
+                {
+                    this.lazyItems = new List<Observable>();
+                }
+
+                return this.lazyItems;
             }
         }
 
@@ -94,7 +97,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.customConfig ?? (this.customConfig = new ConfigItemCollection{Owner = this});
+                if (this.customConfig == null)
+                {
+                    this.customConfig = new ConfigItemCollection();
+                }
+
+                return this.customConfig;
             }
         }
 
@@ -116,18 +124,6 @@ namespace Ext.Net
         {
             this.RegisterAttributes();
         }
-
-        // <new date="2010-02-22" owner="geoff" key="Observable">
-        // Added ability for custom attributes with "Default" prefix to be serialized to the Defaults collection. 
-        // For example, setting DefaultAllowBlank will add "AllowBlank" property to the Defaults collection, which will then be applied to all child items.
-        // Only applies to AbstractContainer components. 
-        // </new>
-        
-        // <new date="2010-04-15" owner="geoff" key="Observable">
-        // Added ability for custom attributes with "X" prefix which will force rendering of the value. 
-        // For example, setting XSelectable="true" will force the Serializtion of the .selectable config item. 
-        // By default, Selectable="true" will not render to the client config, because "true" is the default value of the .Selectable property.
-        // </new>
 
         /// <summary>
         /// 
@@ -166,11 +162,10 @@ namespace Ext.Net
                 key = key.Substring(1);
             }
 
-            var item = new ConfigItem
-                           {
-                               Name = key.ToLowerCamelCase(), 
-                               Mode = ParameterMode.Value
-                           };
+            ConfigItem item = new ConfigItem();
+
+            item.Name = key.ToLowerCamelCase();
+            item.Mode = ParameterMode.Value;
 
             if (value.StartsWith("<raw>"))
             {
@@ -188,12 +183,11 @@ namespace Ext.Net
                 double doubleTest;
                 DateTime dateTest;
 
-                if (bool.TryParse(value, out boolTest) || double.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out doubleTest))
+                if (bool.TryParse(value, out boolTest) || double.TryParse(value, System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out doubleTest))
                 {
                     item.Mode = ParameterMode.Raw;
-                    value = value.ToLowerInvariant();
                 }
-                else if (DateTime.TryParse(value, CultureInfo.CurrentCulture, DateTimeStyles.None, out dateTest))
+                else if (DateTime.TryParse(value, System.Globalization.CultureInfo.CurrentCulture, DateTimeStyles.None, out dateTest))
                 {
                     item.Mode = ParameterMode.Raw;
                     value = DateTimeUtils.DateNetToJs(dateTest);
@@ -202,9 +196,9 @@ namespace Ext.Net
 
             item.Value = value;
 
-            if (this is AbstractContainer && isDefaults)
+            if (this is ContainerBase && isDefaults)
             {
-                ((AbstractContainer)this).Defaults.Add(new Parameter(item.Name, item.Value, item.Mode));
+                ((ContainerBase)this).Defaults.Add(new Parameter(item.Name, item.Value, item.Mode));
             }
             else
             {
@@ -212,18 +206,80 @@ namespace Ext.Net
             }
         }
 
+        /// <summary>
+        /// The registered xtype to create. This config option is not used when passing a config object into a constructor. This config option is used only when lazy instantiation is being used, and a child item of a Container is being specified not as a fully instantiated Component, but as a Component config object. The xtype will be looked up at render time up to determine what type of child Component to create.
+        /// </summary>
+        [Category("0. About")]
+        [Description("The registered xtype to create. This config option is not used when passing a config object into a constructor. This config option is used only when lazy instantiation is being used, and a child item of a Container is being specified not as a fully instantiated Component, but as a Component config object. The xtype will be looked up at render time up to determine what type of child Component to create.")]
+        public virtual string XType
+        {
+            get
+            {
+                return "";
+            }
+        }
+
+        private bool renderXType = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        internal protected virtual bool RenderXType
+        {
+            get
+            {
+                return this.renderXType;
+            }
+            set
+            {
+                this.renderXType = value;
+            }
+        }
         
+        /// <summary>
+        /// The registered xtype to create. This config option is not used when passing a config object into a constructor. This config option is used only when lazy instantiation is being used, and a child items of a Container is being specified not as a fully instantiated Component, but as a Component config object. The xtype will be looked up at render time up to determine what type of child Component to create.
+        /// </summary>
+        [ConfigOption("xtype")]
+        [DefaultValue("")]
+        [Category("2. Observable")]
+        [Description("The registered xtype to create. This config option is not used when passing a config object into a constructor. This config option is used only when lazy instantiation is being used, and a child items of a Container is being specified not as a fully instantiated Component, but as a Component config object. The xtype will be looked up at render time up to determine what type of child Component to create.")]
+        protected virtual string XTypeProxy
+        {
+            get
+            {
+                if ((this.IsLazy || this.IsDynamicLazy || this.DesignMode) && this.RenderXType)
+                {
+                    string defaultType = "";
+
+                    string xtype = this.XType;
+
+                    if (this is Component)
+                    {
+                        ContainerBase ownerCt = ((Component)this).OwnerCt;
+
+                        if (ownerCt != null)
+                        {
+                            defaultType = DefaultTypeConverter.GetXType(ownerCt.DefaultType);
+                        }
+                    }
+
+                    return xtype.Equals(defaultType) ? "" : xtype;
+                }
+
+                return "";
+            }
+        }
 
 
         /*  Public Methods
             -----------------------------------------------------------------------------------------------*/
 
         /// <summary>
-        /// Adds the specified events to the list of events which this Observable may fire.
+        /// Used to define events on this Observable
         /// </summary>
-        /// <param name="events">event names if multiple event names are being passed as separate parameters</param>
         [Meta]
-        public virtual void AddEvents(params string[] events)
+        [Description("Used to define events on this Observable")]
+        public virtual void AddEvents(string events)
         {
             this.Call("addEvents", events);
         }
@@ -231,9 +287,8 @@ namespace Ext.Net
         /// <summary>
         /// Appends an event handler to this component
         /// </summary>
-        /// <param name="eventName">The name of the event to listen for. May also be an object who's property names are event names.</param>
-        /// <param name="fn">The method the event invokes.</param>
         [Meta]
+        [Description("Appends an event handler to this component")]
         public virtual void AddListener(string eventName, JFunction fn)
         {
             this.AddListener(eventName, fn.ToScript());
@@ -242,10 +297,8 @@ namespace Ext.Net
         /// <summary>
         /// Appends an event handler to this component
         /// </summary>
-        /// <param name="eventName">The name of the event to listen for. May also be an object who's property names are event names.</param>
-        /// <param name="fn">The method the event invokes.</param>
-        /// <param name="scope">The scope (this reference) in which the handler function is executed. If omitted, defaults to the object which fired the event.</param>
         [Meta]
+        [Description("Appends an event handler to this component")]
         public virtual void AddListener(string eventName, JFunction fn, string scope)
         {
             this.AddListener(eventName, fn.ToScript(), scope);
@@ -254,11 +307,8 @@ namespace Ext.Net
         /// <summary>
         /// Appends an event handler to this component
         /// </summary>
-        /// <param name="eventName">The name of the event to listen for. May also be an object who's property names are event names.</param>
-        /// <param name="fn">The method the event invokes.</param>
-        /// <param name="scope">The scope (this reference) in which the handler function is executed. If omitted, defaults to the object which fired the event.</param>
-        /// <param name="options">An object containing handler configuration properties.</param>
         [Meta]
+        [Description("Appends an event handler to this component")]
         public virtual void AddListener(string eventName, JFunction fn, string scope, HandlerConfig options)
         {
             this.AddListener(eventName, fn.ToScript(), scope, options);
@@ -267,122 +317,44 @@ namespace Ext.Net
         /// <summary>
         /// Appends an event handler to this component
         /// </summary>
-        /// <param name="eventName">The name of the event to listen for. May also be an object who's property names are event names.</param>
-        /// <param name="fn">The method the event invokes.</param>
         [Meta]
+        [Description("Appends an event handler to this component")]
         public virtual void AddListener(string eventName, string fn)
         {
             fn = TokenUtils.ParseAndNormalize(fn, this).Trim('"');
-            this.Call("on", eventName.ToLowerInvariant(), new JRawValue(fn));
+            this.Call("on", eventName.ToLower(), new JRawValue(fn));
         }
 
         /// <summary>
         /// Appends an event handler to this component
         /// </summary>
-        /// <param name="eventName">The name of the event to listen for. May also be an object who's property names are event names.</param>
-        /// <param name="fn">The method the event invokes.</param>
-        /// <param name="scope">The scope (this reference) in which the handler function is executed. If omitted, defaults to the object which fired the event.</param>
         [Meta]
+        [Description("Appends an event handler to this component")]
         public virtual void AddListener(string eventName, string fn, string scope)
         {
             fn = TokenUtils.ParseAndNormalize(fn, this).Trim('"');
-            this.Call("on", eventName.ToLowerInvariant(), new JRawValue(fn), new JRawValue(scope));
+            this.Call("on", eventName.ToLower(), new JRawValue(fn), new JRawValue(scope));
         }
 
         /// <summary>
         /// Appends an event handler to this component
         /// </summary>
-        /// <param name="eventName">The name of the event to listen for. May also be an object who's property names are event names.</param>
-        /// <param name="fn">The method the event invokes.</param>
-        /// <param name="scope">The scope (this reference) in which the handler function is executed. If omitted, defaults to the object which fired the event.</param>
-        /// <param name="options">An object containing handler configuration properties.</param>
         [Meta]
+        [Description("Appends an event handler to this component")]
         public virtual void AddListener(string eventName, string fn, string scope, HandlerConfig options)
         {
             fn = TokenUtils.ParseAndNormalize(fn, this).Trim('"');
-            this.Call("on", eventName, new JRawValue(fn), new JRawValue(scope), new JRawValue(options.Serialize()));
-        }
-
-        /// <summary>
-        /// Adds listeners to any Observable object (or Element) which are automatically removed when this AbstractComponent is destroyed.
-        /// </summary>
-        /// <param name="item">The item to which to add a listener/listeners.</param>
-        /// <param name="eventName">The event name, or an object containing event name properties.</param>
-        /// <param name="fn">The handler function.</param>
-        /// <param name="scope">The scope (this reference) in which the handler function is executed.</param>
-        /// <param name="options">An object containing handler configuration. properties.</param>
-        [Meta]
-        public virtual void AddManagedListener(string item, string eventName, string fn, string scope, HandlerConfig options)
-        {
-            fn = TokenUtils.ParseAndNormalize(fn, this).Trim('"');
-            this.Call("addManagedListener", new JRawValue(item), eventName, new JRawValue(fn), new JRawValue(scope), new JRawValue(options.Serialize()));
-        }
-
-        /// <summary>
-        /// Adds listeners to any Observable object (or Element) which are automatically removed when this AbstractComponent is destroyed.
-        /// </summary>
-        /// <param name="item">The item to which to add a listener/listeners.</param>
-        /// <param name="eventName">The event name, or an object containing event name properties.</param>
-        /// <param name="fn">The handler function.</param>
-        /// <param name="scope">The scope (this reference) in which the handler function is executed.</param>
-        [Meta]
-        public virtual void AddManagedListener(string item, string eventName, string fn, string scope)
-        {
-            fn = TokenUtils.ParseAndNormalize(fn, this).Trim('"');
-            this.Call("addManagedListener", new JRawValue(item), eventName, new JRawValue(fn), new JRawValue(scope));
-        }
-
-        /// <summary>
-        /// Adds listeners to any Observable object (or Element) which are automatically removed when this AbstractComponent is destroyed.
-        /// </summary>
-        /// <param name="item">The item to which to add a listener/listeners.</param>
-        /// <param name="eventName">The event name, or an object containing event name properties.</param>
-        /// <param name="fn">The handler function.</param>
-        [Meta]
-        public virtual void AddManagedListener(string item, string eventName, string fn)
-        {
-            fn = TokenUtils.ParseAndNormalize(fn, this).Trim('"');
-            this.Call("addManagedListener", new JRawValue(item), eventName, new JRawValue(fn));
-        }
-
-        /// <summary>
-        /// Removes all listeners for this object including the managed listeners
-        /// </summary>
-        [Meta]
-        public virtual void ClearListeners()
-        {
-            this.Call("clearListeners");
-        }
-
-        /// <summary>
-        /// Removes all managed listeners for this object.
-        /// </summary>
-        [Meta]
-        public virtual void ClearManagedListeners()
-        {
-            this.Call("clearManagedListeners");
-        }
-
-        /// <summary>
-        /// Enables events fired by this Observable to bubble up an owner hierarchy by calling this.getBubbleTarget() if present. There is no implementation in the Observable base class.
-        /// This is commonly used by Ext.Components to bubble events to owner Containers. See Ext.AbstractComponent-getBubbleTarget. The default implementation in Ext.AbstractComponent returns the AbstractComponent's immediate owner. But if a known target is required, this can be overridden to access the required target more quickly.
-        /// </summary>
-        /// <param name="events">An Array of event names to bubble</param>
-        [Meta]
-        public virtual void EnableBubble(params string[] events)
-        {
-            this.Call("enableBubble", events);
+            this.Call("on", eventName, new JRawValue(fn), new JRawValue(scope), new JRawValue(options.ToJsonString()));
         }
 
         /// <summary>
         /// Fires the specified event with the passed parameters (minus the event name)
         /// </summary>
-        /// <param name="eventName">The name of the event to fire.</param>
-        /// <param name="args">Variable number of parameters are passed to handlers.</param>
         [Meta]
+        [Description("Fires the specified event with the passed parameters (minus the event name)")]
         public virtual void FireEvent(string eventName, params object[] args)
         {
-            var sb = new StringBuilder(256);
+            StringBuilder sb = new StringBuilder(256);
 
             sb.AppendFormat("{0},", JSON.Serialize(eventName));
 
@@ -400,9 +372,8 @@ namespace Ext.Net
         /// <summary>
         /// Appends an event handler to this element (shorthand for addListener)
         /// </summary>
-        /// <param name="eventName">The type of event to listen for</param>
-        /// <param name="fn">The method the event invokes</param>
         [Meta]
+        [Description("Appends an event handler to this element (shorthand for addListener)")]
         public virtual void On(string eventName, string fn)
         {
             this.AddListener(eventName, fn);
@@ -411,10 +382,8 @@ namespace Ext.Net
         /// <summary>
         /// Appends an event handler to this element (shorthand for addListener)
         /// </summary>
-        /// <param name="eventName">The type of event to listen for</param>
-        /// <param name="fn">The method the event invokes</param>
-        /// <param name="scope">The scope (this reference) in which the handler function is executed. If omitted, defaults to the object which fired the event.</param>
         [Meta]
+        [Description("Appends an event handler to this element (shorthand for addListener)")]
         public virtual void On(string eventName, string fn, string scope)
         {
             this.AddListener(eventName, fn, scope);
@@ -423,11 +392,8 @@ namespace Ext.Net
         /// <summary>
         /// Appends an event handler to this element (shorthand for addListener)
         /// </summary>
-        /// <param name="eventName">The type of event to listen for</param>
-        /// <param name="fn">The method the event invokes</param>
-        /// <param name="scope">The scope (this reference) in which the handler function is executed. If omitted, defaults to the object which fired the event.</param>
-        /// <param name="options">An object containing handler configuration.</param>
         [Meta]
+        [Description("Appends an event handler to this element (shorthand for addListener)")]
         public virtual void On(string eventName, string fn, string scope, HandlerConfig options)
         {
             this.AddListener(eventName, fn, scope, options);
@@ -436,9 +402,8 @@ namespace Ext.Net
         /// <summary>
         /// Appends an event handler to this element (shorthand for addListener)
         /// </summary>
-        /// <param name="eventName">The type of event to listen for</param>
-        /// <param name="fn">The method the event invokes</param>
         [Meta]
+        [Description("Appends an event handler to this element (shorthand for addListener)")]
         public virtual void On(string eventName, JFunction fn)
         {
             this.AddListener(eventName, "<raw>" + fn.ToScript());
@@ -447,10 +412,8 @@ namespace Ext.Net
         /// <summary>
         /// Appends an event handler to this element (shorthand for addListener)
         /// </summary>
-        /// <param name="eventName">The type of event to listen for</param>
-        /// <param name="fn">The method the event invokes</param>
-        /// <param name="scope">The scope (this reference) in which the handler function is executed. If omitted, defaults to the object which fired the event.</param>
         [Meta]
+        [Description("Appends an event handler to this element (shorthand for addListener)")]
         public virtual void On(string eventName, JFunction fn, string scope)
         {
             this.AddListener(eventName, "<raw>" + fn.ToScript(), scope);
@@ -459,79 +422,48 @@ namespace Ext.Net
         /// <summary>
         /// Appends an event handler to this element (shorthand for addListener)
         /// </summary>
-        /// <param name="eventName">The type of event to listen for</param>
-        /// <param name="fn">The method the event invokes</param>
-        /// <param name="scope">The scope (this reference) in which the handler function is executed. If omitted, defaults to the object which fired the event.</param>
-        /// <param name="options">An object containing handler configuration.</param>
         [Meta]
+        [Description("Appends an event handler to this element (shorthand for addListener)")]
         public virtual void On(string eventName, JFunction fn, string scope, HandlerConfig options)
         {
             this.AddListener(eventName, "<raw>" + fn.ToScript(), scope, options);
         }
 
         /// <summary>
-        /// Relays selected events from the specified Observable as if the events were fired by this.
+        /// Removes all listeners for this object
         /// </summary>
-        /// <param name="origin">The Observable whose events this object is to relay.</param>
-        /// <param name="events">Array of event names to relay.</param>
         [Meta]
-        public virtual void RelayEvents(string origin, string[] events)
+        [Description("Removes all listeners for this object")]
+        public virtual void PurgeListeners()
         {
-            this.Call("relayEvents", new JRawValue(origin), events);
+            this.Call("purgeListeners");
         }
 
         /// <summary>
-        /// Removes an event handler.
+        /// Removes a listener
         /// </summary>
-        /// <param name="eventName">The type of event the handler was associated with.</param>
-        /// <param name="fn">The handler to remove. This must be a reference to the function passed into the addListener call.</param>
         [Meta]
+        [Description("Removes a listener")]
         public virtual void RemoveListener(string eventName, string fn)
         {
-            this.Call("un", eventName.ToLowerInvariant(), new JRawValue(fn));
+            this.Call("un", eventName.ToLower(), new JRawValue(fn));
         }
 
         /// <summary>
-        /// Removes an event handler.
+        /// Removes a listener
         /// </summary>
-        /// <param name="eventName">The type of event the handler was associated with.</param>
-        /// <param name="fn">The handler to remove. This must be a reference to the function passed into the addListener call.</param>
-        /// <param name="scope">The scope originally specified for the handler.</param>
         [Meta]
+        [Description("Removes a listener")]
         public virtual void RemoveListener(string eventName, string fn, string scope)
         {
-            this.Call("un", eventName.ToLowerInvariant(), new JRawValue(fn), new JRawValue(scope));
+            this.Call("un", eventName.ToLower(), new JRawValue(fn), new JRawValue(scope));
         }
 
         /// <summary>
-        /// Removes listeners that were added by the mon method.
-        /// </summary>
-        /// <param name="item">The item from which to remove a listener/listeners.</param>
-        /// <param name="eventName">The type of event the handler was associated with.</param>
-        /// <param name="fn">The handler to remove. This must be a reference to the function passed into the addListener call.</param>
-        [Meta]
-        public virtual void RemoveManagedListener(string item, string eventName, string fn)
-        {
-            this.Call("removeManagedListener", new JRawValue(item), eventName.ToLowerInvariant(), new JRawValue(fn));
-        }
-
-        /// <summary>
-        /// Removes listeners that were added by the mon method.
-        /// </summary>
-        /// <param name="item">The item from which to remove a listener/listeners.</param>
-        /// <param name="eventName">The type of event the handler was associated with.</param>
-        /// <param name="fn">The handler to remove. This must be a reference to the function passed into the addListener call.</param>
-        /// <param name="scope">The scope originally specified for the handler.</param>
-        [Meta]
-        public virtual void RemoveManagedListener(string item, string eventName, string fn, string scope)
-        {
-            this.Call("removeManagedListener", new JRawValue(item), eventName.ToLowerInvariant(), new JRawValue(fn), new JRawValue(scope));
-        }
-
-        /// <summary>
-        /// Resume firing events. (see suspendEvents) If events were suspended using the queueSuspended parameter, then all events fired during event suspension will be sent to any listeners now.
+        /// Resume firing events. (see suspendEvents)
         /// </summary>
         [Meta]
+        [Description("Resume firing events. (see suspendEvents)")]
         public virtual void ResumeEvents()
         {
             this.Call("resumeEvents");
@@ -549,20 +481,8 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// Suspend the firing of all events. (see resumeEvents)
-        /// </summary>
-        [Meta]
-        [Description("Suspend the firing of all events. (see resumeEvents)")]
-        public virtual void SuspendEvents()
-        {
-            this.Call("suspendEvents");
-        }
-
-        /// <summary>
         /// Removes a listener (shorthand for removeListener)
         /// </summary>
-        /// <param name="eventName">The type of event the handler was associated with.</param>
-        /// <param name="fn">The handler to remove. This must be a reference to the function passed into the addListener call.</param>
         [Meta]
         [Description("Removes a listener (shorthand for removeListener)")]
         public virtual void Un(string eventName, string fn)
@@ -573,142 +493,11 @@ namespace Ext.Net
         /// <summary>
         /// Removes a listener (shorthand for removeListener)
         /// </summary>
-        /// <param name="eventName">The type of event the handler was associated with.</param>
-        /// <param name="fn">The handler to remove. This must be a reference to the function passed into the addListener call.</param>
-        /// <param name="scope">The scope originally specified for the handler.</param>
         [Meta]
         [Description("Removes a listener (shorthand for removeListener)")]
         public virtual void Un(string eventName, string fn, string scope)
         {
             this.RemoveListener(eventName, fn, scope);
-        }
-
-        /// <summary>
-        /// Adds listeners to any Observable object (or Element) which are automatically removed when this AbstractComponent is destroyed.
-        /// </summary>
-        /// <param name="el">The item to which to add a listener/listeners.</param>
-        /// <param name="eventName">The event name, or an object containing event name properties.</param>
-        /// <param name="fn">This is the handler function.</param>
-        [Meta]
-        public virtual void Mon(Element el, string eventName, JFunction fn)
-        {
-            this.Call("mon", new JRawValue(el.Descriptor), eventName, fn);
-        }
-
-        /// <summary>
-        /// Adds listeners to any Observable object (or Element) which are automatically removed when this AbstractComponent is destroyed.
-        /// </summary>
-        /// <param name="el">The item to which to add a listener/listeners.</param>
-        /// <param name="eventName">The event name, or an object containing event name properties.</param>
-        /// <param name="fn">This is the handler function.</param>
-        [Meta]
-        public virtual void Mon(Observable el, string eventName, JFunction fn)
-        {
-            this.Call("mon", new JRawValue(el.ClientID), eventName, fn);
-        }
-
-        /// <summary>
-        /// Adds listeners to any Observable object (or Element) which are automatically removed when this AbstractComponent is destroyed.
-        /// </summary>
-        /// <param name="el">The item to which to add a listener/listeners.</param>
-        /// <param name="eventName">The event name, or an object containing event name properties.</param>
-        /// <param name="fn">This is the handler function.</param>
-        /// <param name="scope"> this is the scope (this reference) in which the handler function is executed.</param>
-        [Meta]
-        public virtual void Mon(Element el, string eventName, JFunction fn, string scope)
-        {
-            this.Call("mon", new JRawValue(el.Descriptor), eventName, fn, new JRawValue(scope));
-        }
-
-        /// <summary>
-        /// Adds listeners to any Observable object (or Element) which are automatically removed when this AbstractComponent is destroyed.
-        /// </summary>
-        /// <param name="el">The item to which to add a listener/listeners.</param>
-        /// <param name="eventName">The event name, or an object containing event name properties.</param>
-        /// <param name="fn">This is the handler function.</param>
-        /// <param name="scope"> this is the scope (this reference) in which the handler function is executed.</param>
-        [Meta]
-        public virtual void Mon(Observable el, string eventName, JFunction fn, string scope)
-        {
-            this.Call("mon", new JRawValue(el.ClientID), eventName, fn, new JRawValue(scope));
-        }
-
-        /// <summary>
-        /// Adds listeners to any Observable object (or Element) which are automatically removed when this AbstractComponent is destroyed.
-        /// </summary>
-        /// <param name="el">The item to which to add a listener/listeners.</param>
-        /// <param name="eventName">The event name, or an object containing event name properties.</param>
-        /// <param name="fn">This is the handler function.</param>
-        /// <param name="scope"> this is the scope (this reference) in which the handler function is executed.</param>
-        /// <param name="options">An object containing handler configuration. properties.</param>
-        [Meta]
-        public virtual void Mon(Element el, string eventName, string fn, string scope, HandlerConfig options)
-        {
-            this.Call("mon", new JRawValue(el.Descriptor), eventName, fn, new JRawValue(scope), new JRawValue(options.Serialize()));
-        }
-
-        /// <summary>
-        /// Adds listeners to any Observable object (or Element) which are automatically removed when this AbstractComponent is destroyed.
-        /// </summary>
-        /// <param name="el">The item to which to add a listener/listeners.</param>
-        /// <param name="eventName">The event name, or an object containing event name properties.</param>
-        /// <param name="fn">This is the handler function.</param>
-        /// <param name="scope"> this is the scope (this reference) in which the handler function is executed.</param>
-        /// <param name="options">An object containing handler configuration. properties.</param>
-        [Meta]
-        public virtual void Mon(Observable el, string eventName, string fn, string scope, HandlerConfig options)
-        {
-            this.Call("mon", new JRawValue(el.ClientID), eventName, fn, new JRawValue(scope), new JRawValue(options.Serialize()));
-        }
-
-        /// <summary>
-        /// Removes listeners that were added by the mon method.
-        /// </summary>
-        /// <param name="el">The item from which to remove a listener/listeners.</param>
-        /// <param name="eventName">The event name, or an object containing event name properties.</param>
-        /// <param name="fn">If the ename parameter was an event name, this is the handler function.</param>
-        [Meta]
-        public virtual void Mun(Element el, string eventName, string fn)
-        {
-            this.Call("mun", new JRawValue(el.Descriptor), eventName, new JRawValue(fn));
-        }
-
-        /// <summary>
-        /// Removes listeners that were added by the mon method.
-        /// </summary>
-        /// <param name="el">The item from which to remove a listener/listeners.</param>
-        /// <param name="eventName">The event name, or an object containing event name properties.</param>
-        /// <param name="fn">If the ename parameter was an event name, this is the handler function.</param>
-        [Meta]
-        public virtual void Mun(Observable el, string eventName, string fn)
-        {
-            this.Call("mun", new JRawValue(el.ClientID), eventName, new JRawValue(fn));
-        }
-
-        /// <summary>
-        /// Removes listeners that were added by the mon method.
-        /// </summary>
-        /// <param name="el">The item from which to remove a listener/listeners.</param>
-        /// <param name="eventName">The event name, or an object containing event name properties.</param>
-        /// <param name="fn">If the ename parameter was an event name, this is the handler function.</param>
-        /// <param name="scope">this is the scope (this reference) in which the handler function is executed.</param>
-        [Meta]
-        public virtual void Mun(Element el, string eventName, string fn, string scope)
-        {
-            this.Call("mun", new JRawValue(el.Descriptor), eventName, new JRawValue(fn), new JRawValue(scope));
-        }
-
-        /// <summary>
-        /// Removes listeners that were added by the mon method.
-        /// </summary>
-        /// <param name="el">The item from which to remove a listener/listeners.</param>
-        /// <param name="eventName">The event name, or an object containing event name properties.</param>
-        /// <param name="fn">If the ename parameter was an event name, this is the handler function.</param>
-        /// <param name="scope">this is the scope (this reference) in which the handler function is executed.</param>
-        [Meta]
-        public virtual void Mun(Observable el, string eventName, string fn, string scope)
-        {
-            this.Call("mun", new JRawValue(el.ClientID), eventName, new JRawValue(fn), new JRawValue(scope));
         }
 
 
@@ -817,50 +606,19 @@ namespace Ext.Net
                 throw new HttpException("The control '{1}' does not have an DirectEvent with the name '{0}'".FormatWith(eventName, this.ClientID));
             }
 
-            var directevent = eventListenerInfo.GetValue(directevents, null) as ComponentDirectEvent;
+            ComponentDirectEvent directevent = eventListenerInfo.GetValue(directevents, null) as ComponentDirectEvent;
 
             if (directevent == null || directevent.IsDefault)
             {
                 throw new HttpException("The control '{1}' does not have an DirectEvent with the name '{0}' or the handler is absent".FormatWith(eventName, this.ClientID));
             }
 
-            var e = new DirectEventArgs(extraParams);
+            DirectEventArgs e = new DirectEventArgs(extraParams);
             directevent.Owner = this;
             directevent.OnEvent(e);
         }
 
-        internal void FireBusEvent(string eventName, ParameterCollection extraParams)
-        {
-            var directEvents = this.MessageBusDirectEvents;
-            MessageBusDirectEvent directEvent = null;
-            var parts = eventName.Split(new char[]{':'});
-            var token = parts[0];
-
-            foreach (var ev in directEvents)
-            {
-                if (ev.Name == token)
-                {
-                    directEvent = ev;
-                    break;
-                }
-            }
-
-            if (directEvent == null)
-            {
-                throw new HttpException("The control '{1}' does not have an MessageBusDirectEvent with the name '{0}'".FormatWith(eventName, this.ClientID));
-            }
-
-            if (directEvent.IsDefault)
-            {
-                throw new HttpException("The control '{1}' does not have an MessageBusDirectEvent with the name '{0}' or the handler is absent".FormatWith(eventName, this.ClientID));
-            }
-
-            var e = new DirectEventArgs(directEvent.Name, parts.Length == 2 ? parts[1] : "", extraParams);
-            directEvent.Owner = this;
-            directEvent.OnEvent(e);
-        }
-
-        private bool eventsInit;
+        private bool eventsInit = false;
 
 		/// <summary>
 		/// 
@@ -930,135 +688,5 @@ namespace Ext.Net
                 this.LazyItems.Remove(item);
             }
         }
-
-        #region MessageBus events
-
-        private MessageBusListeners messageBusListeners;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Meta]        
-        [Category("2. Observable")]
-        [NotifyParentProperty(true)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [Description("")]
-        public MessageBusListeners MessageBusListeners
-        {
-            get
-            {
-                if (this.messageBusListeners == null)
-                {
-                    this.messageBusListeners = new MessageBusListeners();
-                    this.messageBusListeners.Owner = this;
-                    this.messageBusListeners.AfterItemAdd += MessageBusListeners_AfterItemAdd;
-                }
-
-                return this.messageBusListeners;
-            }
-        }
-
-        private void MessageBusListeners_AfterItemAdd(MessageBusListener item)
-        {
-            item.Owner = this;
-        }
-
-        private MessageBusDirectEvents messageBusDirectEvents;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Meta]
-        [Category("2. Observable")]
-        [NotifyParentProperty(true)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [Description("")]
-        public MessageBusDirectEvents MessageBusDirectEvents
-        {
-            get
-            {
-                if (this.messageBusDirectEvents == null)
-                {
-                    this.messageBusDirectEvents = new MessageBusDirectEvents();
-                    this.messageBusDirectEvents.Owner = this;
-                    this.messageBusDirectEvents.AfterItemAdd += MessageBusDirectEvents_AfterItemAdd;
-                }
-
-                return this.messageBusDirectEvents;
-            }
-        }
-
-        private void MessageBusDirectEvents_AfterItemAdd(MessageBusDirectEvent item)
-        {
-            item.Owner = this;
-        }
-
-        [ConfigOption("messageBusListeners", JsonMode.Raw)]
-        [DefaultValue("")]
-        protected virtual string MessageBusListenersProxy
-        {
-            get
-            {
-                if(this.MessageBusListeners.Count == 0)
-                {
-                    return "";
-                }
-                
-                ListenerJsonConverter converter = new ListenerJsonConverter();                
-                converter.Owner = this;
-                
-                var sb = new StringBuilder();
-                var sw = new StringWriter(sb);
-                var writer = new JsonTextWriter(sw);
-                writer.WriteStartArray();
-
-                foreach (var listener in this.MessageBusListeners)
-                {
-                    listener.ArgumentList.Clear();
-                    listener.ArgumentList.AddRange(new string[]{"name", "data", "config"});
-                    converter.WriteJson(writer, listener, null);                    
-                }
-
-                writer.WriteEndArray();
-
-                return sb.ToString();
-            }
-        }
-
-        [ConfigOption("messageBusDirectEvents", JsonMode.Raw)]
-        [DefaultValue("")]
-        protected virtual string MessageBusDirectEventsProxy
-        {
-            get
-            {
-                if (this.MessageBusDirectEvents.Count == 0)
-                {
-                    return "";
-                }
-
-                DirectEventJsonConverter converter = new DirectEventJsonConverter();
-                converter.Owner = this;
-
-                var sb = new StringBuilder();
-                var sw = new StringWriter(sb);
-                var writer = new JsonTextWriter(sw);
-                writer.WriteStartArray();
-
-                foreach (var listener in this.MessageBusDirectEvents)
-                {
-                    listener.ArgumentList.Clear();
-                    listener.ArgumentList.AddRange(new string[] { "name", "data", "config" });
-                    converter.WriteJson(writer, listener, null);
-                }
-
-                writer.WriteEndArray();
-
-                return sb.ToString();
-            }
-        }
-
-        #endregion
     }
 }

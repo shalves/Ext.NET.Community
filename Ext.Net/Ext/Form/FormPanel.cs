@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -34,44 +34,7 @@ using Ext.Net.Utilities;
 namespace Ext.Net
 {
     /// <summary>
-    /// FormPanel provides a standard container for forms. It is essentially a standard Ext.panel.Panel which automatically creates a BasicForm for managing any Ext.form.field.Field objects that are added as descendants of the panel. It also includes conveniences for configuring and working with the BasicForm and the collection of Fields.
-    /// 
-    /// Layout
-    /// 
-    /// By default, FormPanel is configured with layout:'anchor' for the layout of its immediate child items. This can be changed to any of the supported container layouts. The layout of sub-containers is configured in the standard way.
-    /// 
-    /// BasicForm
-    /// 
-    /// Although not listed as configuration options of FormPanel, the FormPanel class accepts all of the config options supported by the Ext.form.Basic class, and will pass them along to the internal BasicForm when it is created.
-    /// 
-    /// Note: If subclassing FormPanel, any configuration options for the BasicForm must be applied to the initialConfig property of the FormPanel. Applying BasicForm configuration settings to this will not affect the BasicForm's configuration.
-    /// 
-    /// The following events fired by the BasicForm will be re-fired by the FormPanel and can therefore be listened for on the FormPanel itself:
-    /// 
-    /// beforeaction
-    /// actionfailed
-    /// actioncomplete
-    /// validitychange
-    /// dirtychange
-    /// Field Defaults
-    ///
-    /// The fieldDefaults config option conveniently allows centralized configuration of default values for all fields added as descendants of the FormPanel. Any config option recognized by implementations of Ext.form.Labelable may be included in this object. See the fieldDefaults documentation for details of how the defaults are applied.
-    /// 
-    /// Form Validation
-    /// 
-    /// With the default configuration, form fields are validated on-the-fly while the user edits their values. This can be controlled on a per-field basis (or via the fieldDefaults config) with the field config properties Ext.form.field.Field.validateOnChange and Ext.form.field.Base.checkChangeEvents, and the FormPanel's config properties pollForChanges and pollInterval.
-    /// 
-    /// Any component within the FormPanel can be configured with formBind: true. This will cause that component to be automatically disabled when the form is invalid, and enabled when it is valid. This is most commonly used for Button components to prevent submitting the form in an invalid state, but can be used on any component type.
-    /// 
-    /// For more information on form validation see the following:
-    /// 
-    /// Ext.form.field.Field.validateOnChange
-    /// pollForChanges and pollInterval
-    /// Ext.form.field.VTypes
-    /// BasicForm.doAction clientValidation notes
-    /// Form Submission
-    /// 
-    /// By default, Ext Forms are submitted through Ajax, using Ext.form.action.Action. See the documentation for Ext.form.Basic for details.
+    /// Standard form container.
     /// </summary>
     [Meta]
     [ToolboxData("<{0}:FormPanel runat=\"server\" Title=\"Title\" Padding=\"5\" ButtonAlign=\"Right\" Height=\"185\" Width=\"300\"><Items><{0}:TextField runat=\"server\" FieldLabel=\"Label\" AnchorHorizontal=\"100%\" /></Items><Buttons><{0}:Button runat=\"server\" Icon=\"Disk\" Text=\"Submit\" /></Buttons></ext:FormPanel>")]
@@ -108,7 +71,7 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.form.Panel";
+                return "Ext.form.FormPanel";
             }
         }
 
@@ -144,7 +107,7 @@ namespace Ext.Net
         {
             StringBuilder sb = new StringBuilder("function(form,action){if (!form.baseParams){form.baseParams={};};");
 
-            sb.AppendFormat("Ext.apply(form.baseParams,{0});", parameters.ToJson());
+            sb.AppendFormat("Ext.apply(form.baseParams,{0});", parameters.ToJson(0));
 
             if (userHandler.IsNotEmpty())
             {
@@ -170,7 +133,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public FormPanelListeners Listeners
         {
@@ -195,7 +159,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public FormPanelDirectEvents DirectEvents
         {
@@ -203,7 +168,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new FormPanelDirectEvents(this);
+                    this.directEvents = new FormPanelDirectEvents();
                 }
 
                 return this.directEvents;

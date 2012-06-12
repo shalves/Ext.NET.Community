@@ -15,15 +15,16 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -32,22 +33,14 @@ using System.Web.UI;
 namespace Ext.Net
 {
     /// <summary>
-    /// A field container which has a specialized layout for arranging Ext.form.field.Checkbox controls into columns, and provides convenience Ext.form.field.Field methods for getting, setting, and validating the group of checkboxes as a whole.
-    ///
-    /// Validation
-    ///
-    /// Individual checkbox fields themselves have no default validation behavior, but sometimes you want to require a user to select at least one of a group of checkboxes. CheckboxGroup allows this by setting the config allowBlank:false; when the user does not check at least one of the checkboxes, the entire group will be highlighted as invalid and the error message will be displayed according to the msgTarget config.
-    ///
-    /// Layout
-    ///
-    /// The default layout for CheckboxGroup makes it easy to arrange the checkboxes into columns; see the columns and vertical config documentation for details. You may also use a completely different layout by setting the layout to one of the other supported layout types; for instance you may wish to use a custom arrangement of hbox and vbox containers. In that case the checkbox components at any depth will still be managed by the CheckboxGroup's validation.
+    /// A grouping container for Ext.form.Checkbox controls.
     /// </summary>
     [Meta]
     [ToolboxData("<{0}:CheckboxGroup runat=\"server\" />")]
     [Designer(typeof(EmptyDesigner))]
     [ToolboxBitmap(typeof(CheckboxGroup), "Build.ToolboxIcons.CheckboxGroup.bmp")]
     [Description("A grouping container for Ext.form.Checkbox controls.")]
-    public partial class CheckboxGroup : CheckboxGroupBase
+    public partial class CheckboxGroup : CheckboxGroupBase, IItems
     {
 		/// <summary>
 		/// 
@@ -84,20 +77,35 @@ namespace Ext.Net
         /// <summary>
         /// The default type of content Container represented by this object as registered in Ext.ComponentMgr (defaults to 'checkbox').
         /// </summary>
-        [ConfigOption]
+        [Meta]
         [Category("5. Container")]
-        [DefaultValue("checkbox")]
+        [DefaultValue("Checkbox")]
+        [TypeConverter(typeof(DefaultTypeConverter))]
         [NotifyParentProperty(true)]
         [Description("The default type of content Container represented by this object as registered in Ext.ComponentMgr (defaults to 'checkbox').")]
-        public override string DefaultType
+        public virtual string DefaultType
         {
             get
             {
-                return this.State.Get<string>("DefaultType", "checkbox");
+                return (string)this.ViewState["DefaultType"] ?? "Checkbox";
             }
             set
             {
-                this.State.Set("DefaultType", value);
+                this.ViewState["DefaultType"] = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigOption("defaultType")]
+        [DefaultValue("checkbox")]
+        [Description("")]
+        protected virtual string DefaultTypeProxy
+        {
+            get
+            {
+                return DefaultTypeConverter.GetXType(this.DefaultType);
             }
         }
 
@@ -112,6 +120,7 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public CheckboxGroupListeners Listeners
         {
@@ -137,6 +146,7 @@ namespace Ext.Net
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public CheckboxGroupDirectEvents DirectEvents
         {
@@ -144,13 +154,48 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new CheckboxGroupDirectEvents(this);
+                    this.directEvents = new CheckboxGroupDirectEvents();
                 }
 
                 return this.directEvents;
             }
         }
         
+        ItemsCollection<Checkbox> items;
+
+        /// <summary>
+        /// Items collection
+        /// </summary>
+        [Meta]
+        [ConfigOption("items", typeof(ItemCollectionJsonConverter))]
+        [Category("6. CheckboxGroup")]
+        [NotifyParentProperty(true)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Description("Items collection")]
+        public virtual ItemsCollection<Checkbox> Items
+        {
+            get
+            {
+                if (this.items == null)
+                {
+                    this.items = new ItemsCollection<Checkbox>();
+                    this.items.AfterItemAdd += AfterItemAdd;
+                    this.items.AfterItemRemove += AfterItemRemove;
+                }
+
+                return this.items;
+            }
+        }
+
+        IList IItems.ItemsList
+        {
+            get
+            {
+                return this.Items;
+            }
+        }
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -161,6 +206,12 @@ namespace Ext.Net
             get
             {
                 return Utilities.ControlUtils.FindControls<Checkbox>(this).FindAll(cb => cb.Checked);
+
+                // TODO: OK... just in case rollback to .NET 2.0 pureness is required, see also RadioGroup.CheckedItems.
+                //return Utilities.ControlUtils.FindControls<Checkbox>(this).FindAll(delegate(Checkbox checkbox)
+                //{
+                //    return checkbox.Checked;
+                //});
             }
         }
 
@@ -180,6 +231,13 @@ namespace Ext.Net
 
         /*  DirectEvent Handler
             -----------------------------------------------------------------------------------------------*/
+
+        static CheckboxGroup()
+        {
+            DirectEventChange = new object();
+        }
+
+        private static readonly object DirectEventChange;
 
         /// <summary>
         /// Server-side DirectEvent handler. Method signature is (object sender, DirectEventArgs e).

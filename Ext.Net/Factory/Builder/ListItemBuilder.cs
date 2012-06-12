@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class ListItem
     {
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseItem.Builder<ListItem, ListItem.Builder>
+        public partial class Builder : StateManagedItem.Builder<ListItem, ListItem.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -92,24 +89,6 @@ namespace Ext.Net
             public virtual ListItem.Builder Value(string value)
             {
                 this.ToComponent().Value = value;
-                return this as ListItem.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ListItem.Builder Index(int index)
-            {
-                this.ToComponent().Index = index;
-                return this as ListItem.Builder;
-            }
-             
- 			/// <summary>
-			/// Wrap in quotes or not
-			/// </summary>
-            public virtual ListItem.Builder Mode(ParameterMode mode)
-            {
-                this.ToComponent().Mode = mode;
                 return this as ListItem.Builder;
             }
             

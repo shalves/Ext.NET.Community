@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class DesktopShortcut
     {
 		/*  Ctor
@@ -64,7 +61,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        new public partial class Config : BaseItem.Config 
+        new public partial class Config : StateManagedItem.Config 
         { 
 			/*  Implicit DesktopShortcut.Config Conversion to DesktopShortcut.Builder
 				-----------------------------------------------------------------------------------------------*/
@@ -81,6 +78,42 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
+			private string moduleID = "";
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string ModuleID 
+			{ 
+				get
+				{
+					return this.moduleID;
+				}
+				set
+				{
+					this.moduleID = value;
+				}
+			}
+
+			private string shortcutID = "";
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string ShortcutID 
+			{ 
+				get
+				{
+					return this.shortcutID;
+				}
+				set
+				{
+					this.shortcutID = value;
+				}
+			}
+
 			private string iconCls = "";
 
 			/// <summary>
@@ -99,39 +132,21 @@ namespace Ext.Net
 				}
 			}
 
-			private int sortIndex = -1;
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue(-1)]
-			public virtual int SortIndex 
-			{ 
-				get
-				{
-					return this.sortIndex;
-				}
-				set
-				{
-					this.sortIndex = value;
-				}
-			}
-
-			private string name = "";
+			private string text = "";
 
 			/// <summary>
 			/// 
 			/// </summary>
 			[DefaultValue("")]
-			public virtual string Name 
+			public virtual string Text 
 			{ 
 				get
 				{
-					return this.name;
+					return this.text;
 				}
 				set
 				{
-					this.name = value;
+					this.text = value;
 				}
 			}
 
@@ -168,114 +183,6 @@ namespace Ext.Net
 				set
 				{
 					this.y = value;
-				}
-			}
-
-			private string textCls = "";
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string TextCls 
-			{ 
-				get
-				{
-					return this.textCls;
-				}
-				set
-				{
-					this.textCls = value;
-				}
-			}
-
-			private string handler = "";
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string Handler 
-			{ 
-				get
-				{
-					return this.handler;
-				}
-				set
-				{
-					this.handler = value;
-				}
-			}
-
-			private bool hidden = false;
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool Hidden 
-			{ 
-				get
-				{
-					return this.hidden;
-				}
-				set
-				{
-					this.hidden = value;
-				}
-			}
-
-			private string module = "";
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string Module 
-			{ 
-				get
-				{
-					return this.module;
-				}
-				set
-				{
-					this.module = value;
-				}
-			}
-
-			private string qTitle = "";
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string QTitle 
-			{ 
-				get
-				{
-					return this.qTitle;
-				}
-				set
-				{
-					this.qTitle = value;
-				}
-			}
-
-			private string qTip = "";
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string QTip 
-			{ 
-				get
-				{
-					return this.qTip;
-				}
-				set
-				{
-					this.qTip = value;
 				}
 			}
 

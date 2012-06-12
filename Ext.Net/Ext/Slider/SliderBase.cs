@@ -15,18 +15,18 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
-using System;
 using System.ComponentModel;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
@@ -35,7 +35,7 @@ namespace Ext.Net
     /// </summary>
     [Meta]
     [Description("")]
-    public abstract partial class SliderBase : Field
+    public abstract partial class SliderBase : BoxComponentBase
     {
         /// <summary>
         /// 
@@ -46,7 +46,7 @@ namespace Ext.Net
         {
             get
             {
-                return this.Single ? "slider" : "multislider";
+                return "slider";
             }
         }
 
@@ -59,98 +59,68 @@ namespace Ext.Net
         {
             get
             {
-                return this.Single ? "Ext.slider.Single" : "Ext.slider.Multi";
+                return "Ext.Slider";
             }
         }
 
         /// <summary>
-        /// True for single thumb slider
-        /// </summary>
-        [Meta]
-        [Category("5. Slider")]
-        [DefaultValue(false)]
-        [Description("True for single thumb slider")]
-        public virtual bool Single
-        {
-            get
-            {
-                return this.State.Get<bool>("Single", false);
-            }
-            set
-            {
-                this.State.Set("Single", value);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Description("")]
-        protected virtual double[] CheckRange(double[] numbers)
-        {
-            if (numbers == null)
-            {
-                return null;
-            }
-
-            double[] newNumbers = new double[numbers.Length];
-
-            for (int i = 0; i < numbers.Length; i++)
-            {
-                double number = this.MinValue > numbers[i] ? this.MinValue : numbers[i];
-                newNumbers[i] = this.MaxValue < number ? this.MaxValue : number;
-            }
-
-            return newNumbers;
-        }
-
-        /// <summary>
-        /// Thumbs value
+        /// The Number (int) to initialize this field with.
         /// </summary>
         [Meta]
         [Category("Appearance")]
-        [DefaultValue(null)]
+        [DefaultValue(int.MinValue)]
         [Bindable(true, BindingDirection.TwoWay)]
-        [Description("Thumbs value")]
-        public virtual double? Number
+        [DirectEventUpdate(MethodName = "SetValueProxy")]
+        [Description("The Number (int) to initialize this field with.")]
+        public virtual int Value
         {
             get
             {
-                var numbers = this.Numbers;
-                if (numbers != null && numbers.Length > 0)
-                {
-                    return this.Numbers[0];
-                }
-                return null;
+                object obj = this.ViewState["Value"];
+                return (obj == null) ? int.MinValue : (int)obj;
             }
             set
             {
-                if (value == null)
-                {
-                    this.Value = null;
-                }
-                else
-                {
-                    this.Numbers = new double[] { value.Value };
-                }
+                this.ViewState["Value"] = value;
             }
         }
 
         /// <summary>
         /// Thumbs values array
         /// </summary>
-        [TypeConverter(typeof(DoubleArrayConverter))]
+        [ConfigOption("values", typeof(IntArrayJsonConverter))]
+        [TypeConverter(typeof(IntArrayConverter))]
         [DefaultValue(null)]
         [Description("Thumbs values list")]
-        public virtual double[] Numbers
+        public virtual int[] Values
         {
             get
             {
-                return this.State.Get<double[]>("Value", null);                
+                object obj = this.ViewState["Values"];
+                return (obj == null) ? null : (int[])obj;
             }
             set
             {
-                this.State.Set("Value",this.CheckRange(value));
+                this.ViewState["Values"] = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigOption("value", JsonMode.Raw)]
+        [DefaultValue(int.MinValue)]
+        [Description("")]
+        protected virtual int ValueProxy
+        {
+            get
+            {
+                if (this.Value == int.MinValue || (this.Values != null && this.Values.Length > 1))
+                {
+                    return int.MinValue;
+                }
+
+                return this.Value;
             }
         }
         
@@ -167,11 +137,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Animate", true);
+                object obj = this.ViewState["Animate"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("Animate", value);
+                this.ViewState["Animate"] = value;
             }
         }
 
@@ -188,11 +159,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("ClickToChange", true);
+                object obj = this.ViewState["ClickToChange"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("ClickToChange", value);
+                this.ViewState["ClickToChange"] = value;
             }
         }
 
@@ -209,11 +181,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("ConstrainThumbs", true);
+                object obj = this.ViewState["ConstrainThumbs"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("ConstrainThumbs", value);
+                this.ViewState["ConstrainThumbs"] = value;
             }
         }
 
@@ -230,11 +203,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("DecimalPrecision", 0);
+                object obj = this.ViewState["DecimalPrecision"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("DecimalPrecision", value);
+                this.ViewState["DecimalPrecision"] = value;
             }
         }
 
@@ -251,11 +225,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("Increment", 0);
+                object obj = this.ViewState["Increment"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("Increment", value);
+                this.ViewState["Increment"] = value;
             }
         }
 
@@ -272,11 +247,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("KeyIncrement", 1);
+                object obj = this.ViewState["KeyIncrement"];
+                return (obj == null) ? 1 : (int)obj;
             }
             set
             {
-                this.State.Set("KeyIncrement", value);
+                this.ViewState["KeyIncrement"] = value;
             }
         }
 
@@ -286,19 +262,19 @@ namespace Ext.Net
         [Meta]
         [ConfigOption]
         [Category("5. Slider")]
-        [DefaultValue(100d)]
-        [DirectEventUpdate(MethodName = "SetMaxValue")]
+        [DefaultValue(100)]
         [NotifyParentProperty(true)]
         [Description("The maximum value for the Slider. Defaults to 100.")]
-        public virtual double MaxValue
+        public virtual int MaxValue
         {
             get
             {
-                return this.State.Get<double>("MaxValue", 100d);
+                object obj = this.ViewState["MaxValue"];
+                return (obj == null) ? 100 : (int)obj;
             }
             set
             {
-                this.State.Set("MaxValue", value);
+                this.ViewState["MaxValue"] = value;
             }
         }
 
@@ -308,19 +284,19 @@ namespace Ext.Net
         [Meta]
         [ConfigOption]
         [Category("5. Slider")]
-        [DefaultValue(0d)]
-        [DirectEventUpdate(MethodName = "SetMinValue")]
+        [DefaultValue(0)]
         [NotifyParentProperty(true)]
         [Description("The minimum value for the Slider. Defaults to 0.")]
-        public virtual double MinValue
+        public virtual int MinValue
         {
             get
             {
-                return this.State.Get<double>("MinValue", 0d);
+                object obj = this.ViewState["MinValue"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("MinValue", value);
+                this.ViewState["MinValue"] = value;
             }
         }
 
@@ -337,113 +313,104 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Vertical", false);
+                object obj = this.ViewState["Vertical"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Vertical", value);
+                this.ViewState["Vertical"] = value;
             }
         }
 
         /// <summary>
-        /// True to use an Ext.slider.Tip to display tips for the value. Defaults to: true
+        /// The number used to set the z index of the top thumb
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("5. Slider")]
-        [DefaultValue(true)]
+        [DefaultValue(10000)]
         [NotifyParentProperty(true)]
-        [Description("True to use an Ext.slider.Tip to display tips for the value. Defaults to: true")]
-        public virtual bool UseTips
+        [Description("The number used to set the z index of the top thumb")]
+        public virtual int TopThumbZIndex
         {
             get
             {
-                return this.State.Get<bool>("UseTips", true);
+                object obj = this.ViewState["TopThumbZIndex"];
+                return (obj == null) ? 10000 : (int)obj;
             }
             set
             {
-                this.State.Set("UseTips", value);
-            }
-        }
-
-        private JFunction tipText;
-
-        /// <summary>
-        /// A function used to display custom text for the slider tip. Defaults to null, which will use the default on the plugin.
-        /// Parameters:
-        ///     thumb : Thumbnail
-        /// </summary>
-        [ConfigOption(JsonMode.Raw)]
-        [Category("5. Slider")]
-        [DefaultValue(null)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [Description("A function used to display custom text for the slider tip. Defaults to null, which will use the default on the plugin.")]
-        public virtual JFunction TipText
-        {
-            get
-            {
-                if (this.tipText == null)
-                {
-                    this.tipText = new JFunction();
-
-                    if (!this.DesignMode)
-                    {
-                        this.tipText.Args = new string[] { "thumb" };
-                    }
-                }
-
-                return this.tipText;
-            }
-        }
-
-        /// <summary>
-        /// A value to initialize this field with.
-        /// </summary>
-        [Meta]
-        [DirectEventUpdate(MethodName = "SetValueProxy")]
-        [Category("5. Field")]
-        [DefaultValue(null)]
-        [Description("A value to initialize this field with.")]
-        public override object Value
-        {
-            get
-            {
-                return this.State.Get<object>("Value", null);
-            }
-            set
-            {
-                if (value is double[])
-                {
-                    this.State.Set("Value", value);
-                }
-                else
-                {
-                    this.State.Set("Value", new double[] { Convert.ToDouble(value) });
-                }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [ConfigOption("values", JsonMode.Serialize)]
-        [DefaultValue(null)]
-        protected internal override object ValueProxy
-        {
-            get
-            {
-                if (!this.IsEmpty)
-                {
-                    return this.Value;
-                }
-
-                return null;
+                this.ViewState["TopThumbZIndex"] = value;
             }
         }
 
         /*  Public Methods
             -----------------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        protected virtual void SetValueProxy(int value)
+        {
+            this.Call("setValue", 0, value);
+        }
+
+        /// <summary>
+        /// Programmatically sets the value of the Slider. Ensures that the value is constrained within the minValue and maxValue.
+        /// </summary>
+        /// <param name="value">The value to set the slider to. (This will be constrained within minValue and maxValue)</param>
+        [Meta]
+        [Description("Programmatically sets the value of the Slider. Ensures that the value is constrained within the minValue and maxValue.")]
+        public virtual void SetValue(int value)
+        {
+            this.Value = value;
+        }
+
+        /// <summary>
+        /// Programmatically sets the value of the Slider. Ensures that the value is constrained within the minValue and maxValue.
+        /// </summary>
+        /// <param name="index">Index of the thumb to move</param>
+        /// <param name="value">The value to set the slider to. (This will be constrained within minValue and maxValue)</param>
+        [Meta]
+        [Description("Programmatically sets the value of the Slider. Ensures that the value is constrained within the minValue and maxValue.")]
+        public virtual void SetValue(int index, int value)
+        {
+            this.SetValue(index, value, true);
+        }
+
+        /// <summary>
+        /// Programmatically sets the value of the Slider. Ensures that the value is constrained within the minValue and maxValue.
+        /// </summary>
+        /// <param name="value">The value to set the slider to. (This will be constrained within minValue and maxValue)</param>
+        /// <param name="animate">Turn on or off animation, defaults to true</param>
+        [Meta]
+        [Description("Programmatically sets the value of the Slider. Ensures that the value is constrained within the minValue and maxValue.")]
+        public virtual void SetValue(int value, bool animate)
+        {
+            this.SuspendScripting();
+            this.Value = value;
+            this.ResumeScripting();
+
+            this.Call("setValue", 0, value, animate);
+        }
+
+        /// <summary>
+        /// Programmatically sets the value of the Slider. Ensures that the value is constrained within the minValue and maxValue.
+        /// </summary>
+        /// <param name="index">Index of the thumb to move</param>
+        /// <param name="value">The value to set the slider to. (This will be constrained within minValue and maxValue)</param>
+        /// <param name="animate">Turn on or off animation, defaults to true</param>
+        [Meta]
+        [Description("Programmatically sets the value of the Slider. Ensures that the value is constrained within the minValue and maxValue.")]
+        public virtual void SetValue(int index, int value, bool animate)
+        {
+            this.SuspendScripting();
+            this.Value = value;
+            this.ResumeScripting();
+
+            this.Call("setValue", index, value, animate);
+        }
 
         /// <summary>
         /// Synchronizes the thumb position to the proper proportion of the total component width based on the current slider value. This will be called automatically when the Slider is resized by a layout, but if it is rendered auto width, this method can be called from another resize handler to sync the Slider if necessary.
@@ -463,65 +430,6 @@ namespace Ext.Net
         public virtual void AddThumb(int value)
         {
             this.Call("addThumb", value);
-        }
-
-        /// <summary>
-        /// Sets the maximum value for the slider instance. If the current value is more than the maximum value, the current value will be changed.
-        /// </summary>
-        /// <param name="value">The maximum value</param>
-        public virtual void SetMaxValue(Double value)
-        {
-            this.Call("setMaxValue", value);
-        }
-
-        /// <summary>
-        /// Sets the minimum value for the slider instance. If the current value is less than the minimum value, the current value will be changed.
-        /// </summary>
-        /// <param name="value">The minimum value</param>
-        public virtual void SetMinValue(Double value)
-        {
-            this.Call("setMinValue", value);
-        }
-
-        /// <summary>
-        /// Sets a data value into the field and runs the change detection and validation. To set the value directly without these inspections see setRawValue.
-        /// </summary>
-        /// <param name="value">The value to set</param>
-        protected override void SetValueProxy(object value)
-        {
-            if (value is double[])
-            {
-                var arr = (double[])value;
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    this.Call("setValue", i, arr[i]);    
-                }
-            }
-            else
-            {
-                this.Call("setValue", value);
-            }
-        }
-
-        /// <summary>
-        /// Programmatically sets the value of the Slider. Ensures that the value is constrained within the minValue and maxValue.
-        /// </summary>
-        /// <param name="index">Index of the thumb to move</param>
-        /// <param name="value">The value to set the slider to. (This will be constrained within minValue and maxValue)</param>
-        /// <param name="animate">Turn on or off animation</param>
-        public virtual void SetValue(int index, double value, bool animate)
-        {
-            this.Call("setValue", index, value, animate);    
-        }
-
-        /// <summary>
-        /// Programmatically sets the value of the Slider. Ensures that the value is constrained within the minValue and maxValue.
-        /// </summary>
-        /// <param name="index">Index of the thumb to move</param>
-        /// <param name="value">The value to set the slider to. (This will be constrained within minValue and maxValue)</param>
-        public virtual void SetValue(int index, double value)
-        {
-            this.Call("setValue", index, value);
         }
     }
 }

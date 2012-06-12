@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class KeyBinding
     {
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseItem.Builder<KeyBinding, KeyBinding.Builder>
+        public partial class Builder : StateManagedItem.Builder<KeyBinding, KeyBinding.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -122,17 +119,15 @@ namespace Ext.Net
                 return this as KeyBinding.Builder;
             }
              
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyBinding.Builder</returns>
-            public virtual KeyBinding.Builder Listeners(Action<KeyListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as KeyBinding.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(KeyListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

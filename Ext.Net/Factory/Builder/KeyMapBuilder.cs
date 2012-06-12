@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class KeyMap
     {
         /// <summary>
@@ -77,17 +74,15 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
- 			/// <summary>
-			/// A KeyMap config object (in the format expected by Ext.KeyMap.addBinding used to assign custom key handling to this panel (defaults to null).
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyMap.Builder</returns>
-            public virtual KeyMap.Builder Keys(Action<KeyBindingCollection> action)
-            {
-                action(this.ToComponent().Keys);
-                return this as KeyMap.Builder;
-            }
-			 
+ 			// /// <summary>
+			// /// A KeyMap config object (in the format expected by Ext.KeyMap.addBinding used to assign custom key handling to this panel (defaults to null).
+			// /// </summary>
+            // public virtual TBuilder Keys(KeyBindingCollection keys)
+            // {
+            //    this.ToComponent().Keys = keys;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
 			/// The element to bind to
 			/// </summary>

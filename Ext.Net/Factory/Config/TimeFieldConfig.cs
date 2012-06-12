@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class TimeField
     {
 		/*  Ctor
@@ -64,7 +61,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        new public partial class Config : PickerField.Config 
+        new public partial class Config : ComboBox.Config 
         { 
 			/*  Implicit TimeField.Config Conversion to TimeField.Builder
 				-----------------------------------------------------------------------------------------------*/
@@ -81,6 +78,24 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
+			private object emptyValue = new TimeSpan(-9223372036854775808);
+
+			/// <summary>
+			/// The fields null value.
+			/// </summary>
+			[DefaultValue(typeof(TimeSpan), "-9223372036854775808")]
+			public override object EmptyValue 
+			{ 
+				get
+				{
+					return this.emptyValue;
+				}
+				set
+				{
+					this.emptyValue = value;
+				}
+			}
+
 			private TimeSpan selectedTime = new TimeSpan(-9223372036854775808);
 
 			/// <summary>
@@ -117,10 +132,28 @@ namespace Ext.Net
 				}
 			}
 
+			private object value = null;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue(null)]
+			public override object Value 
+			{ 
+				get
+				{
+					return this.value;
+				}
+				set
+				{
+					this.value = value;
+				}
+			}
+
 			private string altFormats = "";
 
 			/// <summary>
-			/// Multiple date formats separated by \" | \" to try when parsing a user input value and it doesn't match the defined format (defaults to 'g:ia|g:iA|g:i a|g:i A|h:i|g:i|H:i|ga|ha|gA|h a|g a|g A|gi|hi|gia|hia|g|H|gi a|hi a|giA|hiA|gi A|hi A').
+			/// Multiple date formats separated by \" | \" to try when parsing a user input value and it doesn't match the defined format (defaults to 'm/d/Y|m-d-y|m-d-Y|m/d|m-d|d').
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string AltFormats 
@@ -138,7 +171,7 @@ namespace Ext.Net
 			private string format = "t";
 
 			/// <summary>
-			/// The default time format string which can be overriden for localization support. The format must be valid according to Ext.Date.parse (defaults to 'g:i A', e.g., '3:15 PM'). For 24-hour time format try 'H:i' instead.
+			/// The default date format string which can be overriden for localization support. The format must be valid according to Date.parseDate (defaults to 'h:mm tt', e.g., '3:15 PM'). For 24-hour time format try 'H:mm' instead.
 			/// </summary>
 			[DefaultValue("t")]
 			public virtual string Format 
@@ -171,12 +204,12 @@ namespace Ext.Net
 				}
 			}
 
-			private string maxText = "The time in this field must be equal to or before {0}";
+			private string maxText = "";
 
 			/// <summary>
-			/// The error text to display when the entered time is after maxValue (defaults to 'The time in this field must be equal to or before {0}').
+			/// The error text to display when the time is after maxValue (defaults to 'The time in this field must be equal to or before {0}').
 			/// </summary>
-			[DefaultValue("The time in this field must be equal to or before {0}")]
+			[DefaultValue("")]
 			public virtual string MaxText 
 			{ 
 				get
@@ -192,7 +225,7 @@ namespace Ext.Net
 			private TimeSpan maxTime = new TimeSpan(9223372036854775807);
 
 			/// <summary>
-			/// The maximum allowed time. Can be either a Javascript date object with a valid time value or a string time in a valid format -- see format and altFormats (defaults to undefined).
+			/// The maximum allowed time. Can be either a Javascript date object or a string date in a valid format (defaults to null).
 			/// </summary>
 			[DefaultValue(typeof(TimeSpan), "9223372036854775807")]
 			public virtual TimeSpan MaxTime 
@@ -210,7 +243,7 @@ namespace Ext.Net
 			private TimeSpan minTime = new TimeSpan(-9223372036854775808);
 
 			/// <summary>
-			/// The minimum allowed time. Can be either a Javascript date object with a valid time value or a string time in a valid format -- see format and altFormats (defaults to undefined).
+			/// The minimum allowed time. Can be either a Javascript date object or a string date in a valid format (defaults to null).
 			/// </summary>
 			[DefaultValue(typeof(TimeSpan), "-9223372036854775808")]
 			public virtual TimeSpan MinTime 
@@ -225,12 +258,12 @@ namespace Ext.Net
 				}
 			}
 
-			private string minText = "The time in this field must be equal to or after {0}";
+			private string minText = "";
 
 			/// <summary>
-			/// The error text to display when the entered time is before minValue (defaults to 'The time in this field must be equal to or after {0}').
+			/// The error text to display when the date in the cell is before minValue (defaults to 'The time in this field must be equal to or after {0}').
 			/// </summary>
-			[DefaultValue("The time in this field must be equal to or after {0}")]
+			[DefaultValue("")]
 			public virtual string MinText 
 			{ 
 				get
@@ -243,96 +276,6 @@ namespace Ext.Net
 				}
 			}
 
-			private int pickerMaxHeight = 300;
-
-			/// <summary>
-			/// The maximum height of the Ext.picker.Time dropdown. Defaults to 300.
-			/// </summary>
-			[DefaultValue(300)]
-			public virtual int PickerMaxHeight 
-			{ 
-				get
-				{
-					return this.pickerMaxHeight;
-				}
-				set
-				{
-					this.pickerMaxHeight = value;
-				}
-			}
-
-			private bool selectOnTab = true;
-
-			/// <summary>
-			/// Whether the Tab key should select the currently highlighted item. Defaults to true.
-			/// </summary>
-			[DefaultValue(true)]
-			public virtual bool SelectOnTab 
-			{ 
-				get
-				{
-					return this.selectOnTab;
-				}
-				set
-				{
-					this.selectOnTab = value;
-				}
-			}
-
-			private string submitFormat = "t";
-
-			/// <summary>
-			/// The date format string which will be submitted to the server. The format must be valid according to Ext.Date.parse (defaults to format).
-			/// </summary>
-			[DefaultValue("t")]
-			public virtual string SubmitFormat 
-			{ 
-				get
-				{
-					return this.submitFormat;
-				}
-				set
-				{
-					this.submitFormat = value;
-				}
-			}
-        
-			private PickerFieldListeners listeners = null;
-
-			/// <summary>
-			/// Client-side JavaScript Event Handlers
-			/// </summary>
-			public PickerFieldListeners Listeners
-			{
-				get
-				{
-					if (this.listeners == null)
-					{
-						this.listeners = new PickerFieldListeners();
-					}
-			
-					return this.listeners;
-				}
-			}
-			        
-			private PickerFieldDirectEvents directEvents = null;
-
-			/// <summary>
-			/// Server-side Ajax Event Handlers
-			/// </summary>
-			public PickerFieldDirectEvents DirectEvents
-			{
-				get
-				{
-					if (this.directEvents == null)
-					{
-						this.directEvents = new PickerFieldDirectEvents();
-					}
-			
-					return this.directEvents;
-				}
-			}
-			
         }
     }
 }

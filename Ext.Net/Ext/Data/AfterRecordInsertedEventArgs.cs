@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -27,8 +27,7 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
-
-using Newtonsoft.Json.Linq;
+using System.Xml;
 
 namespace Ext.Net
 {
@@ -42,26 +41,28 @@ namespace Ext.Net
         private Exception e;
         private bool exceptionHandled;
         IDictionary keys;
-        IDictionary values;
+        IDictionary newValues;
+        private ConfirmationRecord confirmation;
 
 		/// <summary>
 		/// 
 		/// </summary>
 		[Description("")]
-        public AfterRecordInsertedEventArgs(JToken record)
+        public AfterRecordInsertedEventArgs(XmlNode record)
             : base(record) { }
 
 		/// <summary>
 		/// 
 		/// </summary>
 		[Description("")]
-        public AfterRecordInsertedEventArgs(JToken record, int rowsAffected, Exception e, IDictionary keys, IDictionary values)
+        public AfterRecordInsertedEventArgs(XmlNode record, int rowsAffected, Exception e, IDictionary keys, IDictionary newValues, ConfirmationRecord confirmation)
             : base(record)
         {
             this.rowsAffected = rowsAffected;
             this.e = e;
             this.keys = keys;
-            this.values = values;
+            this.newValues = newValues;
+            this.confirmation = confirmation;
         }
 
 		/// <summary>
@@ -105,9 +106,21 @@ namespace Ext.Net
 		/// 
 		/// </summary>
 		[Description("")]
-        public IDictionary Values
+        public IDictionary NewValues
         {
-            get { return this.values; }
+            get { return newValues; }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public ConfirmationRecord Confirmation
+        {
+            get
+            {
+                return confirmation;
+            }
         }
     }
 }

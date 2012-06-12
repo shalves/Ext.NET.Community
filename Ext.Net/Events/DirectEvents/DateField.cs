@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -34,11 +34,31 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class DateFieldDirectEvents : PickerFieldDirectEvents
+    public partial class DateFieldDirectEvents : TriggerFieldDirectEvents
     {
-        public DateFieldDirectEvents() { }
+        private ComponentDirectEvent select;
 
-        public DateFieldDirectEvents(Observable parent) { this.Parent = parent; }
-        
+        /// <summary>
+        /// Fires when a date is selected via the date picker.
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(Field), "This date field")]
+        [ListenerArgument(1, "date", typeof(DateTime), "The date that was selected")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("select", typeof(DirectEventJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when a date is selected via the date picker.")]
+        public virtual ComponentDirectEvent Select
+        {
+            get
+            {
+                if (this.select == null)
+                {
+                    this.select = new ComponentDirectEvent();
+                }
+
+                return this.select;
+            }
+        }
     }
 }

@@ -15,42 +15,35 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
 
 using Ext.Net.Utilities;
+using System;
 
 namespace Ext.Net
 {
     /// <summary>
-    /// A field container which has a specialized layout for arranging Ext.form.field.Radio controls into columns, and provides convenience Ext.form.field.Field methods for getting, setting, and validating the group of radio buttons as a whole.
-    ///
-    /// Validation
-    ///
-    /// Individual radio buttons themselves have no default validation behavior, but sometimes you want to require a user to select one of a group of radios. RadioGroup allows this by setting the config allowBlank:false; when the user does not check at one of the radio buttons, the entire group will be highlighted as invalid and the error message will be displayed according to the msgTarget config.
-    ///
-    /// Layout
-    ///
-    /// The default layout for RadioGroup makes it easy to arrange the radio buttons into columns; see the columns and vertical config documentation for details. You may also use a completely different layout by setting the layout to one of the other supported layout types; for instance you may wish to use a custom arrangement of hbox and vbox containers. In that case the Radio components at any depth will still be managed by the RadioGroup's validation.
+    /// A grouping container for Ext.form.Radio controls.
     /// </summary>
     [Meta]
     [ToolboxData("<{0}:RadioGroup runat=\"server\" />")]
     [Designer(typeof(EmptyDesigner))]
     [ToolboxBitmap(typeof(RadioGroup), "Build.ToolboxIcons.RadioGroup.bmp")]
     [Description("A grouping container for Ext.form.Radio controls.")]
-    public partial class RadioGroup : CheckboxGroupBase
+    public partial class RadioGroup : CheckboxGroupBase, IItems
     {
         /// <summary>
         /// 
@@ -87,24 +80,39 @@ namespace Ext.Net
         /// <summary>
         /// The default type of content Container represented by this object as registered in Ext.ComponentMgr (defaults to 'radio').
         /// </summary>
-        [ConfigOption]
+        [Meta]
         [Category("5. Container")]
-        [DefaultValue("radio")]
+        [DefaultValue("Radio")]
+        [TypeConverter(typeof(DefaultTypeConverter))]
         [NotifyParentProperty(true)]
         [Description("The default type of content Container represented by this object as registered in Ext.ComponentMgr (defaults to 'radio').")]
-        public override string DefaultType
+        public virtual string DefaultType
         {
             get
             {
-                return this.State.Get<string>("DefaultType", "radio");
+                return (string)this.ViewState["DefaultType"] ?? "Radio";
             }
             set
             {
-                this.State.Set("DefaultType", value);
+                this.ViewState["DefaultType"] = value;
             }
         }
 
-        private CheckboxGroupListeners listeners;
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigOption("defaultType")]
+        [DefaultValue("radio")]
+        [Description("")]
+        protected virtual string DefaultTypeProxy
+        {
+            get
+            {
+                return DefaultTypeConverter.GetXType(this.DefaultType);
+            }
+        }
+
+        private RadioGroupListeners listeners;
 
         /// <summary>
         /// Client-side JavaScript Event Handlers
@@ -114,22 +122,23 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
-        public CheckboxGroupListeners Listeners
+        public RadioGroupListeners Listeners
         {
             get
             {
                 if (this.listeners == null)
                 {
-                    this.listeners = new CheckboxGroupListeners();
+                    this.listeners = new RadioGroupListeners();
                 }
 
                 return this.listeners;
             }
         }
 
-        private CheckboxGroupDirectEvents directEvents;
+        private RadioGroupDirectEvents directEvents;
 
         /// <summary>
         /// Server-side Ajax Event Handlers
@@ -139,15 +148,16 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
-        public CheckboxGroupDirectEvents DirectEvents
+        public RadioGroupDirectEvents DirectEvents
         {
             get
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new CheckboxGroupDirectEvents(this);
+                    this.directEvents = new RadioGroupDirectEvents();
                 }
 
                 return this.directEvents;
@@ -193,14 +203,61 @@ namespace Ext.Net
                                    ? this.ClientID + "_Group"
                                    : this.GroupName;
 
-            Utilities.ControlUtils.FindControls<Checkbox>(this).Each(item => {
-                if (item.Name.IsEmpty() || this.AutomaticGrouping)
+            foreach (Radio item in this.Items)
+            {
+                RadioColumn rCol = item as RadioColumn;
+
+                if (rCol != null)
                 {
-                    item.SuspendScripting();
-                    item.Name = groupName;
-                    item.ResumeScripting();
+                    foreach (Component comp in rCol.Items)
+                    {
+                        Radio radio = comp as Radio;
+
+                        if (radio != null && (radio.Name.IsEmpty() || this.AutomaticGrouping))
+                        {
+                            radio.SuspendScripting();
+                            radio.Name = groupName;
+                            radio.ResumeScripting();
+                        }
+                    }
                 }
-            });
+                else
+                {
+                    if (item.Name.IsEmpty() || this.AutomaticGrouping)
+                    {
+                        item.SuspendScripting();
+                        item.Name = groupName;
+                        item.ResumeScripting();
+                    }
+                }
+            }
+        }
+
+        ItemsCollection<Radio> items;
+
+        /// <summary>
+        /// Items collection
+        /// </summary>
+        [Meta]
+        [ConfigOption("items", typeof(ItemCollectionJsonConverter))]
+        [Category("7. RadioGroup")]
+        [NotifyParentProperty(true)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Description("Items collection")]
+        public virtual ItemsCollection<Radio> Items
+        {
+            get
+            {
+                if (this.items == null)
+                {
+                    this.items = new ItemsCollection<Radio>();
+                    this.items.AfterItemAdd += AfterItemAdd;
+                    this.items.AfterItemRemove += AfterItemRemove;
+                }
+
+                return this.items;
+            }
         }
 
         /// <summary>
@@ -210,29 +267,21 @@ namespace Ext.Net
         [Description("")]
         protected override void AfterItemAdd(Observable item)
         {
-            base.AfterItemAdd(item);            
+            base.AfterItemAdd(item);
+
+            Radio radio = (Radio)item;
 
             if (!this.DesignMode && this.AutomaticGrouping)
-            {                
-                Radio radio = item as Radio;
-                
+            {
                 string groupName = this.GroupName.IsEmpty()
                                    ? this.ClientID + "_Group"
                                    : this.GroupName;
 
-                if (radio != null)
+                RadioColumn rCol = radio as RadioColumn;
+
+                if (rCol != null)
                 {
-                    if (radio.Name.IsEmpty() || this.AutomaticGrouping)
-                    {
-                        radio.SuspendScripting();
-                        radio.Name = groupName;
-                        radio.ResumeScripting();
-                    }
-                }
-                else if (item is IItems)
-                {
-                    IItems items = (IItems)item;
-                    foreach (Observable comp in items.ItemsList)
+                    foreach (Component comp in rCol.Items)
                     {
                         Radio radioItem = comp as Radio;
 
@@ -244,6 +293,23 @@ namespace Ext.Net
                         }
                     }
                 }
+                else
+                {
+                    if (radio.Name.IsEmpty() || this.AutomaticGrouping)
+                    {
+                        radio.SuspendScripting();
+                        radio.Name = groupName;
+                        radio.ResumeScripting();
+                    }
+                }
+            }
+        }
+
+        IList IItems.ItemsList
+        {
+            get
+            {
+                return this.Items;
             }
         }
 
@@ -259,11 +325,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("AutomaticGrouping", true);
+                object obj = this.ViewState["AutomaticGrouping"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("AutomaticGrouping", value);
+                this.ViewState["AutomaticGrouping"] = value;
             }
         }
 
@@ -278,11 +345,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("GroupName", "");
+                return (string)this.ViewState["GroupName"] ?? "";
             }
             set
             {
-                this.State.Set("GroupName", value);
+                this.ViewState["GroupName"] = value;
             }
         }
 
@@ -315,6 +382,13 @@ namespace Ext.Net
 
         /*  DirectEvent Handler
             -----------------------------------------------------------------------------------------------*/
+
+        static RadioGroup()
+        {
+            DirectEventChange = new object();
+        }
+
+        private static readonly object DirectEventChange;
 
         /// <summary>
         /// Server-side DirectEvent handler. Method signature is (object sender, DirectEventArgs e).

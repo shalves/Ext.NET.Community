@@ -15,18 +15,22 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using System.Web.UI;
+
+using Ext.Net.Utilities;
 
 namespace Ext.Net
 {
@@ -36,23 +40,10 @@ namespace Ext.Net
     [ToolboxItem(false)]
     [TypeConverter(typeof(DirectEventsConverter))]
     [Description("")]
-    public partial class ComponentDirectEvents : BaseItem 
+    public partial class ComponentDirectEvents : StateManagedItem 
     {
-        public ComponentDirectEvents() { }
-
-        public ComponentDirectEvents(Observable parent) { }
-
         private static readonly Dictionary<string, List<ListenerPropertyInfo>> propertiesCache = new Dictionary<string, List<ListenerPropertyInfo>>();
         private static readonly object syncObj = new object();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual Observable Parent
-        {
-            get;
-            internal set;
-        }
 
 		/// <summary>
 		/// 
@@ -125,6 +116,90 @@ namespace Ext.Net
                 }
 
                 return this.directEvents;
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public override object SaveViewState()
+        {
+            ResourceManager rm = this.ResourceManager;
+
+            if (rm != null && !rm.ManageEventsViewState)
+            {
+                return base.SaveViewState();
+            }
+            
+            List<object> states = new List<object>();
+            object baseState = base.SaveViewState();
+
+            if (baseState != null)
+            {
+                states.Add(new Pair("base", baseState)); 
+            }
+
+            foreach (DirectEventTriplet triplet in this.DirectEvents)
+            {
+                object directEventState = triplet.DirectEvent.SaveViewState();
+
+                if (directEventState != null)
+                {
+                    states.Add(new Pair(triplet.Name, directEventState));  
+                }
+            }
+
+            return states.Count == 0 ? null : states.ToArray();
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public override void LoadViewState(object state)
+        {
+            object[] states = state as object[];
+
+            ResourceManager rm = this.ResourceManager;
+
+            if (rm != null && !rm.ManageEventsViewState)
+            {
+                base.LoadViewState(state);
+            }
+
+            if (states != null)
+            {
+                foreach (Pair pair in states)
+                {
+                    string directEventName = (string)pair.First;
+                    object directEventState = pair.Second;
+
+                    if (directEventName == "base")
+                    {
+                        base.LoadViewState(directEventState);
+                    }
+                    else
+                    {
+                        PropertyInfo property = this.GetType().GetProperty(directEventName);
+
+                        if (property == null)
+                        {
+                            throw new InvalidOperationException("Can't find the property '{0}'".FormatWith(directEventName));
+                        }
+
+                        ComponentDirectEvent componentDirectEvent = (ComponentDirectEvent)property.GetValue(this, null);
+
+                        if (componentDirectEvent != null)
+                        {
+                            componentDirectEvent.LoadViewState(directEventState); 
+                        }
+                    }
+                }
+            }
+            else
+            {
+                base.LoadViewState(state);  
             }
         }
     }

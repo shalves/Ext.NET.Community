@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -31,51 +31,7 @@ using System.Web.UI;
 namespace Ext.Net
 {
     /// <summary>
-    /// A basic text field. Can be used as a direct replacement for traditional text inputs, or as the base class for more sophisticated input controls (like Ext.form.field.TextArea and Ext.form.field.ComboBox). Has support for empty-field placeholder values (see emptyText).
-    /// 
-    /// Validation
-    /// 
-    /// The Text field has a useful set of validations built in:
-    /// 
-    /// allowBlank for making the field required
-    /// minLength for requiring a minimum value length
-    /// maxLength for setting a maximum value length (with enforceMaxLength to add it as the maxlength attribute on the input element)
-    /// regex to specify a custom regular expression for validation
-    /// In addition, custom validations may be added:
-    /// 
-    /// vtype specifies a virtual type implementation from Ext.form.field.VTypes which can contain custom validation logic
-    /// validator allows a custom arbitrary function to be called during validation
-    /// The details around how and when each of these validation options get used are described in the documentation for getErrors.
-    /// 
-    /// By default, the field value is checked for validity immediately while the user is typing in the field. This can be controlled with the validateOnChange, checkChangeEvents, and checkChangeBuffer configurations. Also see the details on Form Validation in the Ext.form.Panel class documentation.
-    /// 
-    /// Validates a value according to the field's validation rules and returns an array of errors for any failing validations. Validation rules are processed in the following order:
-    /// 
-    /// Field specific validator
-    /// 
-    /// A validator offers a way to customize and reuse a validation specification. If a field is configured with a validator function, it will be passed the current field value. The validator function is expected to return either:
-    /// 
-    /// Boolean true if the value is valid (validation continues).
-    /// a String to represent the invalid message if invalid (validation halts).
-    /// Basic Validation
-    /// 
-    /// If the validator has not halted validation, basic validation proceeds as follows:
-    /// 
-    /// allowBlank : (Invalid message = emptyText)
-    /// 
-    /// Depending on the configuration of allowBlank, a blank field will cause validation to halt at this step and return Boolean true or false accordingly.
-    /// minLength : (Invalid message = minLengthText)
-    /// 
-    /// If the passed value does not satisfy the minLength specified, validation halts.
-    /// maxLength : (Invalid message = maxLengthText)
-    /// 
-    /// If the passed value does not satisfy the maxLength specified, validation halts.
-    /// Preconfigured Validation Types (VTypes)
-    /// 
-    /// If none of the prior validation steps halts validation, a field configured with a vtype will utilize the corresponding VTypes validation function. If invalid, either the field's vtypeText or the VTypes vtype Text property will be used for the invalid message. Keystrokes on the field will be filtered according to the VTypes vtype Mask property.
-    /// Field specific regex test
-    /// 
-    /// If none of the prior validation steps halts validation, a field's configured regex test will be processed. The invalid message for this test is configured with regexText
+    /// Basic text field. Can be used as a direct replacement for traditional text inputs, or as the base class for more sophisticated input controls (like Ext.form.TextArea and Ext.form.ComboBox).
     /// </summary>
     [Meta]
     [ToolboxData("<{0}:TextField runat=\"server\" />")]
@@ -86,6 +42,7 @@ namespace Ext.Net
     [ParseChildren(true)]
     [PersistChildren(false)]
     [SupportsEventValidation]
+    [Designer(typeof(TextFieldDesigner))]
     [ToolboxBitmap(typeof(TextField), "Build.ToolboxIcons.TextField.bmp")]
     [Description("Basic text field. Can be used as a direct replacement for traditional text inputs, or as the base class for more sophisticated input controls (like Ext.form.TextArea and Ext.form.ComboBox).")]
     public partial class TextField : TextFieldBase, IPostBackEventHandler 
@@ -108,26 +65,12 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        [Category("0. About")]
         [Description("")]
-        public override string XType
+        protected override void OnBeforeClientInit(Observable sender)
         {
-            get
+            if (this.AutoPostBack)
             {
-                return "textfield";
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Category("0. About")]
-        [Description("")]
-        public override string InstanceOf
-        {
-            get
-            {
-                return "Ext.form.field.Text";
+                this.On("change", new JFunction(this.PostBackFunction));
             }
         }
 
@@ -141,7 +84,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public TextFieldListeners Listeners
         {
@@ -166,7 +110,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public TextFieldDirectEvents DirectEvents
         {
@@ -174,7 +119,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new TextFieldDirectEvents(this);
+                    this.directEvents = new TextFieldDirectEvents();
                 }
 
                 return this.directEvents;

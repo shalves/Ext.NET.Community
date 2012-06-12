@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -76,7 +76,7 @@ namespace Ext.Net
 
             this.InitOwer();
 
-            string template = (instanceOnly) ? "new {1}(Ext.net.getEl({2}),{3})" : "window.{0}=new {1}(Ext.net.getEl({2}),{3});";
+            string template = (instanceOnly) ? "new {1}(Ext.net.getEl({2}),{3})" : "this.{0}=new {1}(Ext.net.getEl({2}),{3});";
 
             return string.Format(template, this.ClientID,
                                            "Ext.KeyNav",
@@ -149,11 +149,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Target", "");
+                return (string)this.ViewState["Target"] ?? "";
             }
             set
             {
-                this.State.Set("Target", value);
+                this.ViewState["Target"] = value;
             }
         }
 
@@ -174,7 +174,7 @@ namespace Ext.Net
             {
                 if (this.left == null)
                 {
-                    this.left = new JFunction { Args = new string[] { "e" } };
+                    this.left = new JFunction(null, "e");
                 }
 
                 return this.left;
@@ -199,7 +199,7 @@ namespace Ext.Net
             {
                 if (this.right == null)
                 {
-                    this.right = new JFunction{ Args = new string[]{ "e" } };
+                    this.right = new JFunction(null, "e");
                 }
 
                 return this.right;
@@ -224,7 +224,7 @@ namespace Ext.Net
             {
                 if (this.up == null)
                 {
-                    this.up = new JFunction { Args = new string[] { "e" } };
+                    this.up = new JFunction(null, "e");
                 }
 
                 return this.up;
@@ -249,7 +249,7 @@ namespace Ext.Net
             {
                 if (this.down == null)
                 {
-                    this.down = new JFunction { Args = new string[] { "e" } };
+                    this.down = new JFunction(null, "e");
                 }
 
                 return this.down;
@@ -274,7 +274,7 @@ namespace Ext.Net
             {
                 if (this.pageUp == null)
                 {
-                    this.pageUp = new JFunction { Args = new string[] { "e" } };
+                    this.pageUp = new JFunction(null, "e");
                 }
 
                 return this.pageUp;
@@ -299,7 +299,7 @@ namespace Ext.Net
             {
                 if (this.pageDown == null)
                 {
-                    this.pageDown = new JFunction { Args = new string[] { "e" } };
+                    this.pageDown = new JFunction(null, "e");
                 }
 
                 return this.pageDown;
@@ -324,7 +324,7 @@ namespace Ext.Net
             {
                 if (this.del == null)
                 {
-                    this.del = new JFunction { Args = new string[] { "e" } };
+                    this.del = new JFunction(null, "e");
                 }
 
                 return this.del;
@@ -349,7 +349,7 @@ namespace Ext.Net
             {
                 if (this.home == null)
                 {
-                    this.home = new JFunction { Args = new string[] { "e" } };
+                    this.home = new JFunction(null, "e");
                 }
 
                 return this.home;
@@ -374,7 +374,7 @@ namespace Ext.Net
             {
                 if (this.end == null)
                 {
-                    this.end = new JFunction { Args = new string[] { "e" } };
+                    this.end = new JFunction(null, "e");
                 }
 
                 return this.end;
@@ -398,7 +398,7 @@ namespace Ext.Net
             {
                 if (this.enter == null)
                 {
-                    this.enter = new JFunction { Args = new string[] { "e" } };
+                    this.enter = new JFunction(null, "e");
                 }
 
                 return this.enter;
@@ -423,7 +423,7 @@ namespace Ext.Net
             {
                 if (this.esc == null)
                 {
-                    this.esc = new JFunction { Args = new string[] { "e" } };
+                    this.esc = new JFunction(null, "e");
                 }
 
                 return this.esc;
@@ -448,7 +448,7 @@ namespace Ext.Net
             {
                 if (this.tab == null)
                 {
-                    this.tab = new JFunction { Args = new string[] { "e" } };
+                    this.tab = new JFunction(null, "e");
                 }
 
                 return this.tab;
@@ -468,11 +468,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<KeyEventAction>("DefaultEventAction", KeyEventAction.StopEvent);
+                object obj = this.ViewState["DefaultEventAction"];
+                return (obj == null) ? KeyEventAction.StopEvent : (KeyEventAction)obj;
             }
             set
             {
-                this.State.Set("DefaultEventAction", value);
+                this.ViewState["DefaultEventAction"] = value;
             }
         }
 
@@ -490,11 +491,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Disabled", false);
+                object obj = this.ViewState["Disabled"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Disabled", value);
+                this.ViewState["Disabled"] = value;
             }
         }
 
@@ -511,11 +513,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("ForceKeyDown", false);
+                object obj = this.ViewState["ForceKeyDown"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("ForceKeyDown", value);
+                this.ViewState["ForceKeyDown"] = value;
             }
         }
 
@@ -532,11 +535,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Scope", "");
+                object obj = this.ViewState["Scope"];
+                return (obj == null) ? "" : (string)obj;
             }
             set
             {
-                this.State.Set("Scope", value);
+                this.ViewState["Scope"] = value;
             }
         }
 

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class MultiCombo
     {
 		/*  Ctor
@@ -64,7 +61,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        new public partial class Config : ComboBoxBase.Config 
+        new public partial class Config : ComboBoxBaseMulti<ListItem>.Config 
         { 
 			/*  Implicit MultiCombo.Config Conversion to MultiCombo.Builder
 				-----------------------------------------------------------------------------------------------*/
@@ -81,39 +78,21 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
-			private bool wrapBySquareBrackets = false;
+			private bool editable = false;
 
 			/// <summary>
-			/// True to wrap by square brackets.
+			/// False to prevent the user from typing text directly into the field, just like a traditional select (defaults to true).
 			/// </summary>
 			[DefaultValue(false)]
-			public virtual bool WrapBySquareBrackets 
+			public override bool Editable 
 			{ 
 				get
 				{
-					return this.wrapBySquareBrackets;
+					return this.editable;
 				}
 				set
 				{
-					this.wrapBySquareBrackets = value;
-				}
-			}
-
-			private MultiSelectMode selectionMode = MultiSelectMode.Checkbox;
-
-			/// <summary>
-			/// Selection UI mode
-			/// </summary>
-			[DefaultValue(MultiSelectMode.Checkbox)]
-			public virtual MultiSelectMode SelectionMode 
-			{ 
-				get
-				{
-					return this.selectionMode;
-				}
-				set
-				{
-					this.selectionMode = value;
+					this.editable = value;
 				}
 			}
         

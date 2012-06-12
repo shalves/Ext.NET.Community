@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -32,15 +32,13 @@ namespace Ext.Net
 {
     /// <summary>
     /// An updateable progress bar component. The progress bar supports two different modes: manual and automatic.
-    /// In manual mode, you are responsible for showing, updating (via updateProgress) and clearing the progress bar as needed from your own code. This method is most appropriate when you want to show progress throughout an operation that has predictable points of interest at which you can update the control.
-    /// In automatic mode, you simply call wait and let the progress bar run indefinitely, only clearing it once the operation is complete. You can optionally have the progress bar wait for a specific amount of time and then clear itself. Automatic mode is most appropriate for timed operations or asynchronous operations in which you have no need for indicating intermediate progress.
     /// </summary>
     [Meta]
     [ToolboxData("<{0}:ProgressBar runat=\"server\" Width=\"300\"></{0}:ProgressBar>")]
     [ToolboxBitmap(typeof(ProgressBar), "Build.ToolboxIcons.ProgressBar.bmp")]
     [Designer(typeof(EmptyDesigner))]
     [Description("An updateable progress bar component. The progress bar supports two different modes: manual and automatic.")]
-    public partial class ProgressBar : ComponentBase
+    public partial class ProgressBar : BoxComponentBase
     {
         /// <summary>
         /// 
@@ -57,7 +55,7 @@ namespace Ext.Net
         {
             get
             {
-                return "progressbar";
+                return "progress";
             }
         }
 
@@ -73,66 +71,46 @@ namespace Ext.Net
                 return "Ext.ProgressBar";
             }
         }
-
-        /// <summary>
-        /// True to animate the progress bar during transitions
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("5. ProgressBar")]
-        [DefaultValue(false)]
-        [NotifyParentProperty(true)]
-        [Description("True to animate the progress bar during transitions")]
-        public virtual bool Animate
-        {
-            get
-            {
-                return this.State.Get<bool>("Animate", false);
-            }
-            set
-            {
-                this.State.Set("Animate", value);
-            }
-        }
         
         /// <summary>
         /// The base CSS class to apply to the progress bar's wrapper element (defaults to 'x-progress')
         /// </summary>
+        [Meta]
         [ConfigOption]
         [Category("5. ProgressBar")]
         [DefaultValue("x-progress")]
         [NotifyParentProperty(true)]
         [Description("The base CSS class to apply to the progress bar's wrapper element (defaults to 'x-progress')")]
-        public override string BaseCls
+        public virtual string BaseCls
         {
             get
             {
-                return this.State.Get<string>("BaseCls", "x-progress");
+                return (string)this.ViewState["BaseCls"] ?? "x-progress";
             }
             set
             {
-                this.State.Set("BaseCls", value);
+                this.ViewState["BaseCls"] = value;
             }
         }
         
         /// <summary>
-        /// The text shown in the progress bar (defaults to '')
+        /// The progress bar text (defaults to '')
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("5. ProgressBar")]
         [DefaultValue("")]
         [NotifyParentProperty(true)]
-        [Description("The text shown in the progress bar (defaults to '')")]
+        [Description("The progress bar text (defaults to '')")]
         public virtual string Text
         {
             get
             {
-                return this.State.Get<string>("Text", "");
+                return (string)this.ViewState["Text"] ?? "";
             }
             set
             {
-                this.State.Set("Text", value);
+                this.ViewState["Text"] = value;
             }
         }
 
@@ -149,11 +127,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("TextEl", "");
+                return (string)this.ViewState["TextEl"] ?? "";
             }
             set
             {
-                this.State.Set("TextEl", value);
+                this.ViewState["TextEl"] = value;
             }
         }
 
@@ -170,11 +148,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<float>("Value", 0);
+                var obj = this.ViewState["Value"];
+                return (obj == null) ? 0 : (float)this.ViewState["Value"];
             }
             set
             {
-                this.State.Set("Value", value);
+                this.ViewState["Value"] = value;
             }
         }
 
@@ -192,7 +171,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public ProgressBarListeners Listeners
         {
@@ -217,7 +197,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public ProgressBarDirectEvents DirectEvents
         {
@@ -225,7 +206,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new ProgressBarDirectEvents(this);
+                    this.directEvents = new ProgressBarDirectEvents();
                 }
 
                 return this.directEvents;
@@ -240,6 +221,7 @@ namespace Ext.Net
         /// Resets the progress bar value to 0 and text to empty string. If hide = true, the progress bar will also be hidden (using the hideMode property internally).
         /// </summary>
         [Meta]
+        [Description("Resets the progress bar value to 0 and text to empty string. If hide = true, the progress bar will also be hidden (using the hideMode property internally).")]
         public virtual void Reset()
         {
             this.Call("reset");
@@ -250,15 +232,26 @@ namespace Ext.Net
         /// </summary>
         /// <param name="hide">True to hide the progress bar</param>
         [Meta]
+        [Description("Resets the progress bar value to 0 and text to empty string. If hide = true, the progress bar will also be hidden (using the hideMode property internally).")]
         public virtual void Reset(bool hide)
         {
             this.Call("reset", hide);
         }
 
         /// <summary>
+        /// Synchronizes the inner bar width to the proper proportion of the total componet width based on the current progress value. This will be called automatically when the ProgressBar is resized by a layout, but if it is rendered auto width, this method can be called from another resize handler to sync the ProgressBar if necessary.
+        /// </summary>
+        [Meta]
+        [Description("Synchronizes the inner bar width to the proper proportion of the total componet width based on the current progress value. This will be called automatically when the ProgressBar is resized by a layout, but if it is rendered auto width, this method can be called from another resize handler to sync the ProgressBar if necessary.")]
+        public virtual void SyncProgressBar()
+        {
+            this.Call("syncProgressBar");
+        }
+
+        /// <summary>
         /// Updates the progress bar value, and optionally its text. If the text argument is not specified, any existing text value will be unchanged. To blank out existing text, pass ''. Note that even if the progress bar value exceeds 1, it will never automatically reset -- you are responsible for determining when the progress is complete and calling reset to clear and/or hide the control.
         /// </summary>
-        /// <param name="value">A floating point value between 0 and 1 (e.g., .5)</param>
+        [Description("Updates the progress bar value, and optionally its text. If the text argument is not specified, any existing text value will be unchanged. To blank out existing text, pass ''. Note that even if the progress bar value exceeds 1, it will never automatically reset -- you are responsible for determining when the progress is complete and calling reset to clear and/or hide the control.")]
         public virtual void UpdateProgress(float value)
         {
             this.Call("updateProgress", value);
@@ -267,30 +260,18 @@ namespace Ext.Net
         /// <summary>
         /// Updates the progress bar value, and optionally its text. If the text argument is not specified, any existing text value will be unchanged. To blank out existing text, pass ''. Note that even if the progress bar value exceeds 1, it will never automatically reset -- you are responsible for determining when the progress is complete and calling reset to clear and/or hide the control.
         /// </summary>
-        /// <param name="value">A floating point value between 0 and 1 (e.g., .5)</param>
-        /// <param name="text">The string to display in the progress text element</param>
         [Meta]
+        [Description("Updates the progress bar value, and optionally its text. If the text argument is not specified, any existing text value will be unchanged. To blank out existing text, pass ''. Note that even if the progress bar value exceeds 1, it will never automatically reset -- you are responsible for determining when the progress is complete and calling reset to clear and/or hide the control.")]
         public virtual void UpdateProgress(float value, string text)
         {
             this.Call("updateProgress", value, text);
         }
 
         /// <summary>
-        /// Updates the progress bar value, and optionally its text. If the text argument is not specified, any existing text value will be unchanged. To blank out existing text, pass ''. Note that even if the progress bar value exceeds 1, it will never automatically reset -- you are responsible for determining when the progress is complete and calling reset to clear and/or hide the control.
-        /// </summary>
-        /// <param name="value">A floating point value between 0 and 1 (e.g., .5)</param>
-        /// <param name="text">The string to display in the progress text element</param>
-        /// <param name="animate">Whether to animate the transition of the progress bar. If this value is not specified, the default for the class is used</param>
-        [Meta]
-        public virtual void UpdateProgress(float value, string text, bool animate)
-        {
-            this.Call("updateProgress", value, text, animate);
-        }
-
-        /// <summary>
         /// Updates the progress bar text. If specified, textEl will be updated, otherwise the progress bar itself will display the updated text.
         /// </summary>
         [Meta]
+        [Description("Updates the progress bar text. If specified, textEl will be updated, otherwise the progress bar itself will display the updated text.")]
         public virtual void UpdateText()
         {
             this.Call("updateText");
@@ -301,6 +282,7 @@ namespace Ext.Net
         /// </summary>
         /// <param name="text">The string to display in the progress text element</param>
         [Meta]
+        [Description("Updates the progress bar text. If specified, textEl will be updated, otherwise the progress bar itself will display the updated text.")]
         public virtual void UpdateText(string text)
         {
             this.Call("updateText", text);
@@ -310,6 +292,7 @@ namespace Ext.Net
         /// Initiates an auto-updating progress bar. A duration can be specified, in which case the progress bar will automatically reset after a fixed amount of time and optionally call a callback function if specified. If no duration is passed in, then the progress bar will run indefinitely and must be manually cleared by calling reset.
         /// </summary>
         [Meta]
+        [Description("Initiates an auto-updating progress bar. A duration can be specified, in which case the progress bar will automatically reset after a fixed amount of time and optionally call a callback function if specified. If no duration is passed in, then the progress bar will run indefinitely and must be manually cleared by calling reset.")]
         public virtual void Wait()
         {
             this.Call("wait");
@@ -320,6 +303,7 @@ namespace Ext.Net
         /// </summary>
         /// <param name="config">Configuration options</param>
         [Meta]
+        [Description("Updates the progress bar text. If specified, textEl will be updated, otherwise the progress bar itself will display the updated text.")]
         public virtual void Wait(WaitConfig config)
         {
             this.Call("wait", new JRawValue(config.ToJsonString()));

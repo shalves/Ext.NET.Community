@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -34,13 +34,7 @@ using System.Web.UI.WebControls;
 namespace Ext.Net
 {
     /// <summary>
-    /// Provides a lightweight HTML Editor component. Some toolbar features are not supported by Safari and will be automatically hidden when needed. These are noted in the config options where appropriate.
-    ///
-    /// The editor's toolbar buttons have tooltips defined in the buttonTips property, but they are not enabled by default unless the global Ext.tip.QuickTipManager singleton is initialized.
-    ///
-    /// An Editor is a sensitive component that can't be used in all spots standard fields can be used. Putting an Editor within any element that has display set to 'none' can cause problems in Safari and Firefox due to their default iframe reloading bugs.
-    ///
-    /// NOTE: HtmlEditor can not be hidden on initial page load. If placing within a TabPanel, please ensure the correct .ActiveTabIndex is set. If placing within a Window, please ensure InitHidden is 'false'.
+    /// Provides a lightweight HTML Editor component. NOTE: HtmlEditor can not be hidden on initial page load. If placing within a TabPanel, please ensure the correct .ActiveTabIndex is set. If placing within a Window, please ensure InitHidden is 'false'.
     /// </summary>
     [Meta]
     [ToolboxData("<{0}:HtmlEditor runat=\"server\" />")]
@@ -51,6 +45,7 @@ namespace Ext.Net
     [ParseChildren(true)]
     [PersistChildren(false)]
     [SupportsEventValidation]
+    [Designer(typeof(HtmlEditorDesigner))]
     [ToolboxBitmap(typeof(HtmlEditor), "Build.ToolboxIcons.HtmlEditor.bmp")]
     [Description("Provides a lightweight HTML Editor component. NOTE: HtmlEditor can not be hidden on initial page load. If placing within a TabPanel, please ensure the correct .ActiveTabIndex is set. If placing within a Window, please ensure InitHidden is 'false'.")]
     public partial class HtmlEditor : Field, IEditableTextControl, ITextControl, IPostBackEventHandler
@@ -83,7 +78,7 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.form.field.HtmlEditor";
+                return "Ext.form.HtmlEditor";
             }
         }
         
@@ -100,11 +95,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Text", "");
+                return (string)this.ViewState["Text"] ?? "";
             }
             set
             {
-                this.State.Set("Text", value ?? "");
+                this.ViewState["Text"] = value??"";
             }
         }
 
@@ -127,7 +122,7 @@ namespace Ext.Net
             }
         }
 
-        private HtmlEditorListeners listeners;
+        private EditorListeners listeners;
 
         /// <summary>
         /// Client-side JavaScript Event Handlers
@@ -138,21 +133,22 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
-        public HtmlEditorListeners Listeners
+        public EditorListeners Listeners
         {
             get
             {
                 if (this.listeners == null)
                 {
-                    this.listeners = new HtmlEditorListeners();
+                    this.listeners = new EditorListeners();
                 }
 
                 return this.listeners;
             }
         }
 
-        private HtmlEditorDirectEvents directEvents;
+        private EditorDirectEvents directEvents;
 
         /// <summary>
         /// Server-side Ajax Event Handlers
@@ -163,16 +159,17 @@ namespace Ext.Net
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
-        public HtmlEditorDirectEvents DirectEvents
+        public EditorDirectEvents DirectEvents
         {
             get
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new HtmlEditorDirectEvents(this);
+                    this.directEvents = new EditorDirectEvents();
                 }
-                
+
                 return this.directEvents;
             }
         }
@@ -263,6 +260,7 @@ namespace Ext.Net
             {
                 if (this.EscapeValue)
                 {
+                    //val = this.Page.Server.UrlDecode(val);    
                     val = Utilities.EscapeUtils.Unescape(val);
                 }
 
@@ -309,11 +307,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("CreateLinkText", "");
+                return (string)this.ViewState["CreateLinkText"] ?? "";
             }
             set
             {
-                this.State.Set("CreateLinkText", value);
+                this.ViewState["CreateLinkText"] = value;
             }
         }
 
@@ -329,31 +327,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("DefaultLinkValue", "http://");
+                return (string)this.ViewState["DefaultLinkValue"] ?? "http://";
             }
             set
             {
-                this.State.Set("DefaultLinkValue", value);
-            }
-        }
-
-        /// <summary>
-        /// A default value to be put into the editor to resolve focus issues (defaults to   (Non-breaking space) in Opera and IE6, ​ (Zero-width space) in all other browsers).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. HtmlEditor")]
-        [DefaultValue("")]
-        [Description("A default value to be put into the editor to resolve focus issues (defaults to   (Non-breaking space) in Opera and IE6, ​ (Zero-width space) in all other browsers).")]
-        public virtual string DefaultValue
-        {
-            get
-            {
-                return this.State.Get<string>("DefaultValue", "");
-            }
-            set
-            {
-                this.State.Set("DefaultValue", value);
+                this.ViewState["DefaultLinkValue"] = value;
             }
         }
 
@@ -369,11 +347,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("EnableAlignments", true);
+                object obj = this.ViewState["EnableAlignments"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("EnableAlignments", value);
+                this.ViewState["EnableAlignments"] = value;
             }
         }
 
@@ -389,11 +368,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("EnableColors", true);
+                object obj = this.ViewState["EnableColors"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("EnableColors", value);
+                this.ViewState["EnableColors"] = value;
             }
         }
 
@@ -409,11 +389,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("EnableFont", true);
+                object obj = this.ViewState["EnableFont"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("EnableFont", value);
+                this.ViewState["EnableFont"] = value;
             }
         }
 
@@ -429,11 +410,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("EnableFontSize", true);
+                object obj = this.ViewState["EnableFontSize"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("EnableFontSize", value);
+                this.ViewState["EnableFontSize"] = value;
             }
         }
 
@@ -449,11 +431,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("EnableFormat", true);
+                object obj = this.ViewState["EnableFormat"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("EnableFormat", value);
+                this.ViewState["EnableFormat"] = value;
             }
         }
 
@@ -469,11 +452,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("EnableLinks", true);
+                object obj = this.ViewState["EnableLinks"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("EnableLinks", value);
+                this.ViewState["EnableLinks"] = value;
             }
         }
 
@@ -489,11 +473,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("EnableLists", true);
+                object obj = this.ViewState["EnableLists"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("EnableLists", value);
+                this.ViewState["EnableLists"] = value;
             }
         }
 
@@ -509,11 +494,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("EnableSourceEdit", true);
+                object obj = this.ViewState["EnableSourceEdit"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("EnableSourceEdit", value);
+                this.ViewState["EnableSourceEdit"] = value;
             }
         }
 
@@ -529,11 +515,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("EscapeValue", true);
+                object obj = this.ViewState["EscapeValue"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("EscapeValue", value);
+                this.ViewState["EscapeValue"] = value;
             }
         }
 
@@ -550,29 +537,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string[]>("FontFamilies", null);
+                object obj = this.ViewState["FontFamilies"];
+                return (obj == null) ? null : (string[])obj;
             }
             set
             {
-                this.State.Set("FontFamilies", value);
-            }
-        }
-
-        private HtmlEditorButtonTips buttonTips;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Meta]
-        [NotifyParentProperty(true)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption(JsonMode.Object)]
-        public virtual HtmlEditorButtonTips ButtonTips
-        {
-            get
-            {
-                return this.buttonTips ?? (this.buttonTips = new HtmlEditorButtonTips());
+                this.ViewState["FontFamilies"] = value;
             }
         }
 
@@ -584,6 +554,7 @@ namespace Ext.Net
         /// Protected method that will not generally be called directly. If you need/want custom HTML cleanup, this is the method you should override.
         /// </summary>
         [Meta]
+        [Description("Protected method that will not generally be called directly. If you need/want custom HTML cleanup, this is the method you should override.")]
         public virtual void CleanHtml(string html)
         {
             this.Call("cleanHtml", html);
@@ -593,6 +564,7 @@ namespace Ext.Net
         /// Executes a Midas editor command directly on the editor document. For visual commands, you should use relayCmd instead. This should only be called after the editor is initialized.
         /// </summary>
         [Meta]
+        [Description("Executes a Midas editor command directly on the editor document. For visual commands, you should use relayCmd instead. This should only be called after the editor is initialized.")]
         public virtual void ExecCmd(string cmd, string value)
         {
             this.Call("execCmd", cmd, value);

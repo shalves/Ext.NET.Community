@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class Tool
     {
         /// <summary>
@@ -55,15 +52,13 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
-                list.Add("type", new ConfigOption("type", new SerializationOptions(JsonMode.ToLower), ToolType.None, this.Type ));
-                list.Add("customType", new ConfigOption("customType", new SerializationOptions("type"), "", this.CustomType ));
+                list.Add("type", new ConfigOption("type", new SerializationOptions("id", JsonMode.ToLower), ToolType.None, this.Type ));
+                list.Add("customType", new ConfigOption("customType", new SerializationOptions("id"), "", this.CustomType ));
                 list.Add("fnProxy", new ConfigOption("fnProxy", new SerializationOptions("handler", JsonMode.Raw), "", this.FnProxy ));
                 list.Add("scope", new ConfigOption("scope", new SerializationOptions(JsonMode.Raw), "this", this.Scope ));
-                list.Add("stopEvent", new ConfigOption("stopEvent", null, true, this.StopEvent ));
-                list.Add("toolTip", new ConfigOption("toolTip", new SerializationOptions("tooltip"), "", this.ToolTip ));
-                list.Add("tooltipConfig", new ConfigOption("tooltipConfig", new SerializationOptions("tooltip", JsonMode.Object), null, this.TooltipConfig ));
-                list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
-                list.Add("directEvents", new ConfigOption("directEvents", new SerializationOptions("directEvents", JsonMode.Object), null, this.DirectEvents ));
+                list.Add("qtip", new ConfigOption("qtip", null, "", this.Qtip ));
+                list.Add("qTipCfg", new ConfigOption("qTipCfg", new SerializationOptions("qtip", JsonMode.Object), null, this.QTipCfg ));
+                list.Add("hidden", new ConfigOption("hidden", null, false, this.Hidden ));
 
                 return list;
             }

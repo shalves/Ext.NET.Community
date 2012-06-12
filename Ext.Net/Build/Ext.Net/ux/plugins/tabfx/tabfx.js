@@ -1,7 +1,7 @@
 /********
 * @author: Ext.NET, Inc. http://www.ext.net/
 * @date: 2009-03-17
-* @copyright: Copyright (c) 2007-2012, Ext.NET, Inc. All rights reserved.
+* @copyright: Copyright (c) 2010, Ext.NET, Inc. All rights reserved.
 * @license: The MIT License, see http://www.opensource.org/licenses/mit-license.php
 ********/
 

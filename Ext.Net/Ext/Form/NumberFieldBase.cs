@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Drawing;
 using System.Globalization;
 using System.Web.UI;
 
@@ -37,24 +38,74 @@ namespace Ext.Net
     /// <summary>
     /// Base class for Numeric field.
     /// </summary>
-    [Meta]   
+    [Meta]
+    [ToolboxData("<{0}:NumberField runat=\"server\" />")]
+    [DefaultProperty("Number")]
+    [DefaultEvent("TextChanged")]
+    [ValidationProperty("Number")]
+    [ControlValueProperty("Number")]
+    [ParseChildren(true)]
+    [PersistChildren(false)]
+    [SupportsEventValidation]
+    [Designer(typeof(NumberFieldDesigner))]
+    [ToolboxBitmap(typeof(NumberField), "Build.ToolboxIcons.NumberField.bmp")]
     [Description("Base class for Numeric field.")]
-    public abstract partial class NumberFieldBase : SpinnerFieldBase
+    public abstract partial class NumberFieldBase : TextFieldBase
     {
+        /// <summary>
+		/// 
+		/// </summary>
+		[Category("0. About")]
+		[Description("")]
+        public override string XType
+        {
+            get
+            {
+                return "numberfield";
+            }
+        }
+
+        /// <summary>
+		/// 
+		/// </summary>
+		[Category("0. About")]
+		[Description("")]
+        public override string InstanceOf
+        {
+            get
+            {
+                return "Ext.form.NumberField";
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected override void OnBeforeClientInit(Observable sender)
+        {
+            if (this.AutoPostBack)
+            {
+                this.On("change", new JFunction(this.PostBackFunction));
+            }
+        }
+
         /// <summary>
         /// The fields null value.
         /// </summary>
+        [Meta]
         [Category("5. Field")]
         [Description("The fields null value.")]
         public override object EmptyValue
         {
             get
             {
-                return this.State.Get<object>("EmptyValue", double.MinValue);
+                object obj = this.ViewState["EmptyValue"];
+                return (obj == null) ? double.MinValue : obj;
             }
             set
             {
-                this.State.Set("EmptyValue", value);
+                this.ViewState["EmptyValue"] = value;
             }
         }
 
@@ -62,6 +113,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
+        [Meta]
         [ConfigOption(JsonMode.ToLower)]
         [Browsable(false)]
         [DefaultValue(InputType.Text)]
@@ -82,6 +134,7 @@ namespace Ext.Net
         /// <summary>
         /// The Text value to initialize this field with.
         /// </summary>
+        [Meta]
         [Category("Appearance")]
         [DefaultValue("")]
         [Bindable(true, BindingDirection.TwoWay)]
@@ -279,31 +332,54 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("AllowDecimals", true);
+                object obj = this.ViewState["AllowDecimals"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("AllowDecimals", value);
+                this.ViewState["AllowDecimals"] = value;
             }
         }
 
         /// <summary>
-        /// True to automatically strip not allowed characters from the field. Defaults to false
+        /// False to disallow trim trailed zeros.
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("7. NumberField")]
-        [DefaultValue(false)]
-        [Description("True to automatically strip not allowed characters from the field. Defaults to false")]
-        public virtual bool AutoStripChars
+        [DefaultValue(true)]
+        [Description("False to disallow trim trailed zeros.")]
+        public virtual bool TrimTrailedZeros
         {
             get
             {
-                return this.State.Get<bool>("AutoStripChars", false);
+                object obj = this.ViewState["TrimTrailedZeros"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("AutoStripChars", value);
+                this.ViewState["TrimTrailedZeros"] = value;
+            }
+        }
+
+        /// <summary>
+        /// False to prevent entering a negative sign (defaults to true).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("7. NumberField")]
+        [DefaultValue(true)]
+        [Description("False to prevent entering a negative sign (defaults to true).")]
+        public virtual bool AllowNegative
+        {
+            get
+            {
+                object obj = this.ViewState["AllowNegative"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["AllowNegative"] = value;
             }
         }
 
@@ -319,11 +395,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("BaseChars", "0123456789");
+                object obj = this.ViewState["BaseChars"];
+                return (obj == null) ? "0123456789" : (string)obj;
             }
             set
             {
-                this.State.Set("BaseChars", value);
+                this.ViewState["BaseChars"] = value;
             }
         }
 
@@ -339,11 +416,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("DecimalPrecision", 2);
+                object obj = this.ViewState["DecimalPrecision"];
+                return (obj == null) ? 2 : (int)obj;
             }
             set
             {
-                this.State.Set("DecimalPrecision", value);
+                this.ViewState["DecimalPrecision"] = value;
             }
         }
 
@@ -358,7 +436,7 @@ namespace Ext.Net
         {
             get
             {
-                string separator = this.State.Get<string>("DecimalSeparator", "");
+                string separator = this.ViewState["DecimalSeparator"] as string;
 
                 if (separator.IsNotEmpty())
                 {
@@ -377,7 +455,7 @@ namespace Ext.Net
             }
             set
             {
-                this.State.Set("DecimalSeparator", value);
+                this.ViewState["DecimalSeparator"] = value;
             }
         }
 
@@ -393,16 +471,14 @@ namespace Ext.Net
                 //ResourceManager rm = this.SafeResourceManager;
                 string ds = this.DecimalSeparator;
 
-                /*
-                if (rm != null)
-                {
-                    CultureInfo locale = rm.CurrentLocale;
-                    return locale.NumberFormat.NumberDecimalSeparator == ds ? "" : ds;                    
-                }
+                //if (rm != null)
+                //{
+                //    CultureInfo locale = rm.CurrentLocale;
+                //    return locale.NumberFormat.NumberDecimalSeparator == ds ? "" : ds;                    
+                //}
 
-                return ds == "." ? "" : ds;
-                */
-
+                //return ds == "." ? "" : ds;
+                
                 // Temporary solution because ExtJS locales don't have always proper decimal separator
                 return ds;
             }
@@ -421,32 +497,32 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("MaxText", "The maximum value for this field is {maxValue}");
+                return (string)this.ViewState["MaxText"] ?? "The maximum value for this field is {maxValue}";
             }
             set
             {
-                this.State.Set("MaxText", value);
+                this.ViewState["MaxText"] = value;
             }
         }
 
         /// <summary>
-        /// The maximum allowed value (defaults to Number.MAX_VALUE). Will be used by the field's validation logic, and for enabling/disabling the up spinner button.
+        /// The maximum allowed value (defaults to Double.MaxValue)
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("7. NumberField")]
         [DefaultValue(Double.MaxValue)]
-        [DirectEventUpdate(MethodName = "SetMaxValue")]
-        [Description("The maximum allowed value (defaults to Number.MAX_VALUE). Will be used by the field's validation logic, and for enabling/disabling the up spinner button.")]
+        [Description("The maximum allowed value (defaults to Double.MaxValue)")]
         public virtual Double MaxValue
         {
             get
             {
-                return this.State.Get<Double>("MaxValue", Double.MaxValue);
+                object obj = this.ViewState["MaxValue"];
+                return (obj == null) ? Double.MaxValue : (Double)obj;
             }
             set
             {
-                this.State.Set("MaxValue", value);
+                this.ViewState["MaxValue"] = value;
             }
         }
 
@@ -463,32 +539,32 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("MinText", "The minimum value for this field is {minValue}");
+                return (string)this.ViewState["MinText"] ?? "The minimum value for this field is {minValue}";
             }
             set
             {
-                this.State.Set("MinText", value);
+                this.ViewState["MinText"] = value;
             }
         }
 
         /// <summary>
-        /// The minimum allowed value (defaults to Number.NEGATIVE_INFINITY). Will be used by the field's validation logic, and for enabling/disabling the down spinner button.
+        /// The minimum allowed value (defaults to Double.MinValue)
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("7. NumberField")]
-        [DirectEventUpdate(MethodName="SetMinValue")]
         [DefaultValue(Double.MinValue)]
-        [Description("The minimum allowed value (defaults to Number.NEGATIVE_INFINITY). Will be used by the field's validation logic, and for enabling/disabling the down spinner button.")]
+        [Description("The minimum allowed value (defaults to Double.MinValue)")]
         public virtual Double MinValue
         {
             get
             {
-                return this.State.Get<Double>("MinValue", Double.MinValue);
+                object obj = this.ViewState["MinValue"];
+                return (obj == null) ? Double.MinValue : (Double)obj;
             }
             set
             {
-                this.State.Set("MinValue", value);
+                this.ViewState["MinValue"] = value;
             }
         }
 
@@ -505,91 +581,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("NanText", "{value} is not a valid number");
+                return (string)this.ViewState["NanText"] ?? "{value} is not a valid number";
             }
             set
             {
-                this.State.Set("NanText", value);
+                this.ViewState["NanText"] = value;
             }
-        }
-
-        /// <summary>
-        /// Error text to display if the value is negative and minValue is set to 0. This is used instead of the minText in that circumstance only.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("7. NumberField")]
-        [DefaultValue("")]
-        [Localizable(true)]
-        [Description("Error text to display if the value is negative and minValue is set to 0. This is used instead of the minText in that circumstance only.")]
-        public virtual string NegativeText
-        {
-            get
-            {
-                return this.State.Get<string>("NegativeText", "");
-            }
-            set
-            {
-                this.State.Set("NegativeText", value);
-            }
-        }
-
-        /// <summary>
-        /// Specifies a numeric interval by which the field's value will be incremented or decremented when the user invokes the spinner. Defaults to 1.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("7. NumberField")]
-        [DefaultValue(1.0)]
-        [Description("Specifies a numeric interval by which the field's value will be incremented or decremented when the user invokes the spinner. Defaults to 1.")]
-        public virtual double Step
-        {
-            get
-            {
-                return this.State.Get<double>("Step", 1.0);
-            }
-            set
-            {
-                this.State.Set("Step", value);
-            }
-        }
-
-        /// <summary>
-        /// False to disallow trim trailed zeros.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("7. NumberField")]
-        [DefaultValue(true)]
-        [Description("False to disallow trim trailed zeros.")]
-        public virtual bool TrimTrailedZeros
-        {
-            get
-            {
-                return this.State.Get<bool>("TrimTrailedZeros", true);
-            }
-            set
-            {
-                this.State.Set("TrimTrailedZeros", value);
-            }
-        }
-
-        /// <summary>
-        /// Replaces any existing maxValue with the new value.
-        /// </summary>
-        /// <param name="value">The maximum value</param>
-        public virtual void SetMaxValue(Double value)
-        {
-            this.Call("setMaxValue", value);
-        }
-
-        /// <summary>
-        /// Replaces any existing minValue with the new value.
-        /// </summary>
-        /// <param name="value">The minimum value</param>
-        public virtual void SetMinValue(Double value)
-        {
-            this.Call("setMinValue", value);
         }
     }
 }

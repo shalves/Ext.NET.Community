@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class RowExpander
     {
         /// <summary>
@@ -77,28 +74,24 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
- 			/// <summary>
-			/// The template string to use to display each item in the dropdown list.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowExpander.Builder</returns>
-            public virtual RowExpander.Builder Template(Action<XTemplate> action)
-            {
-                action(this.ToComponent().Template);
-                return this as RowExpander.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowExpander.Builder</returns>
-            public virtual RowExpander.Builder Component(Action<ItemsCollection<AbstractComponent>> action)
-            {
-                action(this.ToComponent().Component);
-                return this as RowExpander.Builder;
-            }
-			 
+ 			// /// <summary>
+			// /// The template string to use to display each item in the dropdown list.
+			// /// </summary>
+            // public virtual TBuilder Template(XTemplate template)
+            // {
+            //    this.ToComponent().Template = template;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Component(ItemsCollection<Component> component)
+            // {
+            //    this.ToComponent().Component = component;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
 			/// Recreate component on each row expand
 			/// </summary>
@@ -118,11 +111,20 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// True to select a row when clicking on the expander icon (defaults to false).
+			/// 
 			/// </summary>
-            public virtual RowExpander.Builder SelectRowOnExpand(bool selectRowOnExpand)
+            public virtual RowExpander.Builder ColumnPosition(int columnPosition)
             {
-                this.ToComponent().SelectRowOnExpand = selectRowOnExpand;
+                this.ToComponent().ColumnPosition = columnPosition;
+                return this as RowExpander.Builder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual RowExpander.Builder EnableCaching(bool enableCaching)
+            {
+                this.ToComponent().EnableCaching = enableCaching;
                 return this as RowExpander.Builder;
             }
              
@@ -147,34 +149,39 @@ namespace Ext.Net
  			/// <summary>
 			/// 
 			/// </summary>
+            public virtual RowExpander.Builder LazyRender(bool lazyRender)
+            {
+                this.ToComponent().LazyRender = lazyRender;
+                return this as RowExpander.Builder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
             public virtual RowExpander.Builder SingleExpand(bool singleExpand)
             {
                 this.ToComponent().SingleExpand = singleExpand;
                 return this as RowExpander.Builder;
             }
              
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowExpander.Builder</returns>
-            public virtual RowExpander.Builder Listeners(Action<RowExpanderListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as RowExpander.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEventHandlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowExpander.Builder</returns>
-            public virtual RowExpander.Builder DirectEvents(Action<RowExpanderDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as RowExpander.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(RowExpanderListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side DirectEventHandlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(RowExpanderDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

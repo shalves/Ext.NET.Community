@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class ButtonBase
     {
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TButtonBase, TBuilder> : ComponentBase.Builder<TButtonBase, TBuilder>
+        new public abstract partial class Builder<TButtonBase, TBuilder> : BoxComponentBase.Builder<TButtonBase, TBuilder>
             where TButtonBase : ButtonBase
             where TBuilder : Builder<TButtonBase, TBuilder>
         {
@@ -57,6 +54,15 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
+ 			/// <summary>
+			/// By default, if a width is not specified the button will attempt to stretch horizontally to fit its content. If the button is being managed by a width sizing layout (hbox, fit, anchor), set this to false to prevent the button from doing this automatic sizing. Defaults to <tt>undefined</tt>.
+			/// </summary>
+            public virtual TBuilder AutoWidth(bool autoWidth)
+            {
+                this.ToComponent().AutoWidth = autoWidth;
+                return this as TBuilder;
+            }
+             
  			/// <summary>
 			/// True to enable stand out by default (defaults to false).
 			/// </summary>
@@ -103,27 +109,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The className used for the inner arrow element if the button has a menu.
-			/// </summary>
-            public virtual TBuilder ArrowCls(string arrowCls)
-            {
-                this.ToComponent().ArrowCls = arrowCls;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// An object literal of parameters to pass to the url when the href property is specified.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder BaseParams(Action<ParameterCollection> action)
-            {
-                action(this.ToComponent().BaseParams);
-                return this as TBuilder;
-            }
-			 
- 			/// <summary>
-			/// The DOM event that will fire the handler of the button. This can be any valid event name (dblclick, contextmenu). Defaults to: \"click\"
+			/// The type of event to map to the button's event handler (defaults to 'click').
 			/// </summary>
             public virtual TBuilder ClickEvent(string clickEvent)
             {
@@ -141,20 +127,20 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The CSS class to add to a button when it is in the focussed state. Defaults to: \"focus\"
-			/// </summary>
-            public virtual TBuilder FocusCls(string focusCls)
-            {
-                this.ToComponent().FocusCls = focusCls;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
 			/// True to apply a flat style.
 			/// </summary>
             public virtual TBuilder Flat(bool flat)
             {
                 this.ToComponent().Flat = flat;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Buttons in the footer of a FormPanel may be configured with the option formBind: true. This causes the form's valid state monitor task to enable/disable those Buttons depending on the form's valid/invalid state.
+			/// </summary>
+            public virtual TBuilder FormBind(bool formBind)
+            {
+                this.ToComponent().FormBind = formBind;
                 return this as TBuilder;
             }
              
@@ -177,25 +163,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Href(string href)
-            {
-                this.ToComponent().Href = href;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Target(string target)
-            {
-                this.ToComponent().Target = target;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// The path to an image to display in the button (the image will be set as the background-image CSS property of the button by default, so if you want a mixed icon/text button, set cls:'x-btn-text-icon')
+			/// The icon to use in the Button. See also, IconCls to set an icon with a custom Css class.
 			/// </summary>
             public virtual TBuilder Icon(Icon icon)
             {
@@ -222,15 +190,6 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The path to an image to display in the button (the image will be set as the background-image CSS property of the button by default, so if you want a mixed icon/text button, set cls:'x-btn-text-icon')
-			/// </summary>
-            public virtual TBuilder IconUrl(string iconUrl)
-            {
-                this.ToComponent().IconUrl = iconUrl;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
 			/// False to hide the Menu arrow drop down arrow (defaults to true).
 			/// </summary>
             public virtual TBuilder MenuArrow(bool menuArrow)
@@ -239,25 +198,14 @@ namespace Ext.Net
                 return this as TBuilder;
             }
              
- 			/// <summary>
-			/// Standard menu attribute consisting of a reference to a menu object, a menu id or a menu config blob.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder Menu(Action<MenuCollection> action)
-            {
-                action(this.ToComponent().Menu);
-                return this as TBuilder;
-            }
-			 
- 			/// <summary>
-			/// The CSS class to add to a button when it's menu is active. Defaults to: \"menu-active\"
-			/// </summary>
-            public virtual TBuilder MenuActiveCls(string menuActiveCls)
-            {
-                this.ToComponent().MenuActiveCls = menuActiveCls;
-                return this as TBuilder;
-            }
+ 			// /// <summary>
+			// /// Standard menu attribute consisting of a reference to a menu object, a menu id or a menu config blob.
+			// /// </summary>
+            // public virtual TBuilder Menu(MenuCollection menu)
+            // {
+            //    this.ToComponent().Menu = menu;
+            //    return this as TBuilder;
+            // }
              
  			/// <summary>
 			/// The position to align the menu to (see Ext.Element.alignTo for more details, defaults to 'tl-bl?').
@@ -265,6 +213,15 @@ namespace Ext.Net
             public virtual TBuilder MenuAlign(string menuAlign)
             {
                 this.ToComponent().MenuAlign = menuAlign;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The minimum width for this button (used to give a set of buttons a common width).
+			/// </summary>
+            public virtual TBuilder MinWidth(Unit minWidth)
+            {
+                this.ToComponent().MinWidth = minWidth;
                 return this as TBuilder;
             }
              
@@ -278,40 +235,11 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// An object literal of parameters to pass to the url when the href property is specified. Any params override baseParams. New params can be set using the setParams method.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder Params(Action<ParameterCollection> action)
-            {
-                action(this.ToComponent().Params);
-                return this as TBuilder;
-            }
-			 
- 			/// <summary>
 			/// True to addToStart pressed (only if enableToggle = true).
 			/// </summary>
             public virtual TBuilder Pressed(bool pressed)
             {
                 this.ToComponent().Pressed = pressed;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// The CSS class to add to a button when it is in the pressed state. Defaults to: \"pressed\"
-			/// </summary>
-            public virtual TBuilder PressedCls(string pressedCls)
-            {
-                this.ToComponent().PressedCls = pressedCls;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// True to prevent the default action when the clickEvent is processed. Defaults to: true
-			/// </summary>
-            public virtual TBuilder PreventDefault(bool preventDefault)
-            {
-                this.ToComponent().PreventDefault = preventDefault;
                 return this as TBuilder;
             }
              
@@ -325,9 +253,9 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The scope (this reference) in which the handler and toggleHandler is executed. Defaults to this Button.
+			/// The scope of the handler.
 			/// </summary>
-            public virtual TBuilder Scope(string scope)
+            public virtual TBuilder Scope(object scope)
             {
                 this.ToComponent().Scope = scope;
                 return this as TBuilder;
@@ -352,20 +280,11 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The button text to be used as innerHTML (html tags are accepted).
+			/// The position to align the menu to (see Ext.Element.alignTo for more details, defaults to 'tl-bl?').
 			/// </summary>
             public virtual TBuilder Text(string text)
             {
                 this.ToComponent().Text = text;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// The text alignment for this button (center, left, right). Defaults to: \"center\"
-			/// </summary>
-            public virtual TBuilder TextAlign(ButtonTextAlign textAlign)
-            {
-                this.ToComponent().TextAlign = textAlign;
                 return this as TBuilder;
             }
              
@@ -406,7 +325,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The type of input to create: submit, reset or button. Defaults to: \"button\"
+			/// submit, reset or button - defaults to 'button'.
 			/// </summary>
             public virtual TBuilder Type(ButtonType type)
             {
@@ -420,15 +339,6 @@ namespace Ext.Net
             public virtual TBuilder AutoPostBack(bool autoPostBack)
             {
                 this.ToComponent().AutoPostBack = autoPostBack;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder PostBackEvent(string postBackEvent)
-            {
-                this.ToComponent().PostBackEvent = postBackEvent;
                 return this as TBuilder;
             }
              
@@ -449,11 +359,38 @@ namespace Ext.Net
                 this.ToComponent().ValidationGroup = validationGroup;
                 return this as TBuilder;
             }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder NavigateUrl(string navigateUrl)
+            {
+                this.ToComponent().NavigateUrl = navigateUrl;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Target(string target)
+            {
+                this.ToComponent().Target = target;
+                return this as TBuilder;
+            }
             
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/
 			
+ 			/// <summary>
+			/// Focus the button
+			/// </summary>
+            public virtual TBuilder Focus()
+            {
+                this.ToComponent().Focus();
+                return this as TBuilder;
+            }
+            
  			/// <summary>
 			/// Hide this button's menu (if it has one)
 			/// </summary>
@@ -464,25 +401,16 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// initComponent
 			/// </summary>
-            public virtual TBuilder SetTooltip(string tooltip)
+            public virtual TBuilder InitComponent()
             {
-                this.ToComponent().SetTooltip(tooltip);
+                this.ToComponent().InitComponent();
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder SetTooltip(QTipCfg config)
-            {
-                this.ToComponent().SetTooltip(config);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
+			/// Show this button's menu (if it has one)
 			/// </summary>
             public virtual TBuilder ShowMenu()
             {
@@ -491,7 +419,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// If a state it passed, it becomes the pressed state otherwise the current state is toggled.
 			/// </summary>
             public virtual TBuilder Toggle()
             {
@@ -500,7 +428,7 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// If a state it passed, it becomes the pressed state otherwise the current state is toggled.
 			/// </summary>
             public virtual TBuilder Toggle(bool state)
             {

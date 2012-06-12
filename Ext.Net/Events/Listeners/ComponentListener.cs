@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -30,7 +30,6 @@ using System.Web;
 using System.Web.UI;
 
 using Ext.Net.Utilities;
-using System.Collections.Generic;
 
 namespace Ext.Net
 {
@@ -39,6 +38,26 @@ namespace Ext.Net
     [ToolboxItem(false)]
     public partial class ComponentListener : BaseListener, IAutoPostBack
     {
+        //private ListenerActionCollection actions;
+
+        //[PersistenceMode(PersistenceMode.InnerProperty)]
+        //[NotifyParentProperty(true)]
+        //private ListenerActionCollection Actions
+        //{
+        //    get
+        //    {
+        //        if (this.actions == null)
+        //        {
+        //            this.actions = new ListenerActionCollection();
+        //        }
+        //        return this.actions;
+        //    }
+        //    set
+        //    {
+        //        this.actions = value;
+        //    }
+        //}
+
         /// <summary>
         /// True to initiate a postback.
         /// </summary>
@@ -50,29 +69,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("AutoPostBack", false);
+                object obj = this.ViewState["AutoPostBack"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("AutoPostBack", value);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Meta]
-        [DefaultValue("")]
-        [Description("")]
-        public virtual string PostBackEvent
-        {
-            get
-            {
-                return this.State.Get<string>("PostBackEvent", "");
-            }
-            set
-            {
-                this.State.Set("PostBackEvent", value);
+                this.ViewState["AutoPostBack"] = value;
             }
         }
 
@@ -86,11 +88,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("CausesValidation", false);
+                object obj = this.ViewState["CausesValidation"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("CausesValidation", value);
+                this.ViewState["CausesValidation"] = value;
             }
         }
 
@@ -104,7 +107,7 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("ValidationGroup", "");
+                return (string)this.ViewState["ValidationGroup"] ?? "";
             }
             set
             {
@@ -122,7 +125,7 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("EventArgument", "");
+                return (string)this.ViewState["EventArgument"] ?? "";
             }
             set
             {
@@ -223,11 +226,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Fn", "");
+                return (string)this.ViewState["Fn"] ?? "";
             }
             set
             {
-                this.State.Set("Fn", value);
+                this.ViewState["Fn"] = value;
             }
         }
 
@@ -241,45 +244,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Handler", "");
+                return (string)this.ViewState["Handler"] ?? "";
             }
             set
             {
-                this.State.Set("Handler", value);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [ConfigOption]
-        [DefaultValue("")]
-        [NotifyParentProperty(true)]
-        [Description("")]
-        public virtual string BroadcastOnBus
-        {
-            get
-            {
-                return this.State.Get<string>("BroadcastOnBus", "");
-            }
-            set
-            {
-                this.State.Set("BroadcastOnBus", value);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [ConfigOption("argumentsList", JsonMode.AlwaysArray)]
-        [DefaultValue(null)]
-        [NotifyParentProperty(true)]
-        [Description("")]
-        protected virtual List<string> ArgumentsListProxy
-        {
-            get
-            {
-                return this.BroadcastOnBus.IsNotEmpty() ? this.ArgumentList : null;
+                this.ViewState["Handler"] = value;
             }
         }
 
@@ -291,7 +260,7 @@ namespace Ext.Net
         {
             get
             {
-                return this.Fn.IsEmpty() && this.Handler.IsEmpty() && !this.AutoPostBack && this.BroadcastOnBus.IsEmpty();
+                return this.Fn.IsEmpty() && this.Handler.IsEmpty() && !this.AutoPostBack;
             }
         }
 
@@ -306,7 +275,7 @@ namespace Ext.Net
             get
             {
                 return (
-                    (this.Fn.IsNotEmpty() || this.Handler.IsNotEmpty() || this.AutoPostBack || this.BroadcastOnBus.IsNotEmpty())
+                    (this.Fn.IsNotEmpty() || this.Handler.IsNotEmpty() || this.AutoPostBack)
                     && this.Delegate.IsEmpty()
                     && !this.StopEvent
                     && !this.PreventDefault

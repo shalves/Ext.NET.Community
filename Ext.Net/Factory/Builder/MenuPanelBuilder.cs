@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class MenuPanel
     {
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : AbstractPanel.Builder<MenuPanel, MenuPanel.Builder>
+        public partial class Builder : PanelBase.Builder<MenuPanel, MenuPanel.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -77,23 +74,39 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
- 			/// <summary>
-			/// Standard menu attribute consisting of a reference to a menu object, a menu id or a menu config blob
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of MenuPanel.Builder</returns>
-            public virtual MenuPanel.Builder Menu(Action<Menu> action)
-            {
-                action(this.ToComponent().Menu);
-                return this as MenuPanel.Builder;
-            }
-			 
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Items(ItemsCollection<Component> items)
+            // {
+            //    this.ToComponent().Items = items;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Standard menu attribute consisting of a reference to a menu object, a menu id or a menu config blob
+			// /// </summary>
+            // public virtual TBuilder Menu(Menu menu)
+            // {
+            //    this.ToComponent().Menu = menu;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
 			/// Save selection after click
 			/// </summary>
             public virtual MenuPanel.Builder SaveSelection(bool saveSelection)
             {
                 this.ToComponent().SaveSelection = saveSelection;
+                return this as MenuPanel.Builder;
+            }
+             
+ 			/// <summary>
+			/// Fit menu's height
+			/// </summary>
+            public virtual MenuPanel.Builder FitHeight(bool fitHeight)
+            {
+                this.ToComponent().FitHeight = fitHeight;
                 return this as MenuPanel.Builder;
             }
              
@@ -106,28 +119,24 @@ namespace Ext.Net
                 return this as MenuPanel.Builder;
             }
              
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of MenuPanel.Builder</returns>
-            public virtual MenuPanel.Builder Listeners(Action<PanelListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as MenuPanel.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of MenuPanel.Builder</returns>
-            public virtual MenuPanel.Builder DirectEvents(Action<PanelDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as MenuPanel.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(PanelListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(PanelDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

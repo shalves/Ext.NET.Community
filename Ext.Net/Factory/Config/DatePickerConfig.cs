@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class DatePicker
     {
 		/*  Ctor
@@ -64,7 +61,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        new public partial class Config : ComponentBase.Config 
+        new public partial class Config : Component.Config 
         { 
 			/*  Implicit DatePicker.Config Conversion to DatePicker.Builder
 				-----------------------------------------------------------------------------------------------*/
@@ -81,507 +78,147 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
-			private string[] dayNames = null;
+			private string dataIndex = "";
 
 			/// <summary>
-			/// An array of textual day names which can be overriden for localization support (defaults to Ext.Date.dayNames)
-			/// </summary>
-			[DefaultValue(null)]
-			public virtual string[] DayNames 
-			{ 
-				get
-				{
-					return this.dayNames;
-				}
-				set
-				{
-					this.dayNames = value;
-				}
-			}
-
-			private bool disableAnim = false;
-
-			/// <summary>
-			/// True to disable animations when showing the month picker. Defaults to: false
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool DisableAnim 
-			{ 
-				get
-				{
-					return this.disableAnim;
-				}
-				set
-				{
-					this.disableAnim = value;
-				}
-			}
-
-			private bool disabledCellCls = false;
-
-			/// <summary>
-			/// The class to apply to disabled cells. Defaults to: \"x-datepicker-disabled\"
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool DisabledCellCls 
-			{ 
-				get
-				{
-					return this.disabledCellCls;
-				}
-				set
-				{
-					this.disabledCellCls = value;
-				}
-			}
-        
-			private DisabledDateCollection disabledDates = null;
-
-			/// <summary>
-			/// An array of \"dates\" to disable, as strings. These strings will be used to build a dynamic regular expression so they are very powerful.
-			/// </summary>
-			public DisabledDateCollection DisabledDates
-			{
-				get
-				{
-					if (this.disabledDates == null)
-					{
-						this.disabledDates = new DisabledDateCollection();
-					}
-			
-					return this.disabledDates;
-				}
-			}
-			
-			private string disabledDatesRE = "";
-
-			/// <summary>
-			/// JavaScript regular expression used to disable a pattern of dates. The disabledDates config will generate this regex internally, but if you specify disabledDatesRE it will take precedence over the disabledDates value. Defaults to: null
+			/// (optional) The name of the field in the grid's Ext.data.Store's Ext.data.Record definition from which to draw the column's value.
 			/// </summary>
 			[DefaultValue("")]
-			public virtual string DisabledDatesRE 
+			public virtual string DataIndex 
 			{ 
 				get
 				{
-					return this.disabledDatesRE;
+					return this.dataIndex;
 				}
 				set
 				{
-					this.disabledDatesRE = value;
+					this.dataIndex = value;
 				}
 			}
 
-			private string disabledDatesText = "Disabled";
+			private bool hideWithLabel = true;
 
 			/// <summary>
-			/// The tooltip text to display when the date falls on a disabled date. Defaults to: \"Disabled\"
-			/// </summary>
-			[DefaultValue("Disabled")]
-			public virtual string DisabledDatesText 
-			{ 
-				get
-				{
-					return this.disabledDatesText;
-				}
-				set
-				{
-					this.disabledDatesText = value;
-				}
-			}
-
-			private int[] disabledDays = null;
-
-			/// <summary>
-			/// An array of days to disable, 0-based. For example, [0, 6] disables Sunday and Saturday (defaults to null).
-			/// </summary>
-			[DefaultValue(null)]
-			public virtual int[] DisabledDays 
-			{ 
-				get
-				{
-					return this.disabledDays;
-				}
-				set
-				{
-					this.disabledDays = value;
-				}
-			}
-
-			private string disabledDaysText = "";
-
-			/// <summary>
-			/// The tooltip to display when the date falls on a disabled day. Defaults to: \"Disabled\"
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string DisabledDaysText 
-			{ 
-				get
-				{
-					return this.disabledDaysText;
-				}
-				set
-				{
-					this.disabledDaysText = value;
-				}
-			}
-
-			private bool focusOnShow = false;
-
-			/// <summary>
-			/// True to automatically focus the picker on show. Defaults to: false
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool FocusOnShow 
-			{ 
-				get
-				{
-					return this.focusOnShow;
-				}
-				set
-				{
-					this.focusOnShow = value;
-				}
-			}
-
-			private string format = "d";
-
-			/// <summary>
-			/// The default date format string which can be overriden for localization support. The format must be valid according to Date.parseDate (defaults to 'm/d/y').
-			/// </summary>
-			[DefaultValue("d")]
-			public virtual string Format 
-			{ 
-				get
-				{
-					return this.format;
-				}
-				set
-				{
-					this.format = value;
-				}
-			}
-
-			private string handler = "";
-
-			/// <summary>
-			/// A function that will handle the select event of this picker.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string Handler 
-			{ 
-				get
-				{
-					return this.handler;
-				}
-				set
-				{
-					this.handler = value;
-				}
-			}
-
-			private string longDayFormat = "";
-
-			/// <summary>
-			/// The format for displaying a date in a longer format.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string LongDayFormat 
-			{ 
-				get
-				{
-					return this.longDayFormat;
-				}
-				set
-				{
-					this.longDayFormat = value;
-				}
-			}
-
-			private DateTime maxDate = new DateTime(9999, 12, 31);
-
-			/// <summary>
-			/// The maximum allowed date.
-			/// </summary>
-			[DefaultValue(typeof(DateTime), "9999-12-31")]
-			public virtual DateTime MaxDate 
-			{ 
-				get
-				{
-					return this.maxDate;
-				}
-				set
-				{
-					this.maxDate = value;
-				}
-			}
-
-			private string maxText = "";
-
-			/// <summary>
-			/// The error text to display if the maxDate validation fails. (defaults to 'This date is after the maximum date').
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string MaxText 
-			{ 
-				get
-				{
-					return this.maxText;
-				}
-				set
-				{
-					this.maxText = value;
-				}
-			}
-
-			private DateTime minDate = new DateTime(0001, 01, 01);
-
-			/// <summary>
-			/// The minimum allowed date.
-			/// </summary>
-			[DefaultValue(typeof(DateTime), "0001-01-01")]
-			public virtual DateTime MinDate 
-			{ 
-				get
-				{
-					return this.minDate;
-				}
-				set
-				{
-					this.minDate = value;
-				}
-			}
-
-			private string minText = "";
-
-			/// <summary>
-			/// The error text to display if the minDate validation fails. (defaults to 'This date is before the minimum date').
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string MinText 
-			{ 
-				get
-				{
-					return this.minText;
-				}
-				set
-				{
-					this.minText = value;
-				}
-			}
-
-			private string[] monthNames = null;
-
-			/// <summary>
-			/// An array of textual month names which can be overriden for localization support (defaults to Date.monthNames).
-			/// </summary>
-			[DefaultValue(null)]
-			public virtual string[] MonthNames 
-			{ 
-				get
-				{
-					return this.monthNames;
-				}
-				set
-				{
-					this.monthNames = value;
-				}
-			}
-
-			private string monthYearText = "Choose a month (Control+Up/Down to move years)";
-
-			/// <summary>
-			/// The header month selector tooltip (defaults to 'Choose a month (Control+Up/Down to move years)').
-			/// </summary>
-			[DefaultValue("Choose a month (Control+Up/Down to move years)")]
-			public virtual string MonthYearText 
-			{ 
-				get
-				{
-					return this.monthYearText;
-				}
-				set
-				{
-					this.monthYearText = value;
-				}
-			}
-
-			private string nextText = "Next Month (Control+Right)";
-
-			/// <summary>
-			/// The next month navigation button tooltip (defaults to 'Next Month (Control+Right)').
-			/// </summary>
-			[DefaultValue("Next Month (Control+Right)")]
-			public virtual string NextText 
-			{ 
-				get
-				{
-					return this.nextText;
-				}
-				set
-				{
-					this.nextText = value;
-				}
-			}
-
-			private string prevText = "Previous Month (Control+Left)";
-
-			/// <summary>
-			/// The previous month navigation button tooltip (defaults to 'Previous Month (Control+Left)').
-			/// </summary>
-			[DefaultValue("Previous Month (Control+Left)")]
-			public virtual string PrevText 
-			{ 
-				get
-				{
-					return this.prevText;
-				}
-				set
-				{
-					this.prevText = value;
-				}
-			}
-
-			private string scope = null;
-
-			/// <summary>
-			/// The scope (this reference) in which the handler function will be called. Defaults to this DatePicker instance.
-			/// </summary>
-			[DefaultValue(null)]
-			public virtual string Scope 
-			{ 
-				get
-				{
-					return this.scope;
-				}
-				set
-				{
-					this.scope = value;
-				}
-			}
-
-			private string selectedCls = null;
-
-			/// <summary>
-			/// The class to apply to the selected cell. Defaults to: \"x-datepicker-selected\"
-			/// </summary>
-			[DefaultValue(null)]
-			public virtual string SelectedCls 
-			{ 
-				get
-				{
-					return this.selectedCls;
-				}
-				set
-				{
-					this.selectedCls = value;
-				}
-			}
-
-			private bool showToday = true;
-
-			/// <summary>
-			/// False to hide the footer area containing the Today button and disable the keyboard handler for spacebar that selects the current date (defaults to true).
+			/// True to hide the label when the field hide
 			/// </summary>
 			[DefaultValue(true)]
-			public virtual bool ShowToday 
+			public virtual bool HideWithLabel 
 			{ 
 				get
 				{
-					return this.showToday;
+					return this.hideWithLabel;
 				}
 				set
 				{
-					this.showToday = value;
+					this.hideWithLabel = value;
 				}
 			}
 
-			private int startDay = 0;
+			private bool readOnly = false;
 
 			/// <summary>
-			/// Day index at which the week should begin, 0-based (defaults to 0, which is Sunday).
+			/// True to mark the field as readOnly in HTML (defaults to false) -- Note: this only sets the element's readOnly DOM attribute.
 			/// </summary>
-			[DefaultValue(0)]
-			public virtual int StartDay 
+			[DefaultValue(false)]
+			public virtual bool ReadOnly 
 			{ 
 				get
 				{
-					return this.startDay;
+					return this.readOnly;
 				}
 				set
 				{
-					this.startDay = value;
+					this.readOnly = value;
 				}
 			}
 
-			private string todayText = "Today";
+			private string note = "";
 
 			/// <summary>
-			/// The text to display on the button that selects the current date (defaults to 'Today').
+			/// The note.
 			/// </summary>
-			[DefaultValue("Today")]
-			public virtual string TodayText 
+			[DefaultValue("")]
+			public virtual string Note 
 			{ 
 				get
 				{
-					return this.todayText;
+					return this.note;
 				}
 				set
 				{
-					this.todayText = value;
+					this.note = value;
 				}
 			}
 
-			private string todayTip = "{0} (Spacebar)";
+			private string noteCls = "";
 
 			/// <summary>
-			/// A string used to format the message for displaying in a tooltip over the button that selects the current date. The {0} token in string is replaced by today's date. Defaults to: \"{0} (Spacebar)\"
+			/// The note css class.
 			/// </summary>
-			[DefaultValue("{0} (Spacebar)")]
-			public virtual string TodayTip 
+			[DefaultValue("")]
+			public virtual string NoteCls 
 			{ 
 				get
 				{
-					return this.todayTip;
+					return this.noteCls;
 				}
 				set
 				{
-					this.todayTip = value;
+					this.noteCls = value;
+				}
+			}
+
+			private NoteAlign noteAlign = NoteAlign.Down;
+
+			/// <summary>
+			/// Note align
+			/// </summary>
+			[DefaultValue(NoteAlign.Down)]
+			public virtual NoteAlign NoteAlign 
+			{ 
+				get
+				{
+					return this.noteAlign;
+				}
+				set
+				{
+					this.noteAlign = value;
+				}
+			}
+
+			private object value = null;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue(null)]
+			public virtual object Value 
+			{ 
+				get
+				{
+					return this.value;
+				}
+				set
+				{
+					this.value = value;
 				}
 			}
         
-			private DatePickerListeners listeners = null;
+			private object emptyValue = null;
 
 			/// <summary>
-			/// Client-side JavaScript Event Handlers
+			/// The fields null value.
 			/// </summary>
-			public DatePickerListeners Listeners
+			public object EmptyValue
 			{
 				get
 				{
-					if (this.listeners == null)
+					if (this.emptyValue == null)
 					{
-						this.listeners = new DatePickerListeners();
+						this.emptyValue = new object();
 					}
 			
-					return this.listeners;
-				}
-			}
-			        
-			private DatePickerDirectEvents directEvents = null;
-
-			/// <summary>
-			/// Server-side Ajax Event Handlers
-			/// </summary>
-			public DatePickerDirectEvents DirectEvents
-			{
-				get
-				{
-					if (this.directEvents == null)
-					{
-						this.directEvents = new DatePickerDirectEvents();
-					}
-			
-					return this.directEvents;
+					return this.emptyValue;
 				}
 			}
 			
@@ -600,24 +237,6 @@ namespace Ext.Net
 				set
 				{
 					this.autoPostBack = value;
-				}
-			}
-
-			private string postBackEvent = "select";
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue("select")]
-			public virtual string PostBackEvent 
-			{ 
-				get
-				{
-					return this.postBackEvent;
-				}
-				set
-				{
-					this.postBackEvent = value;
 				}
 			}
 
@@ -692,43 +311,403 @@ namespace Ext.Net
 					return this.selectedValue;
 				}
 			}
-			        
-			private object emptyValue = null;
+			
+			private string cancelText = "";
 
 			/// <summary>
-			/// The fields null value.
+			/// The text to display on the cancel button.
 			/// </summary>
-			public object EmptyValue
-			{
-				get
-				{
-					if (this.emptyValue == null)
-					{
-						this.emptyValue = new object();
-					}
-			
-					return this.emptyValue;
-				}
-			}
-			
-			private object value = null;
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue(null)]
-			public virtual object Value 
+			[DefaultValue("")]
+			public virtual string CancelText 
 			{ 
 				get
 				{
-					return this.value;
+					return this.cancelText;
 				}
 				set
 				{
-					this.value = value;
+					this.cancelText = value;
+				}
+			}
+        
+			private DisabledDateCollection disabledDates = null;
+
+			/// <summary>
+			/// An array of \"dates\" to disable, as strings. These strings will be used to build a dynamic regular expression so they are very powerful.
+			/// </summary>
+			public DisabledDateCollection DisabledDates
+			{
+				get
+				{
+					if (this.disabledDates == null)
+					{
+						this.disabledDates = new DisabledDateCollection();
+					}
+			
+					return this.disabledDates;
+				}
+			}
+			
+			private string[] dayNames = null;
+
+			/// <summary>
+			/// An array of textual day names which can be overriden for localization support (defaults to Date.dayNames).
+			/// </summary>
+			[DefaultValue(null)]
+			public virtual string[] DayNames 
+			{ 
+				get
+				{
+					return this.dayNames;
+				}
+				set
+				{
+					this.dayNames = value;
 				}
 			}
 
+			private string disabledDatesRE = "";
+
+			/// <summary>
+			/// JavaScript regular expression used to disable a pattern of dates (defaults to null).
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string DisabledDatesRE 
+			{ 
+				get
+				{
+					return this.disabledDatesRE;
+				}
+				set
+				{
+					this.disabledDatesRE = value;
+				}
+			}
+
+			private int[] disabledDays = null;
+
+			/// <summary>
+			/// An array of days to disable, 0-based. For example, [0, 6] disables Sunday and Saturday (defaults to null).
+			/// </summary>
+			[DefaultValue(null)]
+			public virtual int[] DisabledDays 
+			{ 
+				get
+				{
+					return this.disabledDays;
+				}
+				set
+				{
+					this.disabledDays = value;
+				}
+			}
+
+			private string disabledDaysText = "";
+
+			/// <summary>
+			/// The tooltip to display when the date falls on a disabled day (defaults to '').
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string DisabledDaysText 
+			{ 
+				get
+				{
+					return this.disabledDaysText;
+				}
+				set
+				{
+					this.disabledDaysText = value;
+				}
+			}
+
+			private string format = "d";
+
+			/// <summary>
+			/// The default date format string which can be overriden for localization support. The format must be valid according to Date.parseDate (defaults to 'm/d/y').
+			/// </summary>
+			[DefaultValue("d")]
+			public virtual string Format 
+			{ 
+				get
+				{
+					return this.format;
+				}
+				set
+				{
+					this.format = value;
+				}
+			}
+
+			private DateTime maxDate = new DateTime(9999, 12, 31);
+
+			/// <summary>
+			/// The maximum allowed date.
+			/// </summary>
+			[DefaultValue(typeof(DateTime), "9999-12-31")]
+			public virtual DateTime MaxDate 
+			{ 
+				get
+				{
+					return this.maxDate;
+				}
+				set
+				{
+					this.maxDate = value;
+				}
+			}
+
+			private string maxText = "";
+
+			/// <summary>
+			/// The error text to display when the date in the cell is after MaxValue (defaults to 'The date in this field must be before {MaxValue}').
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string MaxText 
+			{ 
+				get
+				{
+					return this.maxText;
+				}
+				set
+				{
+					this.maxText = value;
+				}
+			}
+
+			private DateTime minDate = new DateTime(0001, 01, 01);
+
+			/// <summary>
+			/// The minimum allowed date.
+			/// </summary>
+			[DefaultValue(typeof(DateTime), "0001-01-01")]
+			public virtual DateTime MinDate 
+			{ 
+				get
+				{
+					return this.minDate;
+				}
+				set
+				{
+					this.minDate = value;
+				}
+			}
+
+			private string minText = "";
+
+			/// <summary>
+			/// The error text to display when the date in the cell is before MinValue (defaults to 'The date in this field must be after {MinValue}').
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string MinText 
+			{ 
+				get
+				{
+					return this.minText;
+				}
+				set
+				{
+					this.minText = value;
+				}
+			}
+
+			private string[] monthNames = null;
+
+			/// <summary>
+			/// An array of textual month names which can be overriden for localization support (defaults to Date.monthNames).
+			/// </summary>
+			[DefaultValue(null)]
+			public virtual string[] MonthNames 
+			{ 
+				get
+				{
+					return this.monthNames;
+				}
+				set
+				{
+					this.monthNames = value;
+				}
+			}
+
+			private string monthYearText = "Choose a month (Control+Up/Down to move years)";
+
+			/// <summary>
+			/// The header month selector tooltip (defaults to 'Choose a month (Control+Up/Down to move years)').
+			/// </summary>
+			[DefaultValue("Choose a month (Control+Up/Down to move years)")]
+			public virtual string MonthYearText 
+			{ 
+				get
+				{
+					return this.monthYearText;
+				}
+				set
+				{
+					this.monthYearText = value;
+				}
+			}
+
+			private string nextText = "Next Month (Control+Right)";
+
+			/// <summary>
+			/// The next month navigation button tooltip (defaults to 'Next Month (Control+Right)').
+			/// </summary>
+			[DefaultValue("Next Month (Control+Right)")]
+			public virtual string NextText 
+			{ 
+				get
+				{
+					return this.nextText;
+				}
+				set
+				{
+					this.nextText = value;
+				}
+			}
+
+			private string okText = "";
+
+			/// <summary>
+			/// The text to display on the ok button.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string OkText 
+			{ 
+				get
+				{
+					return this.okText;
+				}
+				set
+				{
+					this.okText = value;
+				}
+			}
+
+			private string prevText = "Previous Month (Control+Left)";
+
+			/// <summary>
+			/// The previous month navigation button tooltip (defaults to 'Previous Month (Control+Left)').
+			/// </summary>
+			[DefaultValue("Previous Month (Control+Left)")]
+			public virtual string PrevText 
+			{ 
+				get
+				{
+					return this.prevText;
+				}
+				set
+				{
+					this.prevText = value;
+				}
+			}
+
+			private bool showToday = true;
+
+			/// <summary>
+			/// False to hide the footer area containing the Today button and disable the keyboard handler for spacebar that selects the current date (defaults to true).
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool ShowToday 
+			{ 
+				get
+				{
+					return this.showToday;
+				}
+				set
+				{
+					this.showToday = value;
+				}
+			}
+
+			private int startDay = 0;
+
+			/// <summary>
+			/// Day index at which the week should begin, 0-based (defaults to 0, which is Sunday).
+			/// </summary>
+			[DefaultValue(0)]
+			public virtual int StartDay 
+			{ 
+				get
+				{
+					return this.startDay;
+				}
+				set
+				{
+					this.startDay = value;
+				}
+			}
+
+			private string todayText = "Today";
+
+			/// <summary>
+			/// The text to display on the button that selects the current date (defaults to 'Today').
+			/// </summary>
+			[DefaultValue("Today")]
+			public virtual string TodayText 
+			{ 
+				get
+				{
+					return this.todayText;
+				}
+				set
+				{
+					this.todayText = value;
+				}
+			}
+
+			private string todayTip = "{current date} (Spacebar)";
+
+			/// <summary>
+			/// The tooltip to display for the button that selects the current date (defaults to '{current date} (Spacebar)').
+			/// </summary>
+			[DefaultValue("{current date} (Spacebar)")]
+			public virtual string TodayTip 
+			{ 
+				get
+				{
+					return this.todayTip;
+				}
+				set
+				{
+					this.todayTip = value;
+				}
+			}
+        
+			private DatePickerListeners listeners = null;
+
+			/// <summary>
+			/// Client-side JavaScript Event Handlers
+			/// </summary>
+			public DatePickerListeners Listeners
+			{
+				get
+				{
+					if (this.listeners == null)
+					{
+						this.listeners = new DatePickerListeners();
+					}
+			
+					return this.listeners;
+				}
+			}
+			        
+			private DatePickerDirectEvents directEvents = null;
+
+			/// <summary>
+			/// Server-side Ajax Event Handlers
+			/// </summary>
+			public DatePickerDirectEvents DirectEvents
+			{
+				get
+				{
+					if (this.directEvents == null)
+					{
+						this.directEvents = new DatePickerDirectEvents();
+					}
+			
+					return this.directEvents;
+				}
+			}
+			
         }
     }
 }

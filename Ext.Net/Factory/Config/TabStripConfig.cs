@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class TabStrip
     {
 		/*  Ctor
@@ -64,7 +61,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        new public partial class Config : ComponentBase.Config 
+        new public partial class Config : BoxComponentBase.Config 
         { 
 			/*  Implicit TabStrip.Config Conversion to TabStrip.Builder
 				-----------------------------------------------------------------------------------------------*/
@@ -80,37 +77,19 @@ namespace Ext.Net
 			
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
-			
-			private TabPosition tabPosition = TabPosition.Top;
-
-			/// <summary>
-			/// The position where the tab strip should be rendered (defaults to 'top'). The only other supported value is 'Bottom'. Note that tab scrolling is only supported for position 'top'.
-			/// </summary>
-			[DefaultValue(TabPosition.Top)]
-			public virtual TabPosition TabPosition 
-			{ 
-				get
-				{
-					return this.tabPosition;
-				}
-				set
-				{
-					this.tabPosition = value;
-				}
-			}
-        
-			private Tabs items = null;
+			        
+			private TabStripItems items = null;
 
 			/// <summary>
 			/// Items Collection
 			/// </summary>
-			public Tabs Items
+			public TabStripItems Items
 			{
 				get
 				{
 					if (this.items == null)
 					{
-						this.items = new Tabs();
+						this.items = new TabStripItems();
 					}
 			
 					return this.items;
@@ -171,13 +150,49 @@ namespace Ext.Net
 				}
 			}
 
-			private int minTabWidth = 0;
+			private bool animScroll = true;
 
 			/// <summary>
-			/// 
+			/// True to animate tab scrolling so that hidden tabs slide smoothly into view (defaults to true). Only applies when EnableTabScroll = true.
 			/// </summary>
-			[DefaultValue(0)]
-			public virtual int MinTabWidth 
+			[DefaultValue(true)]
+			public virtual bool AnimScroll 
+			{ 
+				get
+				{
+					return this.animScroll;
+				}
+				set
+				{
+					this.animScroll = value;
+				}
+			}
+
+			private bool enableTabScroll = false;
+
+			/// <summary>
+			/// True to enable scrolling to tabs that may be invisible due to overflowing the overall TabPanel width. Only available with tabs on addToStart. (defaults to false).
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool EnableTabScroll 
+			{ 
+				get
+				{
+					return this.enableTabScroll;
+				}
+				set
+				{
+					this.enableTabScroll = value;
+				}
+			}
+
+			private Unit minTabWidth = Unit.Pixel(30);
+
+			/// <summary>
+			/// The minimum width in pixels for each tab when ResizeTabs = true (defaults to 30).
+			/// </summary>
+			[DefaultValue(typeof(Unit), "30")]
+			public virtual Unit MinTabWidth 
 			{ 
 				get
 				{
@@ -186,24 +201,6 @@ namespace Ext.Net
 				set
 				{
 					this.minTabWidth = value;
-				}
-			}
-
-			private int maxTabWidth = int.MaxValue;
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue(int.MaxValue)]
-			public virtual int MaxTabWidth 
-			{ 
-				get
-				{
-					return this.maxTabWidth;
-				}
-				set
-				{
-					this.maxTabWidth = value;
 				}
 			}
 
@@ -222,6 +219,204 @@ namespace Ext.Net
 				set
 				{
 					this.plain = value;
+				}
+			}
+
+			private bool resizeTabs = false;
+
+			/// <summary>
+			/// True to automatically resize each tab so that the tabs will completely fill the tab strip (defaults to false). Setting this to true may cause specific widths that might be set per tab to be overridden in order to fit them all into view (although MinTabWidth will always be honored).
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool ResizeTabs 
+			{ 
+				get
+				{
+					return this.resizeTabs;
+				}
+				set
+				{
+					this.resizeTabs = value;
+				}
+			}
+
+			private bool syncOnTabChange = false;
+
+			/// <summary>
+			/// Sync size after active tab change. This property is ignored if AutoGrow=false
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool SyncOnTabChange 
+			{ 
+				get
+				{
+					return this.syncOnTabChange;
+				}
+				set
+				{
+					this.syncOnTabChange = value;
+				}
+			}
+
+			private bool autoGrow = true;
+
+			/// <summary>
+			/// True to auto grow width
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool AutoGrow 
+			{ 
+				get
+				{
+					return this.autoGrow;
+				}
+				set
+				{
+					this.autoGrow = value;
+				}
+			}
+
+			private float scrollDuration = 0.35f;
+
+			/// <summary>
+			/// The number of milliseconds that each scroll animation should last (defaults to .35). Only applies when AnimScroll = true.
+			/// </summary>
+			[DefaultValue(0.35f)]
+			public virtual float ScrollDuration 
+			{ 
+				get
+				{
+					return this.scrollDuration;
+				}
+				set
+				{
+					this.scrollDuration = value;
+				}
+			}
+
+			private int scrollIncrement = 100;
+
+			/// <summary>
+			/// The number of pixels to scroll each time a tab scroll button is pressed (defaults to 100, or if ResizeTabs = true, the calculated tab width). Only applies when EnableTabScroll = true.
+			/// </summary>
+			[DefaultValue(100)]
+			public virtual int ScrollIncrement 
+			{ 
+				get
+				{
+					return this.scrollIncrement;
+				}
+				set
+				{
+					this.scrollIncrement = value;
+				}
+			}
+
+			private int scrollRepeatInterval = 400;
+
+			/// <summary>
+			/// Number of milliseconds between each scroll while a tab scroll button is continuously pressed (defaults to 400).
+			/// </summary>
+			[DefaultValue(400)]
+			public virtual int ScrollRepeatInterval 
+			{ 
+				get
+				{
+					return this.scrollRepeatInterval;
+				}
+				set
+				{
+					this.scrollRepeatInterval = value;
+				}
+			}
+
+			private Unit tabMargin = Unit.Pixel(2);
+
+			/// <summary>
+			/// The number of pixels of space to calculate into the sizing and scrolling of tabs. If you change the margin in CSS, you will need to update this value so calculations are correct with either resizeTabs or scrolling tabs. (defaults to 2)
+			/// </summary>
+			[DefaultValue(typeof(Unit), "2")]
+			public virtual Unit TabMargin 
+			{ 
+				get
+				{
+					return this.tabMargin;
+				}
+				set
+				{
+					this.tabMargin = value;
+				}
+			}
+
+			private string tabCls = "";
+
+			/// <summary>
+			/// This config option is used on child Components of ths TabPanel. A CSS class name applied to the tab strip item representing the child Component, allowing special styling to be applied.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string TabCls 
+			{ 
+				get
+				{
+					return this.tabCls;
+				}
+				set
+				{
+					this.tabCls = value;
+				}
+			}
+
+			private TabPosition tabPosition = TabPosition.Top;
+
+			/// <summary>
+			/// The position where the tab strip should be rendered (defaults to 'addToStart'). The only other supported value is 'Bottom'. Note that tab scrolling is only supported for position 'addToStart'.
+			/// </summary>
+			[DefaultValue(TabPosition.Top)]
+			public virtual TabPosition TabPosition 
+			{ 
+				get
+				{
+					return this.tabPosition;
+				}
+				set
+				{
+					this.tabPosition = value;
+				}
+			}
+
+			private Unit tabWidth = Unit.Pixel(120);
+
+			/// <summary>
+			/// The initial width in pixels of each new tab (defaults to 120).
+			/// </summary>
+			[DefaultValue(typeof(Unit), "120")]
+			public virtual Unit TabWidth 
+			{ 
+				get
+				{
+					return this.tabWidth;
+				}
+				set
+				{
+					this.tabWidth = value;
+				}
+			}
+
+			private int wheelIncrement = 20;
+
+			/// <summary>
+			/// For scrolling tabs, the number of pixels to increment on mouse wheel scrolling (defaults to 20).
+			/// </summary>
+			[DefaultValue(20)]
+			public virtual int WheelIncrement 
+			{ 
+				get
+				{
+					return this.wheelIncrement;
+				}
+				set
+				{
+					this.wheelIncrement = value;
 				}
 			}
         
@@ -276,24 +471,6 @@ namespace Ext.Net
 				set
 				{
 					this.autoPostBack = value;
-				}
-			}
-
-			private string postBackEvent = "beforetabchange";
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue("beforetabchange")]
-			public virtual string PostBackEvent 
-			{ 
-				get
-				{
-					return this.postBackEvent;
-				}
-				set
-				{
-					this.postBackEvent = value;
 				}
 			}
 

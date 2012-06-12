@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
@@ -33,12 +34,12 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 
 using Ext.Net.Utilities;
-using Newtonsoft.Json.Linq;
 
 namespace Ext.Net
 {
@@ -46,37 +47,23 @@ namespace Ext.Net
     /// 
     /// </summary>
     [ToolboxData("<{0}:ResourceManager runat=\"server\" />")]
+    [Designer(typeof(ResourceManagerDesigner))]
     [ToolboxBitmap(typeof(ResourceManager), "Build.ToolboxIcons.ResourceManager.bmp")]
     [Description("")]
-    public partial class ResourceManager : BaseControl, IPostBackEventHandler, IXPostBackDataHandler, IVirtual
+    public partial class ResourceManager : XControl, IPostBackEventHandler, IXPostBackDataHandler, IVirtual
     {
         /// <summary>
         /// 
         /// </summary>
-        public ResourceManager()
+        [Description("")]
+        protected override bool RemoveContainer
         {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="copy"></param>
-        public ResourceManager(bool copy)
-        {
-            if (copy)
+            get
             {
-                var curManager = ResourceManager.GetInstance();
-                if (curManager != null)
-                {
-                    this.Namespace = curManager.Namespace;
-                    this.DirectEventUrl = curManager.DirectEventUrl;
-                    this.AjaxViewStateMode = curManager.AjaxViewStateMode;
-                    this.Locale = curManager.Locale;
-                    this.DirectMethodNamespace = curManager.DirectMethodNamespace;
-                }
+                return true;
             }
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -93,17 +80,211 @@ namespace Ext.Net
                 list.Add("configIDProxy", new ConfigOption("configIDProxy", new SerializationOptions("id", JsonMode.Ignore), "", this.ConfigIDProxy));
                 list.Add("uniqueID", new ConfigOption("uniqueID", new SerializationOptions("id"), "", this.UniqueID));
                 list.Add("BLANK_IMAGE_URL", new ConfigOption("BLANK_IMAGE_URL", new SerializationOptions("BLANK_IMAGE_URL"), "", this.BLANK_IMAGE_URL_Proxy));
-                list.Add("cdnPath", new ConfigOption("cdnPathProxy", new SerializationOptions("cdnPath"), "", this.CDNPathProxy));
                 list.Add("directEventUrlProxy", new ConfigOption("directEventUrlProxy", new SerializationOptions("url"), "", this.DirectEventUrlProxy));
                 list.Add("quickTips", new ConfigOption("quickTips", null, true, this.QuickTips));
                 list.Add("submitDisabled", new ConfigOption("submitDisabled", null, true, this.SubmitDisabled));
                 list.Add("aspForm", new ConfigOption("aspForm", null, null, this.Page != null && this.Page.Form != null ? this.Page.Form.ClientID : null));
-                list.Add("themeProxy", new ConfigOption("themeProxy", new SerializationOptions("theme"), "blue", this.ThemeProxy));
-                list.Add("namespace", new ConfigOption("namespace", new SerializationOptions("ns", JsonMode.Raw), "[\"App\"]", this.RegisteredNS));
+                list.Add("themeProxy", new ConfigOption("themeProxy", new SerializationOptions("theme"), "", this.ThemeProxy));
+                list.Add("namespace", new ConfigOption("namespace", new SerializationOptions("ns"), "", this.Namespace));
                 list.Add("applicationName", new ConfigOption("applicationName", new SerializationOptions("appName"), "", this.ApplicationName));
                 list.Add("registeredIcons", new ConfigOption("registeredIcons", new SerializationOptions("icons", JsonMode.Raw), "", this.RegisteredIcons));
 
+                ResourceManager.DisableViewStateStatic = this.DisableViewState;
+
                 return list;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        protected override List<ResourceItem> Resources
+        {
+            get
+            {
+                List<ResourceItem> baseList = base.Resources;
+
+                baseList.Capacity += 4;
+                baseList.Add(new ClientStyleItem(typeof(Component), "Ext.Net.Build.Ext.Net.extjs.resources.css.xtheme-gray-embedded.css", "/extjs/resources/css/xtheme-gray-embedded.css", this.GetCacheFlyLink("resources/css/xtheme-gray.css"), Theme.Gray));
+                baseList.Add(new ClientStyleItem(typeof(Component), "Ext.Net.Build.Ext.Net.extjs.resources.css.xtheme-access-embedded.css", "/extjs/resources/css/xtheme-access-embedded.css", this.GetCacheFlyLink("resources/css/xtheme-access.css"), Theme.Access));
+                baseList.Add(new ClientStyleItem(typeof(Component), "Ext.Net.Build.Ext.Net.extjs.resources.css.xtheme-slate-embedded.css", "/extjs/resources/css/xtheme-slate-embedded.css", Theme.Slate));
+                baseList.Add(new ClientStyleItem(typeof(Component), "Ext.Net.Build.Ext.Net.extjs.resources.css.ext-all-notheme-embedded.css", "/extjs/resources/css/ext-all-notheme-embedded.css", this.GetCacheFlyLink("resources/css/ext-all-notheme.css"), Theme.NoTheme));
+
+                switch (this.DebugConsole)
+                {
+                    case DebugConsole.None:
+                        break;
+                    case DebugConsole.Ext:
+                        baseList.Capacity += 3;
+                        baseList.Add(new ClientScriptItem(typeof(DebugConsole), "Ext.Net.Build.Ext.Net.ux.extensions.debug.Debug.js", "/ux/extensions/debug/Debug.js"));
+                        baseList.Add(new ClientStyleItem(typeof(DebugConsole), "Ext.Net.Build.Ext.Net.ux.extensions.debug.ext.css.debug-embedded.css", "/ux/extensions/debug/ext/css/debug.css"));
+                        baseList.Add(new ClientScriptItem(typeof(DebugConsole), "Ext.Net.Build.Ext.Net.ux.extensions.debug.ext.debug.js", "/ux/extensions/debug/ext/debug.js"));
+                        break;
+                    case DebugConsole.Firebug:
+                        baseList.Capacity += 3;
+                        baseList.Add(new ClientScriptItem(typeof(DebugConsole), "Ext.Net.Build.Ext.Net.ux.extensions.debug.Debug.js", "/ux/extensions/debug/Debug.js"));                        
+                        baseList.Add(new ClientScriptItem(typeof(DebugConsole), "Ext.Net.Build.Ext.Net.ux.extensions.debug.firebug.firebug-lite-min.js", "/ux/extensions/debug/firebug/firebug-lite-min.js"));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+
+                return baseList;
+            }
+        }
+
+        List<Control> allUpdatePanels = null;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Description("")]
+        public virtual List<Control> AllUpdatePanels
+        {
+            get
+            {
+                if (this.allUpdatePanels == null)
+                {
+                    this.allUpdatePanels = ControlUtils.FindControls<Control>(this.Page, "System.Web.UI.UpdatePanel", false);
+                }
+
+                return this.allUpdatePanels;
+            }
+        }
+
+        List<Control> updatePanelsToRefresh = null;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Description("")]
+        public virtual List<Control> UpdatePanelsToRefresh
+        {
+            get
+            {
+                if (this.updatePanelsToRefresh == null)
+                {
+                    this.updatePanelsToRefresh = new List<Control>();
+                }
+
+                return this.updatePanelsToRefresh;
+            }
+        }
+
+        List<string> updatePanelIDsToRefresh = null;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Description("")]
+        public virtual List<string> UpdatePanelIDsToRefresh
+        {
+            get
+            {
+                if (this.updatePanelIDsToRefresh == null)
+                {
+                    this.updatePanelIDsToRefresh = new List<string>();
+                }
+
+                return this.updatePanelIDsToRefresh;
+            }
+        }
+
+        Control triggerUpdatePanel = null;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Description("")]
+        public virtual Control TriggerUpdatePanel
+        {
+            get
+            {
+                return this.triggerUpdatePanel;
+            }
+        }
+
+        string triggerUpdatePanelID = "";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Description("")]
+        public virtual string TriggerUpdatePanelID
+        {
+            get
+            {
+                return this.triggerUpdatePanelID;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updatePanel"></param>
+        [Description("")]
+        public virtual void AddUpdatePanelToRefresh(Control updatePanel)
+        {
+            if (ReflectionUtils.IsTypeOf(updatePanel, "System.Web.UI.UpdatePanel", false))
+            {
+                if (!this.UpdatePanelIDsToRefresh.Contains(updatePanel.UniqueID))
+                {
+                    this.UpdatePanelsToRefresh.Add(updatePanel);
+                    this.UpdatePanelIDsToRefresh.Add(updatePanel.UniqueID);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updatePanel"></param>
+        [Description("")]
+        public virtual void RemoveUpdatePanelToRefresh(Control updatePanel)
+        {
+            if (ReflectionUtils.IsTypeOf(updatePanel, "System.Web.UI.UpdatePanel", false))
+            {
+                if (this.UpdatePanelIDsToRefresh.Contains(updatePanel.UniqueID))
+                {
+                    this.UpdatePanelsToRefresh.Remove(updatePanel);
+                    this.UpdatePanelIDsToRefresh.Remove(updatePanel.UniqueID);
+                }
+            }
+        }
+
+        private void SetUpdatePanels(Control updatePanel)
+        {
+            this.triggerUpdatePanel = updatePanel;
+
+            if (this.TriggerUpdatePanel != null)
+            {
+                this.AddUpdatePanelToRefresh(this.triggerUpdatePanel);
+
+                foreach (Control control in this.AllUpdatePanels)
+                {
+                    if (!control.UniqueID.Equals(this.TriggerUpdatePanel.UniqueID))
+                    {
+                        PropertyInfo updateMode = control.GetType().GetProperty("UpdateMode");
+                        string mode = updateMode.GetValue(control, null).ToString();
+
+                        if (mode.Equals("Always") || ControlUtils.IsChildOfParent(this.TriggerUpdatePanel, control))
+                        {
+                            this.AddUpdatePanelToRefresh(control);
+                        }
+                    }
+                }
             }
         }
 
@@ -118,13 +299,6 @@ namespace Ext.Net
         {
             base.OnPreRender(e);
 
-            if (this.DesignMode)
-            {
-                return;
-            }
-
-            this.RegisterNS(this.ClientNamespace);
-
             if (!RequestManager.IsAjaxRequest && !this.isValidationFixRegistered)
             {
                 if (this.Page.Form != null)
@@ -136,7 +310,7 @@ namespace Ext.Net
 
                         if (validator.Visible && validator.Enabled)
                         {
-                            if (ControlUtils.FindControl(this, validator.ControlToValidate) as BaseControl != null)
+                            if (ControlUtils.FindControl(this, validator.ControlToValidate) as XControl != null)
                             {
                                 this.AddScript("document.getElementById(\"".ConcatWith(validator.ClientID, "\").enabled=true;"));
                                 this.isValidationFixRegistered = true;
@@ -160,56 +334,21 @@ namespace Ext.Net
             }
         }
 
-        private void SetIsLast()
-        {
-            List<BaseControl> widgets = ControlUtils.FindControls<BaseControl>(this.Page);
-
-            if (widgets.Count > 0)
-            {
-                int i = widgets.Count - 1;
-                BaseControl final = widgets[i--];
-
-                while ((!final.Visible || final.AlreadyRendered || final.IsDefault) && i >= 0)
-                {
-                    final = widgets[i--];
-                }
-
-                if (!final.Visible)
-                {
-                    return;
-                }
-
-                if (final.HasControls())
-                {
-                    // Might have to drill down and find last WebControl in the chain.
-                }
-
-                final.IsLast = true;
-            }
-
-            if (HttpContext.Current != null)
-            {
-                HttpContext.Current.Items[ResourceManager.FilterMarker] = true;
-            }
-        }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="writer"></param>
-        [Description("")]
-        protected override void Render(HtmlTextWriter writer)
-        {
-            this.SetIsLast();
-            base.Render(writer);
-        }
+        private bool hasLoadPostData = false;
 
         /// <summary>
         /// 
         /// </summary>
         protected virtual bool HasLoadPostData
         {
-            get; set;
+            get
+            {
+                return this.hasLoadPostData;
+            }
+            set
+            {
+                this.hasLoadPostData = value;
+            }
         }
 
         /// <summary>
@@ -225,6 +364,20 @@ namespace Ext.Net
             {
                 this.HasLoadPostData = value;
             }
+        }
+
+        bool IPostBackDataHandler.LoadPostData(string postDataKey, NameValueCollection postCollection)
+        {
+            this.HasLoadPostData = true;
+
+            if (RequestManager.IsMicrosoftAjaxRequest && this.MicrosoftScriptManager != null)
+            {
+                this.triggerUpdatePanelID = postCollection[this.MicrosoftScriptManager.UniqueID].LeftOf('|');
+
+                this.SetUpdatePanels(ControlUtils.FindControl(this.Page.Form, this.TriggerUpdatePanelID));
+            }
+
+            return false;
         }
 
         void IPostBackDataHandler.RaisePostDataChangedEvent() { }
@@ -243,11 +396,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("WindowUnloadMsg", " ");
+                return (string)this.ViewState["WindowUnloadMsg"] ?? " ";
             }
             set
             {
-                this.State.Set("WindowUnloadMsg", value);
+                this.ViewState["WindowUnloadMsg"] = value;
             }
         }
 
@@ -275,8 +428,61 @@ namespace Ext.Net
             }
         }
 
+
         /*  Lifecycle
             -----------------------------------------------------------------------------------------------*/
+
+        private bool? isValidLicenseKey;
+
+        /// <summary>
+        /// Checks if the Ext.Net.LicenseKey is Valid
+        /// </summary>
+        public bool IsValidLicenseKey
+        {
+            get
+            {
+                if (!this.isValidLicenseKey.HasValue)
+                {
+                    this.isValidLicenseKey = false;
+
+                    string key = this.LicenseKey;
+
+                    if (key.IsNotEmpty()) 
+                    {
+                        try
+                        {
+                            key = key.Base64Decode();
+                        }
+                        catch (FormatException ex)
+                        {
+                            //return false;
+                        }
+
+                        if (key.IsNotEmpty())
+                        {
+                            string[] credentials = key.Split(',');
+
+                            if (credentials.Length == 3)
+                            {
+                                int ver;
+
+                                if (Int32.TryParse(credentials[1], out ver) && ver >= 1)
+                                {
+                                    DateTime dt;
+
+                                    if (DateTime.TryParseExact(credentials[2], "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out dt) && dt >= DateTime.Now)
+                                    {
+                                        this.isValidLicenseKey = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return this.isValidLicenseKey.Value;
+            }
+        }
 
         /// <summary>
         /// 
@@ -290,18 +496,6 @@ namespace Ext.Net
             if (!this.DesignMode)
             {
                 ResourceManager existingInstance = ResourceManager.GetInstance(this.Page);
-
-                if (this.DisableViewState)
-                {
-                    try
-                    {
-                        this.Page.EnableViewState = false;
-                        this.Page.EnableEventValidation = false;
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
 
                 if (existingInstance != null && !DesignMode)
                 {
@@ -320,7 +514,7 @@ namespace Ext.Net
                     HttpContext.Current.Items[typeof(ResourceManager)] = this;
                 }
 
-                foreach (BaseItem item in BaseItem.InstancesCache)
+                foreach (StateManagedItem item in StateManagedItem.InstancesCache)
                 {
                     if (!ResourceManager.IsMono() || item.AutoDataBind)
                     {
@@ -328,29 +522,13 @@ namespace Ext.Net
                     }                 
                 }
 
-                BaseItem.ClearCache();
+                StateManagedItem.ClearCache();
 
                 if (!RequestManager.IsAjaxRequest)
                 {
                     this.Page.PreRenderComplete += Page_PreRenderComplete;
                 }
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected virtual void Page_PreRenderComplete(object sender, EventArgs e)
-        {
-            if (this.DesignMode)
-            {
-                return;
-            }
-
-            //this.CheckLicense();
-            this.SetIsLast();
         }
 
         /// <summary>
@@ -368,13 +546,74 @@ namespace Ext.Net
 
         private bool hasRendered = false;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        [Description("")]
+        protected virtual void Page_PreRenderComplete(object sender, EventArgs e)
+        {
+            if (!this.DesignMode && this.Page != null)
+            {
+                if ((!this.IsInHead && (this.StyleContainer == null)) && this.IsNeedRender && !this.IsDynamic)
+                {
+                    if (this.Page.Header != null)
+                    {
+                        this.Page.Header.Controls.AddAt(0, new ResourcePlaceHolder(ResourceMode.Style));
+                    }
+                    else if (this.ResourcePlaceHolder != null)
+                    {
+                        this.ResourcePlaceHolder.Parent.Controls.AddAt(this.ResourcePlaceHolder.Parent.Controls.IndexOf(this.ResourcePlaceHolder), new ResourcePlaceHolder(ResourceMode.Style));
+                    }
+                    else
+                    {
+                        this.Page.Controls.AddAt(this.Page.Controls.Count > 0 ? this.Page.Controls.Count-1 : 0, new ResourcePlaceHolder(ResourceMode.Style));
+                    }
+                }
+
+                if (!this.IsInHead && this.IsNeedRender && !this.IsDynamic)
+                {
+                    if (this.ResourcePlaceHolder == null && this.ScriptFilesContainer == null)
+                    {
+                        if (this.Page.Header != null)
+                        {
+                            this.Page.Header.Controls.Add(new ResourcePlaceHolder(ResourceMode.Script));
+                        }
+                        else
+                        {
+                            this.Page.Controls.AddAt(this.Page.Controls.Count > 0 ? this.Page.Controls.Count - 1 : 0, new ResourcePlaceHolder(ResourceMode.Script));
+                        }                        
+                    }
+                    else if (this.ResourcePlaceHolder == null)
+                    {
+                        if (this.Page.Header != null)
+                        {
+                            this.Page.Header.Controls.Add(new ResourcePlaceHolder(true));
+                        }
+                        else
+                        {
+                            this.Page.Controls.AddAt(this.Page.Controls.Count > 0 ? this.Page.Controls.Count - 1 : 0, new ResourcePlaceHolder(true));
+                        }
+                    }
+                }
+
+                if (this.IsPro &&
+                    !X.IsAjaxRequest &&
+                    !RequestManager.IsMicrosoftAjaxRequest &&
+                    !this.Page.Request.IsLocal &&
+                    !this.IsValidLicenseKey)
+                {
+                    this.RegisterClientStyleInclude("Ext.Net.Build.Ext.Net.extnet.unlicensed.css.un.css");
+                    this.RegisterClientScriptInclude("Ext.Net.Build.Ext.Net.extnet.unlicensed.un.js");
+                }
+
+                this.SetIsLast();
+            }
+        }
+
         internal void BaseRenderAction()
         {
-            if (this.DesignMode)
-            {
-                return;
-            }
-
             if ((!this.IsInHead || this.ResourcePlaceHolder != null || this.ScriptFilesContainer != null || this.StyleContainer != null) && this.IsNeedRender)
             {
                 this.AddStyleItem("{0}_StyleBlock".FormatWith(this.ClientID), this.BuildStyleBlock(), true);
@@ -383,19 +622,22 @@ namespace Ext.Net
                 
                 if (!this.DesignMode)
                 {
-                    if (/*this.ScriptFilesContainer != null && */!RequestManager.IsMicrosoftAjaxRequest)
-                    {                        
-                        this.AddScriptFilesItem("{0}_Scripts".FormatWith(this.ClientID), this.BuildScripts(), false);
+                    if (this.ScriptFilesContainer != null && !RequestManager.IsMicrosoftAjaxRequest)
+                    {
                         this.AddScriptFilesItem("{0}_f_linbreak".FormatWith(this.ClientID), "\n", false);
+                        this.AddScriptFilesItem("{0}_Scripts".FormatWith(this.ClientID), this.BuildScripts(), false);
                     }
                     else
                     {
                         this.AddScript("{0}_Scripts".FormatWith(this.ClientID), this.BuildScripts());
                     }
 
-                    if (this.InitScriptMode == InitScriptMode.Linked && !RequestManager.IsMicrosoftAjaxRequest/* && this.RenderScripts == ResourceLocationType.Embedded*/)
+                    if (this.InitScriptMode == InitScriptMode.Linked && !RequestManager.IsMicrosoftAjaxRequest && this.RenderScripts == ResourceLocationType.Embedded)
                     {
-                        this.AddScript("{0}_ScriptBlock".FormatWith(this.ClientID), this.BuildScriptBlock(false));
+                        string key = Guid.NewGuid().ToString("N");
+                        HttpContext.Current.Session[key] = this.BuildScriptBlock(false);
+
+                        this.AddScriptItem("{0}_ScriptBlock".FormatWith(this.ClientID), ResourceManager.ScriptIncludeTemplate.FormatWith(this.ResolveUrl("~/extnet/extnet-init-js/ext.axd?{0}".FormatWith(key))), false);
                     }
                     else
                     {
@@ -407,10 +649,55 @@ namespace Ext.Net
             }
         }
 
+        private void SetIsLast()
+        {
+            List<XControl> widgets = ControlUtils.FindControls<XControl>(this.Page);
+
+            if (widgets.Count > 0)
+            {
+                int i = widgets.Count - 1;
+                XControl final = widgets[i--];
+
+                while ((!final.Visible || final.AlreadyRendered) && i >= 0)
+                {
+                    final = widgets[i--];
+                }
+
+                if (!final.Visible)
+                {
+                    return;
+                }
+
+                if (final.HasControls())
+                {
+                    // Might have to drill down and find last WebControl in the chain.
+                }
+
+                final.IsLast = true;
+            }
+
+            if (HttpContext.Current != null)
+            {
+                HttpContext.Current.Items[ResourceManager.FilterMarker] = true;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="writer"></param>
+        [Description("")]
+        protected override void Render(HtmlTextWriter writer)
+        {
+            this.SetIsLast();
+            base.Render(writer);
+        }
+
         internal void RenderAction(HtmlTextWriter writer)
         {
             if (this.DesignMode)
             {
+                //writer.Write(this.BuildStyles().ConcatWith(this.BuildStyleBlock()));
                 return;
             }
 
@@ -501,62 +788,33 @@ namespace Ext.Net
                     writer.Write("</Ext.Net.Direct.Response>");
                 }
             }
-            else if (this is Ext.Net.MVC.MvcResourceManager || (!this.IsSelfRender && !this.IsDynamic))
-            {
-                if (this.scriptFilesBuilder.Length > 0)
-                {
-                    writer.Write(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string>{                        
-                        {this.ScriptFilesContainer != null ? "ref" : "selector", this.ScriptFilesContainer != null ? "ext.net.initscriptfiles" : "headstart"},
-                        {"index", "2"}
-                    }, this.scriptFilesBuilder.ToString()));
-                }
-
+            else 
+            {                
                 if (this.scriptBuilder.Length > 0)
                 {
-                    if (this.InitScriptMode == InitScriptMode.Linked && !RequestManager.IsMicrosoftAjaxRequest/* && this.RenderScripts == ResourceLocationType.Embedded*/)
-                    {
-                        string key = Guid.NewGuid().ToString("N");
+                    writer.Write("<Ext.Net.InitScript>");
+                    writer.Write(this.scriptBuilder.ToString());
+                    writer.Write("</Ext.Net.InitScript>");
+                }
 
-                        writer.Write(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string>{                        
-                            {this.ScriptFilesContainer != null ? "ref" : "selector", this.ScriptFilesContainer != null ? "ext.net.initscriptfiles" : "headstart"},
-                            {"key", key},
-                            {"index", "3"},
-                            {"url", this.ResolveUrlLink("~/extnet/extnet-init-js/ext.axd?" + key)}
-                        }, this.scriptBuilder.ToString()));
-                    }
-                    else
-                    {
-                        writer.Write(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string>{                        
-                            {this.ResourcePlaceHolder != null ? "ref" : "selector", this.ResourcePlaceHolder != null ? "ext.net.initscript" : "headend"}
-                        }, this.scriptBuilder.ToString()));
-                    }
+                if (this.scriptFilesBuilder.Length > 0)
+                {
+                    writer.Write("<Ext.Net.InitScriptFiles>");
+                    writer.Write(this.scriptFilesBuilder.ToString());
+                    writer.Write("</Ext.Net.InitScriptFiles>");
                 }
 
                 if (this.styleBuilder.Length > 0)
                 {
-                    writer.Write(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string>{                        
-                        {this.StyleContainer != null ? "ref" : "selector", this.StyleContainer != null ? "ext.net.initstyle" : "headstart"},
-                        {"index", "1"}
-                    }, this.styleBuilder.ToString()));
+                    writer.Write("<Ext.Net.InitStyle>");
+                    writer.Write(this.styleBuilder.ToString());
+                    writer.Write("</Ext.Net.InitStyle>");
                 }
 
                 if (this.scriptBuilder.Length > 0 || this.scriptFilesBuilder.Length > 0 || this.styleBuilder.Length > 0)
                 {
-                    writer.Write(ResourceManager.WarningTemplate);
+                    writer.Write(ResourceManager.WarningTemplate);    
                 }
-
-                if (this.DisableViewState)
-                {
-                    writer.Write(ResourceManager.ViewStateToken);
-                    writer.Write(ResourceManager.InputsToken);
-                }
-                else
-                {
-                    writer.Write(ResourceManager.InputsVSToken);
-                }
-
-                writer.Write(ResourceManager.PostBackMethodToken);
-                writer.Write(ResourceManager.RemoveBlocksToken);
             }
         }
 
@@ -564,16 +822,120 @@ namespace Ext.Net
         {
             get
             {
-                return !this.DesignMode && !this.IsDynamic;
+                return !this.IsProxy && !this.DesignMode;
             }
         }
+
+        internal override bool IsProxy
+        {
+            get
+            {
+                return ReflectionUtils.IsTypeOf(this, "Ext.Net.ResourceManagerProxy");
+            }
+        }
+
 
         /*  ResourceManager and ClientStyle Templates
             -----------------------------------------------------------------------------------------------*/
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public const string WarningTemplate = "<Ext.Net.InitScript.Warning><script type=\"text/javascript\">Ext.onReady(function(){Ext.Msg.show({title:'Warning',msg:'The <code>web.config</code> file for this project is missing the required DirectRequestModule.<br /><br /><div style=\"margin-left:48px;\"><b>Example</b><br /><br /><code>&lt;system.web><br />&nbsp;&nbsp;&lt;httpModules><br />&nbsp;&nbsp;&nbsp;&nbsp;&lt;add name=\"DirectRequestModule\" type=\"Ext.Net.DirectRequestModule, Ext.Net\" /><br />&nbsp;&nbsp;&lt;/httpModules><br />&lt;/system.web></code><br /><br />More information available at \"<a href=\"http://examples.ext.net/?/Getting_Started/Introduction/Overview/\">Getting Started</a>\".</div><br />',buttons: Ext.Msg.OK,icon: Ext.MessageBox.WARNING});});</script></Ext.Net.InitScript.Warning>";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string OnReadyTemplate = "Ext.onReady(function(){{{0}}});";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string OnTextResizeTemplate = "Ext.EventManager.onTextResize({0});";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string OnWindowResizeTemplate = "Ext.EventManager.onWindowResize({0});";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string ScriptBlockTemplate = "\t<script type=\"text/javascript\">\n\t//<![CDATA[\n\t\t{0}\n\t//]]>\n\t</script>\n";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string SimpleScriptBlockTemplate = "<script type=\"text/javascript\">{0}</script>";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string ScriptIncludeTemplate = "\t<script type=\"text/javascript\" src=\"{0}\"></script>\n";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string StyleBlockTemplate = "\t<style type=\"text/css\">\n{0}\t</style>\n";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string StyleBlockItemTemplate = "\t\t{0}\n";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string StyleIncludeTemplate = "\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\" />\n";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string ThemeIncludeTemplate = "\t<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\" id=\"ext-theme\" />\n";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string CommentTemplate = "\n\t<!-- {0} -->\n";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string FunctionTemplate = "function(){{{0}}}";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string FunctionTemplateWithParams = "function({0}){{{1}}}";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string FilterMarker = "ExtNetInitScriptFilter";
+
 
         /*  InstanceScript
             -----------------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public const string INSTANCESCRIPT = "Ext.Net.ResourceMgr.InstanceScript";
 
         /// <summary>
         /// 
@@ -594,14 +956,10 @@ namespace Ext.Net
         [Description("")]
         public static void AddInstanceScript(string template, params object[] args)
         {
-            ResourceManager.AddInstanceScript(args != null ? template.FormatWith(args) : template);
+            ResourceManager.AddInstanceScript(template.FormatWith(args));
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public static string GetInstanceScript()
+        internal static string GetInstanceScript()
         {
             return ((StringBuilder)(HttpContext.Current.Items[ResourceManager.INSTANCESCRIPT] ?? new StringBuilder())).ToString();
         }
@@ -610,12 +968,32 @@ namespace Ext.Net
         /*  Build
             -----------------------------------------------------------------------------------------------*/
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="relativePath"></param>
+        /// <returns></returns>
+        [Description("")]
+        public string GetCacheFlyLink(string relativePath)
+        {
+            return "http://extjs.cachefly.net/ext-3.4.0/".ConcatWith(relativePath);
+        }
+
         internal void RegisterDirectEvents()
         {
             if (RequestManager.IsAjaxRequest)
             {
                 return;
             }
+            ResourceManager realManager = this;
+            bool isProxy = false;
+
+            if (realManager is ResourceManagerProxy)
+            {
+                realManager = this.ResourceManager;
+                isProxy = true;
+            }
+
 
             foreach (DirectEvent directEvent in this.CustomDirectEvents)
             {
@@ -644,8 +1022,15 @@ namespace Ext.Net
 
                 cfgObj.Append(configObject);
                 cfgObj.Remove(cfgObj.Length - 1, 1);
+
                 
-                cfgObj.AppendFormat("{0}control:{1},eventType:\"{2}\"", configObject.Length > 2 ? "," : "", target, AjaxRequestType.Custom.ToString().ToLowerInvariant());
+                
+                cfgObj.AppendFormat("{0}control:{1},eventType:\"{2}\"", configObject.Length > 2 ? "," : "", target, isProxy ? AjaxRequestType.Proxy.ToString().ToLower() : AjaxRequestType.Custom.ToString().ToLower());
+
+                if (isProxy)
+                {
+                    cfgObj.AppendFormat(",proxyId:\"{0}\"", this.ClientID);
+                }
 
                 if (directEvent.EventID != "Click")
                 {
@@ -659,13 +1044,13 @@ namespace Ext.Net
                 HandlerConfig cfg = directEvent.GetListenerConfig();
                 string scope = directEvent.Scope.IsEmpty() || directEvent.Scope == "this" ? "undefined" : directEvent.Scope;
 
-                this.RegisterOnReadyScript("Ext.net.on("
+                realManager.RegisterOnReadyScript("Ext.net.on("
                                             .ConcatWith(
                                                 target,
                                                 ",\"",
-                                                directEvent.EventName.IsEmpty() ? "click" : directEvent.EventName.ToLowerInvariant(),
+                                                directEvent.EventName.IsEmpty() ? "click" : directEvent.EventName.ToLower(),
                                                 "\",",
-                                                jFunction.ToScript(), ",", scope, ",\"ajax\",", cfg.Serialize(), ");"));
+                                                jFunction.ToScript(), ",", scope, ",\"ajax\",", cfg.ToJsonString(), ");"));
             }
         }
 
@@ -706,7 +1091,7 @@ namespace Ext.Net
 
             cfgObj.Append(configObject);
             cfgObj.Remove(cfgObj.Length - 1, 1);
-            cfgObj.AppendFormat("{0}control:{2},action:\"{1}\"", configObject.Length > 2 ? "," : "", name, "\"-\"");
+            cfgObj.AppendFormat("{0}control:{2},action:\"{1}\"", configObject.Length > 2 ? "," : "", name, this is ResourceManagerProxy ? "{proxyId:\"" + this.ClientID + "\"}" : "\"-\"");
             cfgObj.Append("}");
 
             return new JFunction("var params=arguments;Ext.net.DirectEvent.request(".ConcatWith(cfgObj.ToString(), ");"));
@@ -757,6 +1142,13 @@ namespace Ext.Net
                 return;
             }
 
+            ResourceManager realManager = this;
+
+            if (realManager is ResourceManagerProxy)
+            {
+                realManager = this.ResourceManager;
+            }
+
             foreach (Listener listener in this.CustomListeners)
             {
                 string function;
@@ -777,7 +1169,7 @@ namespace Ext.Net
 
                 string target = TokenUtils.ParseAndNormalize(listener.Target, this);
 
-                this.RegisterOnReadyScript("Ext.net.on({0},\"{1}\",{2}, this, \"client\");".FormatWith(target, listener.EventName.IsEmpty() ? "click" : listener.EventName.ToLowerInvariant(), function));
+                realManager.RegisterOnReadyScript("Ext.net.on({0},\"{1}\",{2}, this, \"client\");".FormatWith(target, listener.EventName.IsEmpty() ? "click" : listener.EventName.ToLower(), function));
             }
         }
 
@@ -809,17 +1201,18 @@ namespace Ext.Net
 
                 if (type != ResourceLocationType.None)
                 {
-                    string themeName = this.Theme == Ext.Net.Theme.Default ? "" : ("-" + this.Theme.ToString().ToLowerInvariant());
                     if (type == ResourceLocationType.Embedded)
-                    {                        
-                        source.Append(string.Format(ResourceManager.StyleIncludeTemplate, this.GetWebResourceUrl(ResourceManager.ASSEMBLYSLUG + ".extjs.resources.css.ext-all"+ themeName +"-embedded.css")));
+                    {
+                        if (this.Theme != Theme.NoTheme)
+                        {
+                            source.Append(string.Format(ResourceManager.StyleIncludeTemplate, this.GetWebResourceUrl(ResourceManager.ASSEMBLYSLUG + ".extjs.resources.css.ext-all-embedded.css")));
+                        }
 
                         foreach (KeyValuePair<string, string> item in this.ThemeIncludeInternalBag)
                         {
                             source.Append(string.Format(ResourceManager.ThemeIncludeTemplate, item.Value));
                         }
 
-                        source.Append(string.Format(ResourceManager.StyleIncludeTemplate, this.GetWebResourceUrl(ResourceManager.ASSEMBLYSLUG + ".extnet.resources.extnet-all-embedded.css")));
 
                         foreach (KeyValuePair<string, string> item in this.ClientStyleIncludeInternalBag)
                         {
@@ -832,18 +1225,16 @@ namespace Ext.Net
                         }
 
                     }
-                    else if (type == ResourceLocationType.File || type == ResourceLocationType.CDN)
+                    else if (type == ResourceLocationType.File || type == ResourceLocationType.CacheFly || type == ResourceLocationType.CacheFlyAndFile)
                     {
                         if (type == ResourceLocationType.File)
                         {
-                            source.Append(string.Format(ResourceManager.StyleIncludeTemplate, this.ConvertToFilePath(ResourceManager.ASSEMBLYSLUG + ".extjs.resources.css.ext-all" + themeName + ".css")));
-                            source.Append(string.Format(ResourceManager.StyleIncludeTemplate, this.ConvertToFilePath(ResourceManager.ASSEMBLYSLUG + ".extnet.resources.extnet-all.css")));
+                            source.Append(string.Format(ResourceManager.StyleIncludeTemplate, this.ConvertToFilePath(ResourceManager.ASSEMBLYSLUG + ".extjs.resources.css.ext-all.css")));
                         }
                         else
                         {
-                            source.Append(string.Format(ResourceManager.StyleIncludeTemplate, ResourceManager.CDNPath.ConcatWith("/extjs/resources/css/ext-all" + themeName + ".css")));
-                            source.Append(string.Format(ResourceManager.StyleIncludeTemplate, ResourceManager.CDNPath.ConcatWith("/extnet/resources/extnet-all.css")));
-                        }                        
+                            source.Append(string.Format(ResourceManager.StyleIncludeTemplate, this.GetCacheFlyLink("resources/css/ext-all.css")));
+                        }
 
                         foreach (KeyValuePair<string, string> item in this.ThemeIncludeInternalBag)
                         {
@@ -853,17 +1244,10 @@ namespace Ext.Net
                             {
                                 name = name.Replace("-embedded.css", ".css");
                             }
-
+                            
                             if (item.Value.StartsWith(ResourceManager.ASSEMBLYSLUG))
                             {
-                                if (type == ResourceLocationType.File)
-                                {
-                                    name = this.ConvertToFilePath(name);
-                                }
-                                else
-                                {
-                                    name = this.ConvertToCDN(name);
-                                }
+                                name = this.ConvertToFilePath(name);
                             }
                             
                             source.Append(string.Format(ResourceManager.ThemeIncludeTemplate, name));
@@ -880,14 +1264,7 @@ namespace Ext.Net
                             
                             if (item.Value.StartsWith(ResourceManager.ASSEMBLYSLUG))
                             {
-                                if (type == ResourceLocationType.File)
-                                {
-                                    name = this.ConvertToFilePath(name);
-                                }
-                                else
-                                {
-                                    name = this.ConvertToCDN(name);
-                                }
+                                name = this.ConvertToFilePath(name);
                             }
                             
                             source.Append(string.Format(ResourceManager.StyleIncludeTemplate, name));
@@ -959,15 +1336,59 @@ namespace Ext.Net
                 if (!RequestManager.IsMicrosoftAjaxRequest)
                 {
                     string ext = this.ScriptMode == ScriptMode.Debug ? "-debug.js" : ".js";
+                    string path = "";
 
-                    items.Add(".extjs.ext-all" + ext);
-                    items.Add(".extnet.extnet-all" + ext);
+                    if (type == ResourceLocationType.CacheFly || type == ResourceLocationType.CacheFlyAndFile)
+                    {
+                        switch (this.ScriptAdapter)
+                        {
+                            case ScriptAdapter.Ext:
+                                path = "adapter/ext/ext-base";
+                                break;
+                            case ScriptAdapter.jQuery:
+                                path = "adapter/jquery/ext-jquery-adapter";
+                                break;
+                            case ScriptAdapter.Prototype:
+                                path = "adapter/prototype/ext-prototype-adapter";
+                                break;
+                            case ScriptAdapter.YUI:
+                                path = "adapter/yui/ext-yui-adapter";
+                                break;
+                        }
+
+                        source.Append(string.Format(ResourceManager.ScriptIncludeTemplate, this.GetCacheFlyLink(path + ext)));
+                        source.Append(string.Format(ResourceManager.ScriptIncludeTemplate, this.GetCacheFlyLink("ext-all" + ext)));
+                    }
+                    else
+                    {
+                        switch (this.ScriptAdapter)
+                        {
+                            case ScriptAdapter.Ext:
+                                path = ".extjs.adapter.ext.ext-base";
+                                break;
+                            case ScriptAdapter.jQuery:
+                                path = ".extjs.adapter.jquery.ext-jquery-adapter";
+                                break;
+                            case ScriptAdapter.Prototype:
+                                path = ".extjs.adapter.prototype.ext-prototype-adapter";
+                                break;
+                            case ScriptAdapter.YUI:
+                                path = ".extjs.adapter.yui.ext-yui-adapter";
+                                break;
+                        }
+
+                        items.Add(path + ext);
+                        items.Add(".extjs.ext-all" + ext);
+                    }
+
+                    items.Add(".extnet.extnet-core" + ext);
                 }
 
                 switch (type)
                 {
                     case ResourceLocationType.None:
                     case ResourceLocationType.Embedded:
+                    case ResourceLocationType.CacheFly:
                         if (type != ResourceLocationType.None || (type == ResourceLocationType.None && ignoreRenderScriptsMode))
                         {
                             foreach (string item in items)
@@ -977,10 +1398,10 @@ namespace Ext.Net
                         }
                         break;
                     case ResourceLocationType.File:
-                    case ResourceLocationType.CDN:
+                    case ResourceLocationType.CacheFlyAndFile:
                         foreach (string item in items)
                         {
-                            source.Append(string.Format(ResourceManager.ScriptIncludeTemplate, type == ResourceLocationType.File ? this.ConvertToFilePath(ResourceManager.ASSEMBLYSLUG + item) : this.ConvertToCDN(ResourceManager.ASSEMBLYSLUG + item)));
+                            source.Append(string.Format(ResourceManager.ScriptIncludeTemplate, this.ConvertToFilePath(ResourceManager.ASSEMBLYSLUG + item)));
                         }
                         break;
                 }
@@ -1001,9 +1422,6 @@ namespace Ext.Net
             return source.ToString();
         }
 
-        ///<summary>
-        ///</summary>
-        ///<param name="localeCode"></param>
         public void RegisterLocale(string localeCode)
         {
             if (X.IsAjaxRequest)
@@ -1100,7 +1518,7 @@ namespace Ext.Net
             }
         }
 
-        private class DirectMethodList: List<DirectMethod> { }
+        private class DirectMethodList : List<DirectMethod> { }
 
         /// <summary>
         /// 
@@ -1127,7 +1545,10 @@ namespace Ext.Net
             {
                 string nsName = ns.Key;
 
-                sb.AppendFormat("Ext.ns(\"{0}\");", nsName);
+                if (!nsName.Equals("Ext.net.DirectMethods"))
+                {
+                    sb.AppendFormat("Ext.ns(\"{0}\");", nsName);
+                }
                 
                 Dictionary<string, DirectMethodList> scopes = ns.Value;
 
@@ -1196,9 +1617,9 @@ namespace Ext.Net
         [Description("")]
         public void AddDirectMethodControl(Control control, bool isDynamic)
         {
-            BaseControl baseControl = control as BaseControl;
+            XControl xControl = control as XControl;
 
-            if (isDynamic || (baseControl != null && baseControl.IsDynamic))
+            if (isDynamic || (xControl != null && xControl.IsDynamic))
             {
                 if (!this.dynamicDirectMethodControls.Contains(control))
                 {
@@ -1233,9 +1654,9 @@ namespace Ext.Net
         [Description("")]
         public void RemoveDirectMethodControl(Control control, bool isDynamic)
         {
-            BaseControl baseControl = control as BaseControl;
+            XControl xControl = control as XControl;
 
-            if (isDynamic || (baseControl != null && baseControl.IsDynamic))
+            if (isDynamic || (xControl != null && xControl.IsDynamic))
             {
                 if (this.dynamicDirectMethodControls.Contains(control))
                 {
@@ -1322,8 +1743,8 @@ namespace Ext.Net
             {
                 methods[ns] = new Dictionary<string, DirectMethodList>();
             }
-
-            string name = GetControlIdentification(control, method.Attribute) ?? "";
+            
+            string name = GetControlIdentification(control) ?? "";
             
             if (!methods[ns].ContainsKey(name))
             {
@@ -1335,51 +1756,28 @@ namespace Ext.Net
             methods[ns][name].Add(method);
         }
 
-        internal static string GetControlIdentification(Control control, DirectMethodAttribute dmAttr)
+        internal static string GetControlIdentification(Control control)
         {
-            DirectMethodProxyIDMode? _idMode = dmAttr != null ? dmAttr.IDMode : null;
-            string alias = dmAttr != null ? dmAttr.IDAlias : "";
+            object[] attrs = control.GetType().GetCustomAttributes(typeof(DirectMethodProxyIDAttribute), true);
 
-            if (!_idMode.HasValue)
+            DirectMethodProxyIDAttribute attr = null;
+            
+            if (attrs.Length == 1)
             {
-                object[] attrs = control.GetType().GetCustomAttributes(typeof(DirectMethodProxyIDAttribute), true);
-
-                DirectMethodProxyIDAttribute attr = null;
-
-                if (attrs.Length == 1)
-                {
-                    attr = (DirectMethodProxyIDAttribute)attrs[0];
-                }
-
-                if (attr == null)
-                {
-                    if (control is Page)
-                    {
-                        return null;
-                    }
-
-                    return control.ClientID;
-                }
-
-                _idMode = attr.IDMode;
-                alias = attr.Alias;
+                attr = (DirectMethodProxyIDAttribute)attrs[0];
             }
-            else
+
+            if (attr == null)
             {
                 if (control is Page)
                 {
                     return null;
                 }
 
-                _idMode = DirectMethodProxyIDMode.ClientID;
+                return control.ClientID;
             }
 
-            if (alias.IsNotEmpty() && (!_idMode.HasValue || _idMode.Value == DirectMethodProxyIDMode.ClientID))
-            {
-                _idMode = DirectMethodProxyIDMode.Alias;
-            }
-
-            switch (_idMode.Value)
+            switch (attr.IDMode)
             {
                 case DirectMethodProxyIDMode.None:
                     return null;
@@ -1388,9 +1786,9 @@ namespace Ext.Net
                 case DirectMethodProxyIDMode.ID:
                     return control.ID;
                 case DirectMethodProxyIDMode.Alias:
-                    return alias;
+                    return attr.Alias;
                 case DirectMethodProxyIDMode.AliasPlusID:
-                    return alias + control.ID;
+                    return attr.Alias + control.ID;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -1426,6 +1824,11 @@ namespace Ext.Net
 
             if (!RequestManager.IsAjaxRequest)
             {
+                if (this.QuickTips)
+                {
+                    onready.Append("Ext.QuickTips.init();");
+                }
+
                 this.RegisterEvents(this);
 
                 if (!this.ShowWarningOnAjaxFailure)
@@ -1434,6 +1837,11 @@ namespace Ext.Net
                 }
 
                 onready.Append(this.BuildDirectMethodProxies());
+
+                if (!this.RestAPI.IsDefault)
+                {
+                    onready.Append(new ClientConfig().Serialize(this.RestAPI));
+                }
 
                 if (this.ScriptBeforeClientInitBag.Count > 0)
                 {
@@ -1462,8 +1870,6 @@ namespace Ext.Net
                     }
                 }
 
-                this.AddInitAchorTag(onready);              
-                                
                 if (this.ScriptAfterClientInitBag.Count > 0)
                 {
                     // Add all PostClientInit scripts. Combining nested Lazy Instantiation types as we go.
@@ -1497,7 +1903,7 @@ namespace Ext.Net
                 onready.AppendFormat(ResourceManager.OnTextResizeTemplate, item.Value);
             }
 
-            if (this.registeredIcons.Count > 0 && !(this.RenderStyles == ResourceLocationType.Embedded || this.RenderStyles == ResourceLocationType.CDN) && RequestManager.IsAjaxRequest)
+            if (this.registeredIcons.Count > 0 && RequestManager.IsAjaxRequest)
             {
                 onready.Insert(0, "Ext.net.ResourceMgr.registerIcon({0});".FormatWith(this.RegisteredIcons));
             }
@@ -1527,15 +1933,7 @@ namespace Ext.Net
                 }
             }
 
-            if (App.GetInstance() != null)
-            {
-                var script = onready.Replace("</script>", "<\\/script>").ToString();
-                source.Append(RequestManager.IsAjaxRequest ? script : App.GetInstance().ApplicationTemplate(script));
-            }
-            else
-            {
-                source.AppendFormat((RequestManager.IsAjaxRequest) ? "{0}" : ResourceManager.OnReadyTemplate, onready.Replace("</script>", "<\\/script>"));
-            }
+            source.AppendFormat((RequestManager.IsAjaxRequest) ? "{0}" : ResourceManager.OnReadyTemplate, onready.Replace("</script>", "<\\/script>"));
 
             foreach (KeyValuePair<string, string> item in this.ClientScriptBlockBag)
             {
@@ -1548,19 +1946,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="onready"></param>
-        protected virtual void AddInitAchorTag(StringBuilder onready)
-        {
-            onready.Append(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{
-                {"id", "init_script"}
-            }));     
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         [ConfigOption("theme")]
-        [DefaultValue("blue")]
         protected virtual string ThemeProxy
         {
             get
@@ -1583,7 +1969,7 @@ namespace Ext.Net
         {
             get
             {
-                return this.IsSelfRender ? "" : base.UniqueID;
+                return base.UniqueID;
             }
         }
 
@@ -1602,6 +1988,13 @@ namespace Ext.Net
 
         internal void RegisterEvents(ResourceManager manager)
         {
+            ResourceManager realManager = manager;
+
+            if (manager is ResourceManagerProxy)
+            {
+                realManager = this.ResourceManager;
+            }
+
             if (!manager.Listeners.DocumentReady.IsDefault)
             {
                 string temp = manager.Listeners.DocumentReady.Fn;
@@ -1611,27 +2004,27 @@ namespace Ext.Net
                     temp = manager.Listeners.DocumentReady.Handler;
                 }
 
-                this.RegisterOnReadyScript(TokenUtils.ReplaceIDTokens(temp, this.Page));
+                realManager.RegisterOnReadyScript(TokenUtils.ReplaceIDTokens(temp, this.Page));
             }
 
             if (!manager.Listeners.WindowScroll.IsDefault)
             {
-                this.RegisterClientScriptBlock(manager.ClientID.ConcatWith("_WindowScroll"), "Ext.EventManager.on(window,\"scroll\",function(e){{{0}}},window,{{buffer: 50}});".FormatWith(TokenUtils.ParseTokens(manager.Listeners.WindowScroll.Handler, manager)));
+                realManager.RegisterClientScriptBlock(manager.ClientID.ConcatWith("_WindowScroll"), "Ext.EventManager.on(window,\"scroll\",function(e){{{0}}},window,{{buffer: 50}});".FormatWith(TokenUtils.ParseTokens(manager.Listeners.WindowScroll.Handler, manager)));
             }
 
             if (!manager.Listeners.WindowUnload.IsDefault)
             {
-                this.RegisterClientScriptBlock(manager.ClientID.ConcatWith("_WindowUnload"), "Ext.EventManager.on(window,\"beforeunload\",function(e){{var extnet_windowBeforeUnload=function(e){{{0}}};if (extnet_windowBeforeUnload(e)){{e.browserEvent.returnValue=\"{1}\";}}}},window);".FormatWith(TokenUtils.ParseTokens(manager.Listeners.WindowUnload.Handler, manager), manager.WindowUnloadMsg));
+                realManager.RegisterClientScriptBlock(manager.ClientID.ConcatWith("_WindowUnload"), "Ext.EventManager.on(window,\"beforeunload\",function(e){{var extnet_windowBeforeUnload=function(e){{{0}}};if (extnet_windowBeforeUnload(e)){{e.browserEvent.returnValue=\"{1}\";}}}},window);".FormatWith(TokenUtils.ParseTokens(manager.Listeners.WindowUnload.Handler, manager), manager.WindowUnloadMsg));
             }
 
             if (!manager.Listeners.WindowResize.IsDefault)
             {
-                this.RegisterOnWindowResizeScript(manager.ClientID.ConcatWith("_WindowResize"), manager.Listeners.WindowResize.FnInternal);
+                realManager.RegisterOnWindowResizeScript(manager.ClientID.ConcatWith("_WindowResize"), manager.Listeners.WindowResize.FnInternal);
             }
 
             if (!manager.Listeners.TextResize.IsDefault)
             {
-                this.RegisterOnTextResizeScript(manager.ClientID.ConcatWith("_TextResize"), manager.Listeners.TextResize.FnInternal);
+                realManager.RegisterOnTextResizeScript(manager.ClientID.ConcatWith("_TextResize"), manager.Listeners.TextResize.FnInternal);
             }
 
             if (!manager.Listeners.BeforeAjaxRequest.IsDefault || 
@@ -1667,15 +2060,15 @@ namespace Ext.Net
 
                 sb.Append("}");
 
-                this.RegisterBeforeClientInitScript("Ext.net.DirectEvent.on(".ConcatWith(sb.ToString(), ");"));
+                realManager.RegisterBeforeClientInitScript("Ext.net.DirectEvent.on(".ConcatWith(sb.ToString(), ");"));
             }
 
-            RegisterScriptManagerDirectEvents(manager, this);
+            RegisterScriptManagerDirectEvents(manager, realManager);
         }
 
-        internal void RegisterInitID(BaseControl control)
+        internal void RegisterInitID(XControl control)
         {
-            if (!control.IsIdRequired && (control.IDMode == IDMode.Ignore || ((control.IDMode == IDMode.Explicit || control.IDMode == IDMode.Client || control.IDMode == IDMode.Static) && control.IsGeneratedID)))
+            if (!control.IsIdRequired && (control.IDMode == IDMode.Ignore || ((control.IDMode == IDMode.Explicit || control.IDMode == IDMode.Client) && control.IsGeneratedID)))
             {
                 this.ExcludeFromLazyInit.Add(control.ClientID);
                 return;
@@ -1747,6 +2140,7 @@ namespace Ext.Net
         }
 
         private static Regex ClientInit_RE = new Regex(@"({)([\w\.]+)(_ClientInit})", RegexOptions.Compiled);
+
         private string Combine(string key)
         {
             string value = "";
@@ -1804,19 +2198,19 @@ namespace Ext.Net
 
             if (resourceName.StartsWith(ResourceManager.ASSEMBLYSLUG))
             {
-                url = this.ResolveUrlLink(this.ResourcePathInternal + "/" + resourceName.Replace(ResourceManager.ASSEMBLYSLUG + ".", "").Replace("-embedded", "").Replace(".", "/").ReplaceLastInstanceOf("/", "."));
+                url = this.ResolveUrl(this.ResourcePath + resourceName.Replace(ResourceManager.ASSEMBLYSLUG + ".", "").Replace("-embedded", "").Replace(".", "/").ReplaceLastInstanceOf("/", "."));
             }
 
             return url;
         }
 
-        private string ConvertToCDN(string resourceName)
+        private string ConvertToCacheFly(string resourceName)
         {
             string url = resourceName;
 
             if (resourceName.StartsWith(ResourceManager.ASSEMBLYSLUG))
             {
-                url = this.ResolveUrlLink(ResourceManager.CDNPath + "/" + resourceName.Replace(ResourceManager.ASSEMBLYSLUG + ".", "").Replace("-embedded", "").Replace(".", "/").ReplaceLastInstanceOf("/", "."));
+                url = this.ResolveUrl(this.ResourcePath + resourceName.Replace(ResourceManager.ASSEMBLYSLUG + ".", "").Replace("-embedded", "").Replace(".", "/").ReplaceLastInstanceOf("/", "."));
             }
 
             return url;
@@ -2010,24 +2404,6 @@ namespace Ext.Net
         [Description("")]
         public ResourcePlaceHolder GetResourceContainerByType(ResourceMode type)
         {
-            if (this.IsSelfRender)
-            {
-                string key = "";
-                switch (type)
-                {
-                    case ResourceMode.Script:
-                        key = "Ext.Net.InitScript";
-                        break;
-                    case ResourceMode.Style:
-                        key = "Ext.Net.InitStyle";
-                        break;
-                    case ResourceMode.ScriptFiles:
-                        key = "Ext.Net.InitScriptFiles";
-                        break;
-                }
-                return HttpContext.Current.Items[key] as ResourcePlaceHolder;
-            }
-
             this.ValidateContainers();
 
             foreach (ResourcePlaceHolder container in this.ResourceContainers)
@@ -2133,10 +2509,6 @@ namespace Ext.Net
         {
             get
             {
-                if (HttpContext.Current == null)
-                {
-                    return "";
-                }
                 string appName = HttpContext.Current.Request.ApplicationPath;
                 if (!this.DesignMode && appName.IsNotEmpty())
                 {
@@ -2164,28 +2536,22 @@ namespace Ext.Net
             return this.GetWebResourceUrl(this.GetType(), resourceName);
         }
 
+        string cacheBuster = "";
+
         /// <summary>
         /// 
         /// </summary>
         [Description("")]
-        public static string CacheBuster
+        public string CacheBuster
         {
             get
             {
-                if (HttpContext.Current == null)
+                if (this.cacheBuster.IsEmpty())
                 {
-                    return "";
+                    this.cacheBuster = Assembly.GetExecutingAssembly().GetName().Version.Revision.ToString();
                 }
 
-                if (HttpContext.Current.Application["Ext.Net.CacheBuster"] != null)
-                {
-                    return (string)HttpContext.Current.Application["Ext.Net.CacheBuster"];
-                }
-
-                string cacheBuster = Assembly.GetExecutingAssembly().GetName().Version.Revision.ToString();
-                HttpContext.Current.Application["Ext.Net.CacheBuster"] = cacheBuster;
-
-                return cacheBuster;
+                return this.cacheBuster;
             }
         }
 
@@ -2205,11 +2571,11 @@ namespace Ext.Net
 
             if (resourceName.StartsWith(ResourceManager.ASSEMBLYSLUG) && !this.DesignMode && this.CleanResourceUrl && ResourceHandler.HasHandler())
             {
-                string buster = (resourceName.EndsWith(".js") || resourceName.EndsWith(".css")) ? "?v=".ConcatWith(ResourceManager.CacheBuster) : "";
+                string buster = (resourceName.EndsWith(".js") || resourceName.EndsWith(".css")) ? "?v=".ConcatWith(this.CacheBuster) : "";
 
-                return this.ResolveUrlLink("~/{0}/ext.axd{1}".FormatWith(resourceName.Replace(ResourceManager.ASSEMBLYSLUG, "").Replace('.', '/').ReplaceLastInstanceOf("/", "-"), buster));
+                return this.ResolveUrl("~/{0}/ext.axd{1}".FormatWith(resourceName.Replace(ResourceManager.ASSEMBLYSLUG, "").Replace('.', '/').ReplaceLastInstanceOf("/", "-"), buster));
             }
-            
+
             return HttpUtility.HtmlAttributeEncode(this.Page.ClientScript.GetWebResourceUrl(type, resourceName));
         }
 
@@ -2244,9 +2610,9 @@ namespace Ext.Net
             return script;
         }
 
-        private static Regex CssWebResourceUrls_RE = new Regex(@"<%=WebResource\([""']?([^\)]*?\.(gif|png))[""']?\)%>", RegexOptions.Compiled);
+        private static Regex CssWebResourceUrls_RE = new Regex(@"<%=WebResource\("".*\.(gif|png)*""\)%>", RegexOptions.Compiled);
 
-        /*/// <summary>
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="src"></param>
@@ -2261,25 +2627,6 @@ namespace Ext.Net
             }
 
             return src;
-        }*/
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="src"></param>
-        /// <returns></returns>
-        [Description("")]
-        public virtual string ParseCssWebResourceUrls(string src)
-        {
-            return CssWebResourceUrls_RE.Replace
-                (
-                    src,
-                    delegate(Match match) 
-                    {
-                        string url = match.Value.Replace("<%=WebResource(\"", "").Replace("\")%>", "");
-                        return this.GetWebResourceUrl(url); 
-                    }
-                );
         }
 
         List<Icon> registeredIcons = new List<Icon>();
@@ -2293,8 +2640,6 @@ namespace Ext.Net
         {
             get
             {
-                // Reversing from revision #390
-                // if (this.registeredIcons.Count == 0 || (this.RenderStyles == ResourceLocationType.Embedded || this.RenderStyles == ResourceLocationType.CacheFly))
                 if (this.registeredIcons.Count == 0)
                 {
                     return "";
@@ -2304,7 +2649,6 @@ namespace Ext.Net
                 bool extaxd = this.CleanResourceUrl && ResourceHandler.HasHandler();
 
                 sb.Append("[");
-
                 for (int i = 0; i < this.registeredIcons.Count; i++)
                 {
                     if (extaxd)
@@ -2338,120 +2682,7 @@ namespace Ext.Net
                 return;
             }
 
-            if (this.IsSelfRender)
-            {
-                var globalIcons = this.GlobalIcons;
-
-                if (!globalIcons.Contains(icon))
-                {
-                    globalIcons.Add(icon);
-                }
-            }
-
             this.registeredIcons.Add(icon);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ns"></param>
-        [Description("")]
-        public virtual void RegisterNS(string ns)
-        {
-            if (this.registeredNS.Contains(ns))
-            {
-                return;
-            }
-
-            if (this.IsSelfRender)
-            {
-                var globalNS = this.GlobalNS;
-
-                if (!globalNS.Contains(ns))
-                {
-                    globalNS.Add(ns);
-                }
-            }
-
-            this.registeredNS.Add(ns);
-        }
-
-        List<string> registeredNS = new List<string>();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Description("")]
-        [DefaultValue("")]
-        protected string RegisteredNS
-        {
-            get
-            {
-                if (this.registeredNS.Count == 0)
-                {
-                    return "[]";
-                }
-
-                StringBuilder sb = new StringBuilder();
-
-                sb.Append("[");
-
-                for (int i = 0; i < this.registeredNS.Count; i++)
-                {
-                    sb.Append(JSON.Serialize(this.registeredNS[i]));
-                    sb.Append(",");
-                }
-
-                sb.Remove(sb.Length - 1, 1);
-
-                sb.Append("]");
-
-                return sb.ToString();
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected virtual List<Icon> GlobalIcons
-        {
-            get
-            {
-                if (HttpContext.Current == null)
-                {
-                    return new List<Icon>();
-                }
-
-                if (HttpContext.Current.Items["Ext.Net.GlobalIcons"] == null)
-                {
-                    List<Icon> icons = new List<Icon>();
-                    HttpContext.Current.Items["Ext.Net.GlobalIcons"] = icons;
-                }
-
-                return (List<Icon>)HttpContext.Current.Items["Ext.Net.GlobalIcons"];
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected virtual List<string> GlobalNS
-        {
-            get
-            {
-                if (HttpContext.Current == null)
-                {
-                    return new List<string>();
-                }
-
-                if (HttpContext.Current.Items["Ext.Net.GlobalNS"] == null)
-                {
-                    List<string> ns = new List<string>();
-                    HttpContext.Current.Items["Ext.Net.GlobalNS"] = ns;
-                }
-
-                return (List<string>)HttpContext.Current.Items["Ext.Net.GlobalNS"];
-            }
         }
 
         /// <summary>
@@ -2462,18 +2693,7 @@ namespace Ext.Net
         [Description("")]
         public static string GetIconClassName(Icon icon)
         {
-            return (icon != Icon.None) ? "icon-{0}".FormatWith(icon.ToString().ToLowerInvariant()) : "";
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="icon"></param>
-        /// <returns></returns>
-        [Description("")]
-        public static string GetIconRequester(Icon icon)
-        {
-            return (icon != Icon.None) ? "<raw>X.net.RM.getIcon(\"{0}\")".FormatWith(icon.ToString()) : "";
+            return (icon != Icon.None) ? "icon-{0}".FormatWith(icon.ToString().ToLower()) : "";
         }
 
         /// <summary>
@@ -2502,17 +2722,13 @@ namespace Ext.Net
         {
             if (icon != Icon.None)
             {
-                if (this.RenderStyles == ResourceLocationType.Embedded)
+                if (this.RenderStyles == ResourceLocationType.Embedded || this.RenderStyles == ResourceLocationType.CacheFly)
                 {
                     return this.GetWebResourceUrl(string.Format(ResourceManager.ASSEMBLYSLUG + ".icons.{0}", icon.ToString().ToCharacterSeparatedFileName('_', "png")));
                 }
-                else if (this.RenderStyles == ResourceLocationType.File)
+                else if (this.RenderStyles == ResourceLocationType.File || this.RenderStyles == ResourceLocationType.CacheFlyAndFile)
                 {
-                    return this.ResolveUrlLink(this.ResourcePathInternal + "/icons/" + icon.ToString().ToCharacterSeparatedFileName('_', "png"));
-                }
-                else if (this.RenderStyles == ResourceLocationType.CDN)
-                {
-                    return this.ResolveUrlLink(ResourceManager.CDNPath + "/icons/" + icon.ToString().ToCharacterSeparatedFileName('_', "png"));
+                    return this.ResolveUrl(this.ResourcePath + "icons/" + icon.ToString().ToCharacterSeparatedFileName('_', "png"));
                 }
             }
 
@@ -2534,13 +2750,30 @@ namespace Ext.Net
                 switch (this.RenderScripts)
                 {
                     case ResourceLocationType.Embedded:
-                        url = this.GetWebResourceUrl(ResourceManager.ASSEMBLYSLUG.ConcatWith(".extjs.resources.themes.images.default.s.gif"));
+                        url = this.GetWebResourceUrl(ResourceManager.ASSEMBLYSLUG.ConcatWith(".extjs.resources.images.", this.Theme.ToString().ToLower(), ".s.gif"));
                         break;
                     case ResourceLocationType.File:
                         url = this.GetBlankImageFilePath();
                         break;
-                    case ResourceLocationType.CDN:
-                        url = this.ResolveUrlLink(ResourceManager.CDNPath + "/" + ResourceManager.ASSEMBLYSLUG.ConcatWith(".extjs.resources.themes.images.default.s.gif").Replace(ResourceManager.ASSEMBLYSLUG + ".", "").Replace(".", "/").ReplaceLastInstanceOf("/", "."));
+                    case ResourceLocationType.CacheFly:
+                        if (this.Theme == Theme.Default)
+                        {
+                            url = this.GetCacheFlyLink("resources/images/".ConcatWith(this.Theme.ToString().ToLower(), "/s.gif"));
+                        }
+                        else
+                        {
+                            url = this.GetWebResourceUrl(ResourceManager.ASSEMBLYSLUG.ConcatWith(".extjs.resources.images.", this.Theme.ToString().ToLower(), ".s.gif"));
+                        }
+                        break;
+                    case ResourceLocationType.CacheFlyAndFile:
+                        if (this.Theme == Theme.Default)
+                        {
+                            url = this.GetCacheFlyLink("resources/images/".ConcatWith(this.Theme.ToString().ToLower(), "/s.gif"));
+                        }
+                        else
+                        {
+                            url = this.GetBlankImageFilePath();
+                        }
                         break;
                 }
 
@@ -2558,7 +2791,7 @@ namespace Ext.Net
         {
             get
             {
-                if (this.RenderScripts == ResourceLocationType.None || this.RenderScripts == ResourceLocationType.Embedded || !(Ext.Net.RequestManager.IsIE6 || Ext.Net.RequestManager.IsIE7))
+                if (this.RenderScripts == ResourceLocationType.None)
                 {
                     return "";
                 }
@@ -2567,30 +2800,11 @@ namespace Ext.Net
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        [ConfigOption("cdnPath")]
-        [DefaultValue("")]
-        [Description("")]
-        protected virtual string CDNPathProxy
-        {
-            get
-            {
-                if (this.RenderStyles != ResourceLocationType.CDN)
-                {
-                    return "";
-                }
-
-                return ResourceManager.CDNPath;
-            }
-        }
-
         private string GetBlankImageFilePath()
         {
-            string url = ResourceManager.ASSEMBLYSLUG.ConcatWith(".extjs.resources.themes.images.default.s.gif");
+            string url = ResourceManager.ASSEMBLYSLUG.ConcatWith(".extjs.resources.images.", this.Theme.ToString().ToLower(), ".s.gif");
 
-            return this.ResolveUrlLink(this.ResourcePathInternal + "/" + url.Replace(ResourceManager.ASSEMBLYSLUG + ".", "").Replace(".", "/").ReplaceLastInstanceOf("/", "."));
+            return this.ResolveUrl(this.ResourcePath + url.Replace(ResourceManager.ASSEMBLYSLUG + ".", "").Replace(".", "/").ReplaceLastInstanceOf("/", "."));
         }
 
         private ResourceManagerListeners listeners;
@@ -2602,6 +2816,7 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public virtual ResourceManagerListeners Listeners
         {
@@ -2625,6 +2840,7 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Custom Client-side JavaScript Event Handlers")]
         public virtual ListenerCollection CustomListeners
         {
@@ -2653,6 +2869,7 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public ResourceManagerDirectEvents DirectEvents
         {
@@ -2676,6 +2893,7 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Custom Server-side Ajax Event Handlers")]
         public virtual DirectEventCollection CustomDirectEvents
         {
@@ -2692,6 +2910,28 @@ namespace Ext.Net
                 }
 
                 return this.customDirectEvents;
+            }
+        }
+
+        private RestActions api;
+
+        /// <summary>
+        /// Defines variables for CRUD actions create, read, update and destroy in addition to a mapping of RESTful HTTP methods GET, POST, PUT and DELETE to CRUD actions.
+        /// </summary>
+        [NotifyParentProperty(true)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Description("Defines variables for CRUD actions create, read, update and destroy in addition to a mapping of RESTful HTTP methods GET, POST, PUT and DELETE to CRUD actions.")]
+        public RestActions RestAPI
+        {
+            get
+            {
+                if (this.api == null)
+                {
+                    this.api = new RestActions();
+                }
+
+                return this.api;
             }
         }
 
@@ -2712,14 +2952,13 @@ namespace Ext.Net
         /// 
         /// </summary>
         /// <param name="page"></param>
-        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         [Description("")]
         public static ResourceManager GetInstance(Page page)
         {
             if (page == null)
             {
-                throw new ArgumentNullException("page");
+                throw new ArgumentNullException("The Page object can not be found.");
             }
 
             return page.Items[typeof(ResourceManager)] as ResourceManager;
@@ -2729,14 +2968,13 @@ namespace Ext.Net
         /// 
         /// </summary>
         /// <param name="context"></param>
-        /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
         [Description("")]
         public static ResourceManager GetInstance(HttpContext context)
         {
             if (context == null)
             {
-                return null;
+                throw new ArgumentNullException("HttpContext is empty");
             }
 
             if (context.CurrentHandler is Page)
@@ -2801,31 +3039,32 @@ namespace Ext.Net
                 return;
             }
 
-            if (this.DirectConfig == null)
+            XmlNode config = this.SubmitConfig;
+
+            if (config == null)
             {
                 return;
             }
 
-            JToken eventArgumentToken = this.DirectConfig.SelectToken("config.__EVENTARGUMENT", false);
+            XmlNode eventArgumentNode = config.SelectSingleNode("config/__EVENTARGUMENT");
 
-            if (eventArgumentToken == null)
+            if (eventArgumentNode == null)
             {
                 throw new InvalidOperationException(
                     "Incorrect submit config - the '__EVENTARGUMENT' parameter is absent");
             }
 
-            JToken eventTargetToken = this.DirectConfig.SelectToken("config.__EVENTTARGET", false);
+            XmlNode eventTargetNode = config.SelectSingleNode("config/__EVENTTARGET");
 
-            if (eventTargetToken == null)
+            if (eventTargetNode == null)
             {
                 throw new InvalidOperationException(
                     "Incorrect submit config - the '__EVENTTARGET' parameter is absent");
             }
 
-            string id = JSON.ToString(eventTargetToken);
-            if (id == this.UniqueID)
+            if (eventTargetNode.InnerText == this.UniqueID)
             {
-                this.RaisePostBackEvent(JSON.ToString(eventArgumentToken));
+                this.RaisePostBackEvent(eventArgumentNode.InnerText);
             }
         }
 
@@ -2869,34 +3108,24 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="token"></param>
+        /// <param name="node"></param>
         /// <returns></returns>
         [Description("")]
-        public static ParameterCollection JTokenToParams(JToken token)
+        public static ParameterCollection XmlToParams(XmlNode node)
         {
-            var extraParams = new ParameterCollection();
-
-            if (token != null)
+            ParameterCollection extraParams = new ParameterCollection();
+            
+            if (node != null)
             {
-                foreach (JToken child in token.Children())
+                foreach (XmlNode xmlParam in node.ChildNodes)
                 {
-                    var newParam = new Parameter();
-                    var jProperty = child as JProperty;
-                    if (jProperty != null)
-                    {
-                        newParam.Name = HttpUtility.HtmlDecode(jProperty.Name);
-                        var value = jProperty.Value.Type == JTokenType.String ? (string)jProperty.Value : jProperty.Value.ToString(Newtonsoft.Json.Formatting.None);
-                        if (value != null && jProperty.Value.Type != JTokenType.String)
-                        {
-                            value = value.Trim('"');
-                        }
-                        newParam.Value = HttpUtility.HtmlDecode(value);
-                    }
+                    Parameter newParam = new Parameter();
+                    newParam.Name = HttpUtility.HtmlDecode(xmlParam.Name);
+                    newParam.Value = HttpUtility.HtmlDecode(xmlParam.InnerXml);
 
-                    var jObject = child as JObject;
-                    if (jObject != null)
+                    if (ResourceManager.HasChildNodes(xmlParam))
                     {
-                        newParam.Params.AddRange(ResourceManager.JTokenToParams(jObject));
+                        newParam.Params.AddRange(ResourceManager.XmlToParams(xmlParam));
                     }
 
                     extraParams.Add(newParam);
@@ -2941,7 +3170,7 @@ namespace Ext.Net
 
             Control ctrl = null;
 
-            bool isCustomDirectEvent = requestType == AjaxRequestType.Custom;
+            bool isCustomDirectEvent = requestType == AjaxRequestType.Custom || requestType == AjaxRequestType.Proxy;
             bool isDirectMethodCall = requestType == AjaxRequestType.Public;
 
             if (!isCustomDirectEvent)
@@ -2973,55 +3202,45 @@ namespace Ext.Net
 
             ParameterCollection extraParams = new ParameterCollection();
             
-            if (this.DirectConfig != null)
+            if (this.SubmitConfig != null)
             {
-                JToken viewStateMode = this.DirectConfig.SelectToken("config.viewStateMode", false);
+                XmlNode viewStateMode = this.SubmitConfig.SelectSingleNode("config/viewStateMode");
             
                 if (viewStateMode != null)
                 {
-                    ViewStateMode mode = (ViewStateMode)Enum.Parse(typeof(ViewStateMode), JSON.ToString(viewStateMode), true);
+                    ViewStateMode mode = (ViewStateMode)Enum.Parse(typeof(ViewStateMode), viewStateMode.InnerText, true);
                     returnViewState = mode == Ext.Net.ViewStateMode.Enabled;
                 }
 
-                JToken rethrowExceptionToken = this.DirectConfig.SelectToken("config.rethrowException");
+                XmlNode rethrowExceptionNode = this.SubmitConfig.SelectSingleNode("config/rethrowException");
 
-                if (rethrowExceptionToken != null)
+                if (rethrowExceptionNode != null)
                 {
-                    rethrowException = bool.Parse(JSON.ToString(rethrowExceptionToken));                    
+                    rethrowException = bool.Parse(rethrowExceptionNode.InnerText);                    
                 }
 
-                JToken userParamsToken = this.DirectConfig.SelectToken("config.extraParams");
-
-                if (userParamsToken != null)
+                XmlNode userParamsNode = this.SubmitConfig.SelectSingleNode("config/extraParams");
+                
+                if (userParamsNode != null)
                 {
-                    extraParams = ResourceManager.JTokenToParams(userParamsToken);
+                    extraParams = ResourceManager.XmlToParams(userParamsNode);
                 }
             }
 
             ResourceManager.ReturnViewState = returnViewState;
-            Observable observable;
 
             switch (requestType)
             {
-                case AjaxRequestType.Bus:
-                    observable = ctrl as Observable;
-                
-                    if (observable == null)
-                    {
-                        throw new HttpException("The control with ID '{0}' is not Observable".FormatWith(controlID));
-                    }
-                    
-                    if (observable != null)
-                    {
-                        observable.FireBusEvent(controlEvent, extraParams);
-                    }
-                    break;
                 case AjaxRequestType.Event:
-                    observable = ctrl as Observable;
+                    Observable observable = ctrl as Observable;
                 
                     if (observable == null)
                     {
-                        if (ctrl is ResourceManager)
+                        if (ctrl is ResourceManagerProxy)
+                        {
+                            ((ResourceManagerProxy)ctrl).FireAsyncEvent(controlEvent, extraParams);
+                        }
+                        else if (ctrl is ResourceManager)
                         {
                             this.FireAsyncEvent(controlEvent, extraParams);
                         }
@@ -3036,9 +3255,22 @@ namespace Ext.Net
                         observable.FireAsyncEvent(controlEvent, extraParams);
                     }
                     break;
+                case AjaxRequestType.Proxy:
                 case AjaxRequestType.Custom:
 
                     ResourceManager sm = this;
+                    
+                    if (requestType == AjaxRequestType.Proxy)
+                    {
+                        ctrl = ControlUtils.FindControlByClientID(this, controlID, true, null);
+
+                        if (ctrl == null)
+                        {
+                            throw new HttpException("The ResourceManagerProxy with ID '{0}' not found".FormatWith(controlID));
+                        }
+
+                        sm = (ResourceManagerProxy)ctrl;
+                    }
 
                     foreach (DirectEvent directEvent in sm.CustomDirectEvents)
                     {
@@ -3156,8 +3388,6 @@ namespace Ext.Net
             }
         }
 
-        ///<summary>
-        ///</summary>
         public static bool ReturnViewState
         {
             get
@@ -3168,6 +3398,19 @@ namespace Ext.Net
             set
             {
                 HttpContext.Current.Items["ExtNetParam_ReturnViewState"] = value;
+            }
+        }
+
+        internal static bool DisableViewStateStatic
+        {
+            get
+            {
+                object obj = HttpContext.Current.Items["ExtNetParam_DisableViewStateStatic"];
+                return obj == null ? false : (bool)obj;
+            }
+            set
+            {
+                HttpContext.Current.Items["ExtNetParam_DisableViewStateStatic"] = value;
             }
         }
 
@@ -3207,8 +3450,6 @@ namespace Ext.Net
             }
         }
 
-        ///<summary>
-        ///</summary>
         public static object DirectMethodResult
         {
             get
@@ -3267,7 +3508,7 @@ namespace Ext.Net
         /// </summary>
         /// <typeparam name="T"></typeparam>
         [Description("")]
-        public static void RegisterControlResources<T>() where T : BaseControl, new()
+        public static void RegisterControlResources<T>() where T : XControl, new()
         {
             T c = new T();
             c.RegisterAllResources = true;
@@ -3307,14 +3548,6 @@ namespace Ext.Net
             return isMicrosoftCLR.Value;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="seed"></param>
-        /// <param name="configID"></param>
-        /// <param name="traverse"></param>
-        /// <param name="branch"></param>
-        /// <returns></returns>
         public static Control FindControlByConfigID(Control seed, string configID, bool traverse, Control branch)
         {
             if (seed == null || string.IsNullOrEmpty(configID))
@@ -3324,13 +3557,13 @@ namespace Ext.Net
 
             Control parent = (seed is INamingContainer) ? seed : seed.NamingContainer;
 
-            if ((parent is BaseControl) && configID.Equals(((BaseControl)parent).ConfigID ?? ""))
+            if ((parent is XControl) && configID.Equals(((XControl)parent).ConfigID ?? ""))
             {
                 return parent;
             }
 
             Control found = null;
-            string exclude = ((branch != null && branch is BaseControl) ? ((BaseControl)branch).ConfigID : (branch != null ? branch.ClientID : "")) ?? "";
+            string exclude = ((branch != null && branch is XControl) ? ((XControl)branch).ConfigID : (branch != null ? branch.ClientID : "")) ?? "";
             string tempID = "";
             string tempConfigID = "";
 
@@ -3339,7 +3572,7 @@ namespace Ext.Net
             foreach (Control c in parent.Controls)
             {
                 tempID = c.ID ?? "";
-                tempConfigID = (c is BaseControl ? ((BaseControl)c).ConfigID : c.ClientID) ?? "";
+                tempConfigID = (c is XControl ? ((XControl)c).ConfigID : c.ClientID) ?? "";
 
                 if (configID.Equals(tempID) || configID.Equals(tempConfigID))
                 {
@@ -3364,12 +3597,6 @@ namespace Ext.Net
             return found;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="seed"></param>
-        /// <param name="configID"></param>
-        /// <returns></returns>
         public static Control FindChildControlByConfigID(Control seed, string configID)
         {
             if (seed == null || string.IsNullOrEmpty(configID))
@@ -3384,7 +3611,7 @@ namespace Ext.Net
             foreach (Control control in seed.Controls)
             {
                 tempID = control.ID ?? "";
-                tempConfigID = control is BaseControl ? ((BaseControl)control).ConfigID : control.ClientID;
+                tempConfigID = control is XControl ?  ((XControl)control).ConfigID : control.ClientID;
 
                 if (configID.Equals(tempID) || configID.Equals(tempConfigID))
                 {

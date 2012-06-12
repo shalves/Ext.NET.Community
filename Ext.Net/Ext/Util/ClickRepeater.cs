@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -28,15 +28,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Threading;
 using System.Web.UI;
-
 using Ext.Net.Utilities;
 
 namespace Ext.Net
 {
     /// <summary>
-    /// A wrapper class which can be applied to any element. Fires a "click" event while the mouse is pressed. The interval between firings may be specified in the config but defaults to 20 milliseconds.
-    /// Optionally, a CSS class may be applied to the element during the time it is pressed.
+    /// A wrapper class which can be applied to any element. Fires a "click" event while the mouse is pressed. The interval between firings may be specified in the config but defaults to 20 milliseconds. Optionally, a CSS class may be applied to the element during the time it is pressed.
     /// </summary>
     [Meta]
     [ToolboxBitmap(typeof(ClickRepeater), "Build.ToolboxIcons.ClickRepeater.bmp")]
@@ -92,11 +91,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Accelerate", false);
+                object obj = this.ViewState["Accelerate"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Accelerate", value);
+                this.ViewState["Accelerate"] = value;
             }
         }
 
@@ -113,11 +113,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("Delay", 250);
+                object obj = this.ViewState["Delay"];
+                return (obj == null) ? 250 : (int)obj;
             }
             set
             {
-                this.State.Set("Delay", value);
+                this.ViewState["Delay"] = value;
             }
         }
 
@@ -151,11 +152,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Target", "");
+                return (string)this.ViewState["Target"] ?? "";
             }
             set
             {
-                this.State.Set("Target", value);
+                this.ViewState["Target"] = value;
             }
         }
 
@@ -171,11 +172,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("Interval", 20);
+                object obj = this.ViewState["Interval"];
+                return (obj == null) ? 20 : (int)obj;
             }
             set
             {
-                this.State.Set("Interval", value);
+                this.ViewState["Interval"] = value;
             }
         }
 
@@ -187,15 +189,16 @@ namespace Ext.Net
         [Category("3. ClickRepeater")]
         [DefaultValue("")]
         [Description("A CSS class name to be applied to the element while pressed.")]
-        public virtual string PressedCls
+        public virtual string PressClass
         {
             get
             {
-                return this.State.Get<string>("PressedCls", "");
+                string obj = this.ViewState["PressClass"] as string;
+                return obj ?? "";
             }
             set
             {
-                this.State.Set("PressedCls", value);
+                this.ViewState["PressClass"] = value;
             }
         }
 
@@ -212,11 +215,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("PreventDefault", false);
+                object obj = this.ViewState["PreventDefault"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("PreventDefault", value);
+                this.ViewState["PreventDefault"] = value;
             }
         }
 
@@ -233,11 +237,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("StopDefault", false);
+                object obj = this.ViewState["StopDefault"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("StopDefault", value);
+                this.ViewState["StopDefault"] = value;
             }
         }
 
@@ -253,11 +258,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Handler", "");
+                return (string)this.ViewState["Handler"] ?? "";
             }
             set
             {
-                this.State.Set("Handler", value);
+                this.ViewState["Handler"] = value;
             }
         }
 
@@ -273,11 +278,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("IgnoreLeftButton", false);
+                object obj = this.ViewState["IgnoreLeftButton"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("IgnoreLeftButton", value);
+                this.ViewState["IgnoreLeftButton"] = value;
             }
         }
 
@@ -293,11 +299,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("IgnoreRightButton", false);
+                object obj = this.ViewState["IgnoreRightButton"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("IgnoreRightButton", value);
+                this.ViewState["IgnoreRightButton"] = value;
             }
         }
 
@@ -313,11 +320,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("IgnoreMiddleButton", false);
+                object obj = this.ViewState["IgnoreMiddleButton"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("IgnoreMiddleButton", value);
+                this.ViewState["IgnoreMiddleButton"] = value;
             }
         }
 
@@ -363,7 +371,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public ClickRepeaterListeners Listeners
         {
@@ -388,7 +397,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side DirectEventHandlers")]
         public ClickRepeaterDirectEvents DirectEvents
         {
@@ -396,7 +406,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new ClickRepeaterDirectEvents(this);
+                    this.directEvents = new ClickRepeaterDirectEvents();
                 }
 
                 return this.directEvents;
@@ -408,7 +418,7 @@ namespace Ext.Net
         /// </summary>
         /// <param name="disabled">disabled : Boolean</param>
         [Description("Convenience function for setting disabled/enabled by boolean.")]
-        public virtual void SetDisabled(bool disabled)
+        protected internal virtual void SetDisabled(bool disabled)
         {
             this.Call("setDisabled", disabled);
         }
@@ -417,7 +427,7 @@ namespace Ext.Net
         /// Disables the repeater and stops events from firing.
         /// </summary>
         [Description("Disables the repeater and stops events from firing.")]
-        public virtual void Disable()
+        protected internal virtual void Disabled()
         {
             this.Call("disable");
         }
@@ -426,7 +436,7 @@ namespace Ext.Net
         /// Enables the repeater and allows events to fire.
         /// </summary>
         [Description("Enables the repeater and allows events to fire.")]
-        public virtual void Enable()
+        protected internal virtual void Enable()
         {
             this.Call("enable");
         }

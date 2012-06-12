@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class KeyNav
     {
         /// <summary>
@@ -86,138 +83,114 @@ namespace Ext.Net
                 return this as KeyNav.Builder;
             }
              
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyNav.Builder</returns>
-            public virtual KeyNav.Builder Left(Action<JFunction> action)
-            {
-                action(this.ToComponent().Left);
-                return this as KeyNav.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyNav.Builder</returns>
-            public virtual KeyNav.Builder Right(Action<JFunction> action)
-            {
-                action(this.ToComponent().Right);
-                return this as KeyNav.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyNav.Builder</returns>
-            public virtual KeyNav.Builder Up(Action<JFunction> action)
-            {
-                action(this.ToComponent().Up);
-                return this as KeyNav.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyNav.Builder</returns>
-            public virtual KeyNav.Builder Down(Action<JFunction> action)
-            {
-                action(this.ToComponent().Down);
-                return this as KeyNav.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyNav.Builder</returns>
-            public virtual KeyNav.Builder PageUp(Action<JFunction> action)
-            {
-                action(this.ToComponent().PageUp);
-                return this as KeyNav.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyNav.Builder</returns>
-            public virtual KeyNav.Builder PageDown(Action<JFunction> action)
-            {
-                action(this.ToComponent().PageDown);
-                return this as KeyNav.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyNav.Builder</returns>
-            public virtual KeyNav.Builder Del(Action<JFunction> action)
-            {
-                action(this.ToComponent().Del);
-                return this as KeyNav.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyNav.Builder</returns>
-            public virtual KeyNav.Builder Home(Action<JFunction> action)
-            {
-                action(this.ToComponent().Home);
-                return this as KeyNav.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyNav.Builder</returns>
-            public virtual KeyNav.Builder End(Action<JFunction> action)
-            {
-                action(this.ToComponent().End);
-                return this as KeyNav.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyNav.Builder</returns>
-            public virtual KeyNav.Builder Enter(Action<JFunction> action)
-            {
-                action(this.ToComponent().Enter);
-                return this as KeyNav.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyNav.Builder</returns>
-            public virtual KeyNav.Builder Esc(Action<JFunction> action)
-            {
-                action(this.ToComponent().Esc);
-                return this as KeyNav.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of KeyNav.Builder</returns>
-            public virtual KeyNav.Builder Tab(Action<JFunction> action)
-            {
-                action(this.ToComponent().Tab);
-                return this as KeyNav.Builder;
-            }
-			 
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Left(JFunction left)
+            // {
+            //    this.ToComponent().Left = left;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Right(JFunction right)
+            // {
+            //    this.ToComponent().Right = right;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Up(JFunction up)
+            // {
+            //    this.ToComponent().Up = up;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Down(JFunction down)
+            // {
+            //    this.ToComponent().Down = down;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder PageUp(JFunction pageUp)
+            // {
+            //    this.ToComponent().PageUp = pageUp;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder PageDown(JFunction pageDown)
+            // {
+            //    this.ToComponent().PageDown = pageDown;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Del(JFunction del)
+            // {
+            //    this.ToComponent().Del = del;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Home(JFunction home)
+            // {
+            //    this.ToComponent().Home = home;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder End(JFunction end)
+            // {
+            //    this.ToComponent().End = end;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Enter(JFunction enter)
+            // {
+            //    this.ToComponent().Enter = enter;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Esc(JFunction esc)
+            // {
+            //    this.ToComponent().Esc = esc;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Tab(JFunction tab)
+            // {
+            //    this.ToComponent().Tab = tab;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
 			/// The method to call on the Ext.EventObject after this KeyNav intercepts a key. Valid values are Ext.EventObject.stopEvent, Ext.EventObject.preventDefault and Ext.EventObject.stopPropagation (defaults to 'stopEvent')
 			/// </summary>

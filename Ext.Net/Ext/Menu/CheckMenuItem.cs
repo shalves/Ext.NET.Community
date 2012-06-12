@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -70,6 +70,21 @@ namespace Ext.Net
             get
             {
                 return "menucheckitem";
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected override void OnBeforeClientInitHandler()
+        {
+            base.OnBeforeClientInitHandler();
+
+            if (!RequestManager.IsAjaxRequest || this.IsDynamic)
+            {
+                string fn = "this.getCheckedField().setValue(checked);";
+                this.On("checkchange", new JFunction(fn, "item", "checked"));
             }
         }
 
@@ -142,7 +157,7 @@ namespace Ext.Net
         {
             this.HasLoadPostData = true;
 
-            string val = postCollection[this.ConfigID];
+            string val = postCollection[this.ConfigID.ConcatWith("_Checked")];
             
             if (val.IsNotEmpty())
             {
@@ -189,32 +204,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Checked", false);
+                object obj = this.ViewState["Checked"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Checked", value);
-            }
-        }
-
-        /// <summary>
-        /// The CSS class used by cls to show the checked state. Defaults to Ext.baseCSSPrefix + 'menu-item-checked'.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. CheckItem")]
-        [DefaultValue("")]
-        [NotifyParentProperty(true)]
-        [Description("The CSS class used by cls to show the checked state. Defaults to Ext.baseCSSPrefix + 'menu-item-checked'.")]
-        public virtual string CheckedCls
-        {
-            get
-            {
-                return this.State.Get<string>("CheckedCls", "");
-            }
-            set
-            {
-                this.State.Set("CheckedCls", value);
+                this.ViewState["Checked"] = value;
             }
         }
 
@@ -231,73 +226,32 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Group", "");
+                return (string)this.ViewState["Group"] ?? "";
             }
             set
             {
-                this.State.Set("Group", value);
+                this.ViewState["Group"] = value;
             }
         }
 
         /// <summary>
-        /// The CSS class applied to this item's icon image to denote being a part of a radio group. Defaults to Ext.baseCSSClass + 'menu-group-icon'. Any specified iconCls overrides this.
+        /// The default CSS class to use for radio group check items (defaults to \"x-menu-group-item\")
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("6. CheckItem")]
         [DefaultValue("")]
         [NotifyParentProperty(true)]
-        [Description("The CSS class applied to this item's icon image to denote being a part of a radio group. Defaults to Ext.baseCSSClass + 'menu-group-icon'. Any specified iconCls overrides this.")]
-        public virtual string GroupCls
+        [Description("The default CSS class to use for radio group check items (defaults to \"x-menu-group-item\")")]
+        public virtual string GroupClass
         {
             get
             {
-                return this.State.Get<string>("GroupCls", "");
+                return (string)this.ViewState["GroupClass"] ?? "";
             }
             set
             {
-                this.State.Set("GroupCls", value);
-            }
-        }
-
-        /// <summary>
-        /// Whether to not to hide the owning menu when this item is clicked. Defaults to true.
-        /// </summary>
-        [ConfigOption]
-        [Category("4. MenuItem")]
-        [DefaultValue(false)]
-        [NotifyParentProperty(true)]
-        [Description("Whether to not to hide the owning menu when this item is clicked. Defaults to true.")]
-        public override bool HideOnClick
-        {
-            get
-            {
-                return this.State.Get<bool>("HideOnClick", false);
-            }
-            set
-            {
-                this.State.Set("HideOnClick", value);
-            }
-        }
-
-        /// <summary>
-        /// The CSS class used by cls to show the unchecked state. Defaults to Ext.baseCSSPrefix + 'menu-item-unchecked'.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. CheckItem")]
-        [DefaultValue("")]
-        [NotifyParentProperty(true)]
-        [Description("The CSS class used by cls to show the unchecked state. Defaults to Ext.baseCSSPrefix + 'menu-item-unchecked'.")]
-        public virtual string UncheckedCls
-        {
-            get
-            {
-                return this.State.Get<string>("UncheckedCls", "");
-            }
-            set
-            {
-                this.State.Set("UncheckedCls", value);
+                this.ViewState["GroupClass"] = value;
             }
         }
 
@@ -313,11 +267,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("CheckHandler", "");
+                return (string)this.ViewState["CheckHandler"] ?? "";
             }
             set
             {
-                this.State.Set("CheckHandler", value);
+                this.ViewState["CheckHandler"] = value;
             }
         }
 
@@ -331,7 +285,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public CheckMenuItemListeners Listeners
         {
@@ -357,7 +312,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side DirectEventHandlers")]
         public CheckMenuItemDirectEvents DirectEvents
         {
@@ -365,7 +321,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new CheckMenuItemDirectEvents(this);
+                    this.directEvents = new CheckMenuItemDirectEvents();
                 }
 
                 return this.directEvents;
@@ -375,9 +331,10 @@ namespace Ext.Net
         /// <summary>
         /// Set the checked state of this item.
         /// </summary>
-        /// <param name="value">True to check, false to uncheck</param>
-        /// <param name="suppressEvent">True to prevent firing the checkchange events. Defaults to false.</param>
+        /// <param name="value"></param>
+        /// <param name="suppressEvent"></param>
         [Meta]
+        [Description("Set the checked state of this item.")]
         public virtual void SetChecked(bool value, bool suppressEvent)
         {
             this.Call("setChecked", value, suppressEvent);
@@ -386,29 +343,12 @@ namespace Ext.Net
         /// <summary>
         /// Set the checked state of this item.
         /// </summary>
-        /// <param name="value">True to check, false to uncheck</param>
+        /// <param name="value"></param>
         [Meta]
+        [Description("Set the checked state of this item.")]
         public virtual void SetChecked(bool value)
         {
-            this.SetChecked(value, false);
-        }
-
-        /// <summary>
-        /// Disables just the checkbox functionality of this menu Item. If this menu item has a submenu, that submenu will still be accessible
-        /// </summary>
-        [Meta]
-        public virtual void DisableCheckChange()
-        {
-            this.Call("disableCheckChange");
-        }
-
-        /// <summary>
-        /// Reenables the checkbox functionality of this menu item after having been disabled by disableCheckChange
-        /// </summary>
-        [Meta]
-        public virtual void EnableCheckChange()
-        {
-            this.Call("enableCheckChange");
+            this.SetChecked(value, true);
         }
     }
 }

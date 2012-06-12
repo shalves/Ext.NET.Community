@@ -15,15 +15,17 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
+using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
@@ -43,6 +45,7 @@ namespace Ext.Net
     [ParseChildren(true)]
     [PersistChildren(false)]
     [SupportsEventValidation]
+    [Designer(typeof(TextAreaDesigner))]
     [ToolboxBitmap(typeof(TextArea), "Build.ToolboxIcons.TextArea.bmp")]
     [Description("Multiline text field. Can be used as a direct replacement for traditional textarea <asp:TextBox TextMode='MultiLine'> fields, plus adds support for auto-sizing.")]
     public partial class TextArea : TextFieldBase
@@ -71,7 +74,7 @@ namespace Ext.Net
         {
             get
             {
-                return "textareafield";
+                return "textarea";
             }
         }
 
@@ -84,124 +87,81 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.form.field.TextArea";
+                return "Ext.form.TextArea";
+            }
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        [Description("")]
+        protected override void OnBeforeClientInit(Observable sender)
+        {
+            if (this.AutoPostBack)
+            {
+                this.On("change", new JFunction(this.PostBackFunction));
             }
         }
 
         /// <summary>
-        /// An initial value for the 'cols' attribute on the textarea element. This is only used if the component has no configured width and is not given a width by its container's layout. Defaults to 4.
+        /// The maximum width to allow when grow = true (defaults to 800).
         /// </summary>
         [Meta]
-        [ConfigOption]
-        [Category("7. TextArea")]
-        [DefaultValue(4)]
-        [Description("An initial value for the 'cols' attribute on the textarea element. This is only used if the component has no configured width and is not given a width by its container's layout. Defaults to 4.")]
-        public virtual int Cols
-        {
-            get
-            {
-                return this.State.Get<int>("Cols", 4);
-            }
-            set
-            {
-                this.State.Set("Cols", value);
-            }
-        }
-
-        /// <summary>
-        /// True if you want the enter key to be classed as a special key. Special keys are generally navigation keys (arrows, space, enter). Setting the config property to true would mean that you could not insert returns into the textarea. (defaults to false)
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("7. TextArea")]
-        [DefaultValue(false)]
-        [Description("True if you want the enter key to be classed as a special key. Special keys are generally navigation keys (arrows, space, enter). Setting the config property to true would mean that you could not insert returns into the textarea. (defaults to false)")]
-        public virtual bool EnterIsSpecial
-        {
-            get
-            {
-                return this.State.Get<bool>("EnterIsSpecial", false);
-            }
-            set
-            {
-                this.State.Set("EnterIsSpecial", value);
-            }
-        }
-
-        /// <summary>
-        /// A string that will be appended to the field's current value for the purposes of calculating the target field size. Only used when the grow config is true. Defaults to a newline for TextArea to ensure there is always a space below the current line.
-        /// </summary>
-        [ConfigOption]
-        [Category("7. TextArea")]
-        [DefaultValue("")]
-        [Description("A string that will be appended to the field's current value for the purposes of calculating the target field size. Only used when the grow config is true. Defaults to a newline for TextArea to ensure there is always a space below the current line.")]
-        public override string GrowAppend
-        {
-            get
-            {
-                return this.State.Get<string>("GrowAppend", "");
-            }
-            set
-            {
-                this.State.Set("GrowAppend", value);
-            }
-        }
-
-        /// <summary>
-        /// The maximum height to allow when grow=true (defaults to 1000)
-        /// </summary>
         [ConfigOption]
         [Category("7. TextArea")]
         [DefaultValue(typeof(Unit), "1000")]
-        [Description("The maximum height to allow when grow=true (defaults to 1000)")]
+        [Description("The maximum width to allow when grow = true (defaults to 800).")]
         public override Unit GrowMax
         {
             get
             {
-                return this.UnitPixelTypeCheck(State["GrowMax"], Unit.Pixel(1000), "GrowMax");
+                return this.UnitPixelTypeCheck(ViewState["GrowMax"], Unit.Pixel(1000), "GrowMax");
             }
             set
             {
-                this.State.Set("GrowMax", value);
+                this.ViewState["GrowMax"] = value;
             }
         }
 
         /// <summary>
-        /// The minimum height to allow when grow=true (defaults to 60)
+        /// The minimum width to allow when grow = true (defaults to 60).
         /// </summary>
+        [Meta]
         [ConfigOption]
         [Category("7. TextArea")]
         [DefaultValue(typeof(Unit), "60")]
-        [Description("The minimum height to allow when grow=true (defaults to 60)")]
+        [Description("The minimum width to allow when grow = true (defaults to 60).")]
         public override Unit GrowMin
         {
             get
             {
-                return this.UnitPixelTypeCheck(State["GrowMin"], Unit.Pixel(60), "GrowMin");
+                return this.UnitPixelTypeCheck(ViewState["GrowMin"], Unit.Pixel(60), "GrowMin");
             }
             set
             {
-                this.State.Set("GrowMin", value);
+                this.ViewState["GrowMin"] = value;
             }
         }
 
         /// <summary>
-        /// true to prevent scrollbars from appearing regardless of how much text is in the field. This option is only relevant when grow is true. Equivalent to setting overflow: hidden, defaults to false.
+        /// True to prevent scrollbars from appearing regardless of how much text is in the field (equivalent to setting overflow: hidden, defaults to false).
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("7. TextArea")]
         [DefaultValue(false)]
-        [Description("true to prevent scrollbars from appearing regardless of how much text is in the field. This option is only relevant when grow is true. Equivalent to setting overflow: hidden, defaults to false.")]
+        [Description("True to prevent scrollbars from appearing regardless of how much text is in the field (equivalent to setting overflow: hidden, defaults to false).")]
         public virtual bool PreventScrollbars
         {
             get
             {
-                return this.State.Get<bool>("PreventScrollbars", false);
+                object obj = this.ViewState["PreventScrollbars"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("PreventScrollbars", value);
+                this.ViewState["PreventScrollbars"] = value;
             }
         }
 
@@ -215,7 +175,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public TextFieldListeners Listeners
         {
@@ -240,7 +201,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public TextFieldDirectEvents DirectEvents
         {
@@ -248,7 +210,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new TextFieldDirectEvents(this);
+                    this.directEvents = new TextFieldDirectEvents();
                 }
 
                 return this.directEvents;
@@ -270,6 +232,7 @@ namespace Ext.Net
                 this.DirectEvents.Change.Event -= value;
             }
         }
+
 
         /*  Public Methods
             -----------------------------------------------------------------------------------------------*/

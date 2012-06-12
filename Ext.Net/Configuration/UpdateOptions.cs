@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,6 +25,7 @@
  ********/
 
 using System.ComponentModel;
+using System.Web.UI;
 
 namespace Ext.Net
 {
@@ -32,7 +33,7 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class UpdateOptions : BaseItem
+    public partial class UpdateOptions : StateManagedItem
     {
         /// <summary>
         /// The URL to request or a function which returns the URL.
@@ -45,11 +46,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Url", "");
+                return (string)this.ViewState["Url"] ?? "";
             }
             set
             {
-                this.State.Set("Url", value);
+                this.ViewState["Url"] = value;
             }
         }
 
@@ -64,11 +65,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<HttpMethod>("Method", HttpMethod.Default);
+                object obj = this.ViewState["Method"];
+                return (obj == null) ? HttpMethod.Default : (HttpMethod)obj;
             }
             set
             {
-                this.State.Set("Method", value);
+                this.ViewState["Method"] = value;
             }
         }
 
@@ -83,11 +85,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Params", "");
+                return (string)this.ViewState["Params"] ?? "";
             }
             set
             {
-                this.State.Set("Params", value);
+                this.ViewState["Params"] = value;
             }
         }
 
@@ -102,11 +104,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Scripts", false);
+                object obj = this.ViewState["Scripts"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Scripts", value);
+                this.ViewState["Scripts"] = value;
             }
         }
 
@@ -121,11 +124,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Callback", "");
+                return (string)this.ViewState["Callback"] ?? "";
             }
             set
             {
-                this.State.Set("Callback", value);
+                this.ViewState["Callback"] = value;
             }
         }
 
@@ -140,11 +143,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("DiscardUrl", true);
+                object obj = this.ViewState["DiscardUrl"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("DiscardUrl", value);
+                this.ViewState["DiscardUrl"] = value;
             }
         }
 
@@ -159,11 +163,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("Timeout", 30);
+                object obj = this.ViewState["Timeout"];
+                return (obj == null) ? 30 : (int)obj;
             }
             set
             {
-                this.State.Set("Timeout", value);
+                this.ViewState["Timeout"] = value;
             }
         }
 
@@ -178,11 +183,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Nocache", false);
+                object obj = this.ViewState["Nocache"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Nocache", value);
+                this.ViewState["Nocache"] = value;
             }
         }
 
@@ -198,11 +204,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Text", "Loading...");
+                return (string)this.ViewState["Text"] ?? "Loading...";
             }
             set
             {
-                this.State.Set("Text", value);
+                this.ViewState["Text"] = value;
             }
         }
 

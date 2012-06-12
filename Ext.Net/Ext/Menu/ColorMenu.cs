@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -30,11 +30,11 @@ using System.Web.UI;
 namespace Ext.Net
 {
     /// <summary>
-    /// A menu containing a Ext.picker.Color Component.
+    /// A menu containing a Ext.menu.ColorItem component (which provides a basic color picker).
     /// </summary>
     [Meta]
     [ToolboxItem(false)]
-    [Description("A menu containing a Ext.picker.Color Component.")]
+    [Description("A menu containing a Ext.menu.ColorItem component (which provides a basic color picker).")]
     public partial class ColorMenu : MenuBase
     {
         /// <summary>
@@ -43,7 +43,7 @@ namespace Ext.Net
         [Description("")]
         public ColorMenu()
         {
-            this.palette = new ColorPicker();
+            this.palette = new ColorPalette();
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.menu.ColorPicker";
+                return "Ext.menu.ColorMenu";
             }
         }
         
@@ -83,18 +83,18 @@ namespace Ext.Net
             this.LazyItems.Add(this.palette);
         }
 
-        private ColorPicker palette;
+        private ColorPalette palette;
 
         /// <summary>
-        /// The ColorPicker object
+        /// The ColorPalette object
         /// </summary>
         [Meta]
-        [ConfigOption("pickerConfig", typeof(LazyControlJsonConverter))]
+        [ConfigOption("palette", typeof(LazyControlJsonConverter))]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Description("The ColorPalette object")]
-        public ColorPicker Picker
+        public ColorPalette Palette
         {
             get
             {
@@ -112,7 +112,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public ColorMenuListeners Listeners
         {
@@ -137,7 +138,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side DirectEventHandlers")]
         public ColorMenuDirectEvents DirectEvents
         {
@@ -145,7 +147,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new ColorMenuDirectEvents(this);
+                    this.directEvents = new ColorMenuDirectEvents();
                 }
 
                 return this.directEvents;

@@ -15,16 +15,18 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
+using System;
 using System.ComponentModel;
+using System.Web.UI;
 
 namespace Ext.Net
 {
@@ -32,7 +34,31 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class DateFieldListeners : PickerFieldListeners
-    {        
+    public partial class DateFieldListeners : TriggerFieldListeners
+    {
+        private ComponentListener select;
+
+        /// <summary>
+        /// Fires when a date is selected via the date picker.
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(Field), "This date field")]
+        [ListenerArgument(1, "date", typeof(DateTime), "The date that was selected")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("select", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when a date is selected via the date picker.")]
+        public virtual ComponentListener Select
+        {
+            get
+            {
+                if (this.select == null)
+                {
+                    this.select = new ComponentListener();
+                }
+
+                return this.select;
+            }
+        }
     }
 }

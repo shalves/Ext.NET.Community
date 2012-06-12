@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class FieldListeners
     {
         /// <summary>
@@ -57,11 +54,10 @@ namespace Ext.Net
                 
                 list.Add("blur", new ConfigOption("blur", new SerializationOptions("blur", typeof(ListenerJsonConverter)), null, this.Blur ));
                 list.Add("change", new ConfigOption("change", new SerializationOptions("change", typeof(ListenerJsonConverter)), null, this.Change ));
-                list.Add("dirtyChange", new ConfigOption("dirtyChange", new SerializationOptions("dirtychange", typeof(ListenerJsonConverter)), null, this.DirtyChange ));
-                list.Add("validityChange", new ConfigOption("validityChange", new SerializationOptions("validitychange", typeof(ListenerJsonConverter)), null, this.ValidityChange ));
-                list.Add("errorChange", new ConfigOption("errorChange", new SerializationOptions("errorchange", typeof(ListenerJsonConverter)), null, this.ErrorChange ));
                 list.Add("focus", new ConfigOption("focus", new SerializationOptions("focus", typeof(ListenerJsonConverter)), null, this.Focus ));
+                list.Add("invalid", new ConfigOption("invalid", new SerializationOptions("invalid", typeof(ListenerJsonConverter)), null, this.Invalid ));
                 list.Add("specialKey", new ConfigOption("specialKey", new SerializationOptions("specialkey", typeof(ListenerJsonConverter)), null, this.SpecialKey ));
+                list.Add("valid", new ConfigOption("valid", new SerializationOptions("valid", typeof(ListenerJsonConverter)), null, this.Valid ));
                 list.Add("remoteValidationFailure", new ConfigOption("remoteValidationFailure", new SerializationOptions("remotevalidationfailure", typeof(ListenerJsonConverter)), null, this.RemoteValidationFailure ));
                 list.Add("remoteValidationValid", new ConfigOption("remoteValidationValid", new SerializationOptions("remotevalidationvalid", typeof(ListenerJsonConverter)), null, this.RemoteValidationValid ));
                 list.Add("remoteValidationInvalid", new ConfigOption("remoteValidationInvalid", new SerializationOptions("remotevalidationinvalid", typeof(ListenerJsonConverter)), null, this.RemoteValidationInvalid ));

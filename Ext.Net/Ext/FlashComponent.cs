@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -27,20 +27,19 @@
 using System.ComponentModel;
 using System.Web.UI;
 using System.Drawing;
-using System.Collections.Generic;
 
 namespace Ext.Net
 {
     /// <summary>
-    /// A Flash AbstractComponent
+    /// A Flash Component
     /// </summary>
     [Meta]
     [ToolboxItem(true)]
     [ToolboxBitmap(typeof(FlashComponent), "Build.ToolboxIcons.FlashComponent.bmp")]
     [ToolboxData("<{0}:FlashComponent runat=\"server\"></{0}:FlashComponent>")]
     [Designer(typeof(EmptyDesigner))]
-    [Description("A Flash AbstractComponent")]
-    public partial class FlashComponent : ComponentBase
+    [Description("A Flash Component")]
+    public partial class FlashComponent : BoxComponentBase
     {
 		/// <summary>
 		/// 
@@ -70,23 +69,7 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.flash.Component";
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Description("")]
-        protected override List<ResourceItem> Resources
-        {
-            get
-            {
-                List<ResourceItem> baseList = base.Resources;
-
-                baseList.Add(new ClientScriptItem(typeof(FlashComponent), "Ext.Net.Build.Ext.Net.extnet.swfobject.js", "/extnet/swfobject.js"));
-
-                return baseList;
+                return "Ext.FlashComponent";
             }
         }
 
@@ -102,11 +85,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("BackgroundColor", "#ffffff");
+                return (string)this.ViewState["BackgroundColor"] ?? "#ffffff";
             }
             set
             {
-                this.State.Set("BackgroundColor", value);
+                this.ViewState["BackgroundColor"] = value;
             }
         }
 
@@ -123,11 +106,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("ExpressInstall", false);
+                object obj = this.ViewState["ExpressInstall"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("ExpressInstall", value);
+                this.ViewState["ExpressInstall"] = value;
             }
         }
 
@@ -142,11 +126,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("FlashVersion", "9.0.45");
+                return (string)this.ViewState["FlashVersion"] ?? "9.0.45";
             }
             set
             {
-                this.State.Set("FlashVersion", value);
+                this.ViewState["FlashVersion"] = value;
             }
         }
 
@@ -162,11 +146,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Url", "");
+                return (string)this.ViewState["Url"] ?? "";
             }
             set
             {
-                this.State.Set("Url", value);
+                this.ViewState["Url"] = value;
             }
         }
 
@@ -245,6 +229,7 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public FlashComponentListeners Listeners
         {
@@ -270,6 +255,7 @@ namespace Ext.Net
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public FlashComponentDirectEvents DirectEvents
         {
@@ -277,7 +263,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new FlashComponentDirectEvents(this);
+                    this.directEvents = new FlashComponentDirectEvents();
                 }
 
                 return this.directEvents;

@@ -105,7 +105,11 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
             var group = (typeof this.activeGroup == 'object') ? this.activeGroup : this.items.get(this.activeGroup);
             delete this.activeGroup;
             this.setActiveGroup(group);
-            group.setActiveTab(group.getMainItem());
+            if (!group.activeTabInitiated) {
+                group.setActiveTab(group.getMainItem());
+            } else {
+                delete group.activeTabInitiated;
+            }
         }
     },
 
@@ -265,6 +269,7 @@ Ext.ux.GroupTabPanel = Ext.extend(Ext.TabPanel, {
         if (this.activeGroup != group && this.fireEvent('beforegroupchange', this, group, this.activeGroup) !== false) {
             if (this.activeGroup) {
                 this.activeGroup.activeTab = null;
+                this.activeGroup.getActiveTabField().setValue(-1);
                 var oldEl = this.getGroupEl(this.activeGroup);
                 if (oldEl) {
                     Ext.fly(oldEl).removeClass('x-grouptabs-strip-active');

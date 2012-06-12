@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,140 +25,27 @@
  ********/
 
 using System;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Web.UI;
-
-using Ext.Net.Utilities;
 using Newtonsoft.Json;
+using Ext.Net.Utilities;
 
 namespace Ext.Net
 {
     /// <summary>
     /// 
-    /// </summary>    
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Meta]
     [Description("")]
-    public abstract partial class MultiSelectBase : Field, IPostBackEventHandler, IStore<Store>
+    public abstract partial class MultiSelectBase<T> : Field, IStore where T : StateManagedItem 
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        [Description("")]
-        protected override void OnBeforeClientInit(Observable sender)
-        {
-            if (this.StoreID.IsNotEmpty() && this.Store.Primary != null)
-            {
-                throw new Exception(string.Format("Please do not set both the StoreID property on {0} and <Store> inner property at the same time.", this.ID));
-            }
-
-            if (this.StoreID.IsNotEmpty() || this.Store.Primary != null)
-            {
-                Store store = this.Store.Primary ?? ControlUtils.FindControl<Store>(this, this.StoreID, true);
-
-                if (store == null && !this.IsDynamic)
-                {
-                    throw new InvalidOperationException("The Control '{0}' could not find the StoreID of '{1}'.".FormatWith(this.ID, this.StoreID));
-                }
-            }
-        }
-
-        private static readonly object EventSelectionChanged = new object();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Category("Action")]
-        [Description("")]
-        public event EventHandler SelectionChanged
-        {
-            add
-            {
-                this.Events.AddHandler(EventSelectionChanged, value);
-            }
-            remove
-            {
-                this.Events.RemoveHandler(EventSelectionChanged, value);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Description("")]
-        protected virtual void OnSelectionChanged(EventArgs e)
-        {
-            EventHandler handler = (EventHandler)this.Events[EventSelectionChanged];
-
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Description("")]
-        protected override bool LoadPostData(string postDataKey, NameValueCollection postCollection)
-        {
-            this.HasLoadPostData = true;
-
-            string state = postCollection[this.UniqueName];
-
-            this.SuspendScripting();
-            this.RawValue = state;
-            this.ResumeScripting();
-
-            if (state == null)
-            {
-                return false;
-            }
-
-            if (state.IsNotEmpty())
-            {
-                var items = ComboBoxBase.ParseSelectedItems(state);
-
-                bool fireEvent = false;
-
-                foreach (var item in items)
-                {
-                    if (!this.SelectedItems.Contains(item))
-                    {
-                        fireEvent = true;
-                        break;
-                    }
-                }
-
-                this.SelectedItems.Clear();
-                this.SelectedItems.AddRange(items);
-
-                return fireEvent;
-            }
-            else
-            {
-                if (this.SelectedItems.Count > 0)
-                {
-                    this.SelectedItems.Clear();
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        void IPostBackEventHandler.RaisePostBackEvent(string eventArgument)
-        {
-            this.OnSelectionChanged(EventArgs.Empty);
-        }
-
         /// <summary>
         /// The data store to use.
         /// </summary>
         [Meta]
-        [ConfigOption("{raw}store", JsonMode.ToClientID)]
+        [ConfigOption("store", JsonMode.ToClientID)]
         [Category("6. MultiSelect")]
         [DefaultValue("")]
         [IDReferenceProperty(typeof(Store))]
@@ -167,15 +54,15 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("StoreID", "");
+                return (string)this.ViewState["StoreID"] ?? "";
             }
             set
             {
-                this.State.Set("StoreID", value);
+                this.ViewState["StoreID"] = value;
             }
         }
 
-        private StoreCollection<Store> store;
+        private StoreCollection store;
 
         /// <summary>
         ///  The data store to use.
@@ -185,40 +72,60 @@ namespace Ext.Net
         [Category("7. MultiSelect")]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [Description("The data store to use.")]
-        public virtual StoreCollection<Store> Store
+        public virtual StoreCollection Store
         {
             get
             {
                 if (this.store == null)
                 {
-                    this.store = new StoreCollection<Store>();
-                    this.store.AfterItemAdd += this.AfterItemAdd;
-                    this.store.AfterItemRemove += this.AfterItemRemove;
+                    this.store = new StoreCollection();
+                    this.store.AfterItemAdd += this.AfterStoreAdd;
+                    this.store.AfterItemRemove += this.AfterStoreRemove;
                 }
 
                 return this.store;
             }
         }
 
-        private ListItemCollection items;
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected virtual void AfterStoreAdd(Store item)
+        {
+            this.Controls.AddAt(0, item);
+            this.LazyItems.Insert(0, item);
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected virtual void AfterStoreRemove(Store item)
+        {
+            this.Controls.Remove(item);
+            this.LazyItems.Remove(item);
+        }
+
+        private ListItemCollection<T> items;
 
         /// <summary>
         /// 
         /// </summary>
         [Meta]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [Category("8. ComboBox")]
+        [ViewStateMember]
         [Description("")]
-        public ListItemCollection Items
+        public ListItemCollection<T> Items
         {
             get
             {
-                if (items == null)
+                if (this.items == null)
                 {
-                    items = new ListItemCollection();
+                    this.items = new ListItemCollection<T>();
                 }
 
-                return items;
+                return this.items;
             }
         }
 
@@ -254,22 +161,22 @@ namespace Ext.Net
             }
         }
 
-        private ListItemCollection selectedItems;
+        private SelectedListItemCollection selectedItems;
 
         /// <summary>
         /// 
         /// </summary>
         [Meta]
-        [ConfigOption(JsonMode.AlwaysArray)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
+        [ViewStateMember]
         [Description("")]
-        public virtual ListItemCollection SelectedItems
+        public SelectedListItemCollection SelectedItems
         {
             get
             {
                 if (this.selectedItems == null)
                 {
-                    this.selectedItems = new ListItemCollection();
+                    this.selectedItems = new SelectedListItemCollection();
                 }
 
                 return this.selectedItems;
@@ -277,56 +184,291 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        [DefaultValue(null)]
-        [Browsable(false)]
-        [Description("")]
-        public virtual ListItem SelectedItem
-        {
-            get
-            {
-                return this.SelectedItems.Count > 0 ? this.SelectedItems[0] : null;
-            }
-        }
-
-        /// <summary>
-        /// An optional title to be displayed at the top of the selection list.
+        /// The underlying data field name to bind to this MultiSelect.
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("6. MultiSelect")]
         [DefaultValue("")]
-        [Description("An optional title to be displayed at the top of the selection list.")]
-        public virtual string ListTitle
+        [Description("The underlying data field name to bind to this MultiSelect.")]
+        public virtual string DisplayField
         {
             get
             {
-                return this.State.Get<string>("ListTitle", "");
+                return (string)this.ViewState["DisplayField"] ?? "text";
             }
             set
             {
-                this.State.Set("ListTitle", value);
+                this.ViewState["DisplayField"] = value;
             }
         }
 
         /// <summary>
-        /// The ddgroup name(s) for the MultiSelect DragZone (defaults to undefined).
+        /// The underlying data value name to bind to this MultiSelect.
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("6. MultiSelect")]
         [DefaultValue("")]
-        [Description("The ddgroup name(s) for the MultiSelect DragZone (defaults to undefined).")]
+        [Description("The underlying data value name to bind to this MultiSelect.")]
+        public virtual string ValueField
+        {
+            get
+            {
+                return (string)this.ViewState["ValueField"] ?? "value";
+            }
+            set
+            {
+                this.ViewState["ValueField"] = value;
+            }
+        }
+
+        /// <summary>
+        /// False to validate that the value length > 0 (defaults to true).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue(true)]
+        [Description("False to validate that the value length > 0 (defaults to true).")]
+        public virtual bool AllowBlank
+        {
+            get
+            {
+                object obj = this.ViewState["AllowBlank"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["AllowBlank"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Maximum input field length allowed (defaults to Number.MAX_VALUE).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue(-1)]
+        [Description("Maximum input field length allowed (defaults to Number.MAX_VALUE).")]
+        public virtual int MaxLength
+        {
+            get
+            {
+                object obj = this.ViewState["MaxLength"];
+                return (obj == null) ? -1 : (int)obj;
+            }
+            set
+            {
+                this.ViewState["MaxLength"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Minimum input field length required (defaults to 0).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue(0)]
+        [Description("Minimum input field length required (defaults to 0).")]
+        public virtual int MinLength
+        {
+            get
+            {
+                object obj = this.ViewState["MinLength"];
+                return (obj == null) ? 0 : (int)obj;
+            }
+            set
+            {
+                this.ViewState["MinLength"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Error text to display if the maximum length validation fails (defaults to 'The maximum length for this field is {maxLength}').
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue("")]
+        [Localizable(true)]
+        [Description("Error text to display if the maximum length validation fails (defaults to 'The maximum length for this field is {maxLength}').")]
+        public virtual string MaxLengthText
+        {
+            get
+            {
+                return (string)this.ViewState["MaxLengthText"] ?? "";
+            }
+            set
+            {
+                this.ViewState["MaxLengthText"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Error text to display if the minimum length validation fails (defaults to 'The minimum length for this field is {minLength}').
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue("")]
+        [Localizable(true)]
+        [Description("Error text to display if the minimum length validation fails (defaults to 'The minimum length for this field is {minLength}').")]
+        public virtual string MinLengthText
+        {
+            get
+            {
+                return (string)this.ViewState["MinLengthText"] ?? "";
+            }
+            set
+            {
+                this.ViewState["MinLengthText"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Error text to display if the allow blank validation fails (defaults to 'This field is required').
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue("")]
+        [Localizable(true)]
+        [Description("Error text to display if the allow blank validation fails (defaults to 'This field is required').")]
+        public virtual string BlankText
+        {
+            get
+            {
+                return (string)this.ViewState["BlankText"] ?? "";
+            }
+            set
+            {
+                this.ViewState["BlankText"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Causes drag operations to copy nodes rather than move (defaults to false).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue(false)]
+        [Description("Causes drag operations to copy nodes rather than move (defaults to false).")]
+        public virtual bool Copy
+        {
+            get
+            {
+                object obj = this.ViewState["Copy"];
+                return (obj == null) ? false : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["Copy"] = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [ConfigOption("allowDup")]
+        [Category("6. MultiSelect")]
+        [DefaultValue(false)]
+        [Description("")]
+        public virtual bool AllowDuplicates
+        {
+            get
+            {
+                object obj = this.ViewState["AllowDuplicates"];
+                return (obj == null) ? false : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["AllowDuplicates"] = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue(false)]
+        [Description("")]
+        public virtual bool AllowTrash
+        {
+            get
+            {
+                object obj = this.ViewState["AllowTrash"];
+                return (obj == null) ? false : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["AllowTrash"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The title text to display in the panel header (defaults to '')
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue("")]
+        [Description("The title text to display in the panel header (defaults to '')")]
+        public virtual string Legend
+        {
+            get
+            {
+                return (string)this.ViewState["Legend"] ?? "";
+            }
+            set
+            {
+                this.ViewState["Legend"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The string used to delimit between items when set or returned as a string of values
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue(",")]
+        [Description("The string used to delimit between items when set or returned as a string of values")]
+        public virtual string Delimiter
+        {
+            get
+            {
+                return (string)this.ViewState["Delimiter"] ?? ",";
+            }
+            set
+            {
+                this.ViewState["Delimiter"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The ddgroup name(s) for the View's DragZone (defaults to undefined).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue("")]
+        [Description("The ddgroup name(s) for the View's DragZone (defaults to undefined).")]
         public virtual string DragGroup
         {
             get
             {
-                return this.State.Get<string>("DragGroup", "");
+                return (string)this.ViewState["DragGroup"] ?? "";
             }
             set
             {
-                this.State.Set("DragGroup", value);
+                this.ViewState["DragGroup"] = value;
             }
         }
 
@@ -342,45 +484,249 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("DropGroup", "");
+                return (string)this.ViewState["DropGroup"] ?? "";
             }
             set
             {
-                this.State.Set("DropGroup", value);
+                this.ViewState["DropGroup"] = value;
             }
         }
 
         /// <summary>
-        /// Whether the items in the MultiSelect list are drag/drop reorderable (defaults to false).
+        /// 
         /// </summary>
         [Meta]
-        [ConfigOption("ddReorder")]
+        [ConfigOption]
         [Category("6. MultiSelect")]
         [DefaultValue(false)]
-        [Description("Whether the items in the MultiSelect list are drag/drop reorderable (defaults to false).")]
-        public virtual bool DDReorder
+        [Description("")]
+        public virtual bool AppendOnly
         {
             get
             {
-                return this.State.Get<bool>("DDReorder", false);
+                object obj = this.ViewState["AppendOnly"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("DDReorder", value);
+                this.ViewState["AppendOnly"] = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue("")]
+        [Description("")]
+        public virtual string SortField
+        {
+            get
+            {
+                return (string)this.ViewState["SortField"] ?? "";
+            }
+            set
+            {
+                this.ViewState["SortField"] = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [ConfigOption(JsonMode.ToLower)]
+        [DefaultValue(SortDirection.ASC)]
+        [NotifyParentProperty(true)]
+        [Description("")]
+        public SortDirection Direction
+        {
+            get
+            {
+                object obj = this.ViewState["Direction"];
+                return (obj == null) ? SortDirection.ASC : (SortDirection)obj;
+            }
+            set
+            {
+                this.ViewState["Direction"] = value;
+            }
+        }
+
+        /// <summary>
+        /// True to submit text of selected items. Defaults to true.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue(true)]
+        [Description("True to submit text of selected items. Defaults to true.")]
+        public virtual bool SubmitText
+        {
+            get
+            {
+                object obj = this.ViewState["SubmitText"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["SubmitText"] = value;
+            }
+        }
+
+        /// <summary>
+        /// True to submit indexes of selected items. Defaults to true.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue(true)]
+        [Description("True to submit indexes of selected items. Defaults to true.")]
+        public virtual bool SubmitIndexes
+        {
+            get
+            {
+                object obj = this.ViewState["SubmitIndexes"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["SubmitIndexes"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Set init selecetion without event fires
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue(false)]
+        [Description("Set init selecetion without event fires")]
+        public virtual bool FireSelectOnLoad
+        {
+            get
+            {
+                object obj = this.ViewState["FireSelectOnLoad"];
+                return (obj == null) ? false : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["FireSelectOnLoad"] = value;
+            }
+        }
+
+        /// <summary>
+        /// True to allow multi selection (defaults to true).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue(true)]
+        [Description("True to allow multi selection (defaults to true).")]
+        public virtual bool MultiSelect
+        {
+            get
+            {
+                object obj = this.ViewState["MultiSelect"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["MultiSelect"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Selection mode
+        /// </summary>
+        [Meta]
+        [ConfigOption(JsonMode.ToLower)]
+        [Category("6. MultiSelect")]
+        [DefaultValue(KeepSelectionMode.Always)]
+        [Description("Selection Mode")]
+        public virtual KeepSelectionMode KeepSelectionOnClick
+        {
+            get
+            {
+                object obj = this.ViewState["KeepSelectionOnClick"];
+                return (obj == null) ? KeepSelectionMode.Always : (KeepSelectionMode)obj;
+            }
+            set
+            {
+                this.ViewState["KeepSelectionOnClick"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Custom CSS styles to be applied to the body element in the format expected by Ext.Element.applyStyles (defaults to null).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. MultiSelect")]
+        [DefaultValue("")]
+        [NotifyParentProperty(true)]
+        [Description("Custom CSS styles to be applied to the body element in the format expected by Ext.Element.applyStyles (defaults to null).")]
+        public virtual string BodyStyle
+        {
+            get
+            {
+                string style = (string)this.ViewState["BodyStyle"] ?? "";
+
+                if (style.IsNotEmpty())
+                {
+                    if (!style.EndsWith(";"))
+                    {
+                        style += ";";
+                    }
+                }
+
+                return style;
+            }
+            set
+            {
+                this.ViewState["BodyStyle"] = value;
+            }
+        }
+
+        private ToolbarCollection bottomBar;
+
+        /// <summary>
+        /// The bottom toolbar of the panel.
+        /// </summary>
+        [Meta]
+        [ConfigOption("bbar", typeof(ItemCollectionJsonConverter))]
+        [Category("6. MultiSelect")]
+        [NotifyParentProperty(true)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("The bottom toolbar of the panel.")]
+        public virtual ToolbarCollection BottomBar
+        {
+            get
+            {
+                if (this.bottomBar == null)
+                {
+                    this.bottomBar = new ToolbarCollection();
+                    this.bottomBar.AfterItemAdd += this.AfterItemAdd;
+                    this.bottomBar.AfterItemRemove += this.AfterItemRemove;
+                }
+
+                return this.bottomBar;
             }
         }
 
         private ToolbarCollection topBar;
 
         /// <summary>
-        /// An optional toolbar to be inserted at the top of the control's selection list.
+        /// The top toolbar of the panel.
         /// </summary>
         [Meta]
-        [ConfigOption("tbar", typeof(SingleItemCollectionJsonConverter))]
+        [ConfigOption("tbar", typeof(ItemCollectionJsonConverter))]
         [Category("6. MultiSelect")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [Description("An optional toolbar to be inserted at the top of the control's selection list.")]
+        [Description("The top toolbar of the panel.")]
         public virtual ToolbarCollection TopBar
         {
             get
@@ -397,340 +743,53 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// True if the list should only allow append drops when drag/drop is enabled (use for lists which are sorted, defaults to false).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue(false)]
-        [Description("True if the list should only allow append drops when drag/drop is enabled (use for lists which are sorted, defaults to false).")]
-        public virtual bool AppendOnly
-        {
-            get
-            {
-                return this.State.Get<bool>("AppendOnly", false);
-            }
-            set
-            {
-                this.State.Set("AppendOnly", value);
-            }
-        }
-
-        /// <summary>
-        /// Name of the desired display field in the dataset (defaults to 'text').
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue("text")]
-        [Description("Name of the desired display field in the dataset (defaults to 'text').")]
-        public virtual string DisplayField
-        {
-            get
-            {
-                return this.State.Get<string>("DisplayField", "text");
-            }
-            set
-            {
-                this.State.Set("DisplayField", value);
-            }
-        }
-
-        /// <summary>
-        /// Name of the desired value field in the dataset (defaults to the value of displayField).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue("")]
-        [Description("Name of the desired value field in the dataset (defaults to the value of displayField).")]
-        public virtual string ValueField
-        {
-            get
-            {
-                return this.State.Get<string>("ValueField", "");
-            }
-            set
-            {
-                this.State.Set("ValueField", value);
-            }
-        }
-
-        /// <summary>
-        /// False to require at least one item in the list to be selected, true to allow no selection (defaults to true).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue(true)]
-        [Description("False to require at least one item in the list to be selected, true to allow no selection (defaults to true).")]
-        public virtual bool AllowBlank
-        {
-            get
-            {
-                return this.State.Get<bool>("AllowBlank", true);
-            }
-            set
-            {
-                this.State.Set("AllowBlank", value);
-            }
-        }
-
-
-
-        /// <summary>
-        /// Maximum number of selections allowed (defaults to Number.MAX_VALUE).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue(int.MaxValue)]
-        [Description("Maximum number of selections allowed (defaults to Number.MAX_VALUE).")]
-        public virtual int MaxSelections
-        {
-            get
-            {
-                return this.State.Get<int>("MaxSelections", int.MaxValue);
-            }
-            set
-            {
-                this.State.Set("MaxSelections", value);
-            }
-        }
-
-        /// <summary>
-        /// Minimum number of selections allowed (defaults to 0).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue(0)]
-        [Description("Minimum number of selections allowed (defaults to 0).")]
-        public virtual int MinSelections
-        {
-            get
-            {
-                return this.State.Get<int>("MinSelections", 0);
-            }
-            set
-            {
-                this.State.Set("MinSelections", value);
-            }
-        }
-
-        /// <summary>
-        /// Default text displayed when the control contains no items (defaults to 'This field is required')
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue("This field is required")]
-        [Localizable(true)]
-        [Description("Default text displayed when the control contains no items (defaults to 'This field is required')")]
-        public virtual string BlankText
-        {
-            get
-            {
-                return this.State.Get<string>("BlankText", "This field is required");
-            }
-            set
-            {
-                this.State.Set("BlankText", value);
-            }
-        }
-
-        /// <summary>
-        /// Validation message displayed when MaxSelections is not met (defaults to 'Maximum {0} item(s) allowed').  The {0} token will be replaced by the value of MaxSelections.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue("Maximum {0} item(s) allowed")]
-        [Localizable(true)]
-        [Description("Validation message displayed when MaxSelections is not met (defaults to 'Maximum {0} item(s) allowed').  The {0} token will be replaced by the value of MaxSelections.")]
-        public virtual string MaxSelectionsText
-        {
-            get
-            {
-                return this.State.Get<string>("MaxSelectionsText", "Maximum {0} item(s) allowed");
-            }
-            set
-            {
-                this.State.Set("MaxSelectionsText", value);
-            }
-        }
-
-        /// <summary>
-        /// Validation message displayed when MinSelections is not met (defaults to 'Minimum {0} item(s) required').  The {0} token will be replaced by the value of MinSelections.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue("Minimum {0} item(s) required")]
-        [Localizable(true)]
-        [Description("Validation message displayed when MinSelections is not met (defaults to 'Minimum {0} item(s) required').  The {0} token will be replaced by the value of MinSelections.")]
-        public virtual string MinSelectionsText
-        {
-            get
-            {
-                return this.State.Get<string>("MinSelectionsText", "Minimum {0} item(s) required");
-            }
-            set
-            {
-                this.State.Set("MinSelectionsText", value);
-            }
-        }
-
-        /// <summary>
-        ///  The string used to delimit the selected values when getSubmitValue submitting the field as part of a form. Defaults to ','. If you wish to have the selected values submitted as separate parameters rather than a single delimited parameter, set this to null.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue(",")]
-        [Description("The string used to delimit the selected values when getSubmitValue submitting the field as part of a form. Defaults to ','. If you wish to have the selected values submitted as separate parameters rather than a single delimited parameter, set this to null.")]
-        public virtual string Delimiter
-        {
-            get
-            {
-                return this.State.Get<string>("Delimiter", ",");
-            }
-            set
-            {
-                this.State.Set("Delimiter", value);
-            }
-        }
-
-        /// <summary>
-        /// Causes drag operations to copy nodes rather than move (defaults to false).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue(false)]
-        [Description("Causes drag operations to copy nodes rather than move (defaults to false).")]
-        public virtual bool Copy
-        {
-            get
-            {
-                return this.State.Get<bool>("Copy", false);
-            }
-            set
-            {
-                this.State.Set("Copy", value);
-            }
-        }
-
-        /// <summary>
-        /// True to allow selection of more than one item at a time, false to allow selection of only a single item at a time or no selection at all, depending on the value of singleSelect (defaults to false).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue(false)]
-        [NotifyParentProperty(false)]
-        [Description("True to allow selection of more than one item at a time, false to allow selection of only a single item at a time or no selection at all, depending on the value of singleSelect (defaults to false).")]
-        public virtual bool MultiSelect
-        {
-            get
-            {
-                return this.State.Get<bool>("MultiSelect", false);
-            }
-            set
-            {
-                this.State.Set("MultiSelect", value);
-            }
-        }
-
-        /// <summary>
-        /// True to enable multiselection by clicking on multiple items without requiring the user to hold Shift or Ctrl, false to force the user to hold Ctrl or Shift to select more than on item (defaults to true).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue(true)]
-        [NotifyParentProperty(true)]
-        [Description("True to enable multiselection by clicking on multiple items without requiring the user to hold Shift or Ctrl, false to force the user to hold Ctrl or Shift to select more than on item (defaults to true).")]
-        public virtual bool SimpleSelect
-        {
-            get
-            {
-                return this.State.Get<bool>("SimpleSelect", true);
-            }
-            set
-            {
-                this.State.Set("SimpleSelect", value);
-            }
-        }
-
-        /// <summary>
-        /// True to allow selection of exactly one item at a time, false to allow no selection at all (defaults to false). Note that if multiSelect = true, this value will be ignored.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. MultiSelect")]
-        [DefaultValue(false)]
-        [NotifyParentProperty(true)]
-        [Description("True to allow selection of exactly one item at a time, false to allow no selection at all (defaults to false). Note that if multiSelect = true, this value will be ignored.")]
-        public virtual bool SingleSelect
-        {
-            get
-            {
-                return this.State.Get<bool>("SingleSelect", false);
-            }
-            set
-            {
-                this.State.Set("SingleSelect", value);
-            }
-        }
-
-        private BoundList listConfig;
-
-        /// <summary>
-        /// An optional set of configuration properties that will be passed to the Ext.view.BoundList's constructor. Any configuration that is valid for BoundList can be included.
-        /// </summary>
-        [Meta]
-        [ConfigOption("listConfig", typeof(LazyControlJsonConverter))]
-        [Category("8. ComboBox")]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("")]
-        public BoundList ListConfig
-        {
-            get
-            {
-                return this.listConfig;
-            }
-            set
-            {
-                if (this.listConfig != null)
-                {
-                    this.Controls.Remove(this.listConfig);
-                    this.LazyItems.Remove(this.listConfig);
-                }
-
-                this.listConfig = value;
-
-                if (this.listConfig != null)
-                {
-                    this.Controls.Add(this.listConfig);
-                    this.LazyItems.Add(this.listConfig);
-                }
-            }
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         [Meta]
-        public virtual void UpdateSelectedItems()
+        [Description("")]
+        public void UpdateSelection()
         {
-            this.Call("setSelectedItems", JRawValue.From(this.SelectedItems.Serialize()));
+            if (this.SelectedItems.Count == 0)
+            {
+                this.Call("reset");
+            }
+            else
+            {
+                this.Call("setValue", new JRawValue(this.SelectedItems.ValuesToJsonArray()));
+            }
+        }
+
+        /// <summary>
+        /// Selects all nodes.
+        /// </summary>
+        [Description("Selects all nodes.")]
+        public void SelectAll()
+        {
+            this.Call("selectAll");
+        }
+
+        /// <summary>
+        /// Clears all selections.
+        /// </summary>
+        [Description("Selects all nodes.")]
+        public void DeselectAll()
+        {
+            this.Call("deselectAll");
+        }
+
+        /// <summary>
+        /// Clears all selections.
+        /// <param name="suppressEvent">True to skip firing of the selectionchange event</param>
+        /// </summary>
+        [Description("Selects all nodes.")]
+        public void DeselectAll(Boolean suppressEvent)
+        {
+            this.Call("deselectAll", suppressEvent);
         }
 
         #region IStore Members
 
-        SimpleStore generatedStore;
+        SimpleStore<T> generatedStore;
         /// <summary>
         /// 
         /// </summary>
@@ -749,7 +808,7 @@ namespace Ext.Net
 
             if (this.generatedStore == null)
             {
-                this.generatedStore = new SimpleStore(this, this.Items);
+                this.generatedStore = new SimpleStore<T>(this, this.Items);
 				this.generatedStore.EnableViewState = false;
                 this.Controls.Add(this.generatedStore);
             }

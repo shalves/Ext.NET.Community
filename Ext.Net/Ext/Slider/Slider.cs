@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -28,7 +28,6 @@ using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
 using System.Web.UI;
 
 using Ext.Net.Utilities;
@@ -43,7 +42,7 @@ namespace Ext.Net
     [ToolboxData("<{0}:Slider runat=\"server\" />")]
     [Designer(typeof(EmptyDesigner))]
     [Description("Slider which supports vertical or horizontal orientation, keyboard adjustments, configurable snapping, axis clicking and animation.")]
-    public partial class Slider : SliderBase
+    public partial class Slider : SliderBase, IPostBackDataHandler
     {
         /// <summary>
         /// 
@@ -61,7 +60,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public SliderListeners Listeners
         {
@@ -87,7 +87,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side DirectEventHandlers")]
         public SliderDirectEvents DirectEvents
         {
@@ -95,7 +96,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new SliderDirectEvents(this);
+                    this.directEvents = new SliderDirectEvents();
                 }
 
                 return this.directEvents;
@@ -106,22 +107,22 @@ namespace Ext.Net
         /*  Lifecycle
             -----------------------------------------------------------------------------------------------*/
 
-        private static readonly object EventNumberChanged = new object();
+        private static readonly object EventValueChanged = new object();
 
         /// <summary>
-        /// Fires when the Number property has been changed
+        /// Fires when the Value property has been changed
         /// </summary>
         [Category("Action")]
-        [Description("Fires when the Number property has been changed")]
-        public event EventHandler NumberChanged
+        [Description("Fires when the Value property has been changed")]
+        public event EventHandler ValueChanged
         {
             add
             {
-                Events.AddHandler(EventNumberChanged, value);
+                Events.AddHandler(EventValueChanged, value);
             }
             remove
             {
-                Events.RemoveHandler(EventNumberChanged, value);
+                Events.RemoveHandler(EventValueChanged, value);
             }
         }
 
@@ -130,9 +131,9 @@ namespace Ext.Net
         /// </summary>
         /// <param name="e"></param>
         [Description("")]
-        protected virtual void OnNumberChanged(EventArgs e)
+        protected virtual void OnValueChanged(EventArgs e)
         {
-            EventHandler handler = (EventHandler)Events[EventNumberChanged];
+            EventHandler handler = (EventHandler)Events[EventValueChanged];
 
             if (handler != null)
             {
@@ -147,54 +148,41 @@ namespace Ext.Net
         /// <param name="postCollection"></param>
         /// <returns></returns>
         [Description("")]
-        protected override bool LoadPostData(string postDataKey, NameValueCollection postCollection)
+        public bool LoadPostData(string postDataKey, NameValueCollection postCollection)
         {
-            string val = postCollection[this.ConfigID];
+            string val = postCollection[this.ConfigID.ConcatWith("_Value")];
 
             if (val.IsEmpty())
             {
                 return false;
             }
 
-            //double[] numbers = JSON.Deserialize<double[]>(string.Concat("[", val, "]"));            
             string[] values = val.Split(',');
-            double[] numbers = Array.ConvertAll(values, delegate(string input) { return double.Parse(input, CultureInfo.InvariantCulture); });
+            int[] numbers = Array.ConvertAll(values, delegate(string input) { return int.Parse(input); });
 
             this.SuspendScripting();
-
-            var currentNumbers = this.Numbers ?? new double[0];
-
-            bool result = false;
-            if (currentNumbers.Length != numbers.Length)
+            
+            if (numbers.Length == 1)
             {
-                result = true;
+                this.Value = numbers[0];
             }
             else
             {
-                for (int i = 0; i < currentNumbers.Length; i++)
-                {
-                    if (currentNumbers[i] != numbers[i])
-                    {
-                        result = true;
-                        break;
-                    }
-                }
+                this.Values = numbers;
             }
-
-            this.Numbers = numbers;
 
             this.ResumeScripting();
 
-            return result;
+            return true;
         }
 
         /// <summary>
         /// 
         /// </summary>
         [Description("")]
-        protected override void RaisePostDataChangedEvent()
+        public void RaisePostDataChangedEvent()
         {
-            this.OnNumberChanged(EventArgs.Empty);
+            this.OnValueChanged(EventArgs.Empty);
         }
     }
 }

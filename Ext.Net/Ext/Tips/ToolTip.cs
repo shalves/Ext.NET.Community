@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,33 +33,13 @@ using Ext.Net.Utilities;
 namespace Ext.Net
 {
     /// <summary>
-    /// ToolTip is a Ext.tip.Tip implementation that handles the common case of displaying a tooltip when hovering over a certain element or elements on the page. It allows fine-grained control over the tooltip's alignment relative to the target element or mouse, and the timing of when it is automatically shown and hidden.
-    /// This implementation does not have a built-in method of automatically populating the tooltip's text based on the target element; you must either configure a fixed html value for each ToolTip instance, or implement custom logic (e.g. in a beforeshow event listener) to generate the appropriate tooltip content on the fly. See Ext.tip.QuickTip for a more convenient way of automatically populating and configuring a tooltip based on specific DOM attributes of each target element.
-    /// 
-    /// Delegation
-    /// In addition to attaching a ToolTip to a single element, you can also use delegation to attach one ToolTip to many elements under a common parent. This is more efficient than creating many ToolTip instances. To do this, point the target config to a common ancestor of all the elements, and then set the delegate config to a CSS selector that will select all the appropriate sub-elements.
-    /// When using delegation, it is likely that you will want to programmatically change the content of the ToolTip based on each delegate element; you can do this by implementing a custom listener for the beforeshow event. 
-    /// 
-    /// Alignment
-    /// The following configuration properties allow control over how the ToolTip is aligned relative to the target element and/or mouse pointer:
-    ///     anchor
-    ///     anchorToTarget
-    ///     anchorOffset
-    ///     trackMouse
-    ///     mouseOffset
-    /// 
-    /// Showing/Hiding
-    /// The following configuration properties allow control over how and when the ToolTip is automatically shown and hidden:
-    ///     autoHide
-    ///     showDelay
-    ///     hideDelay
-    ///     dismissDelay
+    /// A standard tooltip implementation for providing additional information when hovering over a target element.
     /// </summary>
     [Meta]
     [ToolboxData("<{0}:ToolTip runat=\"server\" Title=\"Message\"></{0}:ToolTip>")]
     [ToolboxBitmap(typeof(ToolTip), "Build.ToolboxIcons.ToolTip.bmp")]
     [Designer(typeof(EmptyDesigner))]
-    [Description("ToolTip is a Ext.tip.Tip implementation that handles the common case of displaying a tooltip when hovering over a certain element or elements on the page. It allows fine-grained control over the tooltip's alignment relative to the target element or mouse, and the timing of when it is automatically shown and hidden.")]
+    [Description("A standard tooltip implementation for providing additional information when hovering over a target element.")]
     public partial class ToolTip : Tip
     {
         /// <summary>
@@ -76,60 +56,7 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.tip.ToolTip";
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Category("3. AbstractComponent")]
-        public override string XType
-        {
-            get
-            {
-                return "tooltip";
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [ConfigOption("renderTo")]
-        [DefaultValue("")]
-        protected internal override string RenderToProxy
-        {
-            get
-            {
-                if (!this.IsLazy && !this.PreventRenderTo)
-                {
-                    return this.RenderTo.IsEmpty() ? (this.TopDynamicControl ? this.TopDynamicRenderTo : (this.RemoveContainer ? "" : this.ContainerID)) : this.RenderTo;
-                }
-                else if (this.ForceRendering)
-                {
-                    return "={Ext.net.ResourceMgr.getRenderTarget()}";
-                }
-
-                return "";
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Meta]
-        [Category("8. ToolTip")]
-        [DefaultValue(false)]
-        [Description("")]
-        public virtual bool ForceRendering
-        {
-            get
-            {
-                return this.State.Get<bool>("ForceRendering", false);
-            }
-            set
-            {
-                this.State.Set("ForceRendering", value);
+                return "Ext.ToolTip";
             }
         }
 
@@ -146,63 +73,46 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// If specified, indicates that the tip should be anchored to a particular side of the target element or mouse pointer ("top", "right", "bottom", or "left"), with an arrow pointing back at the target or mouse pointer. If constrainPosition is enabled, this will be used as a preferred value only and may be flipped as needed.
-        /// </summary>
-        [Meta]
-        [Category("8. ToolTip")]
-        [DefaultValue(null)]
-        [Description("If specified, indicates that the tip should be anchored to a particular side of the target element or mouse pointer (\"top\", \"right\", \"bottom\", or \"left\"), with an arrow pointing back at the target or mouse pointer. If constrainPosition is enabled, this will be used as a preferred value only and may be flipped as needed.")]
-        public override string Anchor
-        {
-            get
-            {
-                return this.State.Get<string>("Anchor", null);
-            }
-            set
-            {
-                this.State.Set("Anchor", value);
-            }
-        }
-
-        /// <summary>
-        /// A numeric pixel value used to offset the default position of the anchor arrow. When the anchor position is on the top or bottom of the tooltip, anchorOffset will be used as a horizontal offset. Likewise, when the anchor position is on the left or right side, anchorOffset will be used as a vertical offset. Defaults to: 0
+        /// A numeric pixel value used to offset the default position of the anchor arrow (defaults to 0). When the anchor position is on the top or bottom of the tooltip, anchorOffset will be used as a horizontal offset. Likewise, when the anchor position is on the left or right side, anchorOffset will be used as a vertical offset.
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("8. ToolTip")]
         [DefaultValue(0)]
         [NotifyParentProperty(true)]
-        [Description("A numeric pixel value used to offset the default position of the anchor arrow. When the anchor position is on the top or bottom of the tooltip, anchorOffset will be used as a horizontal offset. Likewise, when the anchor position is on the left or right side, anchorOffset will be used as a vertical offset. Defaults to: 0")]
+        [Description("A numeric pixel value used to offset the default position of the anchor arrow (defaults to 0). When the anchor position is on the top or bottom of the tooltip, anchorOffset will be used as a horizontal offset. Likewise, when the anchor position is on the left or right side, anchorOffset will be used as a vertical offset.")]
         public virtual int AnchorOffset
         {
             get
             {
-                return this.State.Get<int>("AnchorOffset", 0);
+                object obj = this.ViewState["AnchorOffset"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("AnchorOffset", value);
+                this.ViewState["AnchorOffset"] = value;
             }
         }
 
         /// <summary>
-        /// True to anchor the tooltip to the target element, false to anchor it relative to the mouse coordinates. When anchorToTarget is true, use defaultAlign to control tooltip alignment to the target element. When anchorToTarget is false, use anchor instead to control alignment. Defaults to: true
+        /// True to anchor the tooltip to the target element, false to anchor it relative to the mouse coordinates (defaults to true). When anchorToTarget is true, use defaultAlign to control tooltip alignment to the target element. When anchorToTarget is false, use anchorPosition instead to control alignment.
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("8. ToolTip")]
         [DefaultValue(true)]
         [NotifyParentProperty(true)]
-        [Description("True to anchor the tooltip to the target element, false to anchor it relative to the mouse coordinates. When anchorToTarget is true, use defaultAlign to control tooltip alignment to the target element. When anchorToTarget is false, use anchor instead to control alignment. Defaults to: true")]
+        [Description("True to automatically hide the tooltip after the mouse exits the target element or after the dismissDelay has expired if set (defaults to true). If closable = true a close tool button will be rendered into the tooltip header.")]
         public virtual bool AnchorToTarget
         {
             get
             {
-                return this.State.Get<bool>("AnchorToTarget", true);
+                object obj = this.ViewState["AnchorToTarget"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("AnchorToTarget", value);
+                this.ViewState["AnchorToTarget"] = value;
             }
         }
 
@@ -219,18 +129,19 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("AutoHide", true);
+                object obj = this.ViewState["AutoHide"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("AutoHide", value);
+                this.ViewState["AutoHide"] = value;
             }
         }
 
         /// <summary>
-        /// A DomQuery selector which allows selection of individual elements within the target element to trigger showing and hiding the ToolTip as the mouse moves within the target.
+        /// Optional. A DomQuery selector which allows selection of individual elements within the target element to trigger showing and hiding the ToolTip as the mouse moves within the target.
         /// When specified, the child element of the target which caused a show event is placed into the triggerElement property before the ToolTip is shown.
-        /// This may be useful when a Component has regular, repeating elements in it, each of which need a ToolTip which contains information specific to that element.
+        /// This may be useful when a Component has regular, repeating elements in it, each of which need a Tooltip which contains information specific to that element.
         /// </summary>
         [Meta]
         [ConfigOption]
@@ -242,11 +153,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Delegate", "");
+                object obj = this.ViewState["Delegate"];
+                return (obj == null) ? "" : (string)obj;
             }
             set
             {
-                this.State.Set("Delegate", value);
+                this.ViewState["Delegate"] = value;
             }
         }
 
@@ -263,11 +175,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("DismissDelay", 5000);
+                object obj = this.ViewState["DismissDelay"];
+                return (obj == null) ? 5000 : (int)obj;
             }
             set
             {
-                this.State.Set("DismissDelay", value);
+                this.ViewState["DismissDelay"] = value;
             }
         }
 
@@ -284,11 +197,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("HideDelay", 200);
+                object obj = this.ViewState["HideDelay"];
+                return (obj == null) ? 200 : (int)obj;
             }
             set
             {
-                this.State.Set("HideDelay", value);
+                this.ViewState["HideDelay"] = value;
             }
         }
 
@@ -305,11 +219,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int[]>("MouseOffset", null);
+                object obj = this.ViewState["MouseOffset"];
+                return (obj == null) ? null : (int[])obj;
             }
             set
             {
-                this.State.Set("MouseOffset", value);
+                this.ViewState["MouseOffset"] = value;
             }
         }
 
@@ -326,11 +241,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("ShowDelay", 500);
+                object obj = this.ViewState["ShowDelay"];
+                return (obj == null) ? 500 : (int)obj;
             }
             set
             {
-                this.State.Set("ShowDelay", value);
+                this.ViewState["ShowDelay"] = value;
             }
         }
 
@@ -365,11 +281,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Target", "");
+                return (string)this.ViewState["Target"] ?? "";
             }
             set
             {
-                this.State.Set("Target", value);
+                this.ViewState["Target"] = value;
             }
         }
 
@@ -419,11 +335,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("TrackMouse", false);
+                object obj = this.ViewState["TrackMouse"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("TrackMouse", value);
+                this.ViewState["TrackMouse"] = value;
             }
         }
 
@@ -470,11 +387,26 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new PanelDirectEvents(this);
+                    this.directEvents = new PanelDirectEvents();
                 }
 
                 return this.directEvents;
             }
+        }
+
+
+        /*  Public Methods
+            -----------------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// Update the html of the Body, optionally searching for and processing scripts.
+        /// </summary>
+        [Meta]
+        [Description("Update the html of the Body, optionally searching for and processing scripts.")]
+        public override void Update(string html)
+        {
+            string template = "{0}.html={1};if({0}.body){{{0}.body.update({1});}}";
+            this.AddScript(template, this.ClientID, JSON.Serialize(html));
         }
     }
 }

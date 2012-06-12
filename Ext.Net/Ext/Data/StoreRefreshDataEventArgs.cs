@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -26,9 +26,9 @@
 
 using System;
 using System.ComponentModel;
+using System.Xml;
 
 using Ext.Net.Utilities;
-using Newtonsoft.Json.Linq;
 
 namespace Ext.Net
 {
@@ -38,7 +38,7 @@ namespace Ext.Net
 	[Description("")]
     public partial class StoreRefreshDataEventArgs : EventArgs
     {
-        private readonly JToken parameters;
+        private readonly XmlNode parameters;
 
 		/// <summary>
 		/// 
@@ -46,7 +46,7 @@ namespace Ext.Net
 		[Description("")]
         public StoreRefreshDataEventArgs() { }
 
-        internal StoreRefreshDataEventArgs(JToken parameters)
+        internal StoreRefreshDataEventArgs(XmlNode parameters)
         {
             this.parameters = parameters;
         }
@@ -89,26 +89,9 @@ namespace Ext.Net
                     return new ParameterCollection();
                 }
 
-                p = ResourceManager.JTokenToParams(this.parameters);
+                p = ResourceManager.XmlToParams(this.parameters);
 
                 return p;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Description("")]
-        public int Page
-        {
-            get
-            {
-                if (this.Parameters["page"].IsNotEmpty())
-                {
-                    return int.Parse(this.Parameters["page"]);
-                }
-
-                return -1;
             }
         }
 
@@ -150,16 +133,16 @@ namespace Ext.Net
 		/// 
 		/// </summary>
 		[Description("")]
-        public DataSorter[] Sort
+        public string Sort
         {
             get
             {
                 if (this.Parameters["sort"].IsNotEmpty())
                 {
-                    return JSON.Deserialize<DataSorter[]>(this.Parameters["sort"], new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver());
+                    return this.Parameters["sort"];
                 }
 
-                return new DataSorter[0];
+                return "";
             }
         }
 
@@ -167,16 +150,16 @@ namespace Ext.Net
 		/// 
 		/// </summary>
 		[Description("")]
-        public DataFilter[] Filter
+        public SortDirection Dir
         {
             get
             {
-                if (this.Parameters["filter"].IsNotEmpty())
+                if (this.Parameters["dir"].IsNotEmpty())
                 {
-                    return JSON.Deserialize<DataFilter[]>(this.Parameters["filter"], new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver());
+                    return (SortDirection)Enum.Parse(typeof(SortDirection), this.Parameters["dir"], true);
                 }
 
-                return new DataFilter[0];
+                return SortDirection.Default;
             }
         }
     }

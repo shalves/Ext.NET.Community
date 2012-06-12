@@ -15,35 +15,33 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
     /// <summary>
-    /// While FieldSets commonly contain simple groups of fields, they are general Containers and may therefore contain any type of components in their items, including other nested containers. The default layout for the FieldSet's items is 'anchor', but it can be configured to use any other layout type.
-    ///
-    /// FieldSets may also be collapsed if configured to do so; this can be done in two ways:
-    ///
-    /// - Set the collapsible config to true; this will result in a collapse button being rendered next to the legend title, or:
-    /// - Set the checkboxToggle config to true; this is similar to using collapsible but renders a checkbox in place of the toggle button. The fieldset will be expanded when the checkbox is checked and collapsed when it is unchecked. The checkbox will also be included in the form submit parameters using the checkboxName as its parameter name.
+    /// Standard content Container used for grouping form fields.
     /// </summary>
     [Meta]
     [ToolboxData("<{0}:FieldSet runat=\"server\"><Items></Items></{0}:FieldSet>")]
     [DefaultEvent("Width")]
     [ToolboxBitmap(typeof(FieldSet), "Build.ToolboxIcons.FieldSet.bmp")]
+    [Designer(typeof(FieldSetDesigner))]
     [Description("Standard content Container used for grouping form fields.")]
-    public partial class FieldSet : AbstractContainer
+    public partial class FieldSet : Panel
     {
 		/// <summary>
 		/// 
@@ -77,205 +75,140 @@ namespace Ext.Net
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected override bool IsCollapsible
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         /// <summary>
-        /// The name to assign to the fieldset's checkbox if checkboxToggle = true (defaults to '[fieldset id]-checkbox').
+        /// True to render a checkbox into the fieldset frame just in front of the legend (defaults to false). The fieldset will be expanded or collapsed when the checkbox is toggled.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("7. FieldSet")]
+        [DefaultValue(false)]
+        [Description("True to render a checkbox into the fieldset frame just in front of the legend (defaults to false). The fieldset will be expanded or collapsed when the checkbox is toggled.")]
+        public override bool AnimCollapse
+        {
+            get
+            {
+                object obj = this.ViewState["AnimCollapse"];
+                return (obj == null) ? false : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["AnimCollapse"] = value;
+            }
+        }
+
+        /// <summary>
+        /// True to render a checkbox into the fieldset frame just in front of the legend (defaults to false). The fieldset will be expanded or collapsed when the checkbox is toggled.
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("7. FieldSet")]
         [DefaultValue("")]
-        [Description("The name to assign to the fieldset's checkbox if checkboxToggle = true (defaults to '[fieldset id]-checkbox').")]
+        [Description("True to render a checkbox into the fieldset frame just in front of the legend (defaults to false). The fieldset will be expanded or collapsed when the checkbox is toggled.")]
         public virtual string CheckboxName
         {
             get
             {
-                return this.State.Get<string>("CheckboxName", "");
+                return (string)this.ViewState["CheckboxName"] ?? "";
             }
             set
             {
-                this.State.Set("CheckboxName", value);
+                this.ViewState["CheckboxName"] = value;
             }
         }
 
+
         /// <summary>
-        /// Set to true to render a checkbox into the fieldset frame just in front of the legend to expand/collapse the fieldset when the checkbox is toggled. (defaults to false). This checkbox will be included in form submits using the checkboxName.
+        /// True to render a checkbox into the fieldset frame just in front of the legend (defaults to false). The fieldset will be expanded or collapsed when the checkbox is toggled.
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("7. FieldSet")]
         [DefaultValue(false)]
-        [Description("Set to true to render a checkbox into the fieldset frame just in front of the legend to expand/collapse the fieldset when the checkbox is toggled. (defaults to false). This checkbox will be included in form submits using the checkboxName.")]
+        [Description("True to render a checkbox into the fieldset frame just in front of the legend (defaults to false). The fieldset will be expanded or collapsed when the checkbox is toggled.")]
         public virtual bool CheckboxToggle
         {
             get
             {
-                return this.State.Get<bool>("CheckboxToggle", false);
+                object obj = this.ViewState["CheckboxToggle"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("CheckboxToggle", value);
+                this.ViewState["CheckboxToggle"] = value;
             }
         }
 
         /// <summary>
-        /// Set to true to render the fieldset as collapsed by default. If checkboxToggle is specified, the checkbox will also be unchecked by default.
+        /// A css class to apply to the x-form-items of fields. This property cascades to child containers.
         /// </summary>
         [Meta]
-        [DirectEventUpdate(MethodName="SetCollapsed")]
-        [ConfigOption]
-        [Category("7. FieldSet")]
-        [DefaultValue(false)]
-        [Description("Set to true to render the fieldset as collapsed by default. If checkboxToggle is specified, the checkbox will also be unchecked by default.")]
-        public virtual bool Collapsed
-        {
-            get
-            {
-                return this.State.Get<bool>("Collapsed", false);
-            }
-            set
-            {
-                this.State.Set("Collapsed", value);
-            }
-        }
-
-        /// <summary>
-        /// Set to true to make the fieldset collapsible and have the expand/collapse toggle button automatically rendered into the legend element, false to keep the fieldset statically sized with no collapse button (defaults to false). Another option is to configure checkboxToggle. Use the collapsed config to collapse the fieldset by default.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("7. FieldSet")]
-        [DefaultValue(false)]
-        [Description("Set to true to make the fieldset collapsible and have the expand/collapse toggle button automatically rendered into the legend element, false to keep the fieldset statically sized with no collapse button (defaults to false). Another option is to configure checkboxToggle. Use the collapsed config to collapse the fieldset by default.")]
-        public virtual bool Collapsible
-        {
-            get
-            {
-                return this.State.Get<bool>("Collapsible", false);
-            }
-            set
-            {
-                this.State.Set("Collapsible", value);
-            }
-        }
-
-        /// <summary>
-        /// A title to be displayed in the fieldset's legend. May contain HTML markup.
-        /// </summary>
-        [Meta]
-        [DirectEventUpdate(MethodName="SetTitle")]
         [ConfigOption]
         [Category("7. FieldSet")]
         [DefaultValue("")]
-        [Description("A title to be displayed in the fieldset's legend. May contain HTML markup.")]
-        public virtual string Title
+        [Description("A css class to apply to the x-form-items of fields. This property cascades to child containers.")]
+        public override string ItemCls
         {
             get
             {
-                return this.State.Get<string>("Title", "");
+                return (string)this.ViewState["ItemCls"] ?? "";
             }
             set
             {
-                this.State.Set("Title", value);
+                this.ViewState["ItemCls"] = value;
             }
         }
 
-        private FieldSetListeners listeners;
-
         /// <summary>
-        /// Client-side JavaScript Event Handlers
+        /// The width of labels. This property cascades to child containers.
         /// </summary>
         [Meta]
-        [ConfigOption("listeners", JsonMode.Object)]
-        [Category("2. Observable")]
-        [NotifyParentProperty(true)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [Description("Client-side JavaScript Event Handlers")]
-        public FieldSetListeners Listeners
+        [ConfigOption]
+        [Category("7. FieldSet")]
+        [DefaultValue(75)]
+        [Description("The width of labels. This property cascades to child containers.")]
+        public override int LabelWidth
         {
             get
             {
-                if (this.listeners == null)
-                {
-                    this.listeners = new FieldSetListeners();
-                }
-
-                return this.listeners;
+                object obj = this.ViewState["LabelWidth"];
+                return (obj == null) ? 75 : (int)obj;
+            }
+            set
+            {
+                this.ViewState["LabelWidth"] = value;
             }
         }
 
-        private FieldSetDirectEvents directEvents;
-
         /// <summary>
-        /// Server-side Ajax Event Handlers
+        /// The Ext.Container.layout to use inside the fieldset (defaults to 'FormLayout').
         /// </summary>
         [Meta]
-        [Category("2. Observable")]
-        [NotifyParentProperty(true)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]
-        [Description("Server-side Ajax Event Handlers")]
-        public FieldSetDirectEvents DirectEvents
+        [Category("5. Container")]
+        [DefaultValue("form")]
+        [TypeConverter(typeof(LayoutConverter))]
+        [Description("The Ext.Container.layout to use inside the fieldset (defaults to 'form').")]
+        public override string Layout
         {
             get
             {
-                if (this.directEvents == null)
-                {
-                    this.directEvents = new FieldSetDirectEvents(this);
-                }
-
-                return this.directEvents;
+                return (string)this.ViewState["Layout"] ?? "form";
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="collapsed"></param>
-        protected void SetCollapsed(bool collapsed)
-        {
-            if (collapsed)
+            set
             {
-                this.Collapse();
+                this.ViewState["Layout"] = value;
             }
-            else
-            {
-                this.Expand();
-            }
-        }
-
-        /// <summary>
-        /// Expands the fieldset.
-        /// </summary>
-        public void Expand()
-        {
-            this.Call("expand");
-        }
-
-        /// <summary>
-        /// Collapses the fieldset.
-        /// </summary>
-        public void Collapse()
-        {
-            this.Call("collapse");
-        }
-
-        /// <summary>
-        /// Toggle the fieldset's collapsed state to the opposite of what it is currently
-        /// </summary>
-        public void Toggle()
-        {
-            this.Call("toggle");
-        }
-
-        /// <summary>
-        /// Sets the title of this fieldset
-        /// </summary>
-        /// <param name="title">The new title</param>
-        protected void SetTitle(string title)
-        {
-            this.Call("setTitle", title);
         }
     }
 }

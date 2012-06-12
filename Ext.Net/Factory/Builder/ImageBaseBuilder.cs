@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class ImageBase
     {
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TImageBase, TBuilder> : ComponentBase.Builder<TImageBase, TBuilder>
+        new public abstract partial class Builder<TImageBase, TBuilder> : BoxComponentBase.Builder<TImageBase, TBuilder>
             where TImageBase : ImageBase
             where TBuilder : Builder<TImageBase, TBuilder>
         {
@@ -57,6 +54,24 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
+ 			/// <summary>
+			/// The height of this component in pixels (defaults to auto).
+			/// </summary>
+            public virtual TBuilder Height(Unit height)
+            {
+                this.ToComponent().Height = height;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The width of this component in pixels (defaults to auto).
+			/// </summary>
+            public virtual TBuilder Width(Unit width)
+            {
+                this.ToComponent().Width = width;
+                return this as TBuilder;
+            }
+             
  			/// <summary>
 			/// 
 			/// </summary>
@@ -112,6 +127,15 @@ namespace Ext.Net
             }
              
  			/// <summary>
+			/// true to allow resize the image
+			/// </summary>
+            public virtual TBuilder Resizable(bool resizable)
+            {
+                this.ToComponent().Resizable = resizable;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
 			/// The milliseconds to poll complete state, ignored if MonitorComplete is not true (defaults to 200)
 			/// </summary>
             public virtual TBuilder MonitorPoll(int monitorPoll)
@@ -119,6 +143,15 @@ namespace Ext.Net
                 this.ToComponent().MonitorPoll = monitorPoll;
                 return this as TBuilder;
             }
+             
+ 			// /// <summary>
+			// /// Resize object config
+			// /// </summary>
+            // public virtual TBuilder ResizeConfig(Resizable resizeConfig)
+            // {
+            //    this.ToComponent().ResizeConfig = resizeConfig;
+            //    return this as TBuilder;
+            // }
              
  			/// <summary>
 			/// X offset
@@ -138,17 +171,15 @@ namespace Ext.Net
                 return this as TBuilder;
             }
              
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder LoadMask(Action<LoadMask> action)
-            {
-                action(this.ToComponent().LoadMask);
-                return this as TBuilder;
-            }
-			
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder LoadMask(LoadMask loadMask)
+            // {
+            //    this.ToComponent().LoadMask = loadMask;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

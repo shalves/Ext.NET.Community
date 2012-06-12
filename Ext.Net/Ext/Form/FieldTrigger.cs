@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,13 +25,14 @@
  ********/
 
 using System.ComponentModel;
+using System.Web.UI;
 
 using Ext.Net.Utilities;
 
 namespace Ext.Net
 {
     [Meta]
-    public partial class FieldTrigger : BaseItem
+    public partial class FieldTrigger : StateManagedItem
     {
 		/// <summary>
 		/// 
@@ -51,11 +52,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Tag", "");
+                return (string)this.ViewState["Tag"] ?? "";
             }
             set
             {
-                this.State.Set("Tag", value);
+                this.ViewState["Tag"] = value;
             }
         }
 
@@ -71,11 +72,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("HideTrigger", false);
+                object obj = this.ViewState["HideTrigger"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("HideTrigger", value);
+                this.ViewState["HideTrigger"] = value;
             }
         }
 
@@ -91,11 +93,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("TriggerCls", "");
+                return (string)this.ViewState["TriggerCls"] ?? "";
             }
             set
             {
-                this.State.Set("TriggerCls", value);
+                this.ViewState["TriggerCls"] = value;
             }
         }
 
@@ -110,11 +112,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<TriggerIcon>("Icon", TriggerIcon.Combo);
+                object obj = this.ViewState["Icon"];
+                return (obj == null) ? TriggerIcon.Combo : (TriggerIcon)obj;
             }
             set
             {
-                this.State.Set("Icon", value);
+                this.ViewState["Icon"] = value;
             }
         }
 
@@ -130,18 +133,18 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("IconCls", "");
+                return (string)this.ViewState["IconCls"] ?? "";
             }
             set
             {
-                this.State.Set("IconCls", value);
+                this.ViewState["IconCls"] = value;
             }
         }
 
 		/// <summary>
 		/// 
 		/// </summary>
-        [ConfigOption("iconCls", JsonMode.Raw)]
+        [ConfigOption("iconCls")]
         [DefaultValue("")]
 		[Description("")]
         protected string IconClsProxy
@@ -150,10 +153,10 @@ namespace Ext.Net
             {
                 if (this.Icon != TriggerIcon.Combo)
                 {
-                    return "Ext.form.field.Trigger.getIcon(".ConcatWith(JSON.Serialize(this.Icon.ToString()), ")");
+                    return "x-form-".ConcatWith(this.Icon.ToString().ToLower(), "-trigger");
                 }
 
-                return "\"" + this.IconCls + "\"";
+                return this.IconCls;
             }
         }
 
@@ -170,11 +173,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Qtip", "");
+                return (string)this.ViewState["Qtip"] ?? "";
             }
             set
             {
-                this.State.Set("Qtip", value);
+                this.ViewState["Qtip"] = value;
             }
         }
     }

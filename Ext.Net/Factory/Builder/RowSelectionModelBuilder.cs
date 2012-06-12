@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class RowSelectionModel
     {
         /// <summary>
@@ -78,67 +75,59 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
-			/// Turns on/off keyboard navigation within the grid. Defaults to true.
+			/// True to allow selection of only one row at a time (defaults to false).
 			/// </summary>
-            public virtual RowSelectionModel.Builder EnableKeyNav(bool enableKeyNav)
+            public virtual RowSelectionModel.Builder SingleSelect(bool singleSelect)
             {
-                this.ToComponent().EnableKeyNav = enableKeyNav;
+                this.ToComponent().SingleSelect = singleSelect;
                 return this as RowSelectionModel.Builder;
             }
              
  			/// <summary>
-			/// True to ignore selections that are made when using the right mouse button if there are records that are already selected. If no records are selected, selection will continue as normal. Defaults to: true
+			/// False to turn off moving the editor to the next cell when the enter key is pressed.
 			/// </summary>
-            public virtual RowSelectionModel.Builder IgnoreRightMouseSelection(bool ignoreRightMouseSelection)
+            public virtual RowSelectionModel.Builder MoveEditorOnEnter(bool moveEditorOnEnter)
             {
-                this.ToComponent().IgnoreRightMouseSelection = ignoreRightMouseSelection;
+                this.ToComponent().MoveEditorOnEnter = moveEditorOnEnter;
                 return this as RowSelectionModel.Builder;
             }
              
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowSelectionModel.Builder</returns>
-            public virtual RowSelectionModel.Builder Listeners(Action<RowSelectionModelListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as RowSelectionModel.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowSelectionModel.Builder</returns>
-            public virtual RowSelectionModel.Builder DirectEvents(Action<RowSelectionModelDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as RowSelectionModel.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowSelectionModel.Builder</returns>
-            public virtual RowSelectionModel.Builder SelectedRows(Action<SelectedRowCollection> action)
-            {
-                action(this.ToComponent().SelectedRows);
-                return this as RowSelectionModel.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowSelectionModel.Builder</returns>
-            public virtual RowSelectionModel.Builder SelectedRow(Action<SelectedRow> action)
-            {
-                action(this.ToComponent().SelectedRow);
-                return this as RowSelectionModel.Builder;
-            }
-			 
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(RowSelectionModelListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(RowSelectionModelDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder SelectedRows(SelectedRowCollection selectedRows)
+            // {
+            //    this.ToComponent().SelectedRows = selectedRows;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder SelectedRow(SelectedRow selectedRow)
+            // {
+            //    this.ToComponent().SelectedRow = selectedRow;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
 			/// 
 			/// </summary>
@@ -161,6 +150,195 @@ namespace Ext.Net
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/
 			
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual RowSelectionModel.Builder UpdateSelection()
+            {
+                this.ToComponent().UpdateSelection();
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Clears all selections.
+			/// </summary>
+            public virtual RowSelectionModel.Builder ClearSelections()
+            {
+                this.ToComponent().ClearSelections();
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Deselects a range of rows. All rows in between startRow and endRow are also deselected.
+			/// </summary>
+            public virtual RowSelectionModel.Builder DeselectRange(int startRow, int endRow)
+            {
+                this.ToComponent().DeselectRange(startRow, endRow);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Deselects a row.
+			/// </summary>
+            public virtual RowSelectionModel.Builder DeselectRow(int row)
+            {
+                this.ToComponent().DeselectRow(row);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Deselects a row.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectAll()
+            {
+                this.ToComponent().SelectAll();
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Selects the first row in the grid.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectFirstRow()
+            {
+                this.ToComponent().SelectFirstRow();
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Select the last row.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectLastRow()
+            {
+                this.ToComponent().SelectLastRow();
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Select the last row.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectLastRow(bool keepExisting)
+            {
+                this.ToComponent().SelectLastRow(keepExisting);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Selects the row immediately following the last selected row.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectNext()
+            {
+                this.ToComponent().SelectNext();
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Selects the row immediately following the last selected row.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectNext(bool keepExisting)
+            {
+                this.ToComponent().SelectNext(keepExisting);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Selects the row that precedes the last selected row.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectPrevious()
+            {
+                this.ToComponent().SelectPrevious();
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Selects the row immediately following the last selected row.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectPrevious(bool keepExisting)
+            {
+                this.ToComponent().SelectPrevious(keepExisting);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Selects a range of rows. All rows in between startRow and endRow are also selected.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectRange(int startRow, int endRow)
+            {
+                this.ToComponent().SelectRange(startRow, endRow);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Selects a range of rows. All rows in between startRow and endRow are also selected.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectRange(int startRow, int endRow, bool keepExisting)
+            {
+                this.ToComponent().SelectRange(startRow, endRow, keepExisting);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Select rows by id.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectById(object id, bool keepExisting)
+            {
+                this.ToComponent().SelectById(id, keepExisting);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Select rows by id.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectById(object id)
+            {
+                this.ToComponent().SelectById(id);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Select rows by id.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectById(object[] ids, bool keepExisting)
+            {
+                this.ToComponent().SelectById(ids, keepExisting);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Select rows by id.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectById(object[] ids)
+            {
+                this.ToComponent().SelectById(ids);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Selects a row.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectRow(int row)
+            {
+                this.ToComponent().SelectRow(row);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Selects a row.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectRow(int row, bool keepExisting)
+            {
+                this.ToComponent().SelectRow(row, keepExisting);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Selects multiple rows.
+			/// </summary>
+            public virtual RowSelectionModel.Builder SelectRows(int[] rows, bool keepExisting)
+            {
+                this.ToComponent().SelectRows(rows, keepExisting);
+                return this;
+            }
+            
         }
 
         /// <summary>

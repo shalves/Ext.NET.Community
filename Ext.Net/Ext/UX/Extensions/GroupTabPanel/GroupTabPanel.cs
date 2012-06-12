@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -43,7 +43,7 @@ namespace Ext.Net
     [ToolboxBitmap(typeof(GroupTabPanel), "Build.ToolboxIcons.GroupTabPanel.bmp")]
     [ToolboxData("<{0}:GroupTabPanel runat=\"server\" Title=\"GroupTabPanel\"><Items></Items></{0}:GroupTabPanel>")]
     [Description("")]
-    public partial class GroupTabPanel : AbstractPanel, IItems, IPostBackEventHandler
+    public partial class GroupTabPanel : PanelBase, IItems, IPostBackEventHandler
     {
 		/// <summary>
 		/// 
@@ -102,11 +102,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("DeferredRender", true);
+                object obj = this.ViewState["DeferredRender"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("DeferredRender", value);
+                this.ViewState["DeferredRender"] = value;
             }
         }
 
@@ -148,11 +149,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("ActiveGroupIndex", (this.Groups.Count == 0) ? -1 : 0);
+                object obj = this.ViewState["ActiveGroupIndex"];
+                return (obj == null) ? (this.Groups.Count == 0) ? -1 : 0 : (int)obj;
             }
             set
             {
-                this.State.Set("ActiveGroupIndex", value);
+                this.ViewState["ActiveGroupIndex"] = value;
             }
         }
 
@@ -218,11 +220,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<TabAlign>("TabPosition", TabAlign.Left);
+                object obj = this.ViewState["TabPosition"];
+                return (obj == null) ? TabAlign.Left : (TabAlign)obj;
             }
             set
             {
-                this.State.Set("TabPosition", value);
+                this.ViewState["TabPosition"] = value;
             }
         }
 
@@ -239,11 +242,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.UnitPixelTypeCheck(State["TabWidth"], Unit.Pixel(120), "TabWidth");
+                return this.UnitPixelTypeCheck(ViewState["TabWidth"], Unit.Pixel(120), "TabWidth");
             }
             set
             {
-                this.State.Set("TabWidth", value);
+                this.ViewState["TabWidth"] = value;
             }
         }
 
@@ -264,7 +267,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public GroupTabPanelListeners Listeners
         {
@@ -288,7 +292,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public GroupTabPanelDirectEvents DirectEvents
         {
@@ -296,7 +301,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new GroupTabPanelDirectEvents(this);
+                    this.directEvents = new GroupTabPanelDirectEvents();
                 }
 
                 return this.directEvents;
@@ -381,9 +386,9 @@ namespace Ext.Net
 
                     if (activeGroupNum > -1 && this.ActiveGroupIndex != activeGroupNum)
                     {
-                        this.State.Suspend();
+                        this.ViewState.Suspend();
                         this.ActiveGroupIndex = activeGroupNum;
-                        this.State.Resume();
+                        this.ViewState.Resume();
                         thisLoadPostData = true;
                         return true;
                     }

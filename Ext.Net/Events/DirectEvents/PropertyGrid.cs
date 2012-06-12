@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -35,24 +35,10 @@ namespace Ext.Net
 	[Description("")]
     public partial class PropertyGridDirectEvents : GridPanelDirectEvents
     {
-        public PropertyGridDirectEvents() { }
-
-        public PropertyGridDirectEvents(Observable parent) { this.Parent = parent; }
-
         private ComponentDirectEvent beforePropertyChange;
 
         /// <summary>
-        /// Fires before a property value changes. Handlers can return false to cancel the property change (this will internally call Ext.data.Model.reject on the property's record).
-        /// 
-        /// Parameters
-        /// source : Object
-        ///     The source data object for the grid (corresponds to the same object passed in as the source config property).
-        /// recordId : String
-        ///     The record's id in the data store
-        /// value : Object
-        ///     The current edited property value
-        /// oldValue : Object
-        ///     The original property value prior to editing
+        /// Fires before a property value changes. Handlers can return false to cancel the property change (this will internally call Ext.data.Record.reject on the property's record).
         /// </summary>
         [ListenerArgument(0, "source")]
         [ListenerArgument(1, "recordId")]
@@ -67,7 +53,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.beforePropertyChange ?? (this.beforePropertyChange = new ComponentDirectEvent(this));
+                if (this.beforePropertyChange == null)
+                {
+                    this.beforePropertyChange = new ComponentDirectEvent();
+                }
+
+                return this.beforePropertyChange;
             }
         }
 
@@ -75,16 +66,6 @@ namespace Ext.Net
 
         /// <summary>
         /// Fires after a property value has changed.
-        /// 
-        /// Parameters
-        /// source : Object
-        ///     The source data object for the grid (corresponds to the same object passed in as the source config property).
-        /// recordId : String
-        ///     The record's id in the data store
-        /// value : Object
-        ///     The current edited property value
-        /// oldValue : Object
-        ///     The original property value prior to editing
         /// </summary>
         [ListenerArgument(0, "source")]
         [ListenerArgument(1, "recordId")]
@@ -99,7 +80,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.propertyChange ?? (this.propertyChange = new ComponentDirectEvent(this));
+                if (this.propertyChange == null)
+                {
+                    this.propertyChange = new ComponentDirectEvent();
+                }
+
+                return this.propertyChange;
             }
         }
     }

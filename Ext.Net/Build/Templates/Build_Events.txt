@@ -3,16 +3,8 @@
 
 "$(SolutionDir)Ext.Net.Meta.Factory\$(OutDir)\Ext.Net.Meta.Factory.exe"
 
-// CURRENT
-"$(SolutionDir)Ext.Net\Build\ReferenceAssemblies\ERB\Ext.Net.ResourceBuilder.exe" "$(ProjectDir) " "Ext.Net.Build" "$(ProjectDir) " ""
+"$(SolutionDir)Ext.Net.ERB\$(OutDir)\Ext.Net.ResourceBuilder.exe" "$(ProjectDir) " "Ext.Net.Build" "$(ProjectDir) " ""
 
-// OLD
-// "$(SolutionDir)Ext.Net.ERB\$(OutDir)\Ext.Net.ResourceBuilder.exe" "$(ProjectDir) " "Ext.Net.Build" "$(ProjectDir) " ""
-
-XCopy
----------------------------------
-xcopy "$(SolutionDir)Ext.Net\Build\Ext.Net\CHANGELOG.txt" "$(ProjectDir)" /y
-xcopy "$(SolutionDir)Ext.Net\Build\Ext.Net\README.txt" "$(ProjectDir)" /y
 
 
 Post-Build

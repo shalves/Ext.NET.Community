@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class FileUploadField
     {
         /// <summary>
@@ -78,18 +75,16 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
-			/// A standard Ext.button.Button config object.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of FileUploadField.Builder</returns>
-            public virtual FileUploadField.Builder Button(Action<Button> action)
+			/// The Text value to initialize this field with.
+			/// </summary>
+            public virtual FileUploadField.Builder Text(string text)
             {
-                action(this.ToComponent().Button);
+                this.ToComponent().Text = text;
                 return this as FileUploadField.Builder;
             }
-			 
+             
  			/// <summary>
-			/// The button text to display on the upload button (defaults to 'Browse...'). Note that if you supply a value for buttonConfig, the buttonConfig.text value will be used instead if available.
+			/// The button text to display on the upload button (defaults to 'Browse...'). Note that if you supply a value for ButtonCfg, the ButtonCfg.Text value will be used instead if available.
 			/// </summary>
             public virtual FileUploadField.Builder ButtonText(string buttonText)
             {
@@ -98,7 +93,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// True to display the file upload field as a button with no visible text field (defaults to false). If true, all inherited Text members will still be available.
+			/// True to display the file upload field as a button with no visible text field (defaults to false).
 			/// </summary>
             public virtual FileUploadField.Builder ButtonOnly(bool buttonOnly)
             {
@@ -107,36 +102,59 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The number of pixels of space reserved between the button and the text field (defaults to 3). Note that this only applies if buttonOnly = false.
+			/// The number of pixels of space reserved between the button and the text field (defaults to 3).  Note that this only applies if ButtonOnly=false.
 			/// </summary>
-            public virtual FileUploadField.Builder ButtonMargin(int buttonMargin)
+            public virtual FileUploadField.Builder ButtonOffset(int buttonOffset)
             {
-                this.ToComponent().ButtonMargin = buttonMargin;
+                this.ToComponent().ButtonOffset = buttonOffset;
                 return this as FileUploadField.Builder;
             }
              
  			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of FileUploadField.Builder</returns>
-            public virtual FileUploadField.Builder Listeners(Action<FileUploadFieldListeners> action)
+			/// True to mark the field as readOnly in HTML (defaults to false) -- Note: this only sets the element's readOnly DOM attribute.
+			/// </summary>
+            public virtual FileUploadField.Builder ReadOnly(bool readOnly)
             {
-                action(this.ToComponent().Listeners);
+                this.ToComponent().ReadOnly = readOnly;
                 return this as FileUploadField.Builder;
             }
-			 
+             
  			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of FileUploadField.Builder</returns>
-            public virtual FileUploadField.Builder DirectEvents(Action<FileUploadFieldDirectEvents> action)
+			/// The icon to use in the Button. See also, IconCls to set an icon with a custom Css class.
+			/// </summary>
+            public virtual FileUploadField.Builder Icon(Icon icon)
             {
-                action(this.ToComponent().DirectEvents);
+                this.ToComponent().Icon = icon;
                 return this as FileUploadField.Builder;
             }
-			
+             
+ 			/// <summary>
+			/// A css class which sets a background image to be used as the icon for this button.
+			/// </summary>
+            public virtual FileUploadField.Builder IconCls(string iconCls)
+            {
+                this.ToComponent().IconCls = iconCls;
+                return this as FileUploadField.Builder;
+            }
+             
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(FileUploadFieldListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(FileUploadFieldDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

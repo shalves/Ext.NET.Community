@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,236 +33,225 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class TreePanelListeners : TablePanelListeners
+    public partial class TreePanelListeners : PanelListeners
     {
-        private ComponentListener beforeItemAppend;
+        private ComponentListener append;
 
         /// <summary>
-        /// Fires before a new child is appended, return false to cancel the append.
-        /// 
-        /// Parameters
-        /// item : Node
-        ///     This node
-        /// node : Node
-        ///     The child node to be appended
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
+        /// Fires when a new child node is appended to a node in this tree.
         /// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "node")]
-        [ListenerArgument(2, "options")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("beforeitemappend", typeof(ListenerJsonConverter))]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("Fires before a new child is appended, return false to cancel the append.")]
-        public virtual ComponentListener BeforeItemAppend
-        {
-            get
-            {
-                if (this.beforeItemAppend == null)
-                {
-                    this.beforeItemAppend = new ComponentListener();
-                }
-
-                return this.beforeItemAppend;
-            }
-        }
-
-        private ComponentListener beforeItemCollapse;
-
-        /// <summary>
-        /// Fires before this node is collapsed.
-        /// 
-        /// Parameters
-        /// item : Node
-        ///     The collapsing node        
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
-        /// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "options")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("beforeitemcollapse", typeof(ListenerJsonConverter))]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("Fires before this node is collapsed.")]
-        public virtual ComponentListener BeforeItemCollapse
-        {
-            get
-            {
-                if (this.beforeItemCollapse == null)
-                {
-                    this.beforeItemCollapse = new ComponentListener();
-                }
-
-                return this.beforeItemCollapse;
-            }
-        }
-
-        private ComponentListener beforeItemExpand;
-
-        /// <summary>
-        /// Fires before this node is collapsed.
-        /// 
-        /// Parameters
-        /// item : Node
-        ///     The collapsing node        
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
-        /// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "options")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("beforeitemexpand", typeof(ListenerJsonConverter))]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("Fires before this node is collapsed.")]
-        public virtual ComponentListener BeforeItemExpand
-        {
-            get
-            {
-                if (this.beforeItemExpand == null)
-                {
-                    this.beforeItemExpand = new ComponentListener();
-                }
-
-                return this.beforeItemExpand;
-            }
-        }
-
-        private ComponentListener beforeItemInsert;
-
-        /// <summary>
-        /// Fires before a new child is inserted, return false to cancel the insert.
-        /// 
-        /// Parameters
-        /// item : Node
-        ///     This node
-        /// node : Node
-        ///     The child node to be inserted
-        /// refNode : Node
-        ///     The child node the node is being inserted before
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
-        /// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "node")]
-        [ListenerArgument(2, "refNode")]
-        [ListenerArgument(3, "options")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("beforeiteminsert", typeof(ListenerJsonConverter))]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("Fires before a new child is inserted, return false to cancel the insert.")]
-        public virtual ComponentListener BeforeItemInsert
-        {
-            get
-            {
-                if (this.beforeItemInsert == null)
-                {
-                    this.beforeItemInsert = new ComponentListener();
-                }
-
-                return this.beforeItemInsert;
-            }
-        }
-
-        private ComponentListener beforeItemMove;
-
-        /// <summary>
-        /// Fires before this node is moved to a new location in the tree. Return false to cancel the move.
-        /// 
-        /// Parameters
-        /// item : Node
-        ///     The collapsing node  
-        /// oldParent : Node
-        ///     The parent of this node
-        /// newParent : Node
-        ///     The new parent this node is moving to
-        /// index : Number
-        ///     The index it is being moved to
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
-        /// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "oldParent")]
-        [ListenerArgument(2, "newParent")]
+        [ListenerArgument(0, "tree", typeof(TreePanel))]
+        [ListenerArgument(1, "parent", typeof(Node))]
+        [ListenerArgument(2, "node", typeof(Node))]
         [ListenerArgument(3, "index")]
-        [ListenerArgument(4, "options")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("beforeitemmove", typeof(ListenerJsonConverter))]
+        [ConfigOption("append", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires before this node is moved to a new location in the tree. Return false to cancel the move.")]
-        public virtual ComponentListener BeforeItemMove
+        [Description("Fires when a new child node is appended to a node in this tree.")]
+        public virtual ComponentListener Append
         {
             get
             {
-                if (this.beforeItemMove == null)
+                if (this.append == null)
                 {
-                    this.beforeItemMove = new ComponentListener();
+                    this.append = new ComponentListener();
                 }
 
-                return this.beforeItemMove;
+                return this.append;
             }
         }
 
-        private ComponentListener beforeItemRemove;
+        private ComponentListener beforeAppend;
 
         /// <summary>
-        /// Fires before a child is removed, return false to cancel the remove.
-        /// 
-        /// Parameters
-        /// item : Node
-        ///     The collapsing node  
-        /// node : Node
-        ///     The child node to be removed
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
+        /// Fires before a new child is appended to a node in this tree, return false to cancel the append.
         /// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "node")]
-        [ListenerArgument(2, "options")]
+        [ListenerArgument(0, "tree", typeof(TreePanel))]
+        [ListenerArgument(1, "parent", typeof(Node))]
+        [ListenerArgument(2, "node", typeof(Node))]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("beforeitemremove", typeof(ListenerJsonConverter))]
+        [ConfigOption("beforeappend", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires before a child is removed, return false to cancel the remove.")]
-        public virtual ComponentListener BeforeItemRemove
+        [Description("Fires before a new child is appended to a node in this tree, return false to cancel the append.")]
+        public virtual ComponentListener BeforeAppend
         {
             get
             {
-                if (this.beforeItemRemove == null)
+                if (this.beforeAppend == null)
                 {
-                    this.beforeItemRemove = new ComponentListener();
+                    this.beforeAppend = new ComponentListener();
                 }
 
-                return this.beforeItemRemove;
+                return this.beforeAppend;
+            }
+        }
+
+        private ComponentListener beforeChildrenRendered;
+
+        /// <summary>
+        /// Fires right before the child nodes for a node are rendered
+        /// </summary>
+        [ListenerArgument(0, "node", typeof(Node))]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("beforechildrenrendered", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires right before the child nodes for a node are rendered")]
+        public virtual ComponentListener BeforeChildrenRendered
+        {
+            get
+            {
+                if (this.beforeChildrenRendered == null)
+                {
+                    this.beforeChildrenRendered = new ComponentListener();
+                }
+
+                return this.beforeChildrenRendered;
+            }
+        }
+
+        private ComponentListener beforeClick;
+
+        /// <summary>
+        /// Fires before click processing on a node. Return false to cancel the default action.
+        /// </summary>
+        [ListenerArgument(0, "node")]
+        [ListenerArgument(1, "e")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("beforeclick", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires before click processing on a node. Return false to cancel the default action.")]
+        public virtual ComponentListener BeforeClick
+        {
+            get
+            {
+                if (this.beforeClick == null)
+                {
+                    this.beforeClick = new ComponentListener();
+                }
+
+                return this.beforeClick;
+            }
+        }
+
+        private ComponentListener beforeCollapseNode;
+
+        /// <summary>
+        /// Fires before a node is collapsed, return false to cancel.
+        /// </summary>
+        [ListenerArgument(0, "node")]
+        [ListenerArgument(1, "deep")]
+        [ListenerArgument(2, "anim")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("beforecollapsenode", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires before a node is collapsed, return false to cancel.")]
+        public virtual ComponentListener BeforeCollapseNode
+        {
+            get
+            {
+                if (this.beforeCollapseNode == null)
+                {
+                    this.beforeCollapseNode = new ComponentListener();
+                }
+
+                return this.beforeCollapseNode;
+            }
+        }
+
+        private ComponentListener beforeDblClick;
+
+        /// <summary>
+        /// Fires before double click processing on a node. Return false to cancel the default action.
+        /// </summary>
+        [ListenerArgument(0, "node")]
+        [ListenerArgument(1, "e")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("beforedblclick", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires before double click processing on a node. Return false to cancel the default action.")]
+        public virtual ComponentListener BeforeDblClick
+        {
+            get
+            {
+                if (this.beforeDblClick == null)
+                {
+                    this.beforeDblClick = new ComponentListener();
+                }
+
+                return this.beforeDblClick;
+            }
+        }
+
+        private ComponentListener beforeExpandNode;
+
+        /// <summary>
+        /// Fires before a node is expanded, return false to cancel.
+        /// </summary>
+        [ListenerArgument(0, "node")]
+        [ListenerArgument(1, "deep")]
+        [ListenerArgument(2, "anim")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("beforeexpandnode", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires before a node is expanded, return false to cancel.")]
+        public virtual ComponentListener BeforeExpandNode
+        {
+            get
+            {
+                if (this.beforeExpandNode == null)
+                {
+                    this.beforeExpandNode = new ComponentListener();
+                }
+
+                return this.beforeExpandNode;
+            }
+        }
+
+        private ComponentListener beforeInsert;
+
+        /// <summary>
+        /// Fires before a new child is inserted in a node in this tree, return false to cancel the insert.
+        /// </summary>
+        [ListenerArgument(0, "tree")]
+        [ListenerArgument(1, "parent", typeof(Node))]
+        [ListenerArgument(2, "node", typeof(Node))]
+        [ListenerArgument(3, "refNode")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("beforeinsert", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires before a new child is inserted in a node in this tree, return false to cancel the insert.")]
+        public virtual ComponentListener BeforeInsert
+        {
+            get
+            {
+                if (this.beforeInsert == null)
+                {
+                    this.beforeInsert = new ComponentListener();
+                }
+
+                return this.beforeInsert;
             }
         }
 
         private ComponentListener beforeLoad;
 
         /// <summary>
-        /// Fires before a request is made for a new data object. If the beforeload handler returns false the load action will be canceled.
-        /// 
-        /// Parameters
-        /// item : Ext.data.Store
-        ///     This Store
-        /// operation : Ext.data.Operation
-        ///     The Ext.data.Operation object that will be passed to the Proxy to load the Store
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
+        /// Fires before a node is loaded, return false to cancel.
         /// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "operation")]
-        [ListenerArgument(2, "options")]
+        [ListenerArgument(0, "node")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("beforeload", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires before a request is made for a new data object. If the beforeload handler returns false the load action will be canceled.")]
+        [Description("Fires before a node is loaded, return false to cancel.")]
         public virtual ComponentListener BeforeLoad
         {
             get
@@ -276,22 +265,91 @@ namespace Ext.Net
             }
         }
 
+        private ComponentListener beforeMoveNode;
+
+        /// <summary>
+        /// Fires before a node is moved to a new location in the tree. Return false to cancel the move.
+        /// </summary>
+        [ListenerArgument(0, "tree")]
+        [ListenerArgument(1, "node", typeof(Node))]
+        [ListenerArgument(2, "oldParent", typeof(Node))]
+        [ListenerArgument(3, "newParent", typeof(Node))]
+        [ListenerArgument(4, "index")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("beforemovenode", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires before a node is moved to a new location in the tree. Return false to cancel the move.")]
+        public virtual ComponentListener BeforeMoveNode
+        {
+            get
+            {
+                if (this.beforeMoveNode == null)
+                {
+                    this.beforeMoveNode = new ComponentListener();
+                }
+
+                return this.beforeMoveNode;
+            }
+        }
+
+        private ComponentListener beforeNodeDrop;
+
+        /// <summary>
+        /// Fires when a DD object is dropped on a node in this tree for preprocessing. Return false to cancel the drop.
+        /// </summary>
+        [ListenerArgument(0, "dropEvent")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("beforenodedrop", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when a DD object is dropped on a node in this tree for preprocessing. Return false to cancel the drop.")]
+        public virtual ComponentListener BeforeNodeDrop
+        {
+            get
+            {
+                if (this.beforeNodeDrop == null)
+                {
+                    this.beforeNodeDrop = new ComponentListener();
+                }
+
+                return this.beforeNodeDrop;
+            }
+        }
+
+        private ComponentListener beforeRemoveNode;
+
+        /// <summary>
+        /// Fires before a child is removed from a node in this tree, return false to cancel the remove.
+        /// </summary>
+        [ListenerArgument(0, "tree")]
+        [ListenerArgument(1, "parent", typeof(Node))]
+        [ListenerArgument(2, "node", typeof(Node))]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("beforeremove", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires before a child is removed from a node in this tree, return false to cancel the remove.")]
+        public virtual ComponentListener BeforeRemoveNode
+        {
+            get
+            {
+                if (this.beforeRemoveNode == null)
+                {
+                    this.beforeRemoveNode = new ComponentListener();
+                }
+
+                return this.beforeRemoveNode;
+            }
+        }
+
         private ComponentListener checkChange;
 
         /// <summary>
         /// Fires when a node with a checkbox's checked property changes
-        /// 
-        /// Parameters
-        /// item : Ext.data.Model
-        ///     The node who's checked property was changed
-        /// checked : Boolean
-        ///     The node's new checked state
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
         /// </summary>
-        [ListenerArgument(0, "item")]
+        [ListenerArgument(0, "node")]
         [ListenerArgument(1, "checked")]
-        [ListenerArgument(2, "options")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("checkchange", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -310,242 +368,245 @@ namespace Ext.Net
             }
         }
 
-        private ComponentListener itemAppend;
+        private ComponentListener click;
 
         /// <summary>
-        /// Fires when a new child node is appended
-        /// 
-        /// Parameters
-        /// item : Node
-        ///     This node
-        /// node : Node
-        ///     The newly appended node
-        /// index : Number
-        ///     The index of the newly appended node
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
+        /// Fires when a node is clicked
         /// </summary>
-        [ListenerArgument(0, "item")]
+        [ListenerArgument(0, "node")]
+        [ListenerArgument(1, "e")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("click", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when a node is clicked")]
+        public virtual ComponentListener Click
+        {
+            get
+            {
+                if (this.click == null)
+                {
+                    this.click = new ComponentListener();
+                }
+
+                return this.click;
+            }
+        }
+
+        private ComponentListener collapseNode;
+
+        /// <summary>
+        /// Fires when a node is collapsed
+        /// </summary>
+        [ListenerArgument(0, "node")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("collapsenode", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when a node is collapsed")]
+        public virtual ComponentListener CollapseNode
+        {
+            get
+            {
+                if (this.collapseNode == null)
+                {
+                    this.collapseNode = new ComponentListener();
+                }
+
+                return this.collapseNode;
+            }
+        }
+
+        private ComponentListener contextMenu;
+
+        /// <summary>
+        /// Fires when a node is right clicked.
+        /// </summary>
+        [ListenerArgument(0, "node")]
+        [ListenerArgument(1, "e")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("contextmenu", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when a node is right clicked.")]
+        public virtual ComponentListener ContextMenu
+        {
+            get
+            {
+                if (this.contextMenu == null)
+                {
+                    this.contextMenu = new ComponentListener();
+                }
+
+                return this.contextMenu;
+            }
+        }
+
+        private ComponentListener dblClick;
+
+        /// <summary>
+        /// Fires when a node is double clicked
+        /// </summary>
+        [ListenerArgument(0, "node")]
+        [ListenerArgument(1, "e")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("dblclick", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when a node is double clicked")]
+        public virtual ComponentListener DblClick
+        {
+            get
+            {
+                if (this.dblClick == null)
+                {
+                    this.dblClick = new ComponentListener();
+                }
+
+                return this.dblClick;
+            }
+        }
+
+        private ComponentListener disabledChange;
+
+        /// <summary>
+        /// Fires when the disabled status of a node changes
+        /// </summary>
+        [ListenerArgument(0, "node")]
+        [ListenerArgument(1, "disabled")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("disabledchange", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when the disabled status of a node changes")]
+        public virtual ComponentListener DisabledChange
+        {
+            get
+            {
+                if (this.disabledChange == null)
+                {
+                    this.disabledChange = new ComponentListener();
+                }
+
+                return this.disabledChange;
+            }
+        }
+
+        private ComponentListener dragDrop;
+
+        /// <summary>
+        /// Fires when a dragged node is dropped on a valid DD target
+        /// </summary>
+        [ListenerArgument(0, "tree")]
         [ListenerArgument(1, "node")]
-        [ListenerArgument(2, "index")]
-        [ListenerArgument(3, "options")]
+        [ListenerArgument(2, "dd")]
+        [ListenerArgument(3, "e")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("itemappend", typeof(ListenerJsonConverter))]
+        [ConfigOption("dragdrop", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when a new child node is appended")]
-        public virtual ComponentListener ItemAppend
+        [Description("Fires when a dragged node is dropped on a valid DD target")]
+        public virtual ComponentListener DragDrop
         {
             get
             {
-                if (this.itemAppend == null)
+                if (this.dragDrop == null)
                 {
-                    this.itemAppend = new ComponentListener();
+                    this.dragDrop = new ComponentListener();
                 }
 
-                return this.itemAppend;
+                return this.dragDrop;
             }
         }
 
-        private ComponentListener itemCollapse;
+        private ComponentListener endDrag;
 
         /// <summary>
-        /// Fires when this node is collapsed.
-        /// 
-        /// Parameters
-        /// item : Node
-        ///     The collapsing node
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
+        /// Fires when a drag operation is complete
         /// </summary>
-        [ListenerArgument(0, "item")]        
-        [ListenerArgument(1, "options")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("itemcollapse", typeof(ListenerJsonConverter))]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("Fires when this node is collapsed.")]
-        public virtual ComponentListener ItemCollapse
-        {
-            get
-            {
-                if (this.itemCollapse == null)
-                {
-                    this.itemCollapse = new ComponentListener();
-                }
-
-                return this.itemCollapse;
-            }
-        }
-
-        private ComponentListener itemExpand;
-
-        /// <summary>
-        /// Fires when this node is expanded.
-        /// 
-        /// Parameters
-        /// item : Node
-        ///     The expanding node
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
-        /// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "options")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("itemexpand", typeof(ListenerJsonConverter))]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("Fires when this node is expanded.")]
-        public virtual ComponentListener ItemExpand
-        {
-            get
-            {
-                if (this.itemExpand == null)
-                {
-                    this.itemExpand = new ComponentListener();
-                }
-
-                return this.itemExpand;
-            }
-        }
-
-        private ComponentListener itemInsert;
-
-        /// <summary>
-        /// Fires when a new child node is inserted.
-        /// 
-        /// Parameters
-        /// item : Node
-        ///     The expanding node
-        /// node : Node
-        ///     The child node inserted
-        /// refNode : Node
-        ///     The child node the node was inserted before
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
-        /// </summary>
-        [ListenerArgument(0, "item")]
+        [ListenerArgument(0, "tree")]
         [ListenerArgument(1, "node")]
-        [ListenerArgument(2, "refNode")]
-        [ListenerArgument(3, "options")]
+        [ListenerArgument(2, "e")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("iteminsert", typeof(ListenerJsonConverter))]
+        [ConfigOption("enddrag", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when a new child node is inserted.")]
-        public virtual ComponentListener ItemInsert
+        [Description("Fires when a drag operation is complete")]
+        public virtual ComponentListener EndDrag
         {
             get
             {
-                if (this.itemInsert == null)
+                if (this.endDrag == null)
                 {
-                    this.itemInsert = new ComponentListener();
+                    this.endDrag = new ComponentListener();
                 }
 
-                return this.itemInsert;
+                return this.endDrag;
             }
         }
 
-        private ComponentListener itemMove;
+        private ComponentListener expandNode;
 
         /// <summary>
-        /// Fires when this node is moved to a new location in the tree
-        /// 
-        /// Parameters
-        /// item : Node
-        ///     This node
-        /// oldParent : Node
-        ///     The old parent of this node
-        /// newParent : Node
-        ///     The new parent of this node
-        /// index : Number
-        ///     The index it was moved to
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
+        /// Fires when a node is expanded
         /// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "oldParent")]
-        [ListenerArgument(2, "newParent")]
-        [ListenerArgument(3, "index")]
-        [ListenerArgument(4, "options")]
+        [ListenerArgument(0, "node")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("itemmove", typeof(ListenerJsonConverter))]
+        [ConfigOption("expandnode", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when this node is moved to a new location in the tree")]
-        public virtual ComponentListener ItemMove
+        [Description("Fires when a node is expanded")]
+        public virtual ComponentListener ExpandNode
         {
             get
             {
-                if (this.itemMove == null)
+                if (this.expandNode == null)
                 {
-                    this.itemMove = new ComponentListener();
+                    this.expandNode = new ComponentListener();
                 }
 
-                return this.itemMove;
+                return this.expandNode;
             }
         }
 
-        private ComponentListener itemRemove;
+        private ComponentListener insert;
 
         /// <summary>
-        /// Fires when a child node is removed
-        /// 
-        /// Parameters
-        /// item : Node
-        ///     This node
-        /// node : Node
-        ///     The removed node
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
+        /// Fires when a new child node is inserted in a node in this tree.
         /// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "node")]
-        [ListenerArgument(2, "options")]
+        [ListenerArgument(0, "tree")]
+        [ListenerArgument(1, "parent", typeof(Node))]
+        [ListenerArgument(2, "node", typeof(Node))]
+        [ListenerArgument(3, "refNode", typeof(Node))]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("itemremove", typeof(ListenerJsonConverter))]
+        [ConfigOption("insert", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when a child node is removed")]
-        public virtual ComponentListener ItemRemove
+        [Description("Fires when a new child node is inserted in a node in this tree.")]
+        public virtual ComponentListener Insert
         {
             get
             {
-                if (this.itemRemove == null)
+                if (this.insert == null)
                 {
-                    this.itemRemove = new ComponentListener();
+                    this.insert = new ComponentListener();
                 }
 
-                return this.itemRemove;
+                return this.insert;
             }
         }
 
         private ComponentListener load;
 
         /// <summary>
-        /// Fires whenever records have been prefetched
-        /// 
-        /// Parameters
-        /// item : Ext.data.store
-        /// records : Array
-        ///     An array of records
-        /// successful : Boolean
-        ///     True if the operation was successful.
-        /// operation : Ext.data.Operation
-        ///     The associated operation
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
+        /// Fires when a node is loaded
         /// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "records")]
-        [ListenerArgument(2, "successful")]
-        [ListenerArgument(3, "operation")]
-        [ListenerArgument(4, "options")]
+        [ListenerArgument(0, "node")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("load", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires whenever records have been prefetched")]
+        [Description("Fires when a node is loaded")]
         public virtual ComponentListener Load
         {
             get
@@ -559,6 +620,160 @@ namespace Ext.Net
             }
         }
 
+        private ComponentListener moveNode;
+
+        /// <summary>
+        /// Fires when a node is moved to a new location in the tree
+        /// </summary>
+        [ListenerArgument(0, "tree")]
+        [ListenerArgument(1, "node", typeof(Node))]
+        [ListenerArgument(2, "oldParent", typeof(Node))]
+        [ListenerArgument(3, "newParent", typeof(Node))]
+        [ListenerArgument(4, "index")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("movenode", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when a node is moved to a new location in the tree")]
+        public virtual ComponentListener MoveNode
+        {
+            get
+            {
+                if (this.moveNode == null)
+                {
+                    this.moveNode = new ComponentListener();
+                }
+
+                return this.moveNode;
+            }
+        }
+
+        private ComponentListener nodeDragOver;
+
+        /// <summary>
+        /// Fires when a tree node is being targeted for a drag drop, return false to signal drop not allowed.
+        /// </summary>
+        [ListenerArgument(0, "dragOverEvent")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("nodedragover", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when a tree node is being targeted for a drag drop, return false to signal drop not allowed.")]
+        public virtual ComponentListener NodeDragOver
+        {
+            get
+            {
+                if (this.nodeDragOver == null)
+                {
+                    this.nodeDragOver = new ComponentListener();
+                }
+
+                return this.nodeDragOver;
+            }
+        }
+
+        private ComponentListener nodeDrop;
+
+        /// <summary>
+        /// Fires after a DD object is dropped on a node in this tree.
+        /// </summary>
+        [ListenerArgument(0, "dropEvent")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("nodedrop", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires after a DD object is dropped on a node in this tree.")]
+        public virtual ComponentListener NodeDrop
+        {
+            get
+            {
+                if (this.nodeDrop == null)
+                {
+                    this.nodeDrop = new ComponentListener();
+                }
+
+                return this.nodeDrop;
+            }
+        }
+
+
+        private ComponentListener removeNode;
+
+        /// <summary>
+        /// Fires when a child node is removed from a node in this tree.
+        /// </summary>
+        [ListenerArgument(0, "tree")]
+        [ListenerArgument(1, "parent", typeof(Node))]
+        [ListenerArgument(2, "node", typeof(Node))]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("remove", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when a child node is removed from a node in this tree.")]
+        public virtual ComponentListener RemoveNode
+        {
+            get
+            {
+                if (this.removeNode == null)
+                {
+                    this.removeNode = new ComponentListener();
+                }
+
+                return this.removeNode;
+            }
+        }
+
+        private ComponentListener startDrag;
+
+        /// <summary>
+        /// Fires when a node starts being dragged
+        /// </summary>
+        [ListenerArgument(0, "tree")]
+        [ListenerArgument(1, "node")]
+        [ListenerArgument(2, "e")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("startdrag", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when a node starts being dragged")]
+        public virtual ComponentListener StartDrag
+        {
+            get
+            {
+                if (this.startDrag == null)
+                {
+                    this.startDrag = new ComponentListener();
+                }
+
+                return this.startDrag;
+            }
+        }
+
+        private ComponentListener textChange;
+
+        /// <summary>
+        /// Fires when the text for a node is changed
+        /// </summary>
+        [ListenerArgument(0, "node")]
+        [ListenerArgument(1, "text")]
+        [ListenerArgument(2, "oldText")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("textchange", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when the text for a node is changed")]
+        public virtual ComponentListener TextChange
+        {
+            get
+            {
+                if (this.textChange == null)
+                {
+                    this.textChange = new ComponentListener();
+                }
+
+                return this.textChange;
+            }
+        }
 
         private ComponentListener submit;
 

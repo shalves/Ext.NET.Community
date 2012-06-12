@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,119 +33,158 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class RowSelectionModelListeners : AbstractSelectionModelListeners
+    public partial class RowSelectionModelListeners : ComponentBaseListeners
     {
-        private ComponentListener beforeDeselect;
+        private ComponentListener beforeRowSelect;
 
         /// <summary>
-        /// Fired before a record is deselected. If any listener returns false, the deselection is cancelled.
-        /// Parameters
-        /// item : Ext.selection.RowSelectionModel
-        /// record : Ext.data.Model
-        ///     The deselected record
-        /// index : Number
-        ///     The row index deselected
+        /// Fires when a row is being selected, return false to cancel.
         /// </summary>
-        [ListenerArgument(0, "item", typeof(RowSelectionModel), "this")]
-        [ListenerArgument(1, "record")]
-        [ListenerArgument(2, "index")]
+        [ListenerArgument(0, "item", typeof(RowSelectionModel), "SelectionModel")]
+        [ListenerArgument(1, "rowIndex", typeof(int), "The selected index")]
+        [ListenerArgument(2, "keepExisting", typeof(bool), "False if other selections will be cleared")]
+        [ListenerArgument(3, "record", typeof(object), "The record to be selected")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("beforedeselect", typeof(ListenerJsonConverter))]
+        [ConfigOption("beforerowselect", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fired before a record is deselected. If any listener returns false, the deselection is cancelled.")]
-        public virtual ComponentListener BeforeDeselect
+        [Description("Fires when a row is being selected, return false to cancel.")]
+        public virtual ComponentListener BeforeRowSelect
         {
             get
             {
-                return this.beforeDeselect ?? (this.beforeDeselect = new ComponentListener());
-            }
-        }
-
-        private ComponentListener deselect;
-
-        /// <summary>
-        /// Fired after a record is deselected
-        /// Parameters
-        /// item : Ext.selection.RowSelectionModel
-        /// record : Ext.data.Model
-        ///     The deselected record
-        /// index : Number
-        ///     The row index deselected
-        /// </summary>
-        [ListenerArgument(0, "item", typeof(RowSelectionModel), "this")]
-        [ListenerArgument(1, "record")]
-        [ListenerArgument(2, "index")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("deselect", typeof(ListenerJsonConverter))]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("Fired after a record is deselected")]
-        public virtual ComponentListener Deselect
-        {
-            get
-            {
-                if (this.deselect == null)
+                if (this.beforeRowSelect == null)
                 {
-                    ;
+                    this.beforeRowSelect = new ComponentListener();
                 }
 
-                return this.deselect ?? (this.deselect = new ComponentListener());
+                return this.beforeRowSelect;
             }
         }
 
-        private ComponentListener beforeSelect;
+        private ComponentListener rowDeselect;
 
         /// <summary>
-        /// Fired before a record is selected. If any listener returns false, the selection is cancelled.
-        /// Parameters
-        /// item : Ext.selection.RowSelectionModel
-        /// record : Ext.data.Model
-        ///     The selected record
-        /// index : Number
-        ///     The row index selected
+        /// Fires when a row is deselected.
         /// </summary>
-        [ListenerArgument(0, "item", typeof(RowSelectionModel), "this")]
-        [ListenerArgument(1, "record")]
-        [ListenerArgument(2, "index")]
+        [ListenerArgument(0, "item", typeof(RowSelectionModel), "SelectionModel")]
+        [ListenerArgument(1, "rowIndex", typeof(int), "The selected index")]
+        [ListenerArgument(2, "record", typeof(object), "The selected record")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("beforeselect", typeof(ListenerJsonConverter))]
+        [ConfigOption("rowdeselect", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fired before a record is selected. If any listener returns false, the selection is cancelled.")]
-        public virtual ComponentListener BeforeSelect
+        [Description("Fires when a row is deselected.")]
+        public virtual ComponentListener RowDeselect
         {
             get
             {
-                return this.beforeSelect ?? (this.beforeSelect = new ComponentListener());
+                if (this.rowDeselect == null)
+                {
+                    this.rowDeselect = new ComponentListener();
+                }
+
+                return this.rowDeselect;
             }
         }
 
-        private ComponentListener select;
+        private ComponentListener rowSelect;
 
         /// <summary>
-        /// Fired after a record is selected
-        /// 
-        /// Parameters
-        /// item : Ext.selection.RowSelectionModel
-        /// record : Ext.data.Model
-        ///     The selected record
-        /// index : Number
-        ///     The row index selected
+        /// Fires when a row is selected.
         /// </summary>
-        [ListenerArgument(0, "item", typeof(RowSelectionModel), "this")]
-        [ListenerArgument(1, "record")]
-        [ListenerArgument(2, "index")]
+        [ListenerArgument(0, "item", typeof(RowSelectionModel), "SelectionModel")]
+        [ListenerArgument(1, "rowIndex", typeof(int), "The selected index")]
+        [ListenerArgument(2, "record", typeof(object), "The selected record")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("select", typeof(ListenerJsonConverter))]
+        [ConfigOption("rowselect", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fired after a record is selected")]
-        public virtual ComponentListener Select
+        [Description("Fires when a row is selected.")]
+        public virtual ComponentListener RowSelect
         {
             get
             {
-                return this.select ?? (this.select = new ComponentListener());
+                if (this.rowSelect == null)
+                {
+                    this.rowSelect = new ComponentListener();
+                }
+
+                return this.rowSelect;
+            }
+        }
+
+        private ComponentListener selectionChange;
+
+        /// <summary>
+        /// Fires when the selection changes
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(RowSelectionModel), "SelectionModel")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("selectionchange", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when the selection changes.")]
+        public virtual ComponentListener SelectionChange
+        {
+            get
+            {
+                if (this.selectionChange == null)
+                {
+                    this.selectionChange = new ComponentListener();
+                }
+
+                return this.selectionChange;
+            }
+        }
+
+        private ComponentListener beforeCheckAllClick;
+
+        /// <summary>
+        /// Fires when click on the check all
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(RowSelectionModel), "SelectionModel")]
+        [ListenerArgument(1, "checked", typeof(bool), "checked state")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("beforecheckallclick", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when click on the check all.")]
+        public virtual ComponentListener BeforeCheckAllClick
+        {
+            get
+            {
+                if (this.beforeCheckAllClick == null)
+                {
+                    this.beforeCheckAllClick = new ComponentListener();
+                }
+
+                return this.beforeCheckAllClick;
+            }
+        }
+
+        private ComponentListener afterCheckAllClick;
+
+        /// <summary>
+        /// Fires when click on the check all
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(RowSelectionModel), "SelectionModel")]
+        [ListenerArgument(1, "checked", typeof(bool), "checked state")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("aftercheckallclick", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when click on the check all.")]
+        public virtual ComponentListener AfterCheckAllClick
+        {
+            get
+            {
+                if (this.afterCheckAllClick == null)
+                {
+                    this.afterCheckAllClick = new ComponentListener();
+                }
+
+                return this.afterCheckAllClick;
             }
         }
     }

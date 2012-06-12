@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class DropDownFieldBase
     {
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TDropDownFieldBase, TBuilder> : PickerField.Builder<TDropDownFieldBase, TBuilder>
+        new public abstract partial class Builder<TDropDownFieldBase, TBuilder> : BaseTriggerField.Builder<TDropDownFieldBase, TBuilder>
             where TDropDownFieldBase : DropDownFieldBase
             where TBuilder : Builder<TDropDownFieldBase, TBuilder>
         {
@@ -57,6 +54,15 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
+ 			/// <summary>
+			/// The Text value to initialize this field with.
+			/// </summary>
+            public virtual TBuilder Text(string text)
+            {
+                this.ToComponent().Text = text;
+                return this as TBuilder;
+            }
+             
  			/// <summary>
 			/// The underlying value which mapping on the Text, similar the Value property but can be set declarative
 			/// </summary>
@@ -85,16 +91,32 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder Component(Action<ItemsCollection<AbstractPanel>> action)
+			/// True to not initialize the list for this combo until the field is focused. (defaults to true).
+			/// </summary>
+            public virtual TBuilder LazyInit(bool lazyInit)
             {
-                action(this.ToComponent().Component);
+                this.ToComponent().LazyInit = lazyInit;
                 return this as TBuilder;
             }
-			 
+             
+ 			/// <summary>
+			/// A valid anchor position value. See Ext.Element.alignTo for details on supported anchor positions (defaults to 'tl-bl').
+			/// </summary>
+            public virtual TBuilder ComponentAlign(string componentAlign)
+            {
+                this.ToComponent().ComponentAlign = componentAlign;
+                return this as TBuilder;
+            }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Component(ItemsCollection<PanelBase> component)
+            // {
+            //    this.ToComponent().Component = component;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
 			/// The id of the node, a DOM node or an existing Element that will be the content Container to render this component into.
 			/// </summary>

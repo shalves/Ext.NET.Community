@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -35,47 +35,28 @@ namespace Ext.Net
 	[Description("")]
     public partial class DesktopListeners : ComponentListeners
     {
-        private ComponentListener shortcutmove;
+        private ComponentListener shortcutClick;
 
 		/// <summary>
 		/// 
 		/// </summary>
-        [ListenerArgument(0, "el")]
-        [ListenerArgument(1, "module")]
-        [ListenerArgument(2, "record")]
-        [ListenerArgument(3, "xy")]
+        [ListenerArgument(0, "id")]
+        [ListenerArgument(1, "e")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("shortcutmove", typeof(ListenerJsonConverter))]
+        [ConfigOption("shortcutclick", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
 		[Description("")]
-        public virtual ComponentListener ShortcutMove
+        public virtual ComponentListener ShortcutClick
         {
             get
             {
-                return this.shortcutmove ?? (this.shortcutmove = new ComponentListener());
-            }
-        }
+                if (this.shortcutClick == null)
+                {
+                    this.shortcutClick = new ComponentListener();
+                }
 
-        private ComponentListener shortcutnameedit;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [ListenerArgument(0, "el")]
-        [ListenerArgument(1, "module")]
-        [ListenerArgument(2, "value")]
-        [ListenerArgument(3, "oldValue")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("shortcutnameedit", typeof(ListenerJsonConverter))]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("")]
-        public virtual ComponentListener ShortcutNameEdit
-        {
-            get
-            {
-                return this.shortcutnameedit ?? (this.shortcutnameedit = new ComponentListener());
+                return this.shortcutClick;
             }
         }
 
@@ -94,7 +75,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.ready ?? (this.ready = new ComponentListener());
+                if (this.ready == null)
+                {
+                    this.ready = new ComponentListener();
+                }
+
+                return this.ready;
             }
         }
 
@@ -113,7 +99,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.beforeUnload ?? (this.beforeUnload = new ComponentListener());
+                if (this.beforeUnload == null)
+                {
+                    this.beforeUnload = new ComponentListener();
+                }
+
+                return this.beforeUnload;
             }
         }
     }

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -77,13 +77,13 @@ namespace Ext.Net
                 return "";
             }
 
-            string template = (instanceOnly) ? "new {1}(Ext.net.getEl({2}),{3}{4})" : "window.{0}=new {1}(Ext.net.getEl({2}),{3}{4});";
+            string template = (instanceOnly) ? "new {1}(Ext.net.getEl({2}),{3}{4})" : "this.{0}=new {1}(Ext.net.getEl({2}),{3}{4});";
 
             return string.Format(template, this.ClientID,
                                            "Ext.KeyMap", 
                                            this.TargetProxy,
-                                           this.KeysProxy, 
-                                           this.EventName.IsEmpty() ? "" : "," + this.EventName);
+                                           this.KeysProxy,
+                                           this.EventName.IsEmpty() ? "" : "," + JSON.Serialize(this.EventName));
         }
 
         private KeyBindingCollection keys;
@@ -94,7 +94,8 @@ namespace Ext.Net
         [Meta]
         [ConfigOption("keys", JsonMode.Array)]
         [Category("3. KeyMap")]
-        [NotifyParentProperty(true)]        
+        [NotifyParentProperty(true)]
+        [ViewStateMember]
         [PersistenceMode(PersistenceMode.InnerDefaultProperty)]
         [Description("A KeyMap config object (in the format expected by Ext.KeyMap.addBinding used to assign custom key handling to this panel (defaults to null).")]
         public virtual KeyBindingCollection Keys
@@ -180,11 +181,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Target", "");
+                return (string)this.ViewState["Target"] ?? "";
             }
             set
             {
-                this.State.Set("Target", value);
+                this.ViewState["Target"] = value;
             }
         }
 
@@ -199,11 +200,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("EventName", "");
+                return (string)this.ViewState["EventName"] ?? "";
             }
             set
             {
-                this.State.Set("EventName", value);
+                this.ViewState["EventName"] = value;
             }
         }
 
@@ -241,7 +242,7 @@ namespace Ext.Net
         {
             RequestManager.EnsureDirectEvent();
 
-            this.Call("addBinding", keyBinding);
+            this.Call("addBinding", new JRawValue(new ClientConfig().SerializeInternal(keyBinding, this)));
         }
     }
 }

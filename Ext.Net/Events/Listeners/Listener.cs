@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -65,11 +65,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Target", "");
+                return (string)this.ViewState["Target"] ?? "";
             }
             set
             {
-                this.State.Set("Target", value);
+                this.ViewState["Target"] = value;
             }
         }
 
@@ -87,14 +87,14 @@ namespace Ext.Net
 
                 if (o.IsEmpty() && HttpContext.Current != null)
                 {
-                    return this.HtmlEvent.ToString().ToLowerInvariant();
+                    return this.HtmlEvent.ToString().ToLower();
                 }
 
                 return o ?? "";
             }
             set
             {
-                this.State.Set("EventName", value);
+                this.ViewState["EventName"] = value;
             }
         }
 
@@ -113,7 +113,7 @@ namespace Ext.Net
             }
             set
             {
-                this.State.Set("PredefinedEvent", value);
+                this.ViewState["PredefinedEvent"] = value;
             }
         }
     }
@@ -122,5 +122,5 @@ namespace Ext.Net
     /// 
     /// </summary>
     [Description("")]
-    public partial class ListenerCollection : BaseItemCollection<Listener> { }
+    public partial class ListenerCollection : StateManagedCollection<Listener> { }
 }

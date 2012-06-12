@@ -15,19 +15,23 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
+
+using Ext.Net.Utilities;
 
 namespace Ext.Net
 {
@@ -41,7 +45,7 @@ namespace Ext.Net
     [Designer(typeof(EmptyDesigner))]
     [ToolboxBitmap(typeof(MultiSelect), "Build.ToolboxIcons.MultiSelect.bmp")]
     [Description("A control that allows selection and form submission of multiple list items.")]
-    public partial class MultiSelect : MultiSelectBase, IPostBackEventHandler
+    public partial class MultiSelect : MultiSelectBase<ListItem>, IPostBackEventHandler
     {
 		/// <summary>
 		/// 
@@ -60,7 +64,9 @@ namespace Ext.Net
                 List<ResourceItem> baseList = base.Resources;
                 baseList.Capacity += 3;
 
-                baseList.Add(new ClientScriptItem(typeof(MultiSelect), "Ext.Net.Build.Ext.Net.ux.multiselect.multiselect.js", "/ux/multiselect/multiselect.js"));
+                baseList.Add(new ClientStyleItem(typeof(MultiSelect), "Ext.Net.Build.Ext.Net.ux.extensions.multiselect.resources.css.multiselect.css", "/ux/extensions/multiselect/resources/css/multiselect.css"));
+                baseList.Add(new ClientScriptItem(typeof(MultiSelect), "Ext.Net.Build.Ext.Net.ux.extensions.ddview.ddview.js", "/ux/extensions/ddview/ddview.js"));
+                baseList.Add(new ClientScriptItem(typeof(MultiSelect), "Ext.Net.Build.Ext.Net.ux.extensions.multiselect.multiselect.js", "/ux/extensions/multiselect/multiselect.js"));
 
                 return baseList;
             }
@@ -88,9 +94,185 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.ux.form.MultiSelect";
+                return "Ext.ux.Multiselect";
             }
         }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected override void OnBeforeClientInit(Observable sender)
+        {
+            if (this.StoreID.IsNotEmpty() && this.Store.Primary != null)
+            {
+                throw new Exception(string.Format("Please do not set both the StoreID property on {0} and <Store> inner property at the same time.", this.ID));
+            }
+            
+            if (this.AutoPostBack)
+            {
+                EventHandler handler = (EventHandler)Events[EventSelectionChanged];
+
+                if (handler != null)
+                {
+                    this.On("change", new JFunction(this.PostBackFunction));
+                }
+            }
+
+            if (this.StoreID.IsNotEmpty() || this.Store.Primary != null)
+            {
+                Store store = this.Store.Primary??ControlUtils.FindControl<Store>(this, this.StoreID, true);
+
+                if (store == null && !this.IsDynamic)
+                {
+                    throw new InvalidOperationException("The Control '{0}' could not find the StoreID of '{1}'.".FormatWith(this.ID, this.StoreID));
+                }
+
+                if (this.SelectedItems.Count > 0)
+                {
+                    HandlerConfig options = new HandlerConfig();
+                    options.Single = true;
+
+                    string template = "{0}.store.on(\"{1}\",{2},{3},{4});";
+                    string values = this.SelectedItems.ValuesToJsonArray();
+                    string indexes = this.SelectedItems.IndexesToJsonArray(true);
+
+
+                    string suppressEvent = this.FireSelectOnLoad ? "false" : "true";
+                    values = values != "[]" ? ".setValue(".ConcatWith(values, ", true, ", suppressEvent, ");") : "";
+                    indexes = indexes != "[]" ? ".setValueByIndex(".ConcatWith(indexes, ", true, ", suppressEvent, ");") : "";
+
+                    this.AddScript(template,
+                            this.ClientID, 
+                            "load",
+                            new JFunction(this.ClientID.ConcatWith(values, indexes, this.ClientID, ".clearInvalid();")).ToScript(),
+                            "this",
+                            options.ToJsonString()
+                            );
+                }
+            }
+            else
+            {
+                if (this.SelectedItems.Count > 0)
+                {
+                    string values = this.SelectedItems.ValuesToJsonArray();
+                    string indexes = this.SelectedItems.IndexesToJsonArray(true);
+                    string suppressEvent = this.FireSelectOnLoad ? "false" : "true";
+
+                    if (values != "[]")
+                    {
+                        this.Call("setValue", new JRawValue(values), true, suppressEvent);
+                    }
+
+                    if (indexes != "[]")
+                    {
+                        this.Call("setValue", new JRawValue(indexes), true, suppressEvent);
+                    }
+                }
+            }
+        }
+
+        private static readonly object EventSelectionChanged = new object();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Category("Action")]
+        [Description("")]
+        public event EventHandler SelectionChanged
+        {
+            add
+            {
+                this.Events.AddHandler(EventSelectionChanged, value);
+            }
+            remove
+            {
+                this.Events.RemoveHandler(EventSelectionChanged, value);
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected virtual void OnSelectionChanged(EventArgs e)
+        {
+            EventHandler handler = (EventHandler)this.Events[EventSelectionChanged];
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected override bool LoadPostData(string postDataKey, NameValueCollection postCollection)
+        {
+            this.HasLoadPostData = true;
+
+            string text = postCollection[this.UniqueName.ConcatWith("_text")];
+            string values = postCollection[this.UniqueName];
+            string indexes = postCollection[this.UniqueName.ConcatWith("_indexes")];
+
+            this.SuspendScripting();
+            this.RawValue = text;
+            this.ResumeScripting();
+
+            if (values == null)
+            {
+                return false;
+            }
+
+            bool fireEvent = false;
+
+            if (values.IsEmpty())
+            {
+                fireEvent = this.SelectedItems.Count > 0;
+                this.SelectedItems.Clear();
+                return fireEvent;
+            }
+
+            string[] arrValues = values.Split(new[] { this.Delimiter }, StringSplitOptions.RemoveEmptyEntries);
+            string[] arrIndexes = indexes.Split(new[] { this.Delimiter }, StringSplitOptions.RemoveEmptyEntries);
+            string[] arrText = new string[0];
+
+            if (text.IsNotEmpty())
+            {
+                arrText = text.Split(new[] { this.Delimiter }, StringSplitOptions.RemoveEmptyEntries);
+            }
+
+            SelectedListItemCollection temp = new SelectedListItemCollection();
+
+            for (int i = 0; i < arrValues.Length; i++)
+            {
+                string value = arrValues[i];
+                string index = arrIndexes[i];
+                string _text = arrText.Length > 0 ? arrText[i] : "";
+
+                SelectedListItem item = new SelectedListItem(_text, value, int.Parse(index));
+
+                temp.Add(item);
+
+                if (!this.SelectedItems.Contains(item))
+                {
+                    fireEvent = true;
+                }
+            }
+
+            this.SelectedItems.Clear();
+            this.SelectedItems.AddRange(temp);
+
+            return fireEvent;
+        }
+
+        void IPostBackEventHandler.RaisePostBackEvent(string eventArgument)
+        {
+            this.OnSelectionChanged(EventArgs.Empty);
+        }
+
         
         private MultiSelectListeners listeners;
 
@@ -102,7 +284,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public MultiSelectListeners Listeners
         {
@@ -128,7 +311,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side DirectEventHandlers")]
         public MultiSelectDirectEvents DirectEvents
         {
@@ -136,7 +320,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new MultiSelectDirectEvents(this);
+                    this.directEvents = new MultiSelectDirectEvents();
                 }
 
                 return this.directEvents;

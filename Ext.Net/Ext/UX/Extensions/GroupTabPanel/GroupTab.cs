@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,7 +36,7 @@ namespace Ext.Net
     [ToolboxBitmap(typeof(GroupTab), "Build.ToolboxIcons.GroupTab.bmp")]
     [ToolboxData("<{0}:GroupTab runat=\"server\" Title=\"GroupTab\" />")]
     [Description("GroupTab")]
-    public partial class GroupTab : AbstractContainer, IPostBackDataHandler
+    public partial class GroupTab : ContainerBase, IPostBackDataHandler
     {
         /// <summary>
 		/// 
@@ -64,6 +64,18 @@ namespace Ext.Net
             }
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected override bool UseDefaultLayout
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         private GroupTabListeners listeners;
 
         /// <summary>
@@ -74,7 +86,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public GroupTabListeners Listeners
         {
@@ -99,7 +112,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public TabPanelDirectEvents DirectEvents
         {
@@ -107,7 +121,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new TabPanelDirectEvents(this);
+                    this.directEvents = new TabPanelDirectEvents();
                 }
 
                 return this.directEvents;
@@ -127,11 +141,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("MainItem", 0);
+                object obj = this.ViewState["MainItem"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("MainItem", value);
+                this.ViewState["MainItem"] = value;
             }
         }
 
@@ -147,11 +162,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Expanded", true);
+                object obj = this.ViewState["Expanded"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("Expanded", value);
+                this.ViewState["Expanded"] = value;
             }
         }
 
@@ -167,15 +183,16 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("DeferredRender", true);
+                object obj = this.ViewState["DeferredRender"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("DeferredRender", value);
+                this.ViewState["DeferredRender"] = value;
             }
         }
 
-        private AbstractComponent activeTab;
+        private Component activeTab;
 
         /// <summary>
         /// Active tab
@@ -185,7 +202,7 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [DirectEventUpdate(MethodName = "SetActiveTab")]
         [Description("Active tab")]
-        public virtual AbstractComponent ActiveTab
+        public virtual Component ActiveTab
         {
             get
             {
@@ -214,11 +231,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("ActiveTabIndex", -1);
+                object obj = this.ViewState["ActiveTabIndex"];
+                return (obj == null) ? -1 : (int)obj;
             }
             set
             {
-                this.State.Set("ActiveTabIndex", value);
+                this.ViewState["ActiveTabIndex"] = value;
             }
         }
 
@@ -258,11 +276,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("IdDelimiter", "__");
+                return (string)this.ViewState["IdDelimiter"] ?? "__";
             }
             set
             {
-                this.State.Set("IdDelimiter", value);
+                this.ViewState["IdDelimiter"] = value;
             }
         }
 
@@ -278,11 +296,54 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("HeaderAsText", false);
+                object obj = this.ViewState["HeaderAsText"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("HeaderAsText", value);
+                this.ViewState["HeaderAsText"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Frame
+        /// </summary>
+        [ConfigOption]
+        [Category("6. GroupTab")]
+        [DefaultValue(false)]
+        [NotifyParentProperty(true)]
+        [Description("Frame")]
+        public virtual bool Frame
+        {
+            get
+            {
+                object obj = this.ViewState["Frame"];
+                return (obj == null) ? false : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["Frame"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Hide borders
+        /// </summary>
+        [ConfigOption]
+        [Category("6. GroupTab")]
+        [DefaultValue(true)]
+        [NotifyParentProperty(true)]
+        [Description("Hide borders")]
+        public override bool HideBorders
+        {
+            get
+            {
+                object obj = this.ViewState["HideBorders"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["HideBorders"] = value;
             }
         }
 
@@ -322,7 +383,8 @@ namespace Ext.Net
         bool IPostBackDataHandler.LoadPostData(string postDataKey, NameValueCollection postCollection)
         {
             string val = postCollection[this.ConfigID.ConcatWith("_ActiveTab")];
-
+            bool raise = false;
+            
             if (val.IsNotEmpty())
             {
                 int activeTabNum;
@@ -330,7 +392,7 @@ namespace Ext.Net
 
                 if (int.TryParse(at.Length > 1 ? at[1] : at[0], out activeTabNum))
                 {
-                    int index = this.Items.FindIndex(delegate(AbstractComponent tab)
+                    int index = this.Items.FindIndex(delegate(Component tab)
                     {
                         return tab.ClientID == at[0];
                     });
@@ -353,17 +415,15 @@ namespace Ext.Net
                         }
                     }
 
-                    if (activeTabNum > -1 && this.ActiveTabIndex != activeTabNum)
-                    {
-                        this.State.Suspend();
-                        this.ActiveTabIndex = activeTabNum;
-                        this.State.Resume();
-                        return true;
-                    }
+                    this.ViewState.Suspend();
+                    activeTabNum = activeTabNum > -1 ? activeTabNum : -1;
+                    raise = this.ActiveTabIndex != activeTabNum;
+                    this.ActiveTabIndex = activeTabNum;
+                    this.ViewState.Resume();
                 }
             }
-
-            return false;
+            
+            return raise;
         }
 
 		/// <summary>
@@ -392,7 +452,7 @@ namespace Ext.Net
         /// Sets the specified tab as the active tab. This method fires the beforetabchange event which can return false to cancel the tab change.
         /// </summary>
         [Description("Sets the specified tab as the active tab. This method fires the beforetabchange event which can return false to cancel the tab change.")]
-        public virtual void SetActiveTab(AbstractComponent item)
+        public virtual void SetActiveTab(Component item)
         {
             this.Call("setActiveTab", item.ClientID);
         }
@@ -404,7 +464,7 @@ namespace Ext.Net
         [Description("Sets the specified tab as the active tab. This method fires the beforetabchange event which can return false to cancel the tab change.")]
         public virtual void SetActiveTab(string id)
         {
-            AbstractComponent activeTab = null;
+            Component activeTab = null;
             for (int i = 0; i < this.Items.Count; i++)
             {
                 if (this.Items[i].ID == id)
@@ -436,7 +496,7 @@ namespace Ext.Net
         /// 
         /// </summary>
         [Description("")]
-        public virtual void SetMainItem(AbstractComponent item)
+        public virtual void SetMainItem(Component item)
         {
             this.Call("setMainItem", item.ClientID);
         }

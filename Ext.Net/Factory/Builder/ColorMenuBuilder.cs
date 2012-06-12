@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class ColorMenu
     {
         /// <summary>
@@ -77,39 +74,33 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
- 			/// <summary>
-			/// The ColorPalette object
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ColorMenu.Builder</returns>
-            public virtual ColorMenu.Builder Picker(Action<ColorPicker> action)
-            {
-                action(this.ToComponent().Picker);
-                return this as ColorMenu.Builder;
-            }
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ColorMenu.Builder</returns>
-            public virtual ColorMenu.Builder Listeners(Action<ColorMenuListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as ColorMenu.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEventHandlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ColorMenu.Builder</returns>
-            public virtual ColorMenu.Builder DirectEvents(Action<ColorMenuDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as ColorMenu.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// The ColorPalette object
+			// /// </summary>
+            // public virtual TBuilder Palette(ColorPalette palette)
+            // {
+            //    this.ToComponent().Palette = palette;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(ColorMenuListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side DirectEventHandlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(ColorMenuDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

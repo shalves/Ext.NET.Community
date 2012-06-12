@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class GridCommand
     {
         /// <summary>
@@ -86,17 +83,15 @@ namespace Ext.Net
                 return this as GridCommand.Builder;
             }
              
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of GridCommand.Builder</returns>
-            public virtual GridCommand.Builder ToolTip(Action<SimpleToolTip> action)
-            {
-                action(this.ToComponent().ToolTip);
-                return this as GridCommand.Builder;
-            }
-			 
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder ToolTip(SimpleToolTip toolTip)
+            // {
+            //    this.ToComponent().ToolTip = toolTip;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
 			/// 
 			/// </summary>
@@ -187,17 +182,15 @@ namespace Ext.Net
                 return this as GridCommand.Builder;
             }
              
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of GridCommand.Builder</returns>
-            public virtual GridCommand.Builder Menu(Action<CommandMenu> action)
-            {
-                action(this.ToComponent().Menu);
-                return this as GridCommand.Builder;
-            }
-			 
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Menu(CommandMenu menu)
+            // {
+            //    this.ToComponent().Menu = menu;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
 			/// How this component should be hidden. Supported values are 'visibility' (css visibility), 'offsets' (negative offset position) and 'display' (css display) - defaults to 'display'.
 			/// </summary>

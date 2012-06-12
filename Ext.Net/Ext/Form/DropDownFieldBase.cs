@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,8 +33,14 @@ namespace Ext.Net
 {
     [Meta]
     [Description("")]
-    public abstract partial class DropDownFieldBase : PickerField
+    public abstract partial class DropDownFieldBase : BaseTriggerField
     {
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected override void CheckTriggers() { }
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -45,7 +51,7 @@ namespace Ext.Net
 
             bool baseLoadPost = base.LoadPostData(postDataKey, postCollection);
 
-            string val = postCollection[this.UniqueName + "_value"];
+            string val = postCollection[this.UniqueName + "_Value"];
 
             this.SuspendScripting();
             this.RawValue = val;
@@ -70,6 +76,7 @@ namespace Ext.Net
         /// <summary>
         /// The Text value to initialize this field with.
         /// </summary>
+        [Meta]
         [ConfigOption]
         [DefaultValue("")]
         [Category("8. DropDownField")]
@@ -81,11 +88,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Text", "");
+                return (string)this.ViewState["Text"] ?? "";
             }
             set
             {
-                this.State.Set("Text", value);
+                this.ViewState["Text"] = value;
             }
         }
 
@@ -123,11 +130,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<DropDownMode>("Mode", DropDownMode.Text);
+                object obj = this.ViewState["Mode"];
+                return (obj == null) ? DropDownMode.Text : (DropDownMode)obj;
             }
             set
             {
-                this.State.Set("Mode", value);
+                this.ViewState["Mode"] = value;
             }
         }
 
@@ -145,15 +153,57 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("AllowBlur", false);
+                object obj = this.ViewState["AllowBlur"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("AllowBlur", value);
+                this.ViewState["AllowBlur"] = value;
             }
         }
 
-        ItemsCollection<AbstractPanel> component;
+        /// <summary>
+        /// True to not initialize the list for this combo until the field is focused. (defaults to true).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. DropDownField")]
+        [DefaultValue(true)]
+        [Description("True to not initialize the list for this combo until the field is focused. (defaults to true).")]
+        public virtual bool LazyInit
+        {
+            get
+            {
+                object obj = this.ViewState["LazyInit"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["LazyInit"] = value;
+            }
+        }
+
+        /// <summary>
+        /// A valid anchor position value. See Ext.Element.alignTo for details on supported anchor positions (defaults to 'tl-bl').
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. DropDownField")]
+        [DefaultValue("")]
+        [Description("A valid anchor position value. See Ext.Element.alignTo for details on supported anchor positions (defaults to 'tl-bl').")]
+        public virtual string ComponentAlign
+        {
+            get
+            {
+                return (string)this.ViewState["ComponentAlign"] ?? "";
+            }
+            set
+            {
+                this.ViewState["ComponentAlign"] = value;
+            }
+        }
+
+        ItemsCollection<PanelBase> component;
 
         /// <summary>
         /// 
@@ -163,15 +213,15 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("component", typeof(SingleItemCollectionJsonConverter))]
+        [ConfigOption("component", typeof(ItemCollectionJsonConverter))]
         [Description("")]
-        public virtual ItemsCollection<AbstractPanel> Component
+        public virtual ItemsCollection<PanelBase> Component
         {
             get
             {
                 if (this.component == null)
                 {
-                    this.component = new ItemsCollection<AbstractPanel>();
+                    this.component = new ItemsCollection<PanelBase>();
                     this.component.SingleItemMode = true;
                     this.component.AfterItemAdd += this.AfterItemAdd;
                     this.component.AfterItemRemove += this.AfterItemRemove;
@@ -193,11 +243,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("ComponentRenderTo", "");
+                return (string)this.ViewState["ComponentRenderTo"] ?? "";
             }
             set
             {
-                this.State.Set("ComponentRenderTo", value);
+                this.ViewState["ComponentRenderTo"] = value;
             }
         }
 
@@ -222,6 +272,7 @@ namespace Ext.Net
                 if (this.syncValue == null)
                 {
                     this.syncValue = new JFunction();
+                    this.syncValue.Owner = this;
 
                     if (HttpContext.Current != null)
                     {
@@ -231,6 +282,24 @@ namespace Ext.Net
 
                 return this.syncValue;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public void Collapse()
+        {
+            this.Call("collapse");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public void Expand()
+        {
+            this.Call("expand");
         }
 
         /// <summary>
@@ -263,7 +332,7 @@ namespace Ext.Net
         /// 
         /// </summary>
         [Description("")]
-        protected override void SetValueProxy(object value)
+        protected virtual void SetValueProxy(object value)
         {
             if (this.Mode == DropDownMode.ValueText)
             {

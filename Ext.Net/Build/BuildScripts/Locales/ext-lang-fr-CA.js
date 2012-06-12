@@ -1,4 +1,4 @@
-﻿Ext.Date.shortMonthNames = [
+﻿Date.shortMonthNames = [
    "janv.",
    "févr.",
    "mars",
@@ -13,7 +13,7 @@
    "déc."
 ];
 
-Ext.Date.monthNames = [
+Date.monthNames = [
    "janvier",
    "février",
    "mars",
@@ -28,7 +28,7 @@ Ext.Date.monthNames = [
    "décembre"
 ];
 
-Ext.Date.monthNumbers = {
+Date.monthNumbers = {
   "jan" : 0,
   "fév" : 1,
   "mar" : 2,
@@ -43,12 +43,12 @@ Ext.Date.monthNumbers = {
   "déc" : 11
 };
 
-Ext.Date.getMonthNumber = function(name) {
+Date.getMonthNumber = function(name) {
   var m = name.substring(0, 1).toLowerCase() + name.substring(1, 3).toLowerCase();
-  if(m == "jui"){    m = name.substring(0, 1).toLowerCase() + name.substring(1, 4).toLowerCase();  }  return Ext.Date.monthNumbers[m];
+  if(m == "jui"){    m = name.substring(0, 1).toLowerCase() + name.substring(1, 4).toLowerCase();  }  return Date.monthNumbers[m];
 };
 
-Ext.Date.dayNames = [
+Date.dayNames = [
    "dimanche",
    "lundi",
    "mardi",
@@ -58,8 +58,8 @@ Ext.Date.dayNames = [
    "samedi"
 ];
 
-Ext.Date.getShortDayName = function(day) {
-  return Ext.Date.dayNames[day].substring(0, 3).toLowerCase() + ".";
+Date.getShortDayName = function(day) {
+  return Date.dayNames[day].substring(0, 3).toLowerCase() + ".";
 };
 
 if (Ext.form.NumberField) {

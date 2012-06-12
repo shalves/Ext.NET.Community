@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,12 +33,8 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class ComboBoxDirectEvents : PickerFieldDirectEvents
+    public partial class ComboBoxDirectEvents : TriggerFieldDirectEvents
     {
-        public ComboBoxDirectEvents() { }
-
-        public ComboBoxDirectEvents(Observable parent) { this.Parent = parent; }
-
         private ComponentDirectEvent beforeQuery;
 
         /// <summary>
@@ -56,7 +52,7 @@ namespace Ext.Net
             {
                 if (this.beforeQuery == null)
                 {
-                    this.beforeQuery = new ComponentDirectEvent(this);
+                    this.beforeQuery = new ComponentDirectEvent();
                 }
 
                 return this.beforeQuery;
@@ -82,70 +78,81 @@ namespace Ext.Net
             {
                 if (this.beforeSelect == null)
                 {
-                    this.beforeSelect = new ComponentDirectEvent(this);
+                    this.beforeSelect = new ComponentDirectEvent();
                 }
 
                 return this.beforeSelect;
             }
         }
 
-        private ComponentDirectEvent beforeDeselect;
+        private ComponentDirectEvent collapse;
 
         /// <summary>
-        /// Fires before the deselected item is removed from the collection
-        /// Parameters
-        /// item : Ext.form.field.ComboBox
-        ///     This combo box
-        /// record : Ext.data.Record
-        ///     The deselected record
-        /// index : Number
-        ///     The index of the deselected record
+        /// Fires when the dropdown list is collapsed.
         /// </summary>
         [ListenerArgument(0, "item", typeof(Field), "This combo box")]
-        [ListenerArgument(1, "record", typeof(object), "The deselected record")]
-        [ListenerArgument(2, "index", typeof(int), "The index of the deselected record")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("beforedeselect", typeof(DirectEventJsonConverter))]
+        [ConfigOption("collapse", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires before the deselected item is removed from the collection")]
-        public virtual ComponentDirectEvent BeforeDeselect
+        [Description("Fires when the dropdown list is collapsed.")]
+        public virtual ComponentDirectEvent Collapse
         {
             get
             {
-                if (this.beforeDeselect == null)
+                if (this.collapse == null)
                 {
-                    this.beforeDeselect = new ComponentDirectEvent(this);
+                    this.collapse = new ComponentDirectEvent();
                 }
 
-                return this.beforeDeselect;
+                return this.collapse;
+            }
+        }
+
+        private ComponentDirectEvent expand;
+
+        /// <summary>
+        /// Fires when the dropdown list is expanded.
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(Field), "This combo box")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("expand", typeof(DirectEventJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when the dropdown list is expanded.")]
+        public virtual ComponentDirectEvent Expand
+        {
+            get
+            {
+                if (this.expand == null)
+                {
+                    this.expand = new ComponentDirectEvent();
+                }
+
+                return this.expand;
             }
         }
 
         private ComponentDirectEvent select;
 
         /// <summary>
-        /// Fires when at least one list item is selected.
-        /// Parameters
-        /// item : Ext.form.field.ComboBox
-        ///     This combo box
-        /// records : Array
-        ///     The selected records
+        /// Fires when a list items is selected.
         /// </summary>
         [ListenerArgument(0, "item", typeof(Field), "This combo box")]
-        [ListenerArgument(1, "records", typeof(object), "The data record returned from the underlying store")]
+        [ListenerArgument(1, "record", typeof(object), "The data record returned from the underlying store")]
+        [ListenerArgument(2, "index", typeof(int), "The index of the selected item in the dropdown list")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("select", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when at least one list item is selected.")]
-        public override ComponentDirectEvent Select
+        [Description("Fires when a list items is selected.")]
+        public virtual ComponentDirectEvent Select
         {
             get
             {
                 if (this.select == null)
                 {
-                    this.select = new ComponentDirectEvent(this);
+                    this.select = new ComponentDirectEvent();
                 }
 
                 return this.select;

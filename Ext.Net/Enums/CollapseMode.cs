@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -35,18 +35,13 @@ namespace Ext.Net
     public enum CollapseMode
     {
         /// <summary>
-        /// When collapsed, a placeholder Container is injected into the layout to represent the Panel and to provide a UI with a Tool to allow the user to re-expand the Panel.
+        /// 
         /// </summary>
-        Alt,
+        Default,
 
         /// <summary>
         /// 
         /// </summary>
-        Mini,
-
-        /// <summary>
-        /// The Panel collapses to leave a header visible as when not inside a border layout.
-        /// </summary>
-        Header
+        Mini
     }
 }

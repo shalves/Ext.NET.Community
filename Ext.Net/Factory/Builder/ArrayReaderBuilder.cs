@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class ArrayReader
     {
         /// <summary>
@@ -76,7 +73,25 @@ namespace Ext.Net
             
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
-			
+			 
+ 			/// <summary>
+			/// [id] Name of the property within a row object that contains a record identifier value. Defaults to id
+			/// </summary>
+            public virtual ArrayReader.Builder IDProperty(string iDProperty)
+            {
+                this.ToComponent().IDProperty = iDProperty;
+                return this as ArrayReader.Builder;
+            }
+             
+ 			/// <summary>
+			/// The subscript within row Array that provides an ID for the Record.
+			/// </summary>
+            public virtual ArrayReader.Builder IDIndex(int iDIndex)
+            {
+                this.ToComponent().IDIndex = iDIndex;
+                return this as ArrayReader.Builder;
+            }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

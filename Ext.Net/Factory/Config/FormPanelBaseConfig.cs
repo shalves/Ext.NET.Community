@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,52 +33,103 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public abstract partial class FormPanelBase
     {
         /// <summary>
         /// 
         /// </summary>
-        new public abstract partial class Config : AbstractPanel.Config 
+        new public abstract partial class Config : PanelBase.Config 
         { 
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
-			private int pollInterval = 500;
+			private string formID = "";
 
 			/// <summary>
-			/// Interval in milliseconds at which the form's fields are checked for value changes. Only used if the pollForChanges option is set to true. Defaults to 500 milliseconds.
+			/// (optional) The id of the FORM tag (defaults to an auto-generated id).
 			/// </summary>
-			[DefaultValue(500)]
-			public virtual int PollInterval 
+			[DefaultValue("")]
+			public virtual string FormID 
 			{ 
 				get
 				{
-					return this.pollInterval;
+					return this.formID;
 				}
 				set
 				{
-					this.pollInterval = value;
+					this.formID = value;
 				}
 			}
 
-			private bool pollForChanges = false;
+			private string itemCls = "";
 
 			/// <summary>
-			/// If set to true, sets up an interval task (using the pollInterval) in which the panel's fields are repeatedly checked for changes in their values. This is in addition to the normal detection each field does on its own input element, and is not needed in most cases. It does, however, provide a means to absolutely guarantee detection of all changes including some edge cases in some browsers which do not fire native events. Defaults to false.
+			/// A css class to apply to the x-form-item of fields. This property cascades to child containers.
 			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool PollForChanges 
+			[DefaultValue("")]
+			public override string ItemCls 
 			{ 
 				get
 				{
-					return this.pollForChanges;
+					return this.itemCls;
 				}
 				set
 				{
-					this.pollForChanges = value;
+					this.itemCls = value;
+				}
+			}
+
+			private int monitorPoll = 200;
+
+			/// <summary>
+			/// The milliseconds to poll valid state, ignored if monitorValid is not true (defaults to 200)
+			/// </summary>
+			[DefaultValue(200)]
+			public virtual int MonitorPoll 
+			{ 
+				get
+				{
+					return this.monitorPoll;
+				}
+				set
+				{
+					this.monitorPoll = value;
+				}
+			}
+
+			private bool monitorValid = false;
+
+			/// <summary>
+			/// If true the form monitors its valid state client-side and fires a looping event with that state. This is required to bind buttons to the valid state using the config value formBind:true on the button.
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool MonitorValid 
+			{ 
+				get
+				{
+					return this.monitorValid;
+				}
+				set
+				{
+					this.monitorValid = value;
+				}
+			}
+
+			private bool renderFormElement = true;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool RenderFormElement 
+			{ 
+				get
+				{
+					return this.renderFormElement;
+				}
+				set
+				{
+					this.renderFormElement = value;
 				}
 			}
         
@@ -103,7 +154,7 @@ namespace Ext.Net
 			private ReaderCollection errorReader = null;
 
 			/// <summary>
-			/// An Ext.data.DataReader (e.g. Ext.data.reader.Xml) to be used to read field error messages returned from 'submit' actions. This is optional as there is built-in support for processing JSON responses.
+			/// An Ext.data.DataReader (e.g. Ext.data.XmlReader) to be used to read data when reading validation errors on \"submit\" actions. This is completely optional as there is built-in support for processing JSON.
 			/// </summary>
 			public ReaderCollection ErrorReader
 			{
@@ -118,10 +169,28 @@ namespace Ext.Net
 				}
 			}
 			
+			private bool fileUpload = false;
+
+			/// <summary>
+			/// Set to true if this form is a file upload.
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool FileUpload 
+			{ 
+				get
+				{
+					return this.fileUpload;
+				}
+				set
+				{
+					this.fileUpload = value;
+				}
+			}
+
 			private HttpMethod method = HttpMethod.Default;
 
 			/// <summary>
-			/// The request method to use (GET or POST) for form actions if one isn't supplied in the action options.
+			/// The HTTP method to use. Defaults to POST if params are present, or GET if not.
 			/// </summary>
 			[DefaultValue(HttpMethod.Default)]
 			public virtual HttpMethod Method 
@@ -139,7 +208,7 @@ namespace Ext.Net
 			private ReaderCollection reader = null;
 
 			/// <summary>
-			/// An Ext.data.DataReader (e.g. Ext.data.reader.Xml) to be used to read data when executing 'load' actions. This is optional as there is built-in support for processing JSON responses.
+			/// An Ext.data.DataReader (e.g. Ext.data.XmlReader) to be used to read data when executing \"load\" actions. This is optional as there is built-in support for processing JSON.
 			/// </summary>
 			public ReaderCollection Reader
 			{
@@ -157,7 +226,7 @@ namespace Ext.Net
 			private bool standardSubmit = false;
 
 			/// <summary>
-			/// If set to true, a standard HTML form submit is used instead of a XHR (Ajax) style form submission. All of the field values, plus any additional params configured via baseParams and/or the options to submit, will be included in the values submitted in the form.
+			/// If set to true, standard HTML form submits are used instead of XHR (Ajax) style form submissions. (defaults to false).
 			/// </summary>
 			[DefaultValue(false)]
 			public virtual bool StandardSubmit 
@@ -193,7 +262,7 @@ namespace Ext.Net
 			private bool trackResetOnLoad = false;
 
 			/// <summary>
-			/// If set to true, reset() resets to the last loaded or setValues() data instead of when the form was first created.
+			/// If set to true, form.reset() resets to the last loaded or setValues() data instead of when the form was first created.
 			/// </summary>
 			[DefaultValue(false)]
 			public virtual bool TrackResetOnLoad 
@@ -211,7 +280,7 @@ namespace Ext.Net
 			private string url = "";
 
 			/// <summary>
-			/// The URL to use for form actions if one isn't supplied in the doAction options.
+			/// The URL to use for form actions if one isn't supplied in the action options.
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string Url 
@@ -226,60 +295,42 @@ namespace Ext.Net
 				}
 			}
 
-			private string waitMsgTarget = "";
+			private string elementStyle = "";
 
 			/// <summary>
-			/// By default wait messages are displayed with Ext.MessageBox.wait. You can target a specific element by passing it or its id or mask the form itself by passing in true.
+			/// A CSS style specification string to add to each field element in this layout (defaults to '').
 			/// </summary>
 			[DefaultValue("")]
-			public virtual string WaitMsgTarget 
+			public virtual string ElementStyle 
 			{ 
 				get
 				{
-					return this.waitMsgTarget;
+					return this.elementStyle;
 				}
 				set
 				{
-					this.waitMsgTarget = value;
+					this.elementStyle = value;
 				}
 			}
 
-			private string waitTitle = "";
+			private string layout = "form";
 
 			/// <summary>
-			/// The default title to show for the waiting message box
+			/// The layout type to be used in this container.
 			/// </summary>
-			[DefaultValue("")]
-			public virtual string WaitTitle 
+			[DefaultValue("form")]
+			public override string Layout 
 			{ 
 				get
 				{
-					return this.waitTitle;
+					return this.layout;
 				}
 				set
 				{
-					this.waitTitle = value;
+					this.layout = value;
 				}
 			}
-        
-			private Labelable fieldDefaults = null;
 
-			/// <summary>
-			/// If specified, the properties in this object are used as default config values for each Ext.form.Labelable instance (e.g. Ext.form.field.Base or Ext.form.FieldContainer) that is added as a descendant of this container. Corresponding values specified in an individual field's own configuration, or from the defaults config of its parent container, will take precedence. See the documentation for Ext.form.Labelable to see what config options may be specified in the fieldDefaults.
-			/// </summary>
-			public Labelable FieldDefaults
-			{
-				get
-				{
-					if (this.fieldDefaults == null)
-					{
-						this.fieldDefaults = new Labelable();
-					}
-			
-					return this.fieldDefaults;
-				}
-			}
-			
         }
     }
 }

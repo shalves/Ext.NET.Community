@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class TabPanelListeners
     {
         /// <summary>
@@ -56,6 +53,7 @@ namespace Ext.Net
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
                 list.Add("beforeTabChange", new ConfigOption("beforeTabChange", new SerializationOptions("beforetabchange", typeof(ListenerJsonConverter)), null, this.BeforeTabChange ));
+                list.Add("contextMenu", new ConfigOption("contextMenu", new SerializationOptions("contextmenu", typeof(ListenerJsonConverter)), null, this.ContextMenu ));
                 list.Add("tabChange", new ConfigOption("tabChange", new SerializationOptions("tabchange", typeof(ListenerJsonConverter)), null, this.TabChange ));
                 list.Add("beforeTabClose", new ConfigOption("beforeTabClose", new SerializationOptions("beforetabclose", typeof(ListenerJsonConverter)), null, this.BeforeTabClose ));
                 list.Add("beforeTabHide", new ConfigOption("beforeTabHide", new SerializationOptions("beforetabhide", typeof(ListenerJsonConverter)), null, this.BeforeTabHide ));

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,20 +33,12 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class ButtonDirectEvents : AbstractComponentDirectEvents
+    public partial class ButtonDirectEvents : BoxComponentDirectEvents
     {
-        public ButtonDirectEvents() { }
-
-        public ButtonDirectEvents(Observable parent) { this.Parent = parent; }
-
         private ComponentDirectEvent click;
 
         /// <summary>
         /// Fires when this button is clicked.
-        /// Parameters
-        /// item : Ext.button.Button
-        /// e : Event
-        /// The click event
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "e", typeof(object), "The click event")]
@@ -59,7 +51,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.click ?? (this.click = new ComponentDirectEvent(this));
+                if (this.click == null)
+                {
+                    this.click = new ComponentDirectEvent();
+                }
+
+                return this.click;
             }
         }
 
@@ -67,9 +64,6 @@ namespace Ext.Net
 
         /// <summary>
         /// If this button has a menu, this event fires when it is hidden.
-        /// Parameters
-        /// item : Ext.button.Button
-        /// menu : Ext.menu.Menu
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "menu", typeof(object), "Menu")]
@@ -82,7 +76,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.menuHide ?? (this.menuHide = new ComponentDirectEvent(this));
+                if (this.menuHide == null)
+                {
+                    this.menuHide = new ComponentDirectEvent();
+                }
+
+                return this.menuHide;
             }
         }
 
@@ -90,9 +89,6 @@ namespace Ext.Net
 
         /// <summary>
         /// If this button has a menu, this event fires when it is shown.
-        /// Parameters
-        /// item : Ext.button.Button
-        /// menu : Ext.menu.Menu
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "menu", typeof(object), "Menu")]
@@ -105,7 +101,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.menuShow ?? (this.menuShow = new ComponentDirectEvent(this));
+                if (this.menuShow == null)
+                {
+                    this.menuShow = new ComponentDirectEvent();
+                }
+
+                return this.menuShow;
             }
         }
 
@@ -113,10 +114,6 @@ namespace Ext.Net
 
         /// <summary>
         /// If this button has a menu, this event fires when the mouse leaves the menu triggering element.
-        /// Parameters
-        /// item : Ext.button.Button
-        /// menu : Ext.menu.Menu
-        /// e : Event
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "menu", typeof(object), "Menu")]
@@ -130,7 +127,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.menuTriggerOut ?? (this.menuTriggerOut = new ComponentDirectEvent(this));
+                if (this.menuTriggerOut == null)
+                {
+                    this.menuTriggerOut = new ComponentDirectEvent();
+                }
+
+                return this.menuTriggerOut;
             }
         }
 
@@ -138,10 +140,6 @@ namespace Ext.Net
 
         /// <summary>
         /// If this button has a menu, this event fires when the mouse enters the menu triggering element.
-        /// Parameters
-        /// item : Ext.button.Button
-        /// menu : Ext.menu.Menu
-        /// e : Event
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "menu", typeof(object), "Menu")]
@@ -155,7 +153,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.menuTriggerOver ?? (this.menuTriggerOver = new ComponentDirectEvent(this));
+                if (this.menuTriggerOver == null)
+                {
+                    this.menuTriggerOver = new ComponentDirectEvent();
+                }
+
+                return this.menuTriggerOver;
             }
         }
 
@@ -163,9 +166,6 @@ namespace Ext.Net
 
         /// <summary>
         /// Fires when the mouse exits the button.
-        /// Parameters
-        /// item : Ext.button.Button
-        /// e : Event
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "e", typeof(object), "The event object")]
@@ -178,7 +178,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.mouseOut ?? (this.mouseOut = new ComponentDirectEvent(this));
+                if (this.mouseOut == null)
+                {
+                    this.mouseOut = new ComponentDirectEvent();
+                }
+
+                return this.mouseOut;
             }
         }
 
@@ -186,9 +191,6 @@ namespace Ext.Net
 
         /// <summary>
         /// Fires when the mouse hovers over the button.
-        /// Parameters
-        /// item : Ext.button.Button
-        /// e : Event
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "e", typeof(object), "The event object")]
@@ -201,7 +203,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.mouseOver ?? (this.mouseOver = new ComponentDirectEvent(this));
+                if (this.mouseOver == null)
+                {
+                    this.mouseOver = new ComponentDirectEvent();
+                }
+
+                return this.mouseOver;
             }
         }
 
@@ -209,9 +216,6 @@ namespace Ext.Net
 
         /// <summary>
         /// Fires when the 'pressed' state of this button changes (only if enableToggle = true).
-        /// Parameters
-        /// item : Ext.button.Button
-        /// pressed : Boolean
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "pressed", typeof(bool), "Pressed")]
@@ -224,7 +228,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.toggle ?? (this.toggle = new ComponentDirectEvent(this));
+                if (this.toggle == null)
+                {
+                    this.toggle = new ComponentDirectEvent();
+                }
+
+                return this.toggle;
             }
         }
     }

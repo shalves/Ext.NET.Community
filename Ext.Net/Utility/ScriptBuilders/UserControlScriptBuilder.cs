@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -29,7 +29,6 @@ using System.Web;
 using System.Web.UI;
 
 using Ext.Net.Utilities;
-using System.ComponentModel;
 
 namespace Ext.Net
 {
@@ -40,25 +39,65 @@ namespace Ext.Net
     {        
         private UserControlRenderer() 
         { 
-        } 
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="config"></param>
+        /// <param name="userControlPath"></param>
+        /// <param name="controlIdToRender"></param>
+        /// <param name="mode"></param>
+        /// <param name="element"></param>
         /// <returns></returns>
-        public virtual string Build(UserControlRendrerConfig config)
+        public virtual string Build(string userControlPath, string controlIdToRender, RenderMode mode, string element)
         {
-            string id = config.UserControlId ?? BaseControl.GenerateId();
-            UserControl uc = UserControlRenderer.LoadControl(config.UserControlPath, id);
-            uc.ClientIDMode = config.UserControlClientIDMode;
+            return this.Build(userControlPath, controlIdToRender, mode, element, null);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="mode"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public virtual string Build(string userControlPath, RenderMode mode, string element)
+        {
+            return this.Build(userControlPath, null, mode, element, null);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="mode"></param>
+        /// <param name="element"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public virtual string Build(string userControlPath, RenderMode mode, string element, int? index)
+        {
+            return this.Build(userControlPath, null, mode, element, index);
+        }        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="controlIdToRender"></param>
+        /// <param name="mode"></param>
+        /// <param name="element"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public virtual string Build(string userControlPath, string controlIdToRender, RenderMode mode, string element, int? index)
+        {
+            string id = "ID_" + Guid.NewGuid().ToString().Replace("-", "");
+            UserControl uc = UserControlRenderer.LoadControl(userControlPath, id);
             Page pageHolder = uc.Page;
 
-            BaseControl controlToRender = null;
-
-            if (config.ControlIdToRender.IsEmpty() && !config.SingleControl)
+            XControl controlToRender = null;
+            if (controlIdToRender.IsEmpty())
             {
-                Container ct = new Container { ID = id+"_ct", IDMode = IDMode.Static };
+                Container ct = new Container { ID = id, IDMode = IDMode.Explicit };
                 pageHolder.Controls.Add(ct);
                 ct.ContentControls.Add(uc);
                 controlToRender = ct;
@@ -66,100 +105,51 @@ namespace Ext.Net
             else
             {
                 pageHolder.Controls.Add(uc);
-                BaseControl c;
-
-                if (config.SingleControl)
-                {
-                    c = Ext.Net.Utilities.ControlUtils.FindControl<BaseControl>(uc);
-                }
-                else
-                {
-                    c = Ext.Net.Utilities.ControlUtils.FindControl<BaseControl>(pageHolder, config.ControlIdToRender);
-                }
-
+                XControl c = Ext.Net.Utilities.ControlUtils.FindControl<XControl>(pageHolder, controlIdToRender);
                 if (c == null)
                 {
-                    if (config.SingleControl)
-                    {
-                        throw new Exception("Cannot find the Ext.Net control in the view");
-                    }
-                    else
-                    {
-                        throw new Exception("Cannot find the control with ID=" + config.ControlIdToRender);
-                    }
+                    throw new Exception("Cannot find the control with ID=" + controlIdToRender);
                 }
 
                 controlToRender = c;
 
-                if (!controlToRender.HasOwnIDMode)
+                if (controlToRender.IDMode == IDMode.Inherit)
                 {
-                    controlToRender.IDMode = IDMode.Static;
+                    controlToRender.IDMode = IDMode.Explicit;
                 }
             }
 
-            config.OnBeforeRender(new ComponentAddedEventArgs(controlToRender));
-
-            return config.Index.HasValue ? controlToRender.ToScript(config.Mode, config.Element, config.Index.Value, true) : controlToRender.ToScript(config.Mode, config.Element, true);
+            return index.HasValue ? controlToRender.ToScript(mode, element, index.Value, true) : controlToRender.ToScript(mode, element, true);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="userControlPath"></param>
-        /// <returns></returns>
         public static UserControl LoadControl(string userControlPath)
         {
             return UserControlRenderer.LoadControl<SelfRenderingPage>(userControlPath, null);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="Page"></typeparam>
-        /// <param name="userControlPath"></param>
-        /// <returns></returns>
         public static UserControl LoadControl<Page>(string userControlPath) where Page : System.Web.UI.Page, ISelfRenderingPage, new()
         {
             return UserControlRenderer.LoadControl<Page>(userControlPath, null);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="userControlPath"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public static UserControl LoadControl(string userControlPath, string id)
         {
-            return UserControlRenderer.LoadControl<SelfRenderingPage>(userControlPath, id);
+            return UserControlRenderer.LoadControl<SelfRenderingPage>(userControlPath, null);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="Page"></typeparam>
-        /// <param name="userControlPath"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public static UserControl LoadControl<Page>(string userControlPath, string id) where Page : System.Web.UI.Page, ISelfRenderingPage, new()
         {
             System.Web.UI.Page pageHolder = (System.Web.UI.Page)new Page();
 
-            ResourceManager rm = new ResourceManager(true);
+            ResourceManager rm = new ResourceManager();
             rm.RenderScripts = ResourceLocationType.None;
             rm.RenderStyles = ResourceLocationType.None;
             rm.IDMode = IDMode.Explicit;
             pageHolder.Controls.Add(rm);
 
-            if (!userControlPath.StartsWith("~") && !userControlPath.StartsWith("/") && HttpContext.Current != null && HttpContext.Current.CurrentHandler is System.Web.UI.Page)
-            {
-                var dir = System.IO.Path.GetDirectoryName(HttpContext.Current.Request.CurrentExecutionFilePath).Replace("\\", "/");
-                userControlPath = dir + "/" + userControlPath;
-            }
-
-            id = id ?? BaseControl.GenerateId();
+            id = id ?? "ID_" + Guid.NewGuid().ToString().Replace("-", "");
             System.Web.UI.Control uc = pageHolder.LoadControl(userControlPath);
-            uc.ID = id;
+            uc.ID = id + "_UC";
 
             return (UserControl)uc;
         }
@@ -173,17 +163,192 @@ namespace Ext.Net
         /// <param name="element"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        public static string ToScript(UserControlRendrerConfig config)
+        public static string ToScript(string userControlPath, string controlIdToRender, RenderMode mode, string element, int? index)
         {
-            return new UserControlRenderer().Build(config);
+            return new UserControlRenderer().Build(userControlPath, controlIdToRender, mode, element, index);
         }
 
-        public static void Render(UserControlRendrerConfig config)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="controlIdToRender"></param>
+        /// <param name="element"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static string ToScript(string userControlPath, string controlIdToRender, string element, int? index)
+        {
+            return new UserControlRenderer().Build(userControlPath, controlIdToRender, RenderMode.RenderTo, element, index);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="mode"></param>
+        /// <param name="element"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static string ToScript(string userControlPath, RenderMode mode, string element, int? index)
+        {
+            return new UserControlRenderer().Build(userControlPath, mode, element, index);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="element"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static string ToScript(string userControlPath, string element, int? index)
+        {
+            return new UserControlRenderer().Build(userControlPath, RenderMode.RenderTo, element, index);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="mode"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public static string ToScript(string userControlPath, RenderMode mode, string element)
+        {
+            return new UserControlRenderer().Build(userControlPath, mode, element);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public static string ToScript(string userControlPath, string element)
+        {
+            return new UserControlRenderer().Build(userControlPath, RenderMode.RenderTo, element);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="controlIdToRender"></param>
+        /// <param name="mode"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public static string ToScript(string userControlPath, string controlIdToRender, RenderMode mode, string element)
+        {
+            return new UserControlRenderer().Build(userControlPath, controlIdToRender, mode, element);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="controlIdToRender"></param>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        public static string ToScript(string userControlPath, string controlIdToRender, string element)
+        {
+            return new UserControlRenderer().Build(userControlPath, controlIdToRender, RenderMode.RenderTo, element);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="controlIdToRender"></param>
+        /// <param name="mode"></param>
+        /// <param name="element"></param>
+        /// <param name="index"></param>
+        public static void Render(string userControlPath, string controlIdToRender, RenderMode mode, string element, int? index)
+        {
+            UserControlRenderer.Render(UserControlRenderer.ToScript(userControlPath, controlIdToRender, mode, element, index));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="controlIdToRender"></param>
+        /// <param name="element"></param>
+        /// <param name="index"></param>
+        public static void Render(string userControlPath, string controlIdToRender, string element, int? index)
+        {
+            UserControlRenderer.Render(UserControlRenderer.ToScript(userControlPath, controlIdToRender, element, index));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="mode"></param>
+        /// <param name="element"></param>
+        /// <param name="index"></param>
+        public static void Render(string userControlPath, RenderMode mode, string element, int? index)
+        {
+            UserControlRenderer.Render(UserControlRenderer.ToScript(userControlPath, mode, element, index));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="element"></param>
+        /// <param name="index"></param>
+        public static void Render(string userControlPath, string element, int? index)
+        {
+            UserControlRenderer.Render(UserControlRenderer.ToScript(userControlPath, element, index));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="mode"></param>
+        /// <param name="element"></param>
+        public static void Render(string userControlPath, RenderMode mode, string element)
+        {
+            UserControlRenderer.Render(UserControlRenderer.ToScript(userControlPath, mode, element));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="element"></param>
+        public static void Render(string userControlPath, string element)
+        {
+            UserControlRenderer.Render(UserControlRenderer.ToScript(userControlPath, element));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="controlIdToRender"></param>
+        /// <param name="mode"></param>
+        /// <param name="element"></param>
+        public static void Render(string userControlPath, string controlIdToRender, RenderMode mode, string element)
+        {
+            UserControlRenderer.Render(UserControlRenderer.ToScript(userControlPath, controlIdToRender, mode, element));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userControlPath"></param>
+        /// <param name="controlIdToRender"></param>
+        /// <param name="element"></param>
+        public static void Render(string userControlPath, string controlIdToRender, string element)
+        {
+            UserControlRenderer.Render(UserControlRenderer.ToScript(userControlPath, controlIdToRender, element));
+        }
+
+        private static void Render(string script)
         {
             ResourceManager rm = ResourceManager.GetInstance(HttpContext.Current);
-            
-            var script = UserControlRenderer.ToScript(config);
-
             if (HttpContext.Current.CurrentHandler is Page && rm != null)
             {
                 rm.AddScript(script);
@@ -191,141 +356,6 @@ namespace Ext.Net
             else
             {
                 new DirectResponse(script).Return();
-            }
-        }
-    }
-
-    public class UserControlRendrerConfig
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string UserControlPath
-        {
-            get;
-            set;
-        }
-
-        private ClientIDMode clientIDMode = ClientIDMode.Predictable;
-        public ClientIDMode UserControlClientIDMode
-        {
-            get
-            {
-                return this.clientIDMode;
-            }
-            set
-            {
-                this.clientIDMode = value;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string ControlIdToRender
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Element
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string UserControlId
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool SingleControl
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public int? Index
-        {
-            get;
-            set;
-        }
-
-        private RenderMode mode = RenderMode.RenderTo;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public RenderMode Mode
-        {
-            get
-            {
-                return this.mode;
-            }
-            set
-            {
-                this.mode = value;
-            }
-        }
-
-        private EventHandlerList events;
-
-        protected EventHandlerList Events
-        {
-            get
-            {
-                if (this.events == null)
-                {
-                    this.events = new EventHandlerList();
-                }
-
-                return this.events;
-            }
-        }
-
-        private static readonly object EventBeforeRender = new object();
-        public delegate void BeforeRenderEventHandler(ComponentAddedEventArgs e);
-
-        // <summary>
-        /// 
-        /// </summary>
-        [Category("Action")]
-        [Description("")]
-        public event BeforeRenderEventHandler BeforeRender
-        {
-            add
-            {
-                this.Events.AddHandler(EventBeforeRender, value);
-            }
-            remove
-            {
-                this.Events.RemoveHandler(EventBeforeRender, value);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        internal void OnBeforeRender(ComponentAddedEventArgs e)
-        {
-            BeforeRenderEventHandler handler = (BeforeRenderEventHandler)Events[EventBeforeRender];
-
-            if (handler != null)
-            {
-                handler(e);
             }
         }
     }

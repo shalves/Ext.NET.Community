@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -28,7 +28,7 @@ using System;
 using System.ComponentModel;
 using System.Text;
 using System.Web.UI.WebControls;
-using Ext.Net.Utilities;
+
 using Newtonsoft.Json;
 
 namespace Ext.Net
@@ -43,29 +43,26 @@ namespace Ext.Net
 		/// 
 		/// </summary>
 		[Description("")]
-        public override void WriteJson(Newtonsoft.Json.JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            ListItemCollection items = value as ListItemCollection;
+            ListItemCollection<ListItem> items = value as ListItemCollection<ListItem>;
 
-            //StringBuilder sb = new StringBuilder("new Ext.data.SimpleStore({fields:[\"text\",\"value\"],data :[");
-            StringBuilder sb = new StringBuilder("[");
+            StringBuilder sb = new StringBuilder("new Ext.data.SimpleStore({fields:[\"text\",\"value\"],data :[");
 
             if (items != null && items.Count > 0)
             {
                 foreach (ListItem item in items)
                 {
                     sb.Append("[");
-                    var val = item.Value.IsEmpty() ? item.Text : item.Value;
-                    sb.Append(item.Mode == ParameterMode.Value ? JSON.Serialize(val) : val);
+                    sb.Append(JSON.Serialize(item.Text));
                     sb.Append(",");
-                    sb.Append(item.Text.IsEmpty() ? JSON.Serialize(item.Value) : JSON.Serialize(item.Text));
+                    sb.Append(JSON.Serialize(item.Value));
                     sb.Append("],");
                 }
                 sb.Remove(sb.Length - 1, 1);
             }
             
-            //sb.Append("]})");
-            sb.Append("]");
+            sb.Append("]})");
 
             writer.WriteRawValue(sb.ToString());
         }
@@ -76,7 +73,7 @@ namespace Ext.Net
 		[Description("")]
         public override bool CanConvert(Type objectType)
         {
-            return typeof(ListItemCollection).IsAssignableFrom(objectType);
+            return typeof(ListItemCollection<ListItem>).IsAssignableFrom(objectType);
         }
 
 		/// <summary>

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class Column
     {
         /// <summary>
@@ -55,8 +52,12 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
-                list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
-                list.Add("directEvents", new ConfigOption("directEvents", new SerializationOptions("directEvents", JsonMode.Object), null, this.DirectEvents ));
+                list.Add("xType", new ConfigOption("xType", new SerializationOptions("xtype"), "", this.XType ));
+                list.Add("rightCommandAlign", new ConfigOption("rightCommandAlign", null, true, this.RightCommandAlign ));
+                list.Add("commands", new ConfigOption("commands", new SerializationOptions("commands", JsonMode.AlwaysArray), null, this.Commands ));
+                list.Add("isCellCommand", new ConfigOption("isCellCommand", null, false, this.IsCellCommand ));
+                list.Add("prepareCommand", new ConfigOption("prepareCommand", new SerializationOptions(JsonMode.Raw), null, this.PrepareCommand ));
+                list.Add("prepareCommands", new ConfigOption("prepareCommands", new SerializationOptions(JsonMode.Raw), null, this.PrepareCommands ));
 
                 return list;
             }

@@ -1,92 +1,91 @@
+/*!
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
 /**
  *
  * Norwegian translation (Nynorsk: no-NN)
  * By Tore Kjørsvik 21-January-2008
  *  
  */
-Ext.onReady(function (){
-    var cm = Ext.ClassManager, 
-        exists = Ext.Function.bind(cm.get, cm);
 
-if(Ext.Updater) {
-    Ext.Updater.defaults.indicatorText = '<div class="loading-indicator">Lastar...</div>';
+Ext.UpdateManager.defaults.indicatorText = '<div class="loading-indicator">Lastar...</div>';
+
+if (Ext.View) {
+  Ext.View.prototype.emptyText = "";
 }
 
-if(exists('Ext.view.View')){
-  Ext.view.View.prototype.emptyText = "";
+if (Ext.grid.GridPanel) {
+  Ext.grid.GridPanel.prototype.ddText = "{0} markert(e) rad(er)";
 }
 
-if(exists('Ext.grid.Panel')){
-  Ext.grid.Panel.prototype.ddText = "{0} markert(e) rad(er)";
-}
-
-if(Ext.TabPanelItem){
+if (Ext.TabPanelItem) {
   Ext.TabPanelItem.prototype.closeText = "Lukk denne fana";
 }
 
-if(exists('Ext.form.field.Base')){
-  Ext.form.field.Base.prototype.invalidText = "Verdien i dette feltet er ugyldig";
+if (Ext.form.Field) {
+  Ext.form.Field.prototype.invalidText = "Verdien i dette feltet er ugyldig";
 }
 
-if(Ext.LoadMask){
+if (Ext.LoadMask) {
   Ext.LoadMask.prototype.msg = "Lastar...";
 }
 
-if(Ext.Date) {
-    Ext.Date.monthNames = [
-      "Januar",
-      "Februar",
-      "Mars",
-      "April",
-      "Mai",
-      "Juni",
-      "Juli",
-      "August",
-      "September",
-      "Oktober",
-      "November",
-      "Desember"
-    ];
+Date.monthNames = [
+  "Januar",
+  "Februar",
+  "Mars",
+  "April",
+  "Mai",
+  "Juni",
+  "Juli",
+  "August",
+  "September",
+  "Oktober",
+  "November",
+  "Desember"
+];
 
-    Ext.Date.getShortMonthName = function(month) {
-      return Ext.Date.monthNames[month].substring(0, 3);
-    };
+Date.getShortMonthName = function (month) {
+  return Date.monthNames[month].substring(0, 3);
+};
 
-    Ext.Date.monthNumbers = {
-      Jan : 0,
-      Feb : 1,
-      Mar : 2,
-      Apr : 3,
-      Mai : 4,
-      Jun : 5,
-      Jul : 6,
-      Aug : 7,
-      Sep : 8,
-      Okt : 9,
-      Nov : 10,
-      Des : 11
-    };
+Date.monthNumbers = {
+  Jan : 0,
+  Feb : 1,
+  Mar : 2,
+  Apr : 3,
+  Mai : 4,
+  Jun : 5,
+  Jul : 6,
+  Aug : 7,
+  Sep : 8,
+  Okt : 9,
+  Nov : 10,
+  Des : 11
+};
 
-    Ext.Date.getMonthNumber = function(name) {
-      return Ext.Date.monthNumbers[name.substring(0, 1).toUpperCase() + name.substring(1, 3).toLowerCase()];
-    };
+Date.getMonthNumber = function (name) {
+  return Date.monthNumbers[name.substring(0, 1).toUpperCase() + name.substring(1, 3).toLowerCase()];
+};
 
-    Ext.Date.dayNames = [
-      "Søndag",
-      "Måndag",
-      "Tysdag",
-      "Onsdag",
-      "Torsdag",
-      "Fredag",
-      "Laurdag"
-    ];
+Date.dayNames = [
+  "Søndag",
+  "Måndag",
+  "Tysdag",
+  "Onsdag",
+  "Torsdag",
+  "Fredag",
+  "Laurdag"
+];
 
-    Ext.Date.getShortDayName = function(day) {
-      return Ext.Date.dayNames[day].substring(0, 3);
-    };
-}
+Date.getShortDayName = function (day) {
+  return Date.dayNames[day].substring(0, 3);
+};
 
-if(Ext.MessageBox){
+if (Ext.MessageBox) {
   Ext.MessageBox.buttonText = {
     ok     : "OK",
     cancel : "Avbryt",
@@ -95,41 +94,35 @@ if(Ext.MessageBox){
   };
 }
 
-if(exists('Ext.util.Format')){
-    Ext.apply(Ext.util.Format, {
-        thousandSeparator: '.',
-        decimalSeparator: ',',
-        currencySign: 'kr',  // Norwegian Krone
-        dateFormat: 'd.m.Y'
-    });
+if (Ext.util.Format) {
+  Ext.util.Format.date = function (v, format) {
+    if (!v) return "";
+    if (!(v instanceof Date)) v = new Date(Date.parse(v));
+    return v.dateFormat(format || "d.m.Y");
+  };
 }
 
-if(exists('Ext.picker.Date')){
-  Ext.apply(Ext.picker.Date.prototype, {
+if (Ext.DatePicker) {
+  Ext.apply(Ext.DatePicker.prototype, {
     todayText         : "I dag",
     minText           : "Denne datoen er før tidlegaste tillatne dato",
     maxText           : "Denne datoen er etter seinaste tillatne dato",
     disabledDaysText  : "",
     disabledDatesText : "",
-    monthNames	      : Ext.Date.monthNames,
-    dayNames		      : Ext.Date.dayNames,
+    monthNames	      : Date.monthNames,
+    dayNames		      : Date.dayNames,
     nextText          : 'Neste månad (Control+Pil Høgre)',
     prevText          : 'Førre månad (Control+Pil Venstre)',
     monthYearText     : 'Velj ein månad (Control+Pil Opp/Ned for å skifte år)',
     todayTip          : "{0} (Mellomrom)",
     format            : "d.m.y",
+    okText            : "&#160;OK&#160;",
+    cancelText        : "Avbryt",
     startDay          : 1
   });
 }
 
-if(exists('Ext.picker.Month')) {
-  Ext.apply(Ext.picker.Month.prototype, {
-      okText            : "&#160;OK&#160;",
-      cancelText        : "Avbryt"
-  });
-}
-
-if(exists('Ext.toolbar.Paging')){
+if (Ext.PagingToolbar) {
   Ext.apply(Ext.PagingToolbar.prototype, {
     beforePageText : "Side",
     afterPageText  : "av {0}",
@@ -143,8 +136,8 @@ if(exists('Ext.toolbar.Paging')){
   });
 }
 
-if(exists('Ext.form.field.Text')){
-  Ext.apply(Ext.form.field.Text.prototype, {
+if (Ext.form.TextField) {
+  Ext.apply(Ext.form.TextField.prototype, {
     minLengthText : "Den minste lengda for dette feltet er {0}",
     maxLengthText : "Den største lengda for dette feltet er {0}",
     blankText     : "Dette feltet er påkravd",
@@ -153,16 +146,16 @@ if(exists('Ext.form.field.Text')){
   });
 }
 
-if(exists('Ext.form.field.Number')){
-  Ext.apply(Ext.form.field.Number.prototype, {
+if (Ext.form.NumberField) {
+  Ext.apply(Ext.form.NumberField.prototype, {
     minText : "Den minste verdien for dette feltet er {0}",
     maxText : "Den største verdien for dette feltet er {0}",
     nanText : "{0} er ikkje eit gyldig nummer"
   });
 }
 
-if(exists('Ext.form.field.Date')){
-  Ext.apply(Ext.form.field.Date.prototype, {
+if (Ext.form.DateField) {
+  Ext.apply(Ext.form.DateField.prototype, {
     disabledDaysText  : "Deaktivert",
     disabledDatesText : "Deaktivert",
     minText           : "Datoen i dette feltet må vere etter {0}",
@@ -173,17 +166,15 @@ if(exists('Ext.form.field.Date')){
   });
 }
 
-if(exists('Ext.form.field.ComboBox')){
-  Ext.apply(Ext.form.field.ComboBox.prototype, {
+if (Ext.form.ComboBox) {
+  Ext.apply(Ext.form.ComboBox.prototype, {
+    loadingText       : "Lastar...",
     valueNotFoundText : undefined
   });
-    Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
-        loadingText       : "Lastar..."
-    });
 }
 
-if(exists('Ext.form.field.VTypes')){
-   Ext.apply(Ext.form.field.VTypes, {
+if (Ext.form.VTypes) {
+   Ext.apply(Ext.form.VTypes, {
       emailText    : 'Dette feltet skal vere ei epost adresse på formatet "bruker@domene.no"',
       urlText      : 'Dette feltet skal vere ein link (URL) på formatet "http:/'+'/www.domene.no"',
       alphaText    : 'Dette feltet skal berre innehalde bokstavar og _',
@@ -191,86 +182,86 @@ if(exists('Ext.form.field.VTypes')){
    });
 }
 
-if(exists('Ext.form.field.HtmlEditor')){
-  Ext.apply(Ext.form.field.HtmlEditor.prototype, {
+if (Ext.form.HtmlEditor) {
+  Ext.apply(Ext.form.HtmlEditor.prototype, {
     createLinkText : 'Ver venleg og skriv inn URL for lenken:',
     buttonTips : {
       bold : {
         title: 'Feit (Ctrl+B)',
         text: 'Gjer den valde teksten feit.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       },
       italic : {
         title: 'Kursiv (Ctrl+I)',
         text: 'Gjer den valde teksten kursiv.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       },
       underline : {
         title: 'Understrek (Ctrl+U)',
         text: 'Understrek den valde teksten.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       },
       increasefontsize : {
         title: 'Forstørr tekst',
         text: 'Gjer fontstorleik større.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       },
       decreasefontsize : {
         title: 'Forminsk tekst',
         text: 'Gjer fontstorleik mindre.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       },
       backcolor : {
         title: 'Tekst markeringsfarge',
         text: 'Endre bakgrunnsfarge til den valde teksten.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       },
       forecolor : {
         title: 'Font farge',
         text: 'Endre farge på den valde teksten.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       },
       justifyleft : {
         title: 'Venstrejuster tekst',
         text: 'Venstrejuster teksten.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       },
       justifycenter : {
         title: 'Sentrer tekst',
         text: 'Sentrer teksten.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       },
       justifyright : {
         title: 'Høgrejuster tekst',
         text: 'Høgrejuster teksten.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       },
       insertunorderedlist : {
         title: 'Punktliste',
         text: 'Start ei punktliste.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       },
       insertorderedlist : {
         title: 'Nummerert liste',
         text: 'Start ei nummerert liste.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       },
       createlink : {
         title: 'Lenke',
         text: 'Gjer den valde teksten til ei lenke.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       },
       sourceedit : {
         title: 'Rediger kjelde',
         text: 'Bytt til kjelderedigeringsvising.',
-        cls: Ext.baseCSSPrefix + 'html-editor-tip'
+        cls: 'x-html-editor-tip'
       }
     }
   });
 }
 
-if(exists('Ext.grid.header.Container')){
-  Ext.apply(Ext.grid.header.Container.prototype, {
+if (Ext.grid.GridView) {
+  Ext.apply(Ext.grid.GridView.prototype, {
     sortAscText  : "Sorter stigande",
     sortDescText : "Sorter fallande",
     lockText     : "Lås kolonne",
@@ -279,15 +270,15 @@ if(exists('Ext.grid.header.Container')){
   });
 }
 
-if(exists('Ext.grid.GroupingFeature')){
-  Ext.apply(Ext.grid.GroupingFeature.prototype, {
+if (Ext.grid.GroupingView) {
+  Ext.apply(Ext.grid.GroupingView.prototype, {
     emptyGroupText : '(Ingen)',
     groupByText    : 'Grupper etter dette feltet',
     showGroupsText : 'Vis i grupper'
   });
 }
 
-if(exists('Ext.grid.PropertyColumnModel')){
+if (Ext.grid.PropertyColumnModel) {
   Ext.apply(Ext.grid.PropertyColumnModel.prototype, {
     nameText   : "Namn",
     valueText  : "Verdi",
@@ -295,5 +286,9 @@ if(exists('Ext.grid.PropertyColumnModel')){
   });
 }
 
-
-});
+if (Ext.layout.BorderLayout && Ext.layout.BorderLayout.SplitRegion) {
+  Ext.apply(Ext.layout.BorderLayout.SplitRegion.prototype, {
+    splitTip            : "Dra for å endre storleik.",
+    collapsibleSplitTip : "Dra for å endre storleik. Dobbelklikk for å skjule."
+  });
+}

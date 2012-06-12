@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -34,10 +34,6 @@ namespace Ext.Net
     /// </summary>
     public partial class DragTrackerDirectEvents : ComponentDirectEvents
     {
-        public DragTrackerDirectEvents() { }
-
-        public DragTrackerDirectEvents(Observable parent) { this.Parent = parent; }
-
         private ComponentDirectEvent drag;
 
         /// <summary>
@@ -55,7 +51,7 @@ namespace Ext.Net
             {
                 if (this.drag == null)
                 {
-                    this.drag = new ComponentDirectEvent(this);
+                    this.drag = new ComponentDirectEvent();
                 }
 
                 return this.drag;
@@ -79,7 +75,7 @@ namespace Ext.Net
             {
                 if (this.dragend == null)
                 {
-                    this.dragend = new ComponentDirectEvent(this);
+                    this.dragend = new ComponentDirectEvent();
                 }
 
                 return this.dragend;
@@ -103,7 +99,7 @@ namespace Ext.Net
             {
                 if (this.dragstart == null)
                 {
-                    this.dragstart = new ComponentDirectEvent(this);
+                    this.dragstart = new ComponentDirectEvent();
                 }
 
                 return this.dragstart;
@@ -127,7 +123,7 @@ namespace Ext.Net
             {
                 if (this.mousedown == null)
                 {
-                    this.mousedown = new ComponentDirectEvent(this);
+                    this.mousedown = new ComponentDirectEvent();
                 }
 
                 return this.mousedown;
@@ -151,7 +147,7 @@ namespace Ext.Net
             {
                 if (this.mousemove == null)
                 {
-                    this.mousemove = new ComponentDirectEvent(this);
+                    this.mousemove = new ComponentDirectEvent();
                 }
 
                 return this.mousemove;
@@ -175,7 +171,7 @@ namespace Ext.Net
             {
                 if (this.mouseup == null)
                 {
-                    this.mouseup = new ComponentDirectEvent(this);
+                    this.mouseup = new ComponentDirectEvent();
                 }
 
                 return this.mouseup;

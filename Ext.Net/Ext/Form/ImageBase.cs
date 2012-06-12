@@ -15,16 +15,15 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
- ********/
-
-using System.ComponentModel;
+ ********/using System.ComponentModel;
+using System.Drawing;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -35,7 +34,7 @@ namespace Ext.Net
     /// </summary>
     [Meta]
     [Description("")]
-    public abstract partial class ImageBase : ComponentBase
+    public abstract partial class ImageBase : BoxComponentBase
     {
         /// <summary>
 		/// 
@@ -57,6 +56,7 @@ namespace Ext.Net
         /// <summary>
         /// The height of this component in pixels (defaults to auto).
         /// </summary>
+        [Meta]
         [ConfigOption]
         [DirectEventUpdate(MethodName = "SetHeight")]
         [Category("4. BoxComponent")]
@@ -67,17 +67,19 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<Unit>("Height", Unit.Empty);
+                object obj = this.ViewState["Height"];
+                return obj == null ? Unit.Empty : (Unit)this.ViewState["Height"];
             }
             set
             {
-                this.State.Set("Height", value);
+                this.ViewState["Height"] = value;
             }
         }
 
         /// <summary>
         /// The width of this component in pixels (defaults to auto).
         /// </summary>
+        [Meta]
         [ConfigOption]
         [DirectEventUpdate(MethodName = "SetWidth")]
         [Category("4. BoxComponent")]
@@ -88,11 +90,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<Unit>("Width", Unit.Empty);
+                object obj = this.ViewState["Width"];
+                return obj == null ? Unit.Empty : (Unit)this.ViewState["Width"];
             }
             set
             {
-                this.State.Set("Width", value);
+                this.ViewState["Width"] = value;
             }
         }
 
@@ -108,11 +111,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("ImageUrl", "");
+                return (string)this.ViewState["ImageUrl"] ?? "";
             }
             set
             {
-                this.State.Set("ImageUrl", value);
+                this.ViewState["ImageUrl"] = value;
             }
         }
 
@@ -141,11 +144,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("AlternateText", "");
+                return (string)this.ViewState["AlternateText"] ?? "";
             }
             set
             {
-                this.State.Set("AlternateText", value);
+                this.ViewState["AlternateText"] = value;
             }
         }
 
@@ -161,11 +164,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<ImageAlign>("Align", ImageAlign.NotSet);
+                object obj = this.ViewState["Align"];
+                return (obj == null) ? ImageAlign.NotSet : (ImageAlign)obj;
             }
             set
             {
-                this.State.Set("Align", value);
+                this.ViewState["Align"] = value;
             }
         }
 
@@ -182,11 +186,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("LazyLoad", false);
+                object obj = this.ViewState["LazyLoad"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("LazyLoad", value);
+                this.ViewState["LazyLoad"] = value;
             }
         }
 
@@ -203,11 +208,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("MonitorComplete", true);
+                object obj = this.ViewState["MonitorComplete"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("MonitorComplete", value);
+                this.ViewState["MonitorComplete"] = value;
             }
         }
 
@@ -224,11 +230,34 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("AllowPan", false);
+                object obj = this.ViewState["AllowPan"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("AllowPan", value);
+                this.ViewState["AllowPan"] = value;
+            }
+        }
+
+        /// <summary>
+        /// true to allow resize the image
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("5. Image")]
+        [DefaultValue(false)]
+        [NotifyParentProperty(true)]
+        [Description("true to allow resize the image")]
+        public virtual bool Resizable
+        {
+            get
+            {
+                object obj = this.ViewState["Resizable"];
+                return (obj == null) ? false : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["Resizable"] = value;
             }
         }
 
@@ -245,11 +274,58 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("MonitorPoll", 200);
+                object obj = this.ViewState["MonitorPoll"];
+                return (obj == null) ? 200 : (int)obj;
             }
             set
             {
-                this.State.Set("MonitorPoll", value);
+                this.ViewState["MonitorPoll"] = value;
+            }
+        }
+
+        private Resizable resizeConfig;
+
+        /// <summary>
+        /// Resize object config
+        /// </summary>
+        [Meta]
+        [Category("5. Image")]
+        [NotifyParentProperty(true)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("Resize object config")]
+        public Resizable ResizeConfig
+        {
+            get
+            {
+                if (this.resizeConfig == null)
+                {
+                    this.resizeConfig = new Resizable();
+                    this.resizeConfig.Visible = false;
+                    this.resizeConfig.EnableViewState = false;
+                }
+
+                return this.resizeConfig;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigOption("resizeConfig", JsonMode.Raw)]
+        [DefaultValue("")]
+        [Description("")]
+        protected virtual string ResizeConfigProxy
+        {
+            get
+            {
+                string cfg = this.ResizeConfig.InitialConfig;
+
+                if (cfg == "{}")
+                {
+                    return "";
+                }
+
+                return cfg;
             }
         }
 
@@ -267,11 +343,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("XDelta", 0);
+                object obj = this.ViewState["XDelta"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("XDelta", value);
+                this.ViewState["XDelta"] = value;
             }
         }
 
@@ -289,11 +366,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("YDelta", 0);
+                object obj = this.ViewState["YDelta"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("YDelta", value);
+                this.ViewState["YDelta"] = value;
             }
         }        
 
@@ -349,7 +427,7 @@ namespace Ext.Net
         [Description("")]
         protected virtual void SetAlign(ImageAlign align)
         {
-            this.Call("setAlign", align.ToString().ToLowerInvariant());
+            this.Call("setAlign", align.ToString().ToLower());
         }
 
         /// <summary>

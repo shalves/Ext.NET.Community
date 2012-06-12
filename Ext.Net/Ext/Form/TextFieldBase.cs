@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -43,6 +43,33 @@ namespace Ext.Net
     [Description("Base Class for all Text Field Web Controls.")]
     public abstract partial class TextFieldBase : Field, IEditableTextControl
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        [Category("0. About")]
+        [Description("")]
+        public override string XType
+        {
+            get
+            {
+                return "textfield";
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Category("0. About")]
+        [Description("")]
+        public override string InstanceOf
+        {
+            get
+            {
+                return "Ext.form.TextField";
+            }
+        }
+
+
         /*  ITextControl
             -----------------------------------------------------------------------------------------------*/
 
@@ -100,11 +127,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("AllowBlank", true);
+                object obj = this.ViewState["AllowBlank"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("AllowBlank", value);
+                this.ViewState["AllowBlank"] = value;
             }
         }
 
@@ -121,11 +149,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("BlankText", "");
+                return (string)this.ViewState["BlankText"] ?? "";
             }
             set
             {
-                this.State.Set("BlankText", value);
+                this.ViewState["BlankText"] = value;
             }
         }
 
@@ -141,11 +169,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("DisableKeyFilter", false);
+                object obj = this.ViewState["DisableKeyFilter"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("DisableKeyFilter", value);
+                this.ViewState["DisableKeyFilter"] = value;
             }
         }
 
@@ -161,20 +190,16 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("EmptyClass", "");
+                return (string)this.ViewState["EmptyClass"] ?? "";
             }
             set
             {
-                this.State.Set("EmptyClass", value);
+                this.ViewState["EmptyClass"] = value;
             }
         }
 
         /// <summary>
-        /// The default text to place into an empty field (defaults to undefined).
-        ///
-        /// Note that normally this value will be submitted to the server if this field is enabled; to prevent this you can set the submitEmptyText option of Ext.form.Basic.submit to false.
-        ///
-        /// Also note that if you use inputType:'file', emptyText is not supported and should be avoided.
+        /// The default text to display in an empty field (defaults to null).
         /// </summary>
         [Meta]
         [ConfigOption]
@@ -186,11 +211,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("EmptyText", "");
+                return (string)this.ViewState["EmptyText"] ?? "";
             }
             set
             {
-                this.State.Set("EmptyText", value);
+                this.ViewState["EmptyText"] = value;
             }
         }
 
@@ -206,31 +231,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("EnableKeyEvents", false);
+                object obj = this.ViewState["EnableKeyEvents"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("EnableKeyEvents", value);
-            }
-        }
-
-        /// <summary>
-        /// True to set the maxLength property on the underlying input field. Defaults to false
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. TextField")]
-        [DefaultValue(false)]
-        [Description("True to set the maxLength property on the underlying input field. Defaults to false")]
-        public virtual bool EnforceMaxLength
-        {
-            get
-            {
-                return this.State.Get<bool>("EnforceMaxLength", false);
-            }
-            set
-            {
-                this.State.Set("EnforceMaxLength", value);
+                this.ViewState["EnableKeyEvents"] = value;
             }
         }
 
@@ -246,31 +252,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Grow", false);
+                object obj = this.ViewState["Grow"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Grow", value);
-            }
-        }
-
-        /// <summary>
-        /// A string that will be appended to the field's current value for the purposes of calculating the target field size. Only used when the grow config is true. Defaults to a single capital "W" (the widest character in common fonts) to leave enough space for the next typed character and avoid the field value shifting before the width is adjusted.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. TextField")]
-        [DefaultValue("W")]
-        [Description("A string that will be appended to the field's current value for the purposes of calculating the target field size. Only used when the grow config is true. Defaults to a single capital \"W\" (the widest character in common fonts) to leave enough space for the next typed character and avoid the field value shifting before the width is adjusted.")]
-        public virtual string GrowAppend
-        {
-            get
-            {
-                return this.State.Get<string>("GrowAppend", "W");
-            }
-            set
-            {
-                this.State.Set("GrowAppend", value);
+                this.ViewState["Grow"] = value;
             }
         }
 
@@ -286,11 +273,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.UnitPixelTypeCheck(State["GrowMax"], Unit.Pixel(800), "GrowMax");
+                return this.UnitPixelTypeCheck(ViewState["GrowMax"], Unit.Pixel(800), "GrowMax");
             }
             set
             {
-                this.State.Set("GrowMax", value);
+                this.ViewState["GrowMax"] = value;
             }
         }
 
@@ -306,11 +293,32 @@ namespace Ext.Net
         {
             get
             {
-                return this.UnitPixelTypeCheck(State["GrowMin"], Unit.Pixel(30), "GrowMin");
+                return this.UnitPixelTypeCheck(ViewState["GrowMin"], Unit.Pixel(30), "GrowMin");
             }
             set
             {
-                this.State.Set("GrowMin", value);
+                this.ViewState["GrowMin"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The type attribute for input fields.
+        /// </summary>
+        [Meta]
+        [ConfigOption(JsonMode.ToLower)]
+        [Category("6. TextField")]
+        [DefaultValue(InputType.Text)]
+        [Description("The type attribute for input fields.")]
+        public virtual InputType InputType
+        {
+            get
+            {
+                object obj = this.ViewState["InputType"];
+                return (obj == null) ? InputType.Text : (InputType)obj;
+            }
+            set
+            {
+                this.ViewState["InputType"] = value;
             }
         }
 
@@ -328,31 +336,33 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("MaskRe", "");
+                return (string)this.ViewState["MaskRe"] ?? "";
             }
             set
             {
-                this.State.Set("MaskRe", value);
+                this.ViewState["MaskRe"] = value;
             }
         }
 
         /// <summary>
-        /// Maximum input field length allowed by validation (defaults to Number.MAX_VALUE). This behavior is intended to provide instant feedback to the user by improving usability to allow pasting and editing or overtyping and back tracking. To restrict the maximum number of characters that can be entered into the field use the enforceMaxLength option.
+        /// Maximum input field length allowed (defaults to Number.MAX_VALUE).
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("6. TextField")]
         [DefaultValue(-1)]
-        [Description("Maximum input field length allowed by validation (defaults to Number.MAX_VALUE). This behavior is intended to provide instant feedback to the user by improving usability to allow pasting and editing or overtyping and back tracking. To restrict the maximum number of characters that can be entered into the field use the enforceMaxLength option.")]
+        [DirectEventUpdate(MethodName = "SetMaxLength")]
+        [Description("Maximum input field length allowed (defaults to Number.MAX_VALUE).")]
         public virtual int MaxLength
         {
             get
             {
-                return this.State.Get<int>("MaxLength", -1);
+                object obj = this.ViewState["MaxLength"];
+                return (obj == null) ? -1 : (int)obj;
             }
             set
             {
-                this.State.Set("MaxLength", value);
+                this.ViewState["MaxLength"] = value;
             }
         }
 
@@ -369,11 +379,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("MaxLengthText", "");
+                return (string)this.ViewState["MaxLengthText"] ?? "";
             }
             set
             {
-                this.State.Set("MaxLengthText", value);
+                this.ViewState["MaxLengthText"] = value;
             }
         }
 
@@ -389,11 +399,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("MinLength", 0);
+                object obj = this.ViewState["MinLength"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("MinLength", value);
+                this.ViewState["MinLength"] = value;
             }
         }
 
@@ -410,32 +421,33 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("MinLengthText", "");
+                return (string)this.ViewState["MinLengthText"] ?? "";
             }
             set
             {
-                this.State.Set("MinLengthText", value);
+                this.ViewState["MinLengthText"] = value;
             }
         }
 
         /// <summary>
-        /// A JavaScript RegExp object to be tested against the field value during validation (defaults to undefined). If the test fails, the field will be marked invalid using regexText.
+        /// A JavaScript RegExp object to be tested against the field value during validation (defaults to null). If available, this regex will be evaluated only after the basic validators all return true, and will be passed the current field value. If the test fails, the field will be marked invalid using RegexText.
         /// </summary>
         [Meta]
         [ConfigOption(typeof(RegexJsonConverter))]
+        [DirectEventUpdate(MethodName = "SetRegex")]
         [Category("6. TextField")]
         [DefaultValue("")]
         [Editor("System.Web.UI.Design.WebControls.RegexTypeEditor", typeof(UITypeEditor))]
-        [Description("A JavaScript RegExp object to be tested against the field value during validation (defaults to undefined). If the test fails, the field will be marked invalid using regexText.")]
+        [Description("A JavaScript RegExp object to be tested against the field value during validation (defaults to null). If available, this regex will be evaluated only after the basic validators all return true, and will be passed the current field value. If the test fails, the field will be marked invalid using RegexText.")]
         public virtual string Regex
         {
             get
             {
-                return this.State.Get<string>("Regex", "");
+                return (string)this.ViewState["Regex"] ?? "";
             }
             set
             {
-                this.State.Set("Regex", value);
+                this.ViewState["Regex"] = value;
             }
         }
 
@@ -452,11 +464,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("RegexText", "");
+                return (string)this.ViewState["RegexText"] ?? "";
             }
             set
             {
-                this.State.Set("RegexText", value);
+                this.ViewState["RegexText"] = value;
             }
         }
 
@@ -472,89 +484,76 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("SelectOnFocus", false);
+                object obj = this.ViewState["SelectOnFocus"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("SelectOnFocus", value);
+                this.ViewState["SelectOnFocus"] = value;
             }
         }
 
         /// <summary>
-        /// An initial value for the 'size' attribute on the text input element. This is only used if the field has no configured width and is not given a width by its container's layout. Defaults to 20.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. TextField")]
-        [DefaultValue(20)]
-        [Description("An initial value for the 'size' attribute on the text input element. This is only used if the field has no configured width and is not given a width by its container's layout. Defaults to 20.")]
-        public virtual int Size
-        {
-            get
-            {
-                return this.State.Get<int>("Size", 20);
-            }
-            set
-            {
-                this.State.Set("Size", value);
-            }
-        }
-
-        /// <summary>
-        /// A JavaScript RegExp object used to strip unwanted content from the value before validation (defaults to undefined).
+        /// A JavaScript RegExp object used to strip unwanted content from the value before validation (defaults to null).
         /// </summary>
         [Meta]
         [ConfigOption(typeof(RegexJsonConverter))]
         [Category("6. TextField")]
         [DefaultValue("")]
         [Editor("System.Web.UI.Design.WebControls.RegexTypeEditor", typeof(UITypeEditor))]
-        [Description("A JavaScript RegExp object used to strip unwanted content from the value before validation (defaults to undefined).")]
+        [DirectEventUpdate(MethodName = "SetStripCharsRe")]
+        [Description("A JavaScript RegExp object used to strip unwanted content from the value before validation (defaults to null).")]
         public virtual string StripCharsRe
         {
             get
             {
-                return this.State.Get<string>("StripCharsRe", "");
+                return (string)this.ViewState["StripCharsRe"] ?? "";
             }
             set
             {
-                this.State.Set("StripCharsRe", value);
+                this.ViewState["StripCharsRe"] = value;
             }
         }
 
-        private JFunction validator;
-
-        /// <summary>   
-        /// A custom validation function to be called during field validation (getErrors) (defaults to undefined). If specified, this function will be called first, allowing the developer to override the default validation process.
-        /// This function will be passed the following Parameters:
-        /// value: Mixed
-        ///     The current field value
-        /// 
-        /// This function is to Return:
-        /// true: Boolean
-        ///     true if the value is valid
-        /// msg: String
-        ///     An error message if the value is invalid
+        /// <summary>
+        /// If MaxLength property has been set, more characters than the MaxLength can be entered if Truncate='false'. If 'false', then a validation error is rendered if more characters entered (or pasted) than the MaxLength property. Default value is 'true'.
         /// </summary>
-        [ConfigOption(JsonMode.Raw)]
-        [Category("5. Field")]
-        [DefaultValue(null)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [Description("A custom validation function to be called during field validation (getErrors) (defaults to undefined). If specified, this function will be called first, allowing the developer to override the default validation process.")]
-        public virtual JFunction Validator
+        [Meta]
+        [ConfigOption]
+        [Category("6. TextField")]
+        [DefaultValue(true)]
+        [Description("If MaxLength property has been set, more characters than the MaxLength can be entered if Truncate='false'. If 'false', then a validation error is rendered if more characters entered (or pasted) than the MaxLength property. Default value is 'true'.")]
+        public virtual bool Truncate
         {
             get
             {
-                if (this.validator == null)
-                {
-                    this.validator = new JFunction();
-                    if(!this.DesignMode)
-                    {
-                        this.validator.Args = new string[]{"value"};
-                    }
-                }
+                object obj = this.ViewState["Truncate"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["Truncate"] = value;
+            }
+        }
 
-                return this.validator;
+        /// <summary>
+        /// A custom validation function to be called during field validation (defaults to null). If available, this function will be called only after the basic validators all return true, and will be passed the current field value and expected to return boolean true if the value is valid or a string error message if invalid.
+        /// </summary>
+        [Meta]
+        [ConfigOption(JsonMode.Raw)]
+        [Category("6. TextField")]
+        [DefaultValue("")]
+        [Editor("System.Web.UI.Design.WebControls.RegexTypeEditor", typeof(UITypeEditor))]
+        [Description("A custom validation function to be called during field validation (defaults to null). If available, this function will be called only after the basic validators all return true, and will be passed the current field value and expected to return boolean true if the value is valid or a string error message if invalid.")]
+        public virtual string Validator
+        {
+            get
+            {
+                return (string)this.ViewState["Validator"] ?? "";
+            }
+            set
+            {
+                this.ViewState["Validator"] = value;
             }
         }
 
@@ -570,11 +569,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Vtype", "");
+                return (string)this.ViewState["Vtype"] ?? "";
             }
             set
             {
-                this.State.Set("Vtype", value);
+                this.ViewState["Vtype"] = value;
             }
         }
 
@@ -591,11 +590,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("VtypeText", "");
+                return (string)this.ViewState["VtypeText"] ?? "";
             }
             set
             {
-                this.State.Set("VtypeText", value);
+                this.ViewState["VtypeText"] = value;
             }
         }
 
@@ -684,9 +683,10 @@ namespace Ext.Net
             -----------------------------------------------------------------------------------------------*/
 
         /// <summary>
-        /// Automatically grows the field to accomodate the width of the text up to the maximum field width allowed. This only takes effect if grow = true, and fires the autosize event if the width changes.
+        /// Automatically grows the field to accomodate the width of the text up to the maximum field width allowed. This only takes effect if grow = true, and fires the autosize event.
         /// </summary>
         [Meta]
+        [Description("Automatically grows the field to accomodate the width of the text up to the maximum field width allowed. This only takes effect if grow = true, and fires the autosize event.")]
         public virtual void AutoSize()
         {
             this.Call("autoSize");
@@ -696,6 +696,7 @@ namespace Ext.Net
         /// Selects text in this field
         /// </summary>
         [Meta]
+        [Description("Selects text in this field")]
         public virtual void SelectText()
         {
             this.Call("selectText");
@@ -704,8 +705,8 @@ namespace Ext.Net
         /// <summary>
         /// Selects text in this field
         /// </summary>
-        /// <param name="start">The index where the selection should start (defaults to 0)</param>
         [Meta]
+        [Description("Selects text in this field")]
         public virtual void SelectText(int start)
         {
             this.Call("selectText", start);
@@ -714,8 +715,6 @@ namespace Ext.Net
         /// <summary>
         /// Selects text in this field
         /// </summary>
-        /// <param name="start">The index where the selection should start (defaults to 0)</param>
-        /// <param name="end">The index where the selection should end (defaults to the text length)</param>
         [Meta]
         [Description("Selects text in this field")]
         public virtual void SelectText(int start, int end)
@@ -735,11 +734,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<Icon>("Icon", Icon.None);
+                object obj = this.ViewState["Icon"];
+                return (obj == null) ? Icon.None : (Icon)obj;
             }
             set
             {
-                this.State.Set("Icon", value);
+                this.ViewState["Icon"] = value;
             }
         }
 
@@ -755,7 +755,7 @@ namespace Ext.Net
             {
                 if (this.Icon != Icon.None)
                 {
-                    return "#" + this.Icon.ToString();
+                    return ResourceManager.GetIconClassName(this.Icon);
                 }
 
                 return this.IconCls;
@@ -775,17 +775,14 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("IconCls", "");
+                return (string)this.ViewState["IconCls"] ?? "";
             }
             set
             {
-                this.State.Set("IconCls", value);
+                this.ViewState["IconCls"] = value;
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public override List<Icon> Icons
         {
             get
@@ -801,9 +798,19 @@ namespace Ext.Net
         /// Sets the CSS class that provides a background image to use as the button's icon. This method also changes the value of the iconCls config internally.
         /// </summary>
         [Description("Sets the CSS class that provides a background image to use as the button's icon. This method also changes the value of the iconCls config internally.")]
-        protected virtual void SetIconCls(string cls)
+        protected virtual void SetIconClass(string cls)
         {
-            this.Call("setIconCls", cls);
+            this.Call("setIconClass", cls);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="regex"></param>
+        [Description("")]
+        protected virtual void SetRegex(string regex)
+        {
+            this.AddScript("{0}.regex={1};", this.ClientID, regex.FormatRegexPattern());
         }
 
         /// <summary>
@@ -813,23 +820,44 @@ namespace Ext.Net
         [Description("Sets an input mask regular expression that will be used to filter keystrokes that don't match (defaults to null).")]
         protected void SetMaskRe(string maskRe)
         {
-            this.Set("maskRe", new JRawValue(maskRe.StartsWith("/") ? maskRe : maskRe.Wrap("/")));
+            this.Set("maskRe", new JRawValue(maskRe.FormatRegexPattern()));
+        }
+
+        /// <summary>
+        /// Sets the maximum input field length allowed.
+        /// </summary>
+        /// <param name="maxLength">The new maximum lenght to set.</param>
+        [Description("Sets the maximum input field length allowed.")]
+        protected virtual void SetMaxLength(int maxLength)
+        {
+            this.AddScript("{0}.setMaxLength({1});", this.ClientID, maxLength);
         }
 
         /// <summary>
         /// Sets the CSS class that provides a background image to use as the button's icon. This method also changes the value of the iconCls config internally.
         /// </summary>
         [Description("Sets the CSS class that provides a background image to use as the button's icon. This method also changes the value of the iconCls config internally.")]
-        protected virtual void SetIconCls(Icon icon)
+        protected virtual void SetIconClass(Icon icon)
         {
             if (this.Icon != Icon.None)
             {
-                this.SetIconCls("#" + icon.ToString());
+                this.SetIconClass(ResourceManager.GetIconClassName(icon));
             }
             else
             {
-                this.SetIconCls("");
+                this.SetIconClass("");
             }
+        }
+
+        /// <summary>
+        /// Sets a JavaScript RegExp object used to strip unwanted content from the value before validation (defaults to null).
+        /// </summary>
+        /// <param name="stripCharsRe"></param>
+        [Description("Sets a JavaScript RegExp object used to strip unwanted content from the value before validation (defaults to null).")]
+        protected void SetStripCharsRe(string stripCharsRe)
+        {
+
+            this.Set("stripCharsRe", new JRawValue(stripCharsRe.FormatRegexPattern()));
         }
     }
 }

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -38,78 +38,77 @@ namespace Ext.Net
         private ComponentListener click;
 
         /// <summary>
-        /// Fires when this menu is clicked
-        /// Parameters
-        /// item : Ext.menu.Menu
-        ///     The menu which has been clicked
-        /// menuItem : Ext.Component
-        ///     The menu item that was clicked. undefined if not applicable.
-        /// e : Ext.EventObject
-        ///     The underlying Ext.EventObject.
+        /// Fires when this menu is clicked (or when the enter key is pressed while it is active)
         /// </summary>
         [ListenerArgument(0, "item", typeof(Menu), "this")]
         [ListenerArgument(1, "menuItem", typeof(object))]
-        [ListenerArgument(2, "e")]
+        [ListenerArgument(2, "e", typeof(Menu), "Ext.EventObject")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("click", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when this menu is clicked")]
+        [Description("Fires when this menu is clicked (or when the enter key is pressed while it is active)")]
         public virtual ComponentListener Click
         {
             get
             {
-                return this.click ?? (this.click = new ComponentListener());
+                if (this.click == null)
+                {
+                    this.click = new ComponentListener();
+                }
+
+                return this.click;
             }
         }
 
-        private ComponentListener mouseEnter;
+        private ComponentListener itemClick;
 
         /// <summary>
-        /// Fires when the mouse enters this menu
-        /// Parameters
-        /// item : Ext.menu.Menu
-        ///     The menu
-        /// e : Ext.EventObject
-        ///     The underlying Ext.EventObject
+        /// Fires when a menu item contained in this menu is clicked
         /// </summary>
-        [ListenerArgument(0, "item", typeof(Menu), "this")]
-        [ListenerArgument(1, "e")]
+        [ListenerArgument(0, "menuItem", typeof(object))]
+        [ListenerArgument(1, "e", typeof(Menu), "Ext.EventObject")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("mouseenter", typeof(ListenerJsonConverter))]
+        [ConfigOption("itemclick", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when the mouse enters this menu")]
-        public virtual ComponentListener MouseEnter
+        [Description("Fires when a menu item contained in this menu is clicked")]
+        public virtual ComponentListener ItemClick
         {
             get
             {
-                return this.mouseEnter ?? (this.mouseEnter = new ComponentListener());
+                if (this.itemClick == null)
+                {
+                    this.itemClick = new ComponentListener();
+                }
+
+                return this.itemClick;
             }
         }
 
-        private ComponentListener mouseLeave;
+        private ComponentListener mouseOut;
 
         /// <summary>
-        /// Fires when the mouse leaves this menu
-        /// Parameters
-        /// item : Ext.menu.Menu
-        ///     The menu
-        /// e : Ext.EventObject
-        ///     The underlying Ext.EventObject
+        /// Fires when the mouse exits this menu
         /// </summary>
         [ListenerArgument(0, "item", typeof(Menu), "this")]
+        [ListenerArgument(2, "menuItem", typeof(object))]
         [ListenerArgument(1, "e", typeof(Menu), "Ext.EventObject")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("mouseleave", typeof(ListenerJsonConverter))]
+        [ConfigOption("mouseout", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when the mouse leaves this menu")]
-        public virtual ComponentListener MouseLeave
+        [Description("Fires when the mouse exits this menu")]
+        public virtual ComponentListener MouseOut
         {
             get
-            {                
-                return this.mouseLeave ?? (this.mouseLeave = new ComponentListener());
+            {
+                if (this.mouseOut == null)
+                {
+                    this.mouseOut = new ComponentListener();
+                }
+
+                return this.mouseOut;
             }
         }
 
@@ -117,17 +116,10 @@ namespace Ext.Net
 
         /// <summary>
         /// Fires when the mouse is hovering over this menu
-        /// Parameters
-        /// item : Ext.menu.Menu
-        ///     The menu
-        /// menuItem : Ext.Component
-        ///     The menu item that the mouse is over. undefined if not applicable.
-        /// e : Ext.EventObject
-        ///     The underlying Ext.EventObject
         /// </summary>
         [ListenerArgument(0, "item", typeof(Menu), "this")]
-        [ListenerArgument(1, "menuItem", typeof(object))]
-        [ListenerArgument(2, "e", typeof(Menu), "Ext.EventObject")]
+        [ListenerArgument(2, "menuItem", typeof(object))]
+        [ListenerArgument(1, "e", typeof(Menu), "Ext.EventObject")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("mouseover", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -137,7 +129,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.mouseOver ?? (this.mouseOver = new ComponentListener());
+                if (this.mouseOver == null)
+                {
+                    this.mouseOver = new ComponentListener();
+                }
+
+                return this.mouseOver;
             }
         }
     }

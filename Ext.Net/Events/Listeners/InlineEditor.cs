@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,167 +33,159 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class InlineEditorListeners : AbstractComponentListeners
+    public partial class InlineEditorListeners : ComponentBaseListeners
     {
         private ComponentListener beforestartedit;
 
         /// <summary>
-        /// Fires when editing is initiated, but before the value changes. Editing can be canceled by returning false from the handler of this event.
-        /// Parameters
-        /// item : Ext.Editor
-        /// boundEl : Ext.Element
-        ///     The underlying element bound to this editor
-        /// value : Object
-        ///     The field value being set
+        /// 
         /// </summary>
-        [ListenerArgument(0, "item")]
+        [ListenerArgument(0, "editor")]
         [ListenerArgument(1, "boundEl")]
         [ListenerArgument(2, "value")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("beforestartedit", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when editing is initiated, but before the value changes. Editing can be canceled by returning false from the handler of this event.")]
+        [Description("")]
         public virtual ComponentListener BeforeStartEdit
         {
             get
             {
-                return this.beforestartedit ?? (this.beforestartedit = new ComponentListener());
+                if (this.beforestartedit == null)
+                {
+                    this.beforestartedit = new ComponentListener();
+                }
+
+                return this.beforestartedit;
             }
         }
 
         private ComponentListener beforecomplete;
 
         /// <summary>
-        /// Fires after a change has been made to the field, but before the change is reflected in the underlying field. Saving the change to the field can be canceled by returning false from the handler of this event. Note that if the value has not changed and ignoreNoChange = true, the editing will still end but this event will not fire since no edit actually occurred.
-        /// Parameters
-        /// item : Ext.Editor
-        /// value : Object
-        ///     The current field value
-        /// startValue : Object
-        ///     The original field value
+        /// 
         /// </summary>
-        [ListenerArgument(0, "item")]
+        [ListenerArgument(0, "editor")]
         [ListenerArgument(1, "value")]
         [ListenerArgument(2, "startValue")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("beforecomplete", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires after a change has been made to the field, but before the change is reflected in the underlying field. Saving the change to the field can be canceled by returning false from the handler of this event. Note that if the value has not changed and ignoreNoChange = true, the editing will still end but this event will not fire since no edit actually occurred.")]
+        [Description("")]
         public virtual ComponentListener BeforeComplete
         {
             get
             {
-                return this.beforecomplete ?? (this.beforecomplete = new ComponentListener());
+                if (this.beforecomplete == null)
+                {
+                    this.beforecomplete = new ComponentListener();
+                }
+
+                return this.beforecomplete;
             }
         }
 
         private ComponentListener canceledit;
 
         /// <summary>
-        /// Fires after editing has been canceled and the editor's value has been reset.
-        /// Parameters
-        /// item : Ext.Editor
-        /// value : Object
-        ///     The user-entered field value that was discarded
-        /// startValue : Object
-        ///     The original field value that was set back into the editor after cancel
+        /// 
         /// </summary>
-        [ListenerArgument(0, "item")]
+        [ListenerArgument(0, "editor")]
         [ListenerArgument(1, "value")]
         [ListenerArgument(2, "startValue")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("canceledit", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires after editing has been canceled and the editor's value has been reset.")]
+        [Description("")]
         public virtual ComponentListener CancelEdit
         {
             get
             {
-                return this.canceledit ?? (this.canceledit = new ComponentListener());
+                if (this.canceledit == null)
+                {
+                    this.canceledit = new ComponentListener();
+                }
+
+                return this.canceledit;
             }
         }
 
         private ComponentListener complete;
 
         /// <summary>
-        /// Fires after editing is complete and any changed value has been written to the underlying field.
-        /// Parameters
-        /// item : Ext.Editor
-        /// value : Object
-        ///     The current field value
-        /// startValue : Object
-        ///     The original field value
+        /// 
         /// </summary>
-        [ListenerArgument(0, "item")]
+        [ListenerArgument(0, "editor")]
         [ListenerArgument(1, "value")]
         [ListenerArgument(2, "startValue")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("complete", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires after editing is complete and any changed value has been written to the underlying field.")]
+        [Description("")]
         public virtual ComponentListener Complete
         {
             get
             {
-                return this.complete ?? (this.complete = new ComponentListener());
+                if (this.complete == null)
+                {
+                    this.complete = new ComponentListener();
+                }
+
+                return this.complete;
             }
         }
 
         private ComponentListener specialkey;
 
 		/// <summary>
-		/// Fires when any key related to navigation (arrows, tab, enter, esc, etc.) is pressed. You can check Ext.EventObject.getKey to determine which key was pressed.
-        /// Parameters
-        /// item : Ext.Editor
-        /// field : Ext.form.field.Field
-        ///     field attached to this editor
-        /// e : Ext.EventObject
-        ///     The event object
+		/// 
 		/// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "field")]
-        [ListenerArgument(2, "e")]
+        [ListenerArgument(0, "field")]
+        [ListenerArgument(1, "e")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("specialkey", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when any key related to navigation (arrows, tab, enter, esc, etc.) is pressed. You can check Ext.EventObject.getKey to determine which key was pressed.")]
+		[Description("")]
         public virtual ComponentListener SpecialKey
         {
             get
             {
-                return this.specialkey ?? (this.specialkey = new ComponentListener());
+                if (this.specialkey == null)
+                {
+                    this.specialkey = new ComponentListener();
+                }
+
+                return this.specialkey;
             }
         }
 
         private ComponentListener startedit;
 
 		/// <summary>
-		/// Fires when this editor is displayed
-        /// Parameters
-        /// item : Ext.Editor
-        /// boundEl : Ext.Element
-        ///     The underlying element bound to this editor
-        /// value : Object
-        ///     The starting field value
+		/// 
 		/// </summary>
-        [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "boundEl")]
+        [ListenerArgument(0, "boundEl")]
         [ListenerArgument(1, "value")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("startedit", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when this editor is displayed")]
+		[Description("")]
         public virtual ComponentListener StartEdit
         {
             get
             {
-                return this.startedit ?? (this.startedit = new ComponentListener());
+                if (this.startedit == null)
+                {
+                    this.startedit = new ComponentListener();
+                }
+
+                return this.startedit;
             }
         }
     }

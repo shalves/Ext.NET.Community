@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class FormPanelListeners
     {
         /// <summary>
@@ -55,13 +52,10 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
+                list.Add("clientValidation", new ConfigOption("clientValidation", new SerializationOptions("clientvalidation", typeof(ListenerJsonConverter)), null, this.ClientValidation ));
                 list.Add("actionComplete", new ConfigOption("actionComplete", new SerializationOptions("actioncomplete", typeof(ListenerJsonConverter)), null, this.ActionComplete ));
                 list.Add("actionFailed", new ConfigOption("actionFailed", new SerializationOptions("actionfailed", typeof(ListenerJsonConverter)), null, this.ActionFailed ));
                 list.Add("beforeAction", new ConfigOption("beforeAction", new SerializationOptions("beforeaction", typeof(ListenerJsonConverter)), null, this.BeforeAction ));
-                list.Add("dirtyChange", new ConfigOption("dirtyChange", new SerializationOptions("dirtychange", typeof(ListenerJsonConverter)), null, this.DirtyChange ));
-                list.Add("validityChange", new ConfigOption("validityChange", new SerializationOptions("validitychange", typeof(ListenerJsonConverter)), null, this.ValidityChange ));
-                list.Add("fieldErrorChange", new ConfigOption("fieldErrorChange", new SerializationOptions("fielderrorchange", typeof(ListenerJsonConverter)), null, this.FieldErrorChange ));
-                list.Add("fieldValidityChange", new ConfigOption("fieldValidityChange", new SerializationOptions("fieldvaliditychange", typeof(ListenerJsonConverter)), null, this.FieldValidityChange ));
 
                 return list;
             }

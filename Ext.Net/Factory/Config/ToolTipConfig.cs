@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class ToolTip
     {
 		/*  Ctor
@@ -81,46 +78,10 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
-			private bool forceRendering = false;
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool ForceRendering 
-			{ 
-				get
-				{
-					return this.forceRendering;
-				}
-				set
-				{
-					this.forceRendering = value;
-				}
-			}
-
-			private string anchor = null;
-
-			/// <summary>
-			/// If specified, indicates that the tip should be anchored to a particular side of the target element or mouse pointer (\"top\", \"right\", \"bottom\", or \"left\"), with an arrow pointing back at the target or mouse pointer. If constrainPosition is enabled, this will be used as a preferred value only and may be flipped as needed.
-			/// </summary>
-			[DefaultValue(null)]
-			public override string Anchor 
-			{ 
-				get
-				{
-					return this.anchor;
-				}
-				set
-				{
-					this.anchor = value;
-				}
-			}
-
 			private int anchorOffset = 0;
 
 			/// <summary>
-			/// A numeric pixel value used to offset the default position of the anchor arrow. When the anchor position is on the top or bottom of the tooltip, anchorOffset will be used as a horizontal offset. Likewise, when the anchor position is on the left or right side, anchorOffset will be used as a vertical offset. Defaults to: 0
+			/// A numeric pixel value used to offset the default position of the anchor arrow (defaults to 0). When the anchor position is on the top or bottom of the tooltip, anchorOffset will be used as a horizontal offset. Likewise, when the anchor position is on the left or right side, anchorOffset will be used as a vertical offset.
 			/// </summary>
 			[DefaultValue(0)]
 			public virtual int AnchorOffset 
@@ -138,7 +99,7 @@ namespace Ext.Net
 			private bool anchorToTarget = true;
 
 			/// <summary>
-			/// True to anchor the tooltip to the target element, false to anchor it relative to the mouse coordinates. When anchorToTarget is true, use defaultAlign to control tooltip alignment to the target element. When anchorToTarget is false, use anchor instead to control alignment. Defaults to: true
+			/// True to automatically hide the tooltip after the mouse exits the target element or after the dismissDelay has expired if set (defaults to true). If closable = true a close tool button will be rendered into the tooltip header.
 			/// </summary>
 			[DefaultValue(true)]
 			public virtual bool AnchorToTarget 

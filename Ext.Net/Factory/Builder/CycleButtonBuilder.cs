@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class CycleButton
     {
         /// <summary>
@@ -105,7 +102,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// True to display the active item's text as the button text. The Button will show its configured text if this config is omitted (defaults to false).
+			/// True to display the active items's text as the button text (defaults to false).
 			/// </summary>
             public virtual CycleButton.Builder ShowText(bool showText)
             {
@@ -122,28 +119,24 @@ namespace Ext.Net
                 return this as CycleButton.Builder;
             }
              
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CycleButton.Builder</returns>
-            public virtual CycleButton.Builder Listeners(Action<CycleButtonListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as CycleButton.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CycleButton.Builder</returns>
-            public virtual CycleButton.Builder DirectEvents(Action<CycleButtonDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as CycleButton.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(CycleButtonListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(CycleButtonDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

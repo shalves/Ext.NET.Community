@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class DatePicker
     {
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ComponentBase.Builder<DatePicker, DatePicker.Builder>
+        public partial class Builder : Component.Builder<DatePicker, DatePicker.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -78,7 +75,142 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
-			/// An array of textual day names which can be overriden for localization support (defaults to Ext.Date.dayNames)
+			/// (optional) The name of the field in the grid's Ext.data.Store's Ext.data.Record definition from which to draw the column's value.
+			/// </summary>
+            public virtual DatePicker.Builder DataIndex(string dataIndex)
+            {
+                this.ToComponent().DataIndex = dataIndex;
+                return this as DatePicker.Builder;
+            }
+             
+ 			/// <summary>
+			/// True to hide the label when the field hide
+			/// </summary>
+            public virtual DatePicker.Builder HideWithLabel(bool hideWithLabel)
+            {
+                this.ToComponent().HideWithLabel = hideWithLabel;
+                return this as DatePicker.Builder;
+            }
+             
+ 			/// <summary>
+			/// True to mark the field as readOnly in HTML (defaults to false) -- Note: this only sets the element's readOnly DOM attribute.
+			/// </summary>
+            public virtual DatePicker.Builder ReadOnly(bool readOnly)
+            {
+                this.ToComponent().ReadOnly = readOnly;
+                return this as DatePicker.Builder;
+            }
+             
+ 			/// <summary>
+			/// The note.
+			/// </summary>
+            public virtual DatePicker.Builder Note(string note)
+            {
+                this.ToComponent().Note = note;
+                return this as DatePicker.Builder;
+            }
+             
+ 			/// <summary>
+			/// The note css class.
+			/// </summary>
+            public virtual DatePicker.Builder NoteCls(string noteCls)
+            {
+                this.ToComponent().NoteCls = noteCls;
+                return this as DatePicker.Builder;
+            }
+             
+ 			/// <summary>
+			/// Note align
+			/// </summary>
+            public virtual DatePicker.Builder NoteAlign(NoteAlign noteAlign)
+            {
+                this.ToComponent().NoteAlign = noteAlign;
+                return this as DatePicker.Builder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual DatePicker.Builder Value(object value)
+            {
+                this.ToComponent().Value = value;
+                return this as DatePicker.Builder;
+            }
+             
+ 			// /// <summary>
+			// /// The fields null value.
+			// /// </summary>
+            // public virtual TBuilder EmptyValue(object emptyValue)
+            // {
+            //    this.ToComponent().EmptyValue = emptyValue;
+            //    return this as TBuilder;
+            // }
+             
+ 			/// <summary>
+			/// AutoPostBack
+			/// </summary>
+            public virtual DatePicker.Builder AutoPostBack(bool autoPostBack)
+            {
+                this.ToComponent().AutoPostBack = autoPostBack;
+                return this as DatePicker.Builder;
+            }
+             
+ 			/// <summary>
+			/// Gets or sets a value indicating whether validation is performed when the control is set to validate when a postback occurs.
+			/// </summary>
+            public virtual DatePicker.Builder CausesValidation(bool causesValidation)
+            {
+                this.ToComponent().CausesValidation = causesValidation;
+                return this as DatePicker.Builder;
+            }
+             
+ 			/// <summary>
+			/// Gets or Sets the Controls ValidationGroup
+			/// </summary>
+            public virtual DatePicker.Builder ValidationGroup(string validationGroup)
+            {
+                this.ToComponent().ValidationGroup = validationGroup;
+                return this as DatePicker.Builder;
+            }
+             
+ 			/// <summary>
+			/// Gets or sets the current selected date of the DatePicker. Accepts and returns a DateTime object.
+			/// </summary>
+            public virtual DatePicker.Builder SelectedDate(DateTime selectedDate)
+            {
+                this.ToComponent().SelectedDate = selectedDate;
+                return this as DatePicker.Builder;
+            }
+             
+ 			// /// <summary>
+			// /// Gets or sets the current selected date of the DatePicker.
+			// /// </summary>
+            // public virtual TBuilder SelectedValue(object selectedValue)
+            // {
+            //    this.ToComponent().SelectedValue = selectedValue;
+            //    return this as TBuilder;
+            // }
+             
+ 			/// <summary>
+			/// The text to display on the cancel button.
+			/// </summary>
+            public virtual DatePicker.Builder CancelText(string cancelText)
+            {
+                this.ToComponent().CancelText = cancelText;
+                return this as DatePicker.Builder;
+            }
+             
+ 			// /// <summary>
+			// /// An array of \"dates\" to disable, as strings. These strings will be used to build a dynamic regular expression so they are very powerful.
+			// /// </summary>
+            // public virtual TBuilder DisabledDates(DisabledDateCollection disabledDates)
+            // {
+            //    this.ToComponent().DisabledDates = disabledDates;
+            //    return this as TBuilder;
+            // }
+             
+ 			/// <summary>
+			/// An array of textual day names which can be overriden for localization support (defaults to Date.dayNames).
 			/// </summary>
             public virtual DatePicker.Builder DayNames(string[] dayNames)
             {
@@ -87,49 +219,11 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// True to disable animations when showing the month picker. Defaults to: false
-			/// </summary>
-            public virtual DatePicker.Builder DisableAnim(bool disableAnim)
-            {
-                this.ToComponent().DisableAnim = disableAnim;
-                return this as DatePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The class to apply to disabled cells. Defaults to: \"x-datepicker-disabled\"
-			/// </summary>
-            public virtual DatePicker.Builder DisabledCellCls(bool disabledCellCls)
-            {
-                this.ToComponent().DisabledCellCls = disabledCellCls;
-                return this as DatePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// An array of \"dates\" to disable, as strings. These strings will be used to build a dynamic regular expression so they are very powerful.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DatePicker.Builder</returns>
-            public virtual DatePicker.Builder DisabledDates(Action<DisabledDateCollection> action)
-            {
-                action(this.ToComponent().DisabledDates);
-                return this as DatePicker.Builder;
-            }
-			 
- 			/// <summary>
-			/// JavaScript regular expression used to disable a pattern of dates. The disabledDates config will generate this regex internally, but if you specify disabledDatesRE it will take precedence over the disabledDates value. Defaults to: null
+			/// JavaScript regular expression used to disable a pattern of dates (defaults to null).
 			/// </summary>
             public virtual DatePicker.Builder DisabledDatesRE(string disabledDatesRE)
             {
                 this.ToComponent().DisabledDatesRE = disabledDatesRE;
-                return this as DatePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The tooltip text to display when the date falls on a disabled date. Defaults to: \"Disabled\"
-			/// </summary>
-            public virtual DatePicker.Builder DisabledDatesText(string disabledDatesText)
-            {
-                this.ToComponent().DisabledDatesText = disabledDatesText;
                 return this as DatePicker.Builder;
             }
              
@@ -143,20 +237,11 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The tooltip to display when the date falls on a disabled day. Defaults to: \"Disabled\"
+			/// The tooltip to display when the date falls on a disabled day (defaults to '').
 			/// </summary>
             public virtual DatePicker.Builder DisabledDaysText(string disabledDaysText)
             {
                 this.ToComponent().DisabledDaysText = disabledDaysText;
-                return this as DatePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// True to automatically focus the picker on show. Defaults to: false
-			/// </summary>
-            public virtual DatePicker.Builder FocusOnShow(bool focusOnShow)
-            {
-                this.ToComponent().FocusOnShow = focusOnShow;
                 return this as DatePicker.Builder;
             }
              
@@ -170,24 +255,6 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// A function that will handle the select event of this picker.
-			/// </summary>
-            public virtual DatePicker.Builder Handler(string handler)
-            {
-                this.ToComponent().Handler = handler;
-                return this as DatePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The format for displaying a date in a longer format.
-			/// </summary>
-            public virtual DatePicker.Builder LongDayFormat(string longDayFormat)
-            {
-                this.ToComponent().LongDayFormat = longDayFormat;
-                return this as DatePicker.Builder;
-            }
-             
- 			/// <summary>
 			/// The maximum allowed date.
 			/// </summary>
             public virtual DatePicker.Builder MaxDate(DateTime maxDate)
@@ -197,7 +264,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The error text to display if the maxDate validation fails. (defaults to 'This date is after the maximum date').
+			/// The error text to display when the date in the cell is after MaxValue (defaults to 'The date in this field must be before {MaxValue}').
 			/// </summary>
             public virtual DatePicker.Builder MaxText(string maxText)
             {
@@ -215,7 +282,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The error text to display if the minDate validation fails. (defaults to 'This date is before the minimum date').
+			/// The error text to display when the date in the cell is before MinValue (defaults to 'The date in this field must be after {MinValue}').
 			/// </summary>
             public virtual DatePicker.Builder MinText(string minText)
             {
@@ -251,29 +318,20 @@ namespace Ext.Net
             }
              
  			/// <summary>
+			/// The text to display on the ok button.
+			/// </summary>
+            public virtual DatePicker.Builder OkText(string okText)
+            {
+                this.ToComponent().OkText = okText;
+                return this as DatePicker.Builder;
+            }
+             
+ 			/// <summary>
 			/// The previous month navigation button tooltip (defaults to 'Previous Month (Control+Left)').
 			/// </summary>
             public virtual DatePicker.Builder PrevText(string prevText)
             {
                 this.ToComponent().PrevText = prevText;
-                return this as DatePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The scope (this reference) in which the handler function will be called. Defaults to this DatePicker instance.
-			/// </summary>
-            public virtual DatePicker.Builder Scope(string scope)
-            {
-                this.ToComponent().Scope = scope;
-                return this as DatePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The class to apply to the selected cell. Defaults to: \"x-datepicker-selected\"
-			/// </summary>
-            public virtual DatePicker.Builder SelectedCls(string selectedCls)
-            {
-                this.ToComponent().SelectedCls = selectedCls;
                 return this as DatePicker.Builder;
             }
              
@@ -305,7 +363,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// A string used to format the message for displaying in a tooltip over the button that selects the current date. The {0} token in string is replaced by today's date. Defaults to: \"{0} (Spacebar)\"
+			/// The tooltip to display for the button that selects the current date (defaults to '{current date} (Spacebar)').
 			/// </summary>
             public virtual DatePicker.Builder TodayTip(string todayTip)
             {
@@ -313,103 +371,23 @@ namespace Ext.Net
                 return this as DatePicker.Builder;
             }
              
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DatePicker.Builder</returns>
-            public virtual DatePicker.Builder Listeners(Action<DatePickerListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as DatePicker.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DatePicker.Builder</returns>
-            public virtual DatePicker.Builder DirectEvents(Action<DatePickerDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as DatePicker.Builder;
-            }
-			 
- 			/// <summary>
-			/// AutoPostBack
-			/// </summary>
-            public virtual DatePicker.Builder AutoPostBack(bool autoPostBack)
-            {
-                this.ToComponent().AutoPostBack = autoPostBack;
-                return this as DatePicker.Builder;
-            }
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(DatePickerListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
              
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual DatePicker.Builder PostBackEvent(string postBackEvent)
-            {
-                this.ToComponent().PostBackEvent = postBackEvent;
-                return this as DatePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Gets or sets a value indicating whether validation is performed when the control is set to validate when a postback occurs.
-			/// </summary>
-            public virtual DatePicker.Builder CausesValidation(bool causesValidation)
-            {
-                this.ToComponent().CausesValidation = causesValidation;
-                return this as DatePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Gets or Sets the Controls ValidationGroup
-			/// </summary>
-            public virtual DatePicker.Builder ValidationGroup(string validationGroup)
-            {
-                this.ToComponent().ValidationGroup = validationGroup;
-                return this as DatePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Gets or sets the current selected date of the DatePicker. Accepts and returns a DateTime object.
-			/// </summary>
-            public virtual DatePicker.Builder SelectedDate(DateTime selectedDate)
-            {
-                this.ToComponent().SelectedDate = selectedDate;
-                return this as DatePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Gets or sets the current selected date of the DatePicker.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DatePicker.Builder</returns>
-            public virtual DatePicker.Builder SelectedValue(Action<object> action)
-            {
-                action(this.ToComponent().SelectedValue);
-                return this as DatePicker.Builder;
-            }
-			 
- 			/// <summary>
-			/// The fields null value.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DatePicker.Builder</returns>
-            public virtual DatePicker.Builder EmptyValue(Action<object> action)
-            {
-                action(this.ToComponent().EmptyValue);
-                return this as DatePicker.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual DatePicker.Builder Value(object value)
-            {
-                this.ToComponent().Value = value;
-                return this as DatePicker.Builder;
-            }
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(DatePickerDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
             
 
 			/*  Methods

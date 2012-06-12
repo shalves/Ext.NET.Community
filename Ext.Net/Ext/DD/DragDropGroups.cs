@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -28,7 +28,6 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
-
 using Ext.Net.Utilities;
 using Newtonsoft.Json;
 
@@ -38,7 +37,7 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class DragDropGroups : BaseItemCollection<DragDropGroup>
+    public partial class DragDropGroups : StateManagedCollection<DragDropGroup>
     {
 		/// <summary>
 		/// 
@@ -124,7 +123,7 @@ namespace Ext.Net
     /// 
     /// </summary>
     [Description("")]
-    public partial class DragDropGroup : BaseItem
+    public partial class DragDropGroup : StateManagedItem
     {
         /// <summary>
         /// 
@@ -153,11 +152,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Name", "");
+                return (string)this.ViewState["Name"] ?? "";
             }
             set
             {
-                this.State.Set("Name", value);
+                this.ViewState["Name"] = value;
             }
         }
 
@@ -170,11 +169,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Allow", true);
+                object obj = this.ViewState["Allow"];
+                return obj != null ? (bool)obj : true;
             }
             set
             {
-                this.State.Set("Allow", value);
+                this.ViewState["Allow"] = value;
             }
         }
 

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public abstract partial class Observable
     {
         /// <summary>
         /// 
         /// </summary>
-        new public abstract partial class Config : BaseControl.Config 
+        new public abstract partial class Config : XControl.Config 
         { 
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
@@ -61,42 +58,6 @@ namespace Ext.Net
 					}
 			
 					return this.customConfig;
-				}
-			}
-			        
-			private MessageBusListeners messageBusListeners = null;
-
-			/// <summary>
-			/// 
-			/// </summary>
-			public MessageBusListeners MessageBusListeners
-			{
-				get
-				{
-					if (this.messageBusListeners == null)
-					{
-						this.messageBusListeners = new MessageBusListeners();
-					}
-			
-					return this.messageBusListeners;
-				}
-			}
-			        
-			private MessageBusDirectEvents messageBusDirectEvents = null;
-
-			/// <summary>
-			/// 
-			/// </summary>
-			public MessageBusDirectEvents MessageBusDirectEvents
-			{
-				get
-				{
-					if (this.messageBusDirectEvents == null)
-					{
-						this.messageBusDirectEvents = new MessageBusDirectEvents();
-					}
-			
-					return this.messageBusDirectEvents;
 				}
 			}
 			

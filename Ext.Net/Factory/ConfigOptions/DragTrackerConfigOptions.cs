@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class DragTracker
     {
         /// <summary>
@@ -55,14 +52,10 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
-                list.Add("trackOver", new ConfigOption("trackOver", null, false, this.TrackOver ));
+                list.Add("configIDProxy", new ConfigOption("configIDProxy", new SerializationOptions(JsonMode.Ignore), "", this.ConfigIDProxy ));
                 list.Add("tolerance", new ConfigOption("tolerance", null, 5, this.Tolerance ));
                 list.Add("autoStart", new ConfigOption("autoStart", null, 0, this.AutoStart ));
                 list.Add("proxyCls", new ConfigOption("proxyCls", null, "x-view-selector", this.ProxyCls ));
-                list.Add("overCls", new ConfigOption("overCls", null, "", this.OverCls ));
-                list.Add("constrainTo", new ConfigOption("constrainTo", null, "", this.ConstrainTo ));
-                list.Add("preventDefault", new ConfigOption("preventDefault", null, true, this.PreventDefault ));
-                list.Add("stopEvent", new ConfigOption("stopEvent", null, false, this.StopEvent ));
                 list.Add("target", new ConfigOption("target", new SerializationOptions("el"), "", this.Target ));
                 list.Add("onBeforeStart", new ConfigOption("onBeforeStart", new SerializationOptions(JsonMode.Raw), null, this.OnBeforeStart ));
                 list.Add("onStart", new ConfigOption("onStart", new SerializationOptions(JsonMode.Raw), null, this.OnStart ));

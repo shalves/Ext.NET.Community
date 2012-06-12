@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class PagingToolbar
     {
         /// <summary>
@@ -78,6 +75,15 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
+			/// The index of current page.
+			/// </summary>
+            public virtual PagingToolbar.Builder PageIndex(int pageIndex)
+            {
+                this.ToComponent().PageIndex = pageIndex;
+                return this as PagingToolbar.Builder;
+            }
+             
+ 			/// <summary>
 			/// True to display the displayMsg (defaults to false).
 			/// </summary>
             public virtual PagingToolbar.Builder DisplayInfo(bool displayInfo)
@@ -87,7 +93,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The paging status message to display. Note that this string is formatted using the braced numbers {0}-{2} as tokens that are replaced by the values for start, end and total respectively. These tokens should be preserved when overriding this string if showing those values is desired. Defaults to: \"Displaying {0} - {1} of {2}\"
+			/// The paging status message to display (defaults to 'Displaying {0} - {1} of {2}'). Note that this string is formatted using the braced numbers 0-2 as tokens that are replaced by the values for start, end and total respectively. These tokens should be preserved when overriding this string if showing those values is desired.
 			/// </summary>
             public virtual PagingToolbar.Builder DisplayMsg(string displayMsg)
             {
@@ -105,7 +111,16 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The Ext.data.Store the paging toolbar should use as its data source.
+			/// The number of records to display per page (defaults to 20).
+			/// </summary>
+            public virtual PagingToolbar.Builder PageSize(int pageSize)
+            {
+                this.ToComponent().PageSize = pageSize;
+                return this as PagingToolbar.Builder;
+            }
+             
+ 			/// <summary>
+			/// The data store to use.
 			/// </summary>
             public virtual PagingToolbar.Builder StoreID(string storeID)
             {
@@ -114,7 +129,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// Customizable piece of the default paging text. Note that this string is formatted using {0} as a token that is replaced by the number of total pages. This token should be preserved when overriding this string if showing the total page count is desired. Defaults to: \"of {0}\"
+			/// Customizable piece of the default paging text (defaults to 'of {0}'). Note that this string is formatted using {0} as a token that is replaced by the number of total pages. This token should be preserved when overriding this string if showing the total page count is desired.
 			/// </summary>
             public virtual PagingToolbar.Builder AfterPageText(string afterPageText)
             {
@@ -123,7 +138,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The text displayed before the input item. Defaults to: \"Page\"
+			/// Customizable piece of the default paging text (defaults to 'Page')
 			/// </summary>
             public virtual PagingToolbar.Builder BeforePageText(string beforePageText)
             {
@@ -132,7 +147,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The quicktip text displayed for the first page button. Note: quick tips must be initialized for the quicktip to show. Defaults to: \"First Page\"
+			/// Customizable piece of the default paging text (defaults to 'First Page')
 			/// </summary>
             public virtual PagingToolbar.Builder FirstText(string firstText)
             {
@@ -141,16 +156,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The width in pixels of the input field used to display and change the current page number. Defaults to: 30
-			/// </summary>
-            public virtual PagingToolbar.Builder InputItemWidth(int inputItemWidth)
-            {
-                this.ToComponent().InputItemWidth = inputItemWidth;
-                return this as PagingToolbar.Builder;
-            }
-             
- 			/// <summary>
-			/// The quicktip text displayed for the last page button. Note: quick tips must be initialized for the quicktip to show. Defaults to: \"Last Page\"
+			/// Customizable piece of the default paging text (defaults to 'Last Page')
 			/// </summary>
             public virtual PagingToolbar.Builder LastText(string lastText)
             {
@@ -159,7 +165,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The quicktip text displayed for the next page button. Note: quick tips must be initialized for the quicktip to show. Defaults to: \"Next Page\"
+			/// Customizable piece of the default paging text (defaults to 'Next Page')
 			/// </summary>
             public virtual PagingToolbar.Builder NextText(string nextText)
             {
@@ -168,16 +174,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// true to insert any configured items before the paging buttons. Defaults to: false
-			/// </summary>
-            public virtual PagingToolbar.Builder PrependButtons(bool prependButtons)
-            {
-                this.ToComponent().PrependButtons = prependButtons;
-                return this as PagingToolbar.Builder;
-            }
-             
- 			/// <summary>
-			/// The quicktip text displayed for the previous page button. Note: quick tips must be initialized for the quicktip to show. Defaults to: \"Previous Page\"
+			/// Customizable piece of the default paging text (defaults to 'Previous Page')
 			/// </summary>
             public virtual PagingToolbar.Builder PrevText(string prevText)
             {
@@ -186,7 +183,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The quicktip text displayed for the Refresh button. Note: quick tips must be initialized for the quicktip to show. Defaults to: \"Refresh\"
+			/// Customizable piece of the default paging text (defaults to 'Refresh')
 			/// </summary>
             public virtual PagingToolbar.Builder RefreshText(string refreshText)
             {
@@ -203,32 +200,55 @@ namespace Ext.Net
                 return this as PagingToolbar.Builder;
             }
              
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of PagingToolbar.Builder</returns>
-            public virtual PagingToolbar.Builder Listeners(Action<PagingToolbarListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as PagingToolbar.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEventHandlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of PagingToolbar.Builder</returns>
-            public virtual PagingToolbar.Builder DirectEvents(Action<PagingToolbarDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as PagingToolbar.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// Object mapping of parameter names for load calls (defaults to {start: 'start', limit: 'limit'})
+			// /// </summary>
+            // public virtual TBuilder ParamNames(ParameterCollection paramNames)
+            // {
+            //    this.ToComponent().ParamNames = paramNames;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(PagingToolbarListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side DirectEventHandlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(PagingToolbarDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/
 			
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual PagingToolbar.Builder SetPageIndex(int index)
+            {
+                this.ToComponent().SetPageIndex(index);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual PagingToolbar.Builder SetPageSize(int size)
+            {
+                this.ToComponent().SetPageSize(size);
+                return this;
+            }
+            
         }
 
         /// <summary>

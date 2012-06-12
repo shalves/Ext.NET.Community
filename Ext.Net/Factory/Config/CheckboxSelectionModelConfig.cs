@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class CheckboxSelectionModel
     {
 		/*  Ctor
@@ -81,12 +78,12 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
-			private bool checkOnly = true;
+			private bool checkOnly = false;
 
 			/// <summary>
 			/// true if rows can only be selected by clicking on the checkbox column (defaults to false).
 			/// </summary>
-			[DefaultValue(true)]
+			[DefaultValue(false)]
 			public virtual bool CheckOnly 
 			{ 
 				get
@@ -99,21 +96,93 @@ namespace Ext.Net
 				}
 			}
 
-			private string injectCheckbox = "0";
+			private string header = "<div class=\"x-grid3-hd-checker\"> </div>";
 
 			/// <summary>
-			/// Instructs the SelectionModel whether or not to inject the checkbox header automatically or not. (Note: By not placing the checkbox in manually, the grid view will need to be rendered 2x on initial render.) Supported values are a Number index, false and the strings 'first' and 'last'. Default is 0.
+			/// Any valid text or HTML fragment to display in the header cell for the checkbox column (defaults to '<div class='x-grid3-hd-checker'> </div>'). The default CSS class of 'x-grid3-hd-checker' displays a checkbox in the header and provides support for automatic check all/none behavior on header click. This string can be replaced by any valid HTML fragment, including a simple text string (e.g., 'Select Rows'), but the automatic check all/none behavior will only work if the 'x-grid3-hd-checker' class is supplied.
 			/// </summary>
-			[DefaultValue("0")]
-			public virtual string InjectCheckbox 
+			[DefaultValue("<div class=\"x-grid3-hd-checker\"> </div>")]
+			public virtual string Header 
 			{ 
 				get
 				{
-					return this.injectCheckbox;
+					return this.header;
 				}
 				set
 				{
-					this.injectCheckbox = value;
+					this.header = value;
+				}
+			}
+
+			private bool sortable = false;
+
+			/// <summary>
+			/// True if the checkbox column is sortable (defaults to false).
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool Sortable 
+			{ 
+				get
+				{
+					return this.sortable;
+				}
+				set
+				{
+					this.sortable = value;
+				}
+			}
+
+			private bool hideCheckAll = false;
+
+			/// <summary>
+			/// True if need hide the checkbox in the header (defaults to false).
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool HideCheckAll 
+			{ 
+				get
+				{
+					return this.hideCheckAll;
+				}
+				set
+				{
+					this.hideCheckAll = value;
+				}
+			}
+
+			private bool allowDeselect = true;
+
+			/// <summary>
+			/// False if need disable deselection
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool AllowDeselect 
+			{ 
+				get
+				{
+					return this.allowDeselect;
+				}
+				set
+				{
+					this.allowDeselect = value;
+				}
+			}
+
+			private int width = 20;
+
+			/// <summary>
+			/// The default width in pixels of the checkbox column (defaults to 20).
+			/// </summary>
+			[DefaultValue(20)]
+			public virtual int Width 
+			{ 
+				get
+				{
+					return this.width;
+				}
+				set
+				{
+					this.width = value;
 				}
 			}
 
@@ -135,21 +204,39 @@ namespace Ext.Net
 				}
 			}
 
-			private Renderer renderer = null;
+			private int columnPosition = 0;
 
 			/// <summary>
-			/// (optional) A function used to generate HTML markup for a cell given the cell's data value. If not specified, the default renderer uses the raw data value.
+			/// 
 			/// </summary>
-			[DefaultValue(null)]
-			public virtual Renderer Renderer 
+			[DefaultValue(0)]
+			public virtual int ColumnPosition 
 			{ 
 				get
 				{
-					return this.renderer;
+					return this.columnPosition;
 				}
 				set
 				{
-					this.renderer = value;
+					this.columnPosition = value;
+				}
+			}
+
+			private KeepSelectionMode keepSelectionOnClick = KeepSelectionMode.Always;
+
+			/// <summary>
+			/// Selection Mode
+			/// </summary>
+			[DefaultValue(KeepSelectionMode.Always)]
+			public virtual KeepSelectionMode KeepSelectionOnClick 
+			{ 
+				get
+				{
+					return this.keepSelectionOnClick;
+				}
+				set
+				{
+					this.keepSelectionOnClick = value;
 				}
 			}
 

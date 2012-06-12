@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,6 +25,7 @@
  ********/
 
 using System.ComponentModel;
+using System.Web.UI;
 
 namespace Ext.Net
 {
@@ -35,43 +36,23 @@ namespace Ext.Net
             -----------------------------------------------------------------------------------------------*/
 
         /// <summary>
-        /// An optional text label that will appear next to the checkbox. Whether it appears before or after the checkbox is determined by the boxLabelAlign config (defaults to after).
+        /// The text that appears beside the checkbox (defaults to '').
         /// </summary>
         [Meta]
         [ConfigOption]
         [DirectEventUpdate(MethodName = "SetBoxLabel")]
         [Category("6. Checkbox")]
         [DefaultValue("")]
-        [Description("An optional text label that will appear next to the checkbox. Whether it appears before or after the checkbox is determined by the boxLabelAlign config (defaults to after).")]
+        [Description("The text that appears beside the checkbox (defaults to '').")]
         public virtual string BoxLabel
         {
             get
             {
-                return this.State.Get<string>("BoxLabel", "");
+                return (string)this.ViewState["BoxLabel"] ?? "";
             }
             set
             {
-                this.State.Set("BoxLabel", value);
-            }
-        }
-
-        /// <summary>
-        /// The position relative to the checkbox where the boxLabel should appear. Recognized values are 'before' and 'after'. Defaults to 'after'.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. Checkbox")]
-        [DefaultValue(BoxLabelAlign.After)]
-        [Description("The position relative to the checkbox where the boxLabel should appear. Recognized values are 'before' and 'after'. Defaults to 'after'.")]
-        public virtual BoxLabelAlign BoxLabelAlign
-        {
-            get
-            {
-                return this.State.Get<BoxLabelAlign>("BoxLabelAlign", BoxLabelAlign.After);
-            }
-            set
-            {
-                this.State.Set("BoxLabelAlign", value);
+                this.ViewState["BoxLabel"] = value;
             }
         }
 
@@ -88,19 +69,19 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("BoxLabelStyle", "");
+                return (string)this.ViewState["BoxLabelStyle"] ?? "";
             }
             set
             {
-                this.State.Set("BoxLabelStyle", value);
+                this.ViewState["BoxLabelStyle"] = value;
             }
         }
 
         /// <summary>
-        /// The CSS class to be applied to the boxLabel element
+        /// 
         /// </summary>
         [Meta]
-        [ConfigOption("boxLabelClsExtra")]
+        [ConfigOption]
         [DirectEventUpdate(MethodName = "SetBoxLabelCls")]
         [Category("6. Checkbox")]
         [DefaultValue("")]
@@ -109,29 +90,29 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("BoxLabelCls", "");
+                return (string)this.ViewState["BoxLabelCls"] ?? "";
             }
             set
             {
-                this.State.Set("BoxLabelCls", value);
+                this.ViewState["BoxLabelCls"] = value;
             }
         }
 
         /// <summary>
-        /// True if the the checkbox should render already checked (defaults to false).
+        /// True if the checkbox should render already checked (defaults to false).
         /// </summary>
         [Meta]
         [DirectEventUpdate(MethodName = "SetValue")]
         [DefaultValue(false)]
         [Category("6. Checkbox")]
         [Bindable(true, BindingDirection.TwoWay)]
-        [Description("True if the the checkbox should render already checked (defaults to false).")]
+        [Description("True if the checkbox should render already checked (defaults to false).")]
         public virtual bool Checked
         {
             get
             {
                 object obj = this.Value;
-                return obj == null ? false : (bool)obj;
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
@@ -140,46 +121,107 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// The CSS class added to the component's main element when it is in the checked state.
+        /// The CSS class to use when the control is checked (defaults to 'x-form-check-checked'). Note that this class applies to both checkboxes and radio buttons and is added to the control's wrapper element.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. Checkbox")]
+        [DefaultValue("x-form-check-checked")]
+        [Description("The CSS class to use when the control is checked (defaults to 'x-form-check-checked'). Note that this class applies to both checkboxes and radio buttons and is added to the control's wrapper element.")]
+        public virtual string CheckedCls
+        {
+            get
+            {
+                return (string)this.ViewState["CheckedCls"] ?? "x-form-check-checked";
+            }
+            set
+            {
+                this.ViewState["CheckedCls"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The CSS class to use when the control receives input focus (defaults to 'x-form-check-focus'). Note that this class applies to both checkboxes and radio buttons and is added to the control's wrapper element.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. Checkbox")]
+        [DefaultValue("x-form-check-focus")]
+        [Description("The CSS class to use when the control receives input focus (defaults to 'x-form-check-focus'). Note that this class applies to both checkboxes and radio buttons and is added to the control's wrapper element.")]
+        public virtual string FocusCls
+        {
+            get
+            {
+                return (string)this.ViewState["FocusCls"] ?? "x-form-check-focus";
+            }
+            set
+            {
+                this.ViewState["FocusCls"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The value that should go into the generated input element's value attribute (defaults to undefined, with no value attribute)
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("6. Checkbox")]
         [DefaultValue("")]
-        [Description("The CSS class added to the component's main element when it is in the checked state.")]
-        public virtual string CheckedCls
-        {
-            get
-            {
-                return this.State.Get<string>("CheckedCls", "");
-            }
-            set
-            {
-                this.State.Set("CheckedCls", value);
-            }
-        }
-
-        /// <summary>
-        /// The value that should go into the generated input element's value attribute and should be used as the parameter value when submitting as part of a form. Defaults to "on".
-        /// </summary>
-        [ConfigOption]
-        [Category("6. Checkbox")]
-        [DefaultValue("")]
-        [Description("The value that should go into the generated input element's value attribute and should be used as the parameter value when submitting as part of a form. Defaults to \"on\".")]
+        [Description("The value that should go into the generated input element's value attribute (defaults to undefined, with no value attribute)")]
         public virtual string InputValue
         {
             get
             {
-                if (this.DesignMode && this.State["InputValue"] == null)
+                if (this.DesignMode && this.ViewState["InputValue"] == null)
                 {
                     return "";
                 }
 
-                return this.State.Get<string>("InputValue", this.ClientID);
+                return (string)this.ViewState["InputValue"] ?? this.ClientID;
             }
             set
             {
-                this.State.Set("InputValue", value);
+                this.ViewState["InputValue"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The CSS class to use when the control is being actively clicked (defaults to 'x-form-check-down'). Note that this class applies to both checkboxes and radio buttons and is added to the control's wrapper element.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. Checkbox")]
+        [DefaultValue("x-form-check-down")]
+        [Description("The CSS class to use when the control is being actively clicked (defaults to 'x-form-check-down'). Note that this class applies to both checkboxes and radio buttons and is added to the control's wrapper element.")]
+        public virtual string MouseDownCls
+        {
+            get
+            {
+                return (string)this.ViewState["MouseDownCls"] ?? "x-form-check-down";
+            }
+            set
+            {
+                this.ViewState["MouseDownCls"] = value;
+            }
+        }
+
+        /// <summary>
+        /// An optional extra CSS class that will be added to this component's Element when the mouse moves over the Element, and removed when the mouse moves out. (defaults to ''). This can be useful for adding customized 'active' or 'hover' styles to the component or any of its children using standard CSS rules.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. Checkbox")]
+        [DefaultValue("x-form-check-over")]
+        [Description("The CSS class to use when the control is hovered over (defaults to 'x-form-check-over'). Note that this class applies to both checkboxes and radio buttons and is added to the control's wrapper element.")]
+        public override string OverCls
+        {
+            get
+            {
+                return (string)this.ViewState["OverCls"] ?? "x-form-check-over";
+            }
+            set
+            {
+                this.ViewState["OverCls"] = value;
             }
         }
 
@@ -194,31 +236,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Tag", "");
+                return (string)this.ViewState["Tag"] ?? "";
             }
             set
             {
-                this.State.Set("Tag", value);
-            }
-        }
-
-        /// <summary>
-        /// If configured, this will be submitted as the checkbox's value during form submit if the checkbox is unchecked. By default this is undefined, which results in nothing being submitted for the checkbox field when the form is submitted (the default behavior of HTML checkboxes).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. Checkbox")]
-        [DefaultValue(null)]
-        [Description("If configured, this will be submitted as the checkbox's value during form submit if the checkbox is unchecked. By default this is undefined, which results in nothing being submitted for the checkbox field when the form is submitted (the default behavior of HTML checkboxes).")]
-        public virtual string UncheckedValue
-        {
-            get
-            {
-                return this.State.Get<string>("UncheckedValue", null);
-            }
-            set
-            {
-                this.State.Set("UncheckedValue", value);
+                this.ViewState["Tag"] = value;
             }
         }
 

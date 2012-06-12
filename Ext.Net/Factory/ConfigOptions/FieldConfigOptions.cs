@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class Field
     {
         /// <summary>
@@ -55,45 +52,23 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
-                list.Add("activeError", new ConfigOption("activeError", null, null, this.ActiveError ));
-                list.Add("activeErrorsTpl", new ConfigOption("activeErrorsTpl", new SerializationOptions("activeErrorsTpl", typeof(LazyControlJsonConverter)), null, this.ActiveErrorsTpl ));
-                list.Add("autoFitErrors", new ConfigOption("autoFitErrors", null, true, this.AutoFitErrors ));
-                list.Add("baseBodyCls", new ConfigOption("baseBodyCls", null, "x-form-item-body", this.BaseBodyCls ));
-                list.Add("checkChangeBuffer", new ConfigOption("checkChangeBuffer", null, 50, this.CheckChangeBuffer ));
-                list.Add("checkChangeEvents", new ConfigOption("checkChangeEvents", new SerializationOptions(typeof(StringArrayJsonConverter)), null, this.CheckChangeEvents ));
-                list.Add("clearCls", new ConfigOption("clearCls", null, "x-clear", this.ClearCls ));
-                list.Add("dirtyCls", new ConfigOption("dirtyCls", null, "x-form-dirty", this.DirtyCls ));
-                list.Add("errorMsgCls", new ConfigOption("errorMsgCls", null, "x-form-error-msg", this.ErrorMsgCls ));
-                list.Add("fieldBodyCls", new ConfigOption("fieldBodyCls", null, "", this.FieldBodyCls ));
-                list.Add("fieldCls", new ConfigOption("fieldCls", null, "", this.FieldCls ));
-                list.Add("fieldLabel", new ConfigOption("fieldLabel", null, "", this.FieldLabel ));
-                list.Add("fieldStyle", new ConfigOption("fieldStyle", null, "", this.FieldStyle ));
-                list.Add("fieldSubTpl", new ConfigOption("fieldSubTpl", new SerializationOptions("fieldSubTpl", typeof(LazyControlJsonConverter)), null, this.FieldSubTpl ));
-                list.Add("focusCls", new ConfigOption("focusCls", null, "x-form-focus", this.FocusCls ));
-                list.Add("formItemCls", new ConfigOption("formItemCls", null, "x-form-item", this.FormItemCls ));
-                list.Add("hideEmptyLabel", new ConfigOption("hideEmptyLabel", null, true, this.HideEmptyLabel ));
-                list.Add("hideLabel", new ConfigOption("hideLabel", null, false, this.HideLabel ));
-                list.Add("inputID", new ConfigOption("inputID", new SerializationOptions("inputId"), "", this.InputID ));
-                list.Add("inputType", new ConfigOption("inputType", new SerializationOptions(JsonMode.ToLower), InputType.Text, this.InputType ));
-                list.Add("invalidCls", new ConfigOption("invalidCls", null, "x-form-invalid", this.InvalidCls ));
-                list.Add("invalidText", new ConfigOption("invalidText", null, "", this.InvalidText ));
-                list.Add("labelAlign", new ConfigOption("labelAlign", new SerializationOptions(JsonMode.ToLower), LabelAlign.Left, this.LabelAlign ));
-                list.Add("labelCls", new ConfigOption("labelCls", new SerializationOptions("labelClsExtra"), "", this.LabelCls ));
-                list.Add("labelPad", new ConfigOption("labelPad", null, 5, this.LabelPad ));
-                list.Add("labelSeparator", new ConfigOption("labelSeparator", null, ":", this.LabelSeparator ));
-                list.Add("labelStyle", new ConfigOption("labelStyle", null, "", this.LabelStyle ));
-                list.Add("labelWidth", new ConfigOption("labelWidth", null, 100, this.LabelWidth ));
-                list.Add("msgTarget", new ConfigOption("msgTarget", new SerializationOptions(JsonMode.ToLower), MessageTarget.Qtip, this.MsgTarget ));
-                list.Add("msgTargetElement", new ConfigOption("msgTargetElement", new SerializationOptions("msgTarget"), "", this.MsgTargetElement ));
+                list.Add("dataIndex", new ConfigOption("dataIndex", null, "", this.DataIndex ));
                 list.Add("name", new ConfigOption("name", null, "", this.Name ));
-                list.Add("preventMark", new ConfigOption("preventMark", null, false, this.PreventMark ));
+                list.Add("autoCreate", new ConfigOption("autoCreate", new SerializationOptions(JsonMode.Raw), "", this.AutoCreate ));
+                list.Add("fieldClass", new ConfigOption("fieldClass", null, "", this.FieldClass ));
+                list.Add("focusClass", new ConfigOption("focusClass", null, "", this.FocusClass ));
+                list.Add("hideWithLabel", new ConfigOption("hideWithLabel", null, true, this.HideWithLabel ));
+                list.Add("invalidClass", new ConfigOption("invalidClass", null, "", this.InvalidClass ));
+                list.Add("invalidText", new ConfigOption("invalidText", null, "", this.InvalidText ));
+                list.Add("msgFx", new ConfigOption("msgFx", null, "normal", this.MsgFx ));
+                list.Add("msgTarget", new ConfigOption("msgTarget", new SerializationOptions(JsonMode.ToLower), MessageTarget.Qtip, this.MsgTarget ));
                 list.Add("readOnly", new ConfigOption("readOnly", null, false, this.ReadOnly ));
-                list.Add("readOnlyCls", new ConfigOption("readOnlyCls", null, "", this.ReadOnlyCls ));
-                list.Add("submitValue", new ConfigOption("submitValue", null, true, this.SubmitValue ));
+                list.Add("preventMark", new ConfigOption("preventMark", null, false, this.PreventMark ));
                 list.Add("tabIndex", new ConfigOption("tabIndex", null, (short)0, this.TabIndex ));
                 list.Add("validateOnBlur", new ConfigOption("validateOnBlur", null, true, this.ValidateOnBlur ));
-                list.Add("validateOnChange", new ConfigOption("validateOnChange", null, true, this.ValidateOnChange ));
-                list.Add("preserveIndicatorIcon", new ConfigOption("preserveIndicatorIcon", null, false, this.PreserveIndicatorIcon ));
+                list.Add("validationDelay", new ConfigOption("validationDelay", null, 250, this.ValidationDelay ));
+                list.Add("validationEvent", new ConfigOption("validationEvent", null, "", this.ValidationEvent ));
+                list.Add("validateOnEvent", new ConfigOption("validateOnEvent", new SerializationOptions("validationEvent"), true, this.ValidateOnEvent ));
                 list.Add("indicatorText", new ConfigOption("indicatorText", null, "", this.IndicatorText ));
                 list.Add("indicatorCls", new ConfigOption("indicatorCls", null, "", this.IndicatorCls ));
                 list.Add("indicatorIconCls", new ConfigOption("indicatorIconCls", null, "", this.IndicatorIconCls ));
@@ -103,14 +78,12 @@ namespace Ext.Net
                 list.Add("noteCls", new ConfigOption("noteCls", null, "", this.NoteCls ));
                 list.Add("noteAlign", new ConfigOption("noteAlign", new SerializationOptions(JsonMode.ToLower), NoteAlign.Down, this.NoteAlign ));
                 list.Add("noteEncode", new ConfigOption("noteEncode", null, false, this.NoteEncode ));
-                list.Add("getFieldLabel", new ConfigOption("getFieldLabel", new SerializationOptions(JsonMode.Raw), null, this.GetFieldLabel ));
-                list.Add("getModelData", new ConfigOption("getModelData", new SerializationOptions(JsonMode.Raw), null, this.GetModelData ));
-                list.Add("getSubmitData", new ConfigOption("getSubmitData", new SerializationOptions(JsonMode.Raw), null, this.GetSubmitData ));
-                list.Add("getErrors", new ConfigOption("getErrors", new SerializationOptions(JsonMode.Raw), null, this.GetErrors ));
+                list.Add("submitValue", new ConfigOption("submitValue", null, true, this.SubmitValue ));
                 list.Add("valueProxy", new ConfigOption("valueProxy", new SerializationOptions("value"), null, this.ValueProxy ));
                 list.Add("rawValue", new ConfigOption("rawValue", null, null, this.RawValue ));
                 list.Add("isRemoteValidation", new ConfigOption("isRemoteValidation", null, false, this.IsRemoteValidation ));
                 list.Add("remoteValidation", new ConfigOption("remoteValidation", new SerializationOptions("remoteValidationOptions", JsonMode.Object), null, this.RemoteValidation ));
+                list.Add("getErrors", new ConfigOption("getErrors", new SerializationOptions(JsonMode.Raw), null, this.GetErrors ));
 
                 return list;
             }

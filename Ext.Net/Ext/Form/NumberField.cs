@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,59 +25,21 @@
  ********/
 
 using System.ComponentModel;
-using System.Drawing;
 using System.Web.UI;
 
 namespace Ext.Net
 {
     /// <summary>
-    /// A numeric text field that provides automatic keystroke filtering to disallow non-numeric characters, and numeric validation to limit the value to a range of valid numbers. The range of acceptable number values can be controlled by setting the minValue and maxValue configs, and fractional decimals can be disallowed by setting allowDecimals to false.
-    ///
-    /// By default, the number field is also rendered with a set of up/down spinner buttons and has up/down arrow key and mouse wheel event listeners attached for incrementing/decrementing the value by the step value. To hide the spinner buttons set hideTrigger:true; to disable the arrow key and mouse wheel handlers set keyNavEnabled:false and mouseWheelEnabled:false. 
+    /// Numeric text field that provides automatic keystroke filtering and numeric validation.
     /// </summary>
     [Meta]
-    [ToolboxData("<{0}:NumberField runat=\"server\" />")]
-    [DefaultProperty("Number")]
-    [DefaultEvent("TextChanged")]
-    [ValidationProperty("Number")]
-    [ControlValueProperty("Number")]
-    [ParseChildren(true)]
-    [PersistChildren(false)]
-    [SupportsEventValidation]
-    [ToolboxBitmap(typeof(NumberField), "Build.ToolboxIcons.NumberField.bmp")]
-    [Description("A numeric text field that provides automatic keystroke filtering to disallow non-numeric characters, and numeric validation to limit the value to a range of valid numbers. The range of acceptable number values can be controlled by setting the minValue and maxValue configs, and fractional decimals can be disallowed by setting allowDecimals to false.")]
+    [Description("Numeric text field that provides automatic keystroke filtering and numeric validation.")]
     public partial class NumberField : NumberFieldBase
     {
         /// <summary>
         /// 
         /// </summary>
         public NumberField() { }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Category("0. About")]
-        [Description("")]
-        public override string XType
-        {
-            get
-            {
-                return "numberfield";
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Category("0. About")]
-        [Description("")]
-        public override string InstanceOf
-        {
-            get
-            {
-                return "Ext.form.field.Number";
-            }
-        }
 
         private NumberFieldListeners listeners;
 
@@ -89,7 +51,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public NumberFieldListeners Listeners
         {
@@ -114,7 +77,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public NumberFieldDirectEvents DirectEvents
         {
@@ -122,7 +86,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new NumberFieldDirectEvents(this);
+                    this.directEvents = new NumberFieldDirectEvents();
                 }
 
                 return this.directEvents;

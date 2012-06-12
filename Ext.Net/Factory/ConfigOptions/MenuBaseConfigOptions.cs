@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class MenuBase
     {
         /// <summary>
@@ -55,13 +52,20 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
+                list.Add("defaultTypeProxy", new ConfigOption("defaultTypeProxy", new SerializationOptions("defaultType"), "menuitem", this.DefaultTypeProxy ));
+                list.Add("enableScrolling", new ConfigOption("enableScrolling", null, false, this.EnableScrolling ));
+                list.Add("floating", new ConfigOption("floating", null, true, this.Floating ));
                 list.Add("allowOtherMenus", new ConfigOption("allowOtherMenus", null, false, this.AllowOtherMenus ));
-                list.Add("defaultAlign", new ConfigOption("defaultAlign", null, "tl-bl?", this.DefaultAlign ));
-                list.Add("defaultType", new ConfigOption("defaultType", null, "menuitem", this.DefaultType ));
-                list.Add("floatingProxy", new ConfigOption("floatingProxy", new SerializationOptions("floating"), true, this.FloatingProxy ));
+                list.Add("offsetX", new ConfigOption("offsetX", null, 0, this.OffsetX ));
+                list.Add("offsetY", new ConfigOption("offsetY", null, 0, this.OffsetY ));
+                list.Add("defaultOffsets", new ConfigOption("defaultOffsets", new SerializationOptions(JsonMode.Raw), "", this.DefaultOffsets ));
                 list.Add("ignoreParentClicks", new ConfigOption("ignoreParentClicks", null, false, this.IgnoreParentClicks ));
-                list.Add("plain", new ConfigOption("plain", null, false, this.Plain ));
+                list.Add("minWidth", new ConfigOption("minWidth", null, Unit.Pixel(120), this.MinWidth ));
+                list.Add("maxHeight", new ConfigOption("maxHeight", null, Unit.Empty, this.MaxHeight ));
+                list.Add("scrollIncrement", new ConfigOption("scrollIncrement", new SerializationOptions(JsonMode.Raw), 24, this.ScrollIncrement ));
                 list.Add("showSeparator", new ConfigOption("showSeparator", null, true, this.ShowSeparator ));
+                list.Add("shadow", new ConfigOption("shadow", new SerializationOptions(typeof(ShadowJsonConverter)), ShadowMode.Sides, this.Shadow ));
+                list.Add("subMenuAlign", new ConfigOption("subMenuAlign", null, "", this.SubMenuAlign ));
                 list.Add("renderToForm", new ConfigOption("renderToForm", null, false, this.RenderToForm ));
                 list.Add("disableMenuNavigationProxy", new ConfigOption("disableMenuNavigationProxy", new SerializationOptions("keyNav", JsonMode.Raw), "", this.DisableMenuNavigationProxy ));
 

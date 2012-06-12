@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -52,43 +52,37 @@ namespace Ext.Net
             }
         }
 
-        /// <summary>
-        /// Defaults to false. Set to true to fire mouseover and mouseout events when the mouse enters or leaves the target element.
-        /// This is implicitly set when an overCls is specified.
-        /// If the delegate option is used, these events fire only when a delegate element is entered of left.
-        /// </summary>
-        [Category("3. DragTracker")]
-        [DefaultValue(false)]
-        [ConfigOption]
-        [Description("Set to true to fire mouseover and mouseout events when the mouse enters or leaves the target element.")]
-        public virtual bool TrackOver
+		/// <summary>
+		/// 
+		/// </summary>
+        [ConfigOption(JsonMode.Ignore)]
+        [DefaultValue("")]
+		[Description("")]
+        protected override string ConfigIDProxy
         {
             get
             {
-                return this.State.Get<bool>("TrackOver", false);
-            }
-            set
-            {
-                this.State.Set("TrackOver", value);
+                return base.ConfigIDProxy;
             }
         }
 
         /// <summary>
-        /// Number of pixels the drag target must be moved before dragging is considered to have started. Defaults to 5.
+        /// Defaults to 5.
         /// </summary>
         [Category("3. DragTracker")]
         [DefaultValue(5)]
         [ConfigOption]
-        [Description("Number of pixels the drag target must be moved before dragging is considered to have started. Defaults to 5.")]
+        [Description("Defaults to 5.")]
         public virtual int Tolerance
         {
             get
             {
-                return this.State.Get<int>("Tolerance", 5);
+                object obj = this.ViewState["Tolerance"];
+                return obj != null ? (int) obj : 5;
             }
             set
             {
-                this.State.Set("Tolerance", value);
+                this.ViewState["Tolerance"] = value;
             }
         }
 
@@ -103,11 +97,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("AutoStart", 0);
+                object obj = this.ViewState["AutoStart"];
+                return obj != null ? (int)obj : 0;
             }
             set
             {
-                this.State.Set("AutoStart", value);
+                this.ViewState["AutoStart"] = value;
             }
         }
 
@@ -122,91 +117,13 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("ProxyCls", "x-view-selector");
+                return (string)this.ViewState["ProxyCls"] ?? "x-view-selector";
             }
             set
             {
-                this.State.Set("ProxyCls", value);
+                this.ViewState["ProxyCls"] = value;
             }
         }
-
-        /// <summary>
-        /// A CSS class to add to the DragTracker's target element when the element (or, if the delegate option is used, when a delegate element) is mouseovered.
-        /// If the delegate option is used, these events fire only when a delegate element is entered of left..
-        /// </summary>
-        [Category("3. DragDrop")]
-        [DefaultValue("")]
-        [ConfigOption]
-        [Description("A CSS class to add to the DragTracker's target element when the element (or, if the delegate option is used, when a delegate element) is mouseovered.")]
-        public virtual string OverCls
-        {
-            get
-            {
-                return this.State.Get<string>("OverCls", "");
-            }
-            set
-            {
-                this.State.Set("OverCls", value);
-            }
-        }
-
-        /// <summary>
-        /// An element which is used to constrain the result of the getOffset call.
-        /// </summary>
-        [Category("3. DragDrop")]
-        [DefaultValue("")]
-        [ConfigOption]
-        [Description("An element which is used to constrain the result of the getOffset call.")]
-        public virtual string ConstrainTo
-        {
-            get
-            {
-                return this.State.Get<string>("ConstrainTo", "");
-            }
-            set
-            {
-                this.State.Set("ConstrainTo", value);
-            }
-        }
-
-        /// <summary>
-        /// Specify false to enable default actions on onMouseDown events. Defaults to true.
-        /// </summary>
-        [ConfigOption]
-        [Category("3. DragTracker")]
-        [DefaultValue(true)]
-        [Description("Specify false to enable default actions on onMouseDown events. Defaults to true.")]
-        public virtual bool PreventDefault 
-        {
-            get
-            {
-                return this.State.Get<bool>("PreventDefault", true);
-            }
-            set
-            {
-                this.State.Set("PreventDefault", value);
-            }
-        }
-
-        /// <summary>
-        /// Specify true to stop the mousedown event from bubbling to outer listeners from the target element (or its delegates). Defaults to false.
-        /// </summary>
-        [ConfigOption]
-        [Category("3. DragTracker")]
-        [DefaultValue(false)]
-        [Description("Specify true to stop the mousedown event from bubbling to outer listeners from the target element (or its delegates). Defaults to false.")]
-        public virtual bool StopEvent
-        {
-            get
-            {
-                return this.State.Get<bool>("StopEvent", false);
-            }
-            set
-            {
-                this.State.Set("StopEvent", value);
-            }
-        }
-
 
         /// <summary>
         /// Defaults to true. If false then no selection tracker
@@ -218,11 +135,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Selection", true);
+                object obj = this.ViewState["Selection"];
+                return obj != null ? (bool)obj : true;
             }
             set
             {
-                this.State.Set("Selection", value);
+                this.ViewState["Selection"] = value;
             }
         }
 
@@ -237,11 +155,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Target", "");
+                return (string)this.ViewState["Target"] ?? "";
             }
             set
             {
-                this.State.Set("Target", value);
+                this.ViewState["Target"] = value;
             }
         }
 
@@ -372,6 +290,7 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public DragTrackerListeners Listeners
         {
@@ -398,6 +317,7 @@ namespace Ext.Net
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side DirectEventHandlers")]
         public DragTrackerDirectEvents DirectEvents
         {
@@ -405,7 +325,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new DragTrackerDirectEvents(this);
+                    this.directEvents = new DragTrackerDirectEvents();
                 }
 
                 return this.directEvents;

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,69 +33,82 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class CellSelectionModelDirectEvents : AbstractSelectionModelDirectEvents
+    public partial class CellSelectionModelDirectEvents : ComponentBaseDirectEvents
     {
-        public CellSelectionModelDirectEvents() { }
-
-        public CellSelectionModelDirectEvents(Observable parent) { this.Parent = parent; }
-
-        private ComponentDirectEvent deselect;
+        private ComponentDirectEvent beforeCellSelect;
 
         /// <summary>
-        /// Fired after a cell is deselected
-        /// Parameters
-        /// item : Ext.selection.CellModel
-        /// record : Ext.data.Model
-        ///     The record of the deselected cell
-        /// row : Number
-        ///     The row index deselected
-        /// column : Number
-        ///     The column index deselected
+        /// Fires before a cell is selected.
         /// </summary>
         [ListenerArgument(0, "item", typeof(CellSelectionModel), "this")]
-        [ListenerArgument(1, "record")]
-        [ListenerArgument(2, "row")]
-        [ListenerArgument(3, "column")]
+        [ListenerArgument(1, "rowIndex")]
+        [ListenerArgument(2, "colIndex")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("deselect", typeof(DirectEventJsonConverter))]
+        [ConfigOption("beforecellselect", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fired after a cell is deselected")]
-        public virtual ComponentDirectEvent Deselect
+        [Description("Fires before a cell is selected.")]
+        public virtual ComponentDirectEvent BeforeCellSelect
         {
             get
             {
-                return this.deselect ?? (this.deselect = new ComponentDirectEvent(this));
+                if (this.beforeCellSelect == null)
+                {
+                    this.beforeCellSelect = new ComponentDirectEvent();
+                }
+
+                return this.beforeCellSelect;
             }
         }
 
-        private ComponentDirectEvent select;
+        private ComponentDirectEvent cellSelect;
 
         /// <summary>
-        /// Fired after a cell is selected
-        /// Parameters
-        /// item : Ext.selection.CellModel
-        /// record : Ext.data.Model
-        ///     The record of the selected cell
-        /// row : Number
-        ///     The row index selected
-        /// column : Number
-        ///     The column index selected
+        /// Fires when a cell is selected.
         /// </summary>
         [ListenerArgument(0, "item", typeof(CellSelectionModel), "this")]
-        [ListenerArgument(1, "record")]
-        [ListenerArgument(2, "row")]
-        [ListenerArgument(3, "column")]
+        [ListenerArgument(1, "rowIndex")]
+        [ListenerArgument(2, "colIndex")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("select", typeof(DirectEventJsonConverter))]
+        [ConfigOption("cellselect", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
         [Description("Fires when a cell is selected.")]
-        public virtual ComponentDirectEvent Select
+        public virtual ComponentDirectEvent CellSelect
         {
             get
             {
-                return this.select ?? (this.select = new ComponentDirectEvent(this));
+                if (this.cellSelect == null)
+                {
+                    this.cellSelect = new ComponentDirectEvent();
+                }
+
+                return this.cellSelect;
+            }
+        }
+
+        private ComponentDirectEvent selectionChange;
+
+        /// <summary>
+        /// Fires when the active selection changes.
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(CellSelectionModel), "this")]
+        [ListenerArgument(1, "selection")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("selectionchange", typeof(DirectEventJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when the active selection changes.")]
+        public virtual ComponentDirectEvent SelectionChange
+        {
+            get
+            {
+                if (this.selectionChange == null)
+                {
+                    this.selectionChange = new ComponentDirectEvent();
+                }
+
+                return this.selectionChange;
             }
         }
     }

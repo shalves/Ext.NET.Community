@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,8 +25,8 @@
  ********/
 
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Design;
 
 using Ext.Net.Utilities;
@@ -37,13 +37,13 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class ItemCollection : Collection<AbstractComponent>
+    public partial class ItemCollection : Collection<Component>
     {
 		/// <summary>
 		/// 
 		/// </summary>
 		[Description("")]
-        protected override void InsertItem(int index, AbstractComponent item)
+        protected override void InsertItem(int index, Component item)
         {
             this.CheckItem(item);
             base.InsertItem(index, item);
@@ -58,7 +58,7 @@ namespace Ext.Net
 		/// 
 		/// </summary>
 		[Description("")]
-        protected override void SetItem(int index, AbstractComponent item)
+        protected override void SetItem(int index, Component item)
         {
             this.CheckItem(item);
             base.SetItem(index, item);
@@ -69,16 +69,16 @@ namespace Ext.Net
             }
         }
 
-        private void CheckItem(AbstractComponent item)
+        private void CheckItem(Component item)
         {
             if (this.SingleItemMode && this.Count>0)
             {
-                throw new InvalidOperationException("Only one AbstractComponent allowed in the Items Collection");
+                throw new InvalidOperationException("Only one Component allowed in the Items Collection");
             }
+            
+            item.AutoRender = false;
 
-            item.PreventRenderTo = true;
-
-            if (item is Viewport)
+            if (item is Viewport || item is Window)
             {
                 throw new InvalidCastException("Invalid type of Control ({0}). This type can not be added to Items Collection".FormatWith(item.GetType()));
             }
@@ -102,7 +102,7 @@ namespace Ext.Net
             }
         }
 
-        internal delegate void AfterInsertHandler(AbstractComponent item);
+        internal delegate void AfterInsertHandler(Component item);
         internal event AfterInsertHandler AfterInsert;
     }
 

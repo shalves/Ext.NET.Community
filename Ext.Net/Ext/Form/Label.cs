@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -34,13 +34,7 @@ using Ext.Net.Utilities;
 namespace Ext.Net
 {
     /// <summary>
-    /// Produces a standalone <label /> element which can be inserted into a form and be associated with a field in that form using the forId property.
-    ///
-    /// NOTE: in most cases it will be more appropriate to use the fieldLabel and associated config properties (Ext.form.Labelable.labelAlign, Ext.form.Labelable.labelWidth, etc.) in field components themselves, as that allows labels to be uniformly sized throughout the form. Ext.form.Label should only be used when your layout can not be achieved with the standard field layout.
-    ///
-    /// You will likely be associating the label with a field component that extends Ext.form.field.Base, so you should make sure the forId is set to the same value as the inputId of that field.
-    ///
-    /// The label's text can be set using either the text or html configuration properties; the difference between the two is that the former will automatically escape HTML characters when rendering, while the latter will not.
+    /// Basic Label field.
     /// </summary>
     [Meta]
     [ToolboxData("<{0}:Label runat=\"server\" />")]
@@ -48,9 +42,10 @@ namespace Ext.Net
     [ParseChildren(true, "Html")]
     [PersistChildren(false)]
     [SupportsEventValidation]
+    [Designer(typeof(LabelDesigner))]
     [ToolboxBitmap(typeof(Label), "Build.ToolboxIcons.Label.bmp")]
-    [Description("Produces a standalone <label /> element which can be inserted into a form and be associated with a field in that form using the forId property.")]
-    public partial class Label : ComponentBase, ITextControl, IIcon
+    [Description("Basic Label field.")]
+    public partial class Label : BoxComponentBase, ITextControl, IIcon
     {
         /*  Ctor
             -----------------------------------------------------------------------------------------------*/
@@ -93,7 +88,7 @@ namespace Ext.Net
         {
             get
             {
-                return "Ext.net.Label";
+                return "Ext.form.Label";
             }
         }
 
@@ -110,7 +105,7 @@ namespace Ext.Net
         {
             get
             {
-                return "netlabel";
+                return "label";
             }
         }
 
@@ -143,11 +138,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Format", "");
+                return (string)this.ViewState["Format"] ?? "";
             }
             set
             {
-                this.State.Set("Format", value);
+                this.ViewState["Format"] = value;
             }
         }
 
@@ -164,52 +159,53 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("EmptyText", "");
+                return (string)this.ViewState["EmptyText"] ?? "";
             }
             set
             {
-                this.State.Set("EmptyText", value);
+                this.ViewState["EmptyText"] = value;
             }
         }
         
         /// <summary>
-        /// The id of the input element to which this label will be bound via the standard HTML 'for' attribute. If not specified, the attribute will not be added to the label. In most cases you will be associating the label with a Ext.form.field.Base component, so you should make sure this matches the inputId of that field.
+        /// The id of the input element to which this label will be bound via the standard 'htmlFor' attribute. If not specified, the attribute will not be added to the label.
         /// </summary>
         [Meta]
         [ConfigOption("forId")]
         [Category("5. Label")]
         [DefaultValue("")]
-        [Description("The id of the input element to which this label will be bound via the standard HTML 'for' attribute. If not specified, the attribute will not be added to the label. In most cases you will be associating the label with a Ext.form.field.Base component, so you should make sure this matches the inputId of that field.")]
+        [Description("The id of the input element to which this label will be bound via the standard 'htmlFor' attribute. If not specified, the attribute will not be added to the label.")]
         public virtual string ForID
         {
             get
             {
-                return this.State.Get<string>("ForID", "");
+                return (string)this.ViewState["ForID"] ?? "";
             }
             set
             {
-                this.State.Set("ForID", value);
+                this.ViewState["ForID"] = value;
             }
         }
 
         /// <summary>
         /// An HTML fragment that will be used as the label's innerHTML (defaults to ''). Note that if text is specified it will take precedence and this value will be ignored.
         /// </summary>
+        [Meta]
         [ConfigOption]
         [DirectEventUpdate(MethodName = "SetHtml")]
         [Localizable(true)]
         [Category("5. Label")]
         [DefaultValue("")]
         [Description("An HTML fragment that will be used as the label's innerHTML (defaults to ''). Note that if text is specified it will take precedence and this value will be ignored.")]
-        public override string Html
+        public virtual string Html
         {
             get
             {
-                return this.State.Get<string>("Html", "");
+                return (string)this.ViewState["Html"] ?? "";
             }
             set
             {
-                this.State.Set("Html", value);
+                this.ViewState["Html"] = value;
             }
         }
 
@@ -226,11 +222,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Text", "");
+                return (string)this.ViewState["Text"] ?? "";
             }
             set
             {
-                this.State.Set("Text", value);
+                this.ViewState["Text"] = value;
             }
         }
 
@@ -270,11 +266,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<Icon>("Icon", Icon.None);
+                object obj = this.ViewState["Icon"];
+                return (obj == null) ? Icon.None : (Icon)obj;
             }
             set
             {
-                this.State.Set("Icon", value);
+                this.ViewState["Icon"] = value;
             }
         }
 
@@ -290,7 +287,7 @@ namespace Ext.Net
             {
                 if (this.Icon != Icon.None)
                 {
-                    return "#" + this.Icon.ToString();
+                    return ResourceManager.GetIconClassName(this.Icon);
                 }
 
                 return this.IconCls;
@@ -310,11 +307,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("IconCls", "");
+                return (string)this.ViewState["IconCls"] ?? "";
             }
             set
             {
-                this.State.Set("IconCls", value);
+                this.ViewState["IconCls"] = value;
             }
         }
 
@@ -330,11 +327,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<Alignment>("IconAlign", Alignment.Left);
+                object obj = this.ViewState["IconAlign"];
+                return (obj == null) ? Alignment.Left : (Alignment)obj;
             }
             set
             {
-                this.State.Set("IconAlign", value);
+                this.ViewState["IconAlign"] = value;
             }
         }
 
@@ -344,7 +342,7 @@ namespace Ext.Net
         /// Inline editor
         /// </summary>
         [Meta]
-        [ConfigOption("editor", typeof(SingleItemCollectionJsonConverter))]
+        [ConfigOption("editor", typeof(ItemCollectionJsonConverter))]
         [Category("5. Label")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -369,7 +367,7 @@ namespace Ext.Net
         /*  Client Events
             -----------------------------------------------------------------------------------------------*/
 
-        private AbstractComponentListeners listeners;
+        private BoxComponentListeners listeners;
 
         /// <summary>
         /// Client-side JavaScript Event Handlers
@@ -381,20 +379,20 @@ namespace Ext.Net
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [Description("Client-side JavaScript Event Handlers")]
-        public AbstractComponentListeners Listeners
+        public BoxComponentListeners Listeners
         {
             get
             {
                 if (this.listeners == null)
                 {
-                    this.listeners = new AbstractComponentListeners();
+                    this.listeners = new BoxComponentListeners();
                 }
 
                 return this.listeners;
             }
         }
 
-        private AbstractComponentDirectEvents directEvents;
+        private BoxComponentDirectEvents directEvents;
 
         /// <summary>
         /// Server-side Ajax Event Handlers
@@ -406,13 +404,13 @@ namespace Ext.Net
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [ConfigOption("directEvents", JsonMode.Object)]
         [Description("Server-side Ajax Event Handlers")]
-        public AbstractComponentDirectEvents DirectEvents
+        public BoxComponentDirectEvents DirectEvents
         {
             get
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new AbstractComponentDirectEvents(this);
+                    this.directEvents = new BoxComponentDirectEvents();
                 }
 
                 return this.directEvents;
@@ -421,7 +419,6 @@ namespace Ext.Net
 
         /*  Public Methods
             -----------------------------------------------------------------------------------------------*/
-        
         /// <summary>
         /// Appends the specified string to the label's innerHTML.
         /// </summary>
@@ -496,7 +493,7 @@ namespace Ext.Net
         {
             if (this.Icon != Icon.None)
             {
-                this.SetIconClass("#" + icon.ToString()); 
+                this.SetIconClass(ResourceManager.GetIconClassName(icon)); 
             }
             else
             {

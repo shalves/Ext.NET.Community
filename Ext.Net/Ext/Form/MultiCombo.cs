@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,9 +25,13 @@
  ********/
 
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
+
+using Ext.Net.Utilities;
 
 namespace Ext.Net
 {
@@ -41,7 +45,7 @@ namespace Ext.Net
     [ToolboxBitmap(typeof(MultiCombo), "Build.ToolboxIcons.MultiCombo.bmp")]
     [Designer(typeof(EmptyDesigner))]
     [Description("ComboBox with multi item selection.")]
-    public partial class MultiCombo : ComboBoxBase, IPostBackEventHandler
+    public partial class MultiCombo : ComboBoxBaseMulti<ListItem>, IPostBackEventHandler
     {
 		/// <summary>
 		/// 
@@ -76,48 +80,9 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// True to wrap by square brackets.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("8. MultiCombo")]
-        [DefaultValue(false)]
-        [Description("True to wrap by square brackets.")]
-        public virtual bool WrapBySquareBrackets
-        {
-            get
-            {
-                return this.State.Get<bool>("WrapBySquareBrackets", false);
-            }
-            set
-            {
-                this.State.Set("WrapBySquareBrackets", value);
-            }
-        }
-
-        /// <summary>
-        /// Selection UI mode
-        /// </summary>
-        [Meta]
-        [ConfigOption(JsonMode.ToLower)]
-        [Category("8. MultiCombo")]
-        [DefaultValue(MultiSelectMode.Checkbox)]
-        [Description("Selection UI mode")]
-        public virtual MultiSelectMode SelectionMode
-        {
-            get
-            {
-                return this.State.Get<MultiSelectMode>("SelectionMode", MultiSelectMode.Checkbox);
-            }
-            set
-            {
-                this.State.Set("SelectionMode", value);
-            }
-        }
-
-        /// <summary>
         /// False to prevent the user from typing text directly into the field, just like a traditional select (defaults to true).
         /// </summary>
+        [Meta]
         [ConfigOption]
         [Category("8. MultiCombo")]
         [DefaultValue(false)]
@@ -126,11 +91,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Editable", false);
+                object obj = this.ViewState["Editable"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Editable", value);
+                this.ViewState["Editable"] = value;
             }
         }
 
@@ -140,12 +106,108 @@ namespace Ext.Net
 		[Description("")]
         protected override void OnBeforeClientInit(Observable sender)
         {
-            base.OnBeforeClientInit(sender);
-
             if (this.Editable)
             {
                 throw new Exception("The MultiCombo doesn't support Editable mode");
-            }            
+            }
+            
+            this.InitPostBack();
+
+            if ((this.StoreID.IsNotEmpty() || this.Store.Primary != null) && !this.IsDynamic)
+            {
+                Store store = this.Store.Primary ?? ControlUtils.FindControl<Store>(this, this.StoreID, true);
+
+                if (store == null)
+                {
+                    throw new InvalidOperationException("The Control '{0}' could not find the StoreID of '{1}'.".FormatWith(this.ID, this.StoreID));
+                }
+            }
+            else
+            {
+                this.TriggerAction = TriggerAction.All;
+                this.Mode = DataLoadMode.Local;
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+        [ConfigOption("selectionPredefined", JsonMode.Raw)]
+        [DefaultValue("")]
+		[Description("")]
+        protected virtual string SelectionPredefinedProxy
+        {
+            get
+            {
+                if (this.SelectedItems.Count == 0)
+                {
+                    return "";
+                }
+
+                return this.SelectedItems.ToJsonArray();
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected override bool LoadPostData(string postDataKey, NameValueCollection postCollection)
+        {
+            this.HasLoadPostData = true;
+
+            string val = postCollection[this.UniqueName.ConcatWith("_Selection")];
+
+            this.SuspendScripting();
+            this.RawValue = val;
+            this.ResumeScripting();
+
+            if (val == null)
+            {
+                return false;
+            }
+
+            bool existsItems = this.SelectedItems.Count > 0;
+            this.SelectedItems.Clear();
+            Dictionary<string, string>[] selection = JSON.Deserialize<Dictionary<string, string>[]>(val);
+            
+            if (selection == null)
+            {
+                return existsItems;
+            }
+
+            foreach (Dictionary<string, string> item in selection)
+            {
+                this.SelectedItems.Add(new SelectedListItem(item["text"], item["value"], int.Parse(item["index"])));
+            }
+
+            return true;
+        }
+
+        protected override void RaisePostDataChangedEvent()
+        {
+            this.OnValueChanged(EventArgs.Empty);
+        }
+
+        void IPostBackEventHandler.RaisePostBackEvent(string eventArgument)
+        {
+            switch (eventArgument)
+            {
+                case "select":
+                    this.OnItemSelected(EventArgs.Empty);
+                    break;
+                case "change":
+                    this.OnValueChanged(EventArgs.Empty);
+                    break;
+                default:
+                    int index;
+
+                    if (int.TryParse(eventArgument, out index))
+                    {
+                        this.OnTriggerClicked(new TriggerEventArgs(index));
+                    }
+                    break;
+            }
         }
 
         private ComboBoxListeners listeners;
@@ -158,7 +220,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public ComboBoxListeners Listeners
         {
@@ -183,7 +246,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side Ajax Event Handlers")]
         public ComboBoxDirectEvents DirectEvents
         {
@@ -191,7 +255,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new ComboBoxDirectEvents(this);
+                    this.directEvents = new ComboBoxDirectEvents();
                 }
 
                 return this.directEvents;
@@ -206,6 +270,16 @@ namespace Ext.Net
         public virtual void SelectAll()
         {
             this.Call("selectAll");
+        }
+
+        /// <summary>
+        /// Clear selection
+        /// </summary>
+        [Meta]
+        [Description("Clear selection")]
+        public virtual void ClearSelections()
+        {
+            this.Call("clearSelections");
         }
 
         /// <summary>

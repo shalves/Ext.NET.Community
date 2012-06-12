@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -35,17 +35,10 @@ namespace Ext.Net
 	[Description("")]
     public partial class ClickRepeaterDirectEvents : ComponentDirectEvents
     {
-        public ClickRepeaterDirectEvents() { }
-
-        public ClickRepeaterDirectEvents(Observable parent) { this.Parent = parent; }
-
         private ComponentDirectEvent click;
 
         /// <summary>
         /// Fires on a specified interval during the time the element is pressed.
-        /// Parameters
-        /// item : Ext.util.ClickRepeater
-        /// e : Ext.EventObject
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "e", typeof(object), "The click event")]
@@ -58,7 +51,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.click ?? (this.click = new ComponentDirectEvent(this));
+                if (this.click == null)
+                {
+                    this.click = new ComponentDirectEvent();
+                }
+
+                return this.click;
             }
         }
 
@@ -66,9 +64,6 @@ namespace Ext.Net
 
         /// <summary>
         /// Fires on a specified interval during the time the element is pressed.
-        /// Parameters
-        /// item : Ext.util.ClickRepeater
-        /// e : Ext.EventObject
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "e", typeof(object), "The click event")]
@@ -81,7 +76,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.leftClick ?? (this.leftClick = new ComponentDirectEvent(this));
+                if (this.leftClick == null)
+                {
+                    this.leftClick = new ComponentDirectEvent();
+                }
+
+                return this.leftClick;
             }
         }
 
@@ -89,9 +89,6 @@ namespace Ext.Net
 
         /// <summary>
         /// Fires on a specified interval during the time the element is pressed.
-        /// Parameters
-        /// item : Ext.util.ClickRepeater
-        /// e : Ext.EventObject
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "e", typeof(object), "The click event")]
@@ -104,7 +101,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.middleClick ?? (this.middleClick = new ComponentDirectEvent(this));
+                if (this.middleClick == null)
+                {
+                    this.middleClick = new ComponentDirectEvent();
+                }
+
+                return this.middleClick;
             }
         }
 
@@ -112,9 +114,6 @@ namespace Ext.Net
 
         /// <summary>
         /// Fires on a specified interval during the time the element is pressed.
-        /// Parameters
-        /// item : Ext.util.ClickRepeater
-        /// e : Ext.EventObject
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "e", typeof(object), "The click event")]
@@ -127,7 +126,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.rightClick ?? (this.rightClick = new ComponentDirectEvent(this));
+                if (this.rightClick == null)
+                {
+                    this.rightClick = new ComponentDirectEvent();
+                }
+
+                return this.rightClick;
             }
         }
 
@@ -135,9 +139,6 @@ namespace Ext.Net
 
         /// <summary>
         /// Fires when the mouse button is depressed.
-        /// Parameters
-        /// item : Ext.util.ClickRepeater
-        /// e : Ext.EventObject
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "e", typeof(object), "The click event")]
@@ -150,7 +151,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.mouseDown ?? (this.mouseDown = new ComponentDirectEvent(this));
+                if (this.mouseDown == null)
+                {
+                    this.mouseDown = new ComponentDirectEvent();
+                }
+
+                return this.mouseDown;
             }
         }
 
@@ -158,9 +164,6 @@ namespace Ext.Net
 
         /// <summary>
         /// Fires when the mouse key is released.
-        /// Parameters
-        /// item : Ext.util.ClickRepeater
-        /// e : Ext.EventObject
         /// </summary>
         [ListenerArgument(0, "item", typeof(Button), "this")]
         [ListenerArgument(1, "e", typeof(object), "The click event")]
@@ -173,7 +176,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.mouseUp ?? (this.mouseUp = new ComponentDirectEvent(this));
+                if (this.mouseUp == null)
+                {
+                    this.mouseUp = new ComponentDirectEvent();
+                }
+
+                return this.mouseUp;
             }
         }
     }

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -31,9 +31,9 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
 using Ext.Net.Utilities;
 using Newtonsoft.Json;
+using System.Drawing;
 
 namespace Ext.Net
 {
@@ -154,11 +154,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("HasOuterHandles", false);
+                object obj = this.ViewState["HasOuterHandles"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("HasOuterHandles", value);
+                this.ViewState["HasOuterHandles"] = value;
             }
         }
 
@@ -172,11 +173,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Target", "");
+                return (string)this.ViewState["Target"] ?? "";
             }
             set
             {
-                this.State.Set("Target", value);
+                this.ViewState["Target"] = value;
             }
         }
 
@@ -190,11 +191,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Group", "default");
+                return (string)this.ViewState["Group"] ?? "default";
             }
             set
             {
-                this.State.Set("Group", value);
+                this.ViewState["Group"] = value;
             }
         }
 
@@ -210,11 +211,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("IgnoreSelf", true);
+                object obj = this.ViewState["IgnoreSelf"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("IgnoreSelf", value);
+                this.ViewState["IgnoreSelf"] = value;
             }
         }
 
@@ -230,11 +232,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string[]>("InvalidHandleClasses", null);
+                object obj = this.ViewState["InvalidHandleClasses"];
+                return (obj == null) ? null : (string[])obj;
             }
             set
             {
-                this.State.Set("InvalidHandleClasses", value);
+                this.ViewState["InvalidHandleClasses"] = value;
             }
         }
 
@@ -249,11 +252,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string[]>("InvalidHandleTypes", null);
+                object obj = this.ViewState["InvalidHandleTypes"];
+                return (obj == null) ? null : (string[])obj;
             }
             set
             {
-                this.State.Set("InvalidHandleTypes", value);
+                this.ViewState["InvalidHandleTypes"] = value;
             }
         }
 
@@ -302,11 +306,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string[]>("InvalidHandleIds", null);
+                object obj = this.ViewState["InvalidHandleIds"];
+                return (obj == null) ? null : (string[])obj;
             }
             set
             {
-                this.State.Set("InvalidHandleIds", value);
+                this.ViewState["InvalidHandleIds"] = value;
             }
         }
 
@@ -356,11 +361,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("IsTarget", true);
+                object obj = this.ViewState["IsTarget"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("IsTarget", value);
+                this.ViewState["IsTarget"] = value;
             }
         }
 
@@ -376,11 +382,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("MaintainOffset", false);
+                object obj = this.ViewState["MaintainOffset"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("MaintainOffset", value);
+                this.ViewState["MaintainOffset"] = value;
             }
         }
 
@@ -396,11 +403,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("MoveOnly", false);
+                object obj = this.ViewState["MoveOnly"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("MoveOnly", value);
+                this.ViewState["MoveOnly"] = value;
             }
         }
 
@@ -416,11 +424,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int[]>("Padding", null);
+                object obj = this.ViewState["Padding"];
+                return (obj == null) ? null : (int[])obj;
             }
             set
             {
-                this.State.Set("Padding", value);
+                this.ViewState["Padding"] = value;
             }
         }
 
@@ -436,11 +445,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("PrimaryButtonOnly", true);
+                object obj = this.ViewState["PrimaryButtonOnly"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("PrimaryButtonOnly", value);
+                this.ViewState["PrimaryButtonOnly"] = value;
             }
         }
 
@@ -450,7 +460,7 @@ namespace Ext.Net
 		[Description("")]
         public virtual string ToScript(Control owner)
         {
-            return "window.{0}=new Ext.net.ProxyDDCreator({{target:{1},group:{2},config:{3},type:{4}}});".FormatWith(
+            return "this.{0}=new Ext.net.ProxyDDCreator({{target:{1},group:{2},config:{3},type:{4}}});".FormatWith(
                       this.ClientID,
                       this.ParsedTarget, 
                       JSON.Serialize(this.Group),
@@ -489,11 +499,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int[]>("XTicks", null);
+                object obj = this.ViewState["XTicks"];
+                return (obj == null) ? null : (int[])obj;
             }
             set
             {
-                this.State.Set("XTicks", value);
+                this.ViewState["XTicks"] = value;
             }
         }
 
@@ -509,11 +520,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int[]>("YTicks", null);
+                object obj = this.ViewState["YTicks"];
+                return (obj == null) ? null : (int[])obj;
             }
             set
             {
-                this.State.Set("YTicks", value);
+                this.ViewState["YTicks"] = value;
             }
         }
 

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,9 @@ namespace Ext.Net
 	/// </summary>
 	[Description("")]
     public partial class ItemsBuilder<TParent, TParentBuilder>
-        : AbstractComponentCollectionBuilder<TParent, TParentBuilder>
-        where TParent : AbstractContainer
-        where TParentBuilder : AbstractContainer.Builder<TParent, TParentBuilder>
+        : ComponentCollectionBuilder<TParent, TParentBuilder>
+        where TParent : ContainerBase
+        where TParentBuilder : ContainerBase.Builder<TParent, TParentBuilder>
     {
 		/// <summary>
 		/// 
@@ -47,12 +47,7 @@ namespace Ext.Net
         /*  Methods
             -----------------------------------------------------------------------------------------------*/
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="component"></param>
-        /// <returns></returns>
-        public virtual ItemsBuilder<TParent, TParentBuilder> Add(AbstractComponent component)
+        public virtual ItemsBuilder<TParent, TParentBuilder> Add(Component component)
         {
             this.Owner.Items.Add(component);
             return this;
@@ -61,7 +56,7 @@ namespace Ext.Net
         /// TODO: .Add(Control control) // add to .Content() collection
         /// TODO: .Add(Func)            // add to .Content() collection
 
-        public virtual ItemsBuilder<TParent, TParentBuilder> Add(AbstractComponent.Builder<TParent, TParentBuilder> builder)
+        public virtual ItemsBuilder<TParent, TParentBuilder> Add(Component.Builder<TParent, TParentBuilder> builder)
         {
             this.Add(builder.ToComponent());
             return this;
@@ -71,7 +66,7 @@ namespace Ext.Net
 		/// 
 		/// </summary>
 		[Description("")]
-        public virtual ItemsBuilder<TParent, TParentBuilder> AddRange(AbstractComponent[] components)
+        public virtual ItemsBuilder<TParent, TParentBuilder> AddRange(Component[] components)
         {
             this.Owner.Items.AddRange(components);
             return this;
@@ -81,7 +76,7 @@ namespace Ext.Net
 		/// 
 		/// </summary>
 		[Description("")]
-        public virtual ItemsBuilder<TParent, TParentBuilder> AddRange(AbstractComponent.Builder<TParent, TParentBuilder>[] builders)
+        public virtual ItemsBuilder<TParent, TParentBuilder> AddRange(Component.Builder<TParent, TParentBuilder>[] builders)
         {
             this.AddRange(builders);
             return this;

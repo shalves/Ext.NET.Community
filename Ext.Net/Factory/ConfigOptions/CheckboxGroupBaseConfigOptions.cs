@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class CheckboxGroupBase
     {
         /// <summary>
@@ -55,10 +52,12 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
+                list.Add("itemCls", new ConfigOption("itemCls", new SerializationOptions(JsonMode.Ignore), "", this.ItemCls ));
+                list.Add("itemClsProxy", new ConfigOption("itemClsProxy", new SerializationOptions("itemCls"), "", this.ItemClsProxy ));
                 list.Add("allowBlank", new ConfigOption("allowBlank", null, true, this.AllowBlank ));
                 list.Add("blankText", new ConfigOption("blankText", null, "", this.BlankText ));
                 list.Add("columnsNumber", new ConfigOption("columnsNumber", new SerializationOptions("columns"), 0, this.ColumnsNumber ));
-                list.Add("columnsWidths", new ConfigOption("columnsWidths", new SerializationOptions("columns", JsonMode.Serialize), null, this.ColumnsWidths ));
+                list.Add("columnsWidths", new ConfigOption("columnsWidths", new SerializationOptions("columns", typeof(StringArrayJsonConverter)), null, this.ColumnsWidths ));
                 list.Add("fireChangeOnLoad", new ConfigOption("fireChangeOnLoad", null, false, this.FireChangeOnLoad ));
                 list.Add("vertical", new ConfigOption("vertical", null, false, this.Vertical ));
 

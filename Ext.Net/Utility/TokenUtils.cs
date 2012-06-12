@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -151,8 +151,8 @@ namespace Ext.Net
             {
                 return script.ToString().Substring(8);
             }
-
-            if (seed == null)
+			
+			if (seed == null)
             {
                 seed = TokenUtils.Page;
             }
@@ -188,11 +188,11 @@ namespace Ext.Net
                 }
 
                 ResourceManager sm = null;
-                string ns = ResourceManager.GlobalNormalizedDirectMethodNamespace;
+                string ns = "Ext.net.DirectMethods";
 
                 if (parent != null && !(parent is MasterPage && seed.Parent is System.Web.UI.WebControls.ContentPlaceHolder))
                 {
-                    string id = ResourceManager.GetControlIdentification(parent, null);
+                    string id = ResourceManager.GetControlIdentification(parent);
 
                     if (id.IsNotEmpty())
                     {
@@ -203,7 +203,7 @@ namespace Ext.Net
 
                     if (sm != null)
                     {
-                        ns = sm.NormalizedDirectMethodNamespace;
+                        ns = sm.DirectMethodNamespace;
                     }
 
                     return script.Replace(TokenUtils.DIRECTMETHODS_PATTERN, ns.ConcatWith(id));
@@ -217,15 +217,17 @@ namespace Ext.Net
                         parentPage = ReflectionUtils.GetTypeOfParent(seed, typeof(System.Web.UI.Page)) as System.Web.UI.Page;
                     }
 
-                    
-                    sm = ResourceManager.GetInstance();
-
-                    if (sm != null)
+                    if (parentPage != null)
                     {
-                        ns = sm.NormalizedDirectMethodNamespace;
-                    }
+                        sm = ResourceManager.GetInstance(parentPage);
 
-                    return script.Replace(TokenUtils.DIRECTMETHODS_PATTERN, ns);
+                        if (sm != null)
+                        {
+                            ns = sm.DirectMethodNamespace;
+                        }
+
+                        return script.Replace(TokenUtils.DIRECTMETHODS_PATTERN, ns);
+                    }
                 }
             }
 
@@ -323,7 +325,12 @@ namespace Ext.Net
                     }
                     else
                     {
-                        if (control is Observable || control is UserControl)
+                        if (control is Layout)
+                        {
+                            Component component = ((Layout)control).ParentComponent;
+                            script = script.Replace(match.Value, component != null ? component.ClientID.ConcatWith(".getLayout()") : control.ClientID);
+                        }
+                        else if (control is Observable || control is UserControl)
                         {
                             script = script.Replace(match.Value, control.ClientID);
                         }
@@ -427,7 +434,7 @@ namespace Ext.Net
                 return TokenUtils.ReplaceRawToken(script);
             }
 
-            return JSON.Serialize(script, JSON.ScriptConvertersInternal);
+            return JSON.Serialize(script, JSON.AltConvertersInternal);
         }
 
 		/// <summary>

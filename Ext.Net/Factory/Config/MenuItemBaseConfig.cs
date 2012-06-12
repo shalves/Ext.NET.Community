@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,37 +33,16 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public abstract partial class MenuItemBase
     {
         /// <summary>
         /// 
         /// </summary>
-        new public abstract partial class Config : ComponentBase.Config 
+        new public abstract partial class Config : BaseMenuItem.Config 
         { 
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
-			private string postBackEvent = "click";
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue("click")]
-			public virtual string PostBackEvent 
-			{ 
-				get
-				{
-					return this.postBackEvent;
-				}
-				set
-				{
-					this.postBackEvent = value;
-				}
-			}
-
 			private string postBackUrl = "";
 
 			/// <summary>
@@ -154,31 +133,13 @@ namespace Ext.Net
 				}
 			}
 
-			private string activeCls = "";
-
-			/// <summary>
-			/// The CSS class added to the menu item when the item is activated (focused/mouseover). Defaults to Ext.baseCSSPrefix + 'menu-item-active'.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string ActiveCls 
-			{ 
-				get
-				{
-					return this.activeCls;
-				}
-				set
-				{
-					this.activeCls = value;
-				}
-			}
-
 			private bool canActivate = true;
 
 			/// <summary>
-			/// Whether or not this menu item can be activated when focused/mouseovered. Defaults to true.
+			/// True if this item can be visually activated (defaults to true).
 			/// </summary>
 			[DefaultValue(true)]
-			public virtual bool CanActivate 
+			public override bool CanActivate 
 			{ 
 				get
 				{
@@ -190,102 +151,12 @@ namespace Ext.Net
 				}
 			}
 
-			private int clickHideDelay = 1;
+			private string href = "";
 
 			/// <summary>
-			/// The delay in milliseconds to wait before hiding the menu after clicking the menu item. This only has an effect when hideOnClick: true. Defaults to 1.
-			/// </summary>
-			[DefaultValue(1)]
-			public virtual int ClickHideDelay 
-			{ 
-				get
-				{
-					return this.clickHideDelay;
-				}
-				set
-				{
-					this.clickHideDelay = value;
-				}
-			}
-
-			private string handler = "";
-
-			/// <summary>
-			/// A function that will handle the click event of this menu item (defaults to undefined).
+			/// The href attribute to use for the underlying anchor link (defaults to '#').
 			/// </summary>
 			[DefaultValue("")]
-			public virtual string Handler 
-			{ 
-				get
-				{
-					return this.handler;
-				}
-				set
-				{
-					this.handler = value;
-				}
-			}
-
-			private string scope = "";
-
-			/// <summary>
-			/// The scope (this reference) in which the handler function will be called.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string Scope 
-			{ 
-				get
-				{
-					return this.scope;
-				}
-				set
-				{
-					this.scope = value;
-				}
-			}
-
-			private bool destroyMenu = true;
-
-			/// <summary>
-			/// Whether or not to destroy any associated sub-menu when this item is destroyed. Defaults to true.
-			/// </summary>
-			[DefaultValue(true)]
-			public virtual bool DestroyMenu 
-			{ 
-				get
-				{
-					return this.destroyMenu;
-				}
-				set
-				{
-					this.destroyMenu = value;
-				}
-			}
-
-			private bool hideOnClick = true;
-
-			/// <summary>
-			/// Whether to not to hide the owning menu when this item is clicked. Defaults to true.
-			/// </summary>
-			[DefaultValue(true)]
-			public virtual bool HideOnClick 
-			{ 
-				get
-				{
-					return this.hideOnClick;
-				}
-				set
-				{
-					this.hideOnClick = value;
-				}
-			}
-
-			private string href = "#";
-
-			/// <summary>
-			/// The href attribute to use for the underlying anchor link. Defaults to #.
-			/// </summary>
-			[DefaultValue("#")]
 			public virtual string Href 
 			{ 
 				get
@@ -301,7 +172,7 @@ namespace Ext.Net
 			private string hrefTarget = "";
 
 			/// <summary>
-			/// The target attribute to use for the underlying anchor link. Defaults to undefined.
+			/// The target attribute to use for the underlying anchor link (defaults to '').
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string HrefTarget 
@@ -319,7 +190,7 @@ namespace Ext.Net
 			private string iconUrl = "";
 
 			/// <summary>
-			/// The path to an icon to display in this item. Defaults to Ext.BLANK_IMAGE_URL.
+			/// The path to an icon to display in this item (defaults to Ext.BLANK_IMAGE_URL). If icon is specified iconCls should not be.
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string IconUrl 
@@ -337,7 +208,7 @@ namespace Ext.Net
 			private string iconCls = "";
 
 			/// <summary>
-			/// A CSS class that specifies a background-image to use as the icon for this item. Defaults to undefined.
+			/// A CSS class that specifies a background image that will be used as the icon for this item (defaults to ''). If iconCls is specified icon should not be.
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string IconCls 
@@ -352,93 +223,39 @@ namespace Ext.Net
 				}
 			}
 
-			private Icon icon = Icon.None;
+			private string itemCls = "";
 
 			/// <summary>
-			/// The icon to use in the Title bar. See also, IconCls to set an icon with a custom Css class.
-			/// </summary>
-			[DefaultValue(Icon.None)]
-			public virtual Icon Icon 
-			{ 
-				get
-				{
-					return this.icon;
-				}
-				set
-				{
-					this.icon = value;
-				}
-			}
-
-			private string menuAlign = "";
-
-			/// <summary>
-			/// The default Ext.Element.getAlignToXY anchor position value for this item's sub-menu relative to this item's position. Defaults to 'tl-tr?'.
+			/// The default CSS class to use for menu items (defaults to 'x-menu-item')
 			/// </summary>
 			[DefaultValue("")]
-			public virtual string MenuAlign 
+			public override string ItemCls 
 			{ 
 				get
 				{
-					return this.menuAlign;
+					return this.itemCls;
 				}
 				set
 				{
-					this.menuAlign = value;
+					this.itemCls = value;
 				}
 			}
 
-			private int menuExpandDelay = 200;
+			private int showDelay = 200;
 
 			/// <summary>
-			/// The delay in milliseconds before this item's sub-menu expands after this item is moused over. Defaults to 200.
+			/// Length of time in milliseconds to wait before showing this item (defaults to 200)
 			/// </summary>
 			[DefaultValue(200)]
-			public virtual int MenuExpandDelay 
+			public virtual int ShowDelay 
 			{ 
 				get
 				{
-					return this.menuExpandDelay;
+					return this.showDelay;
 				}
 				set
 				{
-					this.menuExpandDelay = value;
-				}
-			}
-
-			private int menuHideDelay = 200;
-
-			/// <summary>
-			/// The delay in milliseconds before this item's sub-menu hides after this item is moused out. Defaults to 200.
-			/// </summary>
-			[DefaultValue(200)]
-			public virtual int MenuHideDelay 
-			{ 
-				get
-				{
-					return this.menuHideDelay;
-				}
-				set
-				{
-					this.menuHideDelay = value;
-				}
-			}
-
-			private bool plain = false;
-
-			/// <summary>
-			/// Whether or not this item is plain text/html with no icon or visual activation. Defaults to false.
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool Plain 
-			{ 
-				get
-				{
-					return this.plain;
-				}
-				set
-				{
-					this.plain = value;
+					this.showDelay = value;
 				}
 			}
 
@@ -478,6 +295,24 @@ namespace Ext.Net
 				}
 			}
 			
+			private Icon icon = Icon.None;
+
+			/// <summary>
+			/// The icon to use in the Title bar. See also, IconCls to set an icon with a custom Css class.
+			/// </summary>
+			[DefaultValue(Icon.None)]
+			public virtual Icon Icon 
+			{ 
+				get
+				{
+					return this.icon;
+				}
+				set
+				{
+					this.icon = value;
+				}
+			}
+
         }
     }
 }

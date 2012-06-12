@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -26,10 +26,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 using Ext.Net.Utilities;
 using Newtonsoft.Json;
@@ -41,170 +41,45 @@ namespace Ext.Net
     /// </summary>
     [Meta]
     [Description("A combobox control with support for autocomplete, remote-loading, paging and many other features.")]
-    public abstract partial class ComboBoxBase : PickerField, IStore<Store> 
+    public abstract partial class ComboBoxBase<T> : TriggerFieldBase, IStore where T : StateManagedItem 
     {
-        private ListItemCollection selectedItems;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Meta]
-        [ConfigOption(JsonMode.AlwaysArray)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [Description("")]
-        public virtual ListItemCollection SelectedItems
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected override List<ResourceItem> Resources
         {
             get
             {
-                if (this.selectedItems == null)
-                {
-                    this.selectedItems = new ListItemCollection();
-                }
+                List<ResourceItem> baseList = base.Resources;
+                baseList.Capacity += 1;
 
-                return this.selectedItems;
+                baseList.Add(XControl.ExtNetDataItem);
+
+                return baseList;
             }
         }
-        
+
         /// <summary>
-        /// 
-        /// </summary>
-        [DefaultValue(null)]
-        [Browsable(false)]
-        [Description("")]
-        public virtual ListItem SelectedItem
+		/// 
+		/// </summary>
+		[Category("0. About")]
+		[Description("")]
+        public override string XType
         {
             get
             {
-                return this.SelectedItems.Count > 0 ? this.SelectedItems[0] : null;
+                return "combo";
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="postDataKey"></param>
-        /// <param name="postCollection"></param>
-        /// <returns></returns>
-        [Description("")]
-        protected override bool LoadPostData(string postDataKey, NameValueCollection postCollection)
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected override void OnBeforeClientInitHandler()
         {
-            this.HasLoadPostData = true;
-
-            string text = postCollection[this.UniqueName];
-            string state = postCollection["_" + this.UniqueName + "_state"];
-
-            this.SuspendScripting();
-            this.RawValue = text;
-            this.Value = text;
-            this.ResumeScripting();
-
-            if (state == null && text == null)
-            {
-                return false;
-            }
-
-            if (!this.EmptyText.Equals(text) && text.IsNotEmpty())
-            {
-                List<ListItem> items = null;
-                if (this.SimpleSubmit)
-                {
-                    var array = state.Split(new char[] { ',' });
-                    items = new List<ListItem>(array.Length);
-                    foreach (var item in array)
-                    {
-                        items.Add(new ListItem(item));
-                    }                    
-                }
-                else if(state.IsNotEmpty())
-                {
-                    items = ComboBoxBase.ParseSelectedItems(state);
-                }
-
-                bool fireEvent = false;
-
-                if (items == null)
-                {
-                    items = new List<ListItem> 
-                    { 
-                        new ListItem(text)
-                    };                    
-                    
-                    /*fireEvent = this.SelectedItems.Count > 0;
-                    this.SelectedItems.Clear();
-                    return fireEvent;
-                    */
-                }
-
-                foreach (var item in items)
-                {
-                    if (!this.SelectedItems.Contains(item))
-                    {
-                        fireEvent = true;
-                        break;
-                    }
-                }
-
-                this.SelectedItems.Clear();
-                this.SelectedItems.AddRange(items);
-
-                return fireEvent;
-            }
-            else
-            {
-                if (this.EmptyText.Equals(text) && this.SelectedItems.Count > 0)
-                {
-                    this.SelectedItems.Clear();
-
-                    return true;
-                }
-            }
-            
-            return false;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="json"></param>
-        /// <returns></returns>
-        public static List<ListItem> ParseSelectedItems(string json)
-        {
-            return JSON.Deserialize<List<ListItem>>(json, new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver());
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        [Description("")]
-        protected override void OnBeforeClientInit(Observable sender)
-        {            
-            base.OnBeforeClientInit(sender);
-
-            if (!this.MultiSelect && this.SelectedItems.Count > 1 && (!Ext.Net.X.IsAjaxRequest || this.IsDynamic))
-            {
-                this.MultiSelect = true;
-            }
-
-            if (this.StoreID.IsNotEmpty() || this.Store.Primary != null)
-            {
-                if (this.IsDynamic)
-                {
-                    return;
-                }
-
-                Store store = this.Store.Primary ?? ControlUtils.FindControl<Store>(this, this.StoreID, true);
-
-                if (store == null)
-                {
-                    throw new InvalidOperationException("The Control '{0}' could not find the StoreID of '{1}'.".FormatWith(this.ID, this.StoreID));
-                }
-            }
-            else
-            {
-                this.TriggerAction = TriggerAction.All;
-                this.QueryMode = DataLoadMode.Local;
-            }
+            base.OnBeforeClientInitHandler();
 
             if (this.StoreID.IsNotEmpty() && this.Store.Primary != null)
             {
@@ -212,24 +87,14 @@ namespace Ext.Net
             }
         }
 
-        /// <summary>
-        /// True to submit value only
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("8. ComboBox")]
-        [DefaultValue(false)]
-        [Description("True to submit value only")]
-        public virtual bool SimpleSubmit
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public override void RegisterIcons()
         {
-            get
-            {
-                return this.State.Get<bool>("SimpleSubmit", false);
-            }
-            set
-            {
-                this.State.Set("SimpleSubmit", value);
-            }
+            base.RegisterIcons();
+           
         }
         
         /// <summary>
@@ -244,140 +109,217 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("AllQuery", "");
+                return (string)this.ViewState["AllQuery"] ?? "";
             }
             set
             {
-                this.State.Set("AllQuery", value);
+                this.ViewState["AllQuery"] = value;
             }
         }
 
         /// <summary>
-        /// true to automatically highlight the first result gathered by the data store in the dropdown list when it is opened. (Defaults to true). A false value would cause nothing in the list to be highlighted automatically, so the user would have to manually highlight an item before pressing the enter or tab key to select it (unless the value of (typeAhead) were true), or use the mouse to select a value.
+        /// true to clear any filters on the store (when in local mode) when reset is called (defaults to true)
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("8. ComboBox")]
         [DefaultValue(true)]
-        [Description("true to automatically highlight the first result gathered by the data store in the dropdown list when it is opened. (Defaults to true). A false value would cause nothing in the list to be highlighted automatically, so the user would have to manually highlight an item before pressing the enter or tab key to select it (unless the value of (typeAhead) were true), or use the mouse to select a value.")]
-        public virtual bool AutoSelect
+        [Description("true to clear any filters on the store (when in local mode) when reset is called (defaults to true)")]
+        public virtual bool ClearFilterOnReset
         {
             get
             {
-                return this.State.Get<bool>("AutoSelect", true);
+                object obj = this.ViewState["ClearFilterOnReset"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("AutoSelect", value);
+                this.ViewState["ClearFilterOnReset"] = value;
             }
         }
 
         /// <summary>
-        /// The character(s) used to separate the display values of multiple selected items when multiSelect = true. Defaults to ', '.
+        /// The underlying data field name to bind to this ComboBox (defaults to undefined if mode = 'remote' or 'text' if transforming a select).
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("8. ComboBox")]
-        [DefaultValue(", ")]
-        [Description("The character(s) used to separate the display values of multiple selected items when multiSelect = true. Defaults to ', '.")]
-        public virtual string Delimiter
-        {
-            get
-            {
-                return this.State.Get<string>("Delimiter", ", ");
-            }
-            set
-            {
-                this.State.Set("Delimiter", value);
-            }
-        }
-
-        /// <summary>
-        /// The underlying data field name to bind to this ComboBox (defaults to 'text').
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("8. ComboBox")]
-        [DefaultValue("text")]
-        [Description("The underlying data field name to bind to this ComboBox (defaults to 'text').")]
+        [DefaultValue("")]
+        [Description("The underlying data field name to bind to this ComboBox (defaults to undefined if mode = 'remote' or 'text' if transforming a select).")]
         public virtual string DisplayField 
         {
             get
             {
-                return this.State.Get<string>("DisplayField", "text");
+                return (string)this.ViewState["DisplayField"] ?? "text";
             }
             set
             {
-                this.State.Set("DisplayField", value);
+                this.ViewState["DisplayField"] = value;
             }
         }
 
         /// <summary>
-        /// true to restrict the selected value to one of the values in the list, false to allow the user to set arbitrary text into the field (defaults to false)
+        /// True to restrict the selected value to one of the values in the list, false to allow the user to set arbitrary text into the field (defaults to true).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(true)]
+        [Description("True to restrict the selected value to one of the values in the list, false to allow the user to set arbitrary text into the field (defaults to true).")]
+        public virtual bool ForceSelection
+        {
+            get
+            {
+                object obj = this.ViewState["ForceSelection"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["ForceSelection"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The height in pixels of the dropdown list resize handle if resizable = true (defaults to 8).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(typeof(Unit), "8")]
+        [Description("The height in pixels of the dropdown list resize handle if resizable = true (defaults to 8).")]
+        public virtual Unit HandleHeight
+        {
+            get
+            {
+                return this.UnitPixelTypeCheck(ViewState["HandleHeight"], Unit.Pixel(8), "HandleHeight");
+            }
+            set
+            {
+                this.ViewState["HandleHeight"] = value;
+            }
+        }
+
+        /// <summary>
+        /// If hiddenName is specified, hiddenId can also be provided to give the hidden field a unique id (defaults to the hiddenName). The hiddenId and combo id should be different, since no two DOM nodes should share the same id.
+        /// </summary>
+        [Meta]
+        [ConfigOption("hiddenId")]
+        [Category("8. ComboBox")]
+        [DefaultValue("")]
+        [Description("If hiddenName is specified, hiddenId can also be provided to give the hidden field a unique id (defaults to the hiddenName). The hiddenId and combo id should be different, since no two DOM nodes should share the same id.")]
+        public virtual string HiddenID
+        {
+            get
+            {
+                return (string)this.ViewState["HiddenID"] ?? "";
+            }
+            set
+            {
+                this.ViewState["HiddenID"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Sets the initial value of the hidden field if hiddenName is specified to contain the selected valueField, from the Store. Defaults to the configured value.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue("")]
+        [Description("Sets the initial value of the hidden field if hiddenName is specified to contain the selected valueField, from the Store. Defaults to the configured value.")]
+        public virtual string HiddenValue
+        {
+            get
+            {
+                return (string)this.ViewState["HiddenValue"] ?? "";
+            }
+            set
+            {
+                this.ViewState["HiddenValue"] = value;
+            }
+        }
+
+        /// <summary>
+        /// If specified, a hidden form field with this name is dynamically generated to store the field's data value (defaults to the underlying DOM element's name). Required for the combo's value to automatically post during a form submission.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue("")]
+        [Description("If specified, a hidden form field with this name is dynamically generated to store the field's data value (defaults to the underlying DOM element's name). Required for the combo's value to automatically post during a form submission.")]
+        public virtual string HiddenName
+        {
+            get
+            {
+                return (string)this.ViewState["HiddenName"] ?? this.UniqueName.ConcatWith("_Value");
+            }
+            set
+            {
+                this.ViewState["HiddenName"] = value;
+            }
+        }
+
+        /// <summary>
+        /// This setting is required if a custom XTemplate has been specified in tpl which assigns a class other than 'x-combo-list-item' to dropdown list items. A simple CSS selector (e.g. div.some-class or span:first-child) that will be used to determine what nodes the DataView which handles the dropdown display will be working with.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue("")]
+        [Description("This setting is required if a custom XTemplate has been specified in tpl which assigns a class other than 'x-combo-list-item' to dropdown list items. A simple CSS selector (e.g. div.some-class or span:first-child) that will be used to determine what nodes the DataView which handles the dropdown display will be working with.")]
+        public virtual string ItemSelector
+        {
+            get
+            {
+                return (string)this.ViewState["ItemSelector"] ?? "";
+            }
+            set
+            {
+                this.ViewState["ItemSelector"] = value;
+            }
+        }
+
+        /// <summary>
+        /// True to not initialize the list for this combo until the field is focused. (defaults to true).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(true)]
+        [Description("True to not initialize the list for this combo until the field is focused. (defaults to true).")]
+        public virtual bool LazyInit
+        {
+            get
+            {
+                object obj = this.ViewState["LazyInit"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["LazyInit"] = value;
+            }
+        }
+
+        /// <summary>
+        /// True to prevent the ComboBox from rendering until requested (should always be used when rendering into an Ext.Editor, defaults to false).
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("8. ComboBox")]
         [DefaultValue(false)]
-        [Description("true to restrict the selected value to one of the values in the list, false to allow the user to set arbitrary text into the field (defaults to false)")]
-        public virtual bool ForceSelection
+        [Description("True to prevent the ComboBox from rendering until requested (should always be used when rendering into an Ext.Editor, defaults to false).")]
+        public virtual bool LazyRender
         {
             get
             {
-                return this.State.Get<bool>("ForceSelection", false);
+                object obj = this.ViewState["LazyRender"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("ForceSelection", value);
+                this.ViewState["LazyRender"] = value;
             }
         }
-
-        private BoundList listConfig;
-
-        /// <summary>
-        /// An optional set of configuration properties that will be passed to the Ext.view.BoundList's constructor. Any configuration that is valid for BoundList can be included. Some of the more useful ones are:
-        /// 
-        /// Ext.view.BoundList.cls - defaults to empty
-        /// Ext.view.BoundList.emptyText - defaults to empty string
-        /// Ext.view.BoundList.itemSelector - defaults to the value defined in BoundList
-        /// Ext.view.BoundList.loadingText - defaults to 'Loading...'
-        /// Ext.view.BoundList.minWidth - defaults to 70
-        /// Ext.view.BoundList.maxWidth - defaults to undefined
-        /// Ext.view.BoundList.maxHeight - defaults to 300
-        /// Ext.view.BoundList.resizable - defaults to false
-        /// Ext.view.BoundList.shadow - defaults to 'sides'
-        /// Ext.view.BoundList.width - defaults to undefined (automatically set to the width of the ComboBox field if matchFieldWidth is true)
-        /// </summary>
-        [Meta]
-        [ConfigOption("listConfig", typeof(LazyControlJsonConverter))]
-        [Category("8. ComboBox")]
-        [DefaultValue(null)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("")]
-        public BoundList ListConfig
-        {
-            get
-            {
-                return this.listConfig;
-            }
-            set
-            {
-                if (this.listConfig != null)
-                {
-                    this.Controls.Remove(this.listConfig);
-                    this.LazyItems.Remove(this.listConfig);
-                }
-
-                this.listConfig = value;
-
-                if (this.listConfig != null)
-                {                    
-                    this.Controls.Add(this.listConfig);
-                    this.LazyItems.Add(this.listConfig);
-                }
-            }
-        }        
 
         /// <summary>
         /// True to fire select event after setValue on page load
@@ -391,213 +333,466 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("FireSelectOnLoad", false);
+                object obj = this.ViewState["FireSelectOnLoad"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("FireSelectOnLoad", value);
+                this.ViewState["FireSelectOnLoad"] = value;
             }
         }
 
         /// <summary>
-        /// The minimum number of characters the user must type before autocomplete and typeAhead activate (defaults to 4 if queryMode = 'remote' or 0 if queryMode = 'local', does not apply if editable = false).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("8. ComboBox")]
-        [DefaultValue(0)]
-        [Description("The minimum number of characters the user must type before autocomplete and typeAhead activate (defaults to 4 if queryMode = 'remote' or 0 if queryMode = 'local', does not apply if editable = false).")]
-        public virtual int MinChars
-        {
-            get
-            {
-                return this.State.Get<int>("MinChars", 0);
-            }
-            set
-            {
-                this.State.Set("MinChars", value);
-            }
-        }
-
-        /// <summary>
-        /// If set to true, allows the combo field to hold more than one value at a time, and allows selecting multiple items from the dropdown list. The combo's text field will show all selected values separated by the delimiter. (Defaults to false.)
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("8. ComboBox")]
-        [DefaultValue(false)]
-        [Description("If set to true, allows the combo field to hold more than one value at a time, and allows selecting multiple items from the dropdown list. The combo's text field will show all selected values separated by the delimiter. (Defaults to false.)")]
-        public virtual bool MultiSelect
-        {
-            get
-            {
-                return this.State.Get<bool>("MultiSelect", false);
-            }
-            set
-            {
-                this.State.Set("MultiSelect", value);
-            }
-        }
-
-        /// <summary>
-        /// If greater than 0, a Ext.toolbar.Paging is displayed in the footer of the dropdown list and the filter queries will execute with page start and limit parameters. Only applies when queryMode = 'remote' (defaults to 0).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("8. ComboBox")]
-        [DefaultValue(0)]
-        [Description("If greater than 0, a Ext.toolbar.Paging is displayed in the footer of the dropdown list and the filter queries will execute with page start and limit parameters. Only applies when queryMode = 'remote' (defaults to 0).")]
-        public virtual int PageSize
-        {
-            get
-            {
-                return this.State.Get<int>("PageSize", 0);
-            }
-            set
-            {
-                this.State.Set("PageSize", value);
-            }
-        }
-
-        /// <summary>
-        /// The length of time in milliseconds to delay between the start of typing and sending the query to filter the dropdown list (defaults to 500 if queryMode = 'remote' or 10 if queryMode = 'local')
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("8. ComboBox")]
-        [DefaultValue(-1)]
-        [Description("The length of time in milliseconds to delay between the start of typing and sending the query to filter the dropdown list (defaults to 500 if queryMode = 'remote' or 10 if queryMode = 'local')")]
-        public virtual int QueryDelay
-        {
-            get
-            {
-                return this.State.Get<int>("QueryDelay", -1);
-            }
-            set
-            {
-                this.State.Set("QueryDelay", value);
-            }
-        }
-
-        /// <summary>
-        /// Set to 'local' if the ComboBox loads local data (defaults to 'remote' which loads from the server).
-        /// The mode in which the ComboBox uses the configured Store. Acceptable values are:
-        /// 
-        /// 'remote' : Default
-        ///     In queryMode: 'remote', the ComboBox loads its Store dynamically based upon user interaction.
-        ///     This is typically used for "autocomplete" type inputs, and after the user finishes typing, the Store is loaded.
-        ///     A parameter containing the typed string is sent in the load request. The default parameter name for the input string is query, but this can be configured using the queryParam config.
-        ///     In queryMode: 'remote', the Store may be configured with remoteFilter: true, and further filters may be programatically added to the Store which are then passed with every load request which allows the server to further refine the returned dataset.
-        ///     Typically, in an autocomplete situation, hideTrigger is configured true because it has no meaning for autocomplete.
-        /// 'local' :
-        ///     ComboBox loads local data
-        /// 'single' :
-        ///     The mode is switched to 'local' after data loading
-        /// </summary>
-        [Meta]
-        [ConfigOption("queryMode", JsonMode.ToLower)]
-        [Category("8. ComboBox")]
-        [DefaultValue(DataLoadMode.Remote)]
-        [Description("Set to 'local' if the ComboBox loads local data (defaults to 'remote' which loads from the server).")]
-        public virtual DataLoadMode QueryMode
-        {
-            get
-            {
-                return this.State.Get<DataLoadMode>("QueryMode", DataLoadMode.Remote);
-            }
-            set
-            {
-                this.State.Set("QueryMode", value);
-            }
-        }
-
-        /// <summary>
-        /// Name of the parameter used by the Store to pass the typed string when the ComboBox is configured with queryMode: 'remote' (defaults to 'query'). If explicitly set to a falsy value it will not be sent.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("8. ComboBox")]
-        [DefaultValue("query")]
-        [Description("Name of the parameter used by the Store to pass the typed string when the ComboBox is configured with queryMode: 'remote' (defaults to 'query'). If explicitly set to a falsy value it will not be sent.")]
-        public virtual string QueryParam
-        {
-            get
-            {
-                return this.State.Get<string>("QueryParam", "query");
-            }
-            set
-            {
-                this.State.Set("QueryParam", value);
-            }
-        }
-
-        /// <summary>
-        /// Whether the Tab key should select the currently highlighted item. Defaults to true.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("8. ComboBox")]
-        [DefaultValue(true)]
-        [Description("Whether the Tab key should select the currently highlighted item. Defaults to true.")]
-        public virtual bool SelectOnTab
-        {
-            get
-            {
-                return this.State.Get<bool>("SelectOnTab", true);
-            }
-            set
-            {
-                this.State.Set("SelectOnTab", value);
-            }
-        }       
-
-        /// <summary>
-        /// The id, DOM node or Ext.Element of an existing HTML 'select' element to convert into a ComboBox. The target select's options will be used to build the options in the ComboBox dropdown; a configured store will take precedence over this.
+        /// A valid anchor position value. See Ext.Element.alignTo for details on supported anchor positions (defaults to 'tl-bl').
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("8. ComboBox")]
         [DefaultValue("")]
-        [Description("The id, DOM node or Ext.Element of an existing HTML <select> element to convert into a ComboBox. The target select's options will be used to build the options in the ComboBox dropdown; a configured store will take precedence over this.")]
-        public virtual string Transform
+        [Description("A valid anchor position value. See Ext.Element.alignTo for details on supported anchor positions (defaults to 'tl-bl').")]
+        public virtual string ListAlign
         {
             get
             {
-                return this.State.Get<string>("Transform", "");
+                return (string)this.ViewState["ListAlign"] ?? "";
             }
             set
             {
-                this.State.Set("Transform", value);
+                this.ViewState["ListAlign"] = value;
             }
         }
 
         /// <summary>
-        /// The action to execute when the trigger is clicked.
-        /// 'all' : Default
-        ///     run the query specified by the allQuery config option
-        /// 'query' :
-        ///     run the query using the raw value.
-        /// See also queryParam.
+        /// CSS class to apply to the dropdown list element (defaults to '').
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue("")]
+        [Description("CSS class to apply to the dropdown list element (defaults to '').")]
+        public virtual string ListClass
+        {
+            get
+            {
+                return (string)this.ViewState["ListClass"] ?? "";
+            }
+            set
+            {
+                this.ViewState["ListClass"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The width in pixels of the dropdown list (defaults to the width of the ComboBox field).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(typeof(Unit), "")]
+        [Description("The width in pixels of the dropdown list (defaults to the width of the ComboBox field).")]
+        public virtual Unit ListWidth
+        {
+            get
+            {
+                return this.UnitPixelTypeCheck(ViewState["ListWidth"], Unit.Empty, "ListWidth");
+            }
+            set
+            {
+                this.ViewState["ListWidth"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The text to display in the dropdown list while data is loading. Only applies when mode = 'remote' (defaults to 'Loading...').
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue("Loading...")]
+        [Localizable(true)]
+        [Description("The text to display in the dropdown list while data is loading. Only applies when mode = 'remote' (defaults to 'Loading...').")]
+        public virtual string LoadingText
+        {
+            get
+            {
+                return (string)this.ViewState["LoadingText"] ?? "Loading...";
+            }
+            set
+            {
+                this.ViewState["LoadingText"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The maximum height in pixels of the dropdown list before scrollbars are shown (defaults to 300).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(typeof(Unit), "300")]
+        [Description("The maximum height in pixels of the dropdown list before scrollbars are shown (defaults to 300).")]
+        public override Unit MaxHeight
+        {
+            get
+            {
+                return this.UnitPixelTypeCheck(this.ViewState["MaxHeight"], Unit.Pixel(300), "MaxHeight");
+            }
+            set
+            {
+                this.ViewState["MaxHeight"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The minimum height in pixels of the dropdown list when the list is constrained by its distance to the viewport edges (defaults to 90).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(typeof(Unit), "90")]
+        [Description("The minimum height in pixels of the dropdown list when the list is constrained by its distance to the viewport edges (defaults to 90).")]
+        public override Unit MinHeight
+        {
+            get
+            {
+                return this.UnitPixelTypeCheck(this.ViewState["MinHeight"], Unit.Pixel(90), "MinHeight");
+            }
+            set
+            {
+                this.ViewState["MinHeight"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The minimum number of characters the user must type before autocomplete and typeahead activate (defaults to 4 if remote or 0 if local, does not apply if editable = false).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(4)]
+        [Description("The minimum number of characters the user must type before autocomplete and typeahead activate (defaults to 4 if remote or 0 if local, does not apply if editable = false).")]
+        public virtual int MinChars
+        {
+            get
+            {
+                object obj = this.ViewState["MinChars"];
+                return (obj == null) ? 4 : (int)obj;
+            }
+            set
+            {
+                this.ViewState["MinChars"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The minimum width of the dropdown list in pixels (defaults to 70, will be ignored if listWidth has a higher value).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(typeof(Unit), "70")]
+        [Description("The minimum width of the dropdown list in pixels (defaults to 70, will be ignored if listWidth has a higher value).")]
+        public virtual Unit MinListWidth
+        {
+            get
+            {
+                return this.UnitPixelTypeCheck(ViewState["MinListWidth"], Unit.Pixel(70), "MinListWidth");
+            }
+            set
+            {
+                this.ViewState["MinListWidth"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Set to 'local' if the ComboBox loads local data (defaults to 'remote' which loads from the server).
+        /// </summary>
+        [Meta]
+        [ConfigOption(JsonMode.ToLower)]
+        [Category("8. ComboBox")]
+        [DefaultValue(DataLoadMode.Remote)]
+        [Description("Set to 'local' if the ComboBox loads local data (defaults to 'remote' which loads from the server).")]
+        public virtual DataLoadMode Mode
+        {
+            get
+            {
+                object obj = this.ViewState["Mode"];
+                return (obj == null) ? DataLoadMode.Remote : (DataLoadMode)obj;
+            }
+            set
+            {
+                this.ViewState["Mode"] = value;
+            }
+        }
+
+        /// <summary>
+        /// If greater than 0, a paging toolbar is displayed in the footer of the dropdown list and the filter queries will execute with page addToStart and limit parameters. Only applies when mode = 'remote' (defaults to 0).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(0)]
+        [Description("If greater than 0, a paging toolbar is displayed in the footer of the dropdown list and the filter queries will execute with page addToStart and limit parameters. Only applies when mode = 'remote' (defaults to 0).")]
+        public virtual int PageSize
+        {
+            get
+            {
+                object obj = this.ViewState["PageSize"];
+                return (obj == null) ? 0 : (int)obj;
+            }
+            set
+            {
+                this.ViewState["PageSize"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The length of time in milliseconds to delay between the addToStart of typing and sending the query to filter the dropdown list (defaults to 500 if mode = 'remote' or 10 if mode = 'local').
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(500)]
+        [Description("The length of time in milliseconds to delay between the addToStart of typing and sending the query to filter the dropdown list (defaults to 500 if mode = 'remote' or 10 if mode = 'local').")]
+        public virtual int QueryDelay
+        {
+            get
+            {
+                object obj = this.ViewState["QueryDelay"];
+                return (obj == null) ? (this.Mode == DataLoadMode.Local) ? 10 : 500 : (int)obj;
+            }
+            set
+            {
+                this.ViewState["QueryDelay"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Name of the query as it will be passed on the querystring (defaults to 'query').
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue("query")]
+        [Description("Name of the query as it will be passed on the querystring (defaults to 'query').")]
+        public virtual string QueryParam
+        {
+            get
+            {
+                return (string)this.ViewState["QueryParam"] ?? "query";
+            }
+            set
+            {
+                this.ViewState["QueryParam"] = value;
+            }
+        }
+
+        /// <summary>
+        /// True to add a resize handle to the bottom of the dropdown list (defaults to false)
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(false)]
+        [Description("True to add a resize handle to the bottom of the dropdown list (defaults to false)")]
+        public virtual bool Resizable
+        {
+            get
+            {
+                object obj = this.ViewState["Resizable"];
+                return (obj == null) ? false : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["Resizable"] = value;
+            }
+        }
+
+        /// <summary>
+        /// CSS class to apply to the selected items in the dropdown list (defaults to 'x-combo-selected').
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue("")]
+        [Description("CSS class to apply to the selected items in the dropdown list (defaults to 'x-combo-selected').")]
+        public virtual string SelectedClass
+        {
+            get
+            {
+                return (string)this.ViewState["SelectedClass"] ?? "";
+            }
+            set
+            {
+                this.ViewState["SelectedClass"] = value;
+            }
+        }
+
+        /// <summary>
+        /// 'Sides' for the default effect, 'Frame' for 4-way shadow, and 'Drop' for bottom-right.
+        /// </summary>
+        [Meta]
+        [ConfigOption(typeof(ShadowJsonConverter))]
+        [Category("8. ComboBox")]
+        [DefaultValue(ShadowMode.Sides)]
+        [Description("'Sides' for the default effect, 'Frame' for 4-way shadow, and 'Drop' for bottom-right.")]
+        public virtual ShadowMode Shadow
+        {
+            get
+            {
+                object obj = this.ViewState["Shadow"];
+                return (obj == null) ? ShadowMode.Sides : (ShadowMode)obj;
+            }
+            set
+            {
+                this.ViewState["Shadow"] = value;
+            }
+        }
+
+        /// <summary>
+        /// true for the default effect
+        /// </summary>
+        [Meta]
+        [ConfigOption("shadow")]
+        [Category("8. ComboBox")]
+        [DefaultValue(true)]
+        [Description("true for the default effect")]
+        public virtual bool EnableShadow
+        {
+            get
+            {
+                object obj = this.ViewState["EnableShadow"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["EnableShadow"] = value;
+            }
+        }
+
+        /// <summary>
+        /// True to automatically select any existing field text when the field receives input focus (defaults to false).
+        /// </summary>
+        [Meta]
+        [Category("8. ComboBox")]
+        [DefaultValue(false)]
+        [Description("True to automatically select any existing field text when the field receives input focus (defaults to false).")]
+        public override bool SelectOnFocus
+        {
+            get
+            {
+                object obj = this.ViewState["SelectOnFocus"];
+                return (obj == null) ? false : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["SelectOnFocus"] = value;
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+        [ConfigOption("selectOnFocus")]
+        [DefaultValue(false)]
+		[Description("")]
+        protected bool SelectOnFocusProxy
+        {
+            get
+            {
+                return (this.Editable) ? this.SelectOnFocus : false;
+            }
+        }
+
+        private XTemplate template;
+
+        /// <summary>
+        /// The template string to use to display each item in the dropdown list.
+        /// </summary>
+        [Meta]
+        [Category("8. ComboBox")]
+        [ConfigOption("tpl", typeof(LazyControlJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("The template string to use to display each item in the dropdown list.")]
+        public virtual XTemplate Template
+        {
+            get
+            {
+                if (this.template == null)
+                {
+                    this.template = new XTemplate();
+                    this.template.EnableViewState = false;
+                    this.Controls.Add(this.template);
+                    this.LazyItems.Add(this.template);                    
+                }
+
+                return this.template;
+            }
+        }
+
+        /// <summary>
+        /// The ID of an existing select to convert to a ComboBox.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue("")]
+        [Description("The ID of an existing select to convert to a ComboBox.")]
+        public virtual string Transform
+        {
+            get
+            {
+                return (string)this.ViewState["Transform"] ?? "";
+            }
+            set
+            {
+                this.ViewState["Transform"] = value;
+            }
+        }
+
+        /// <summary>
+        /// If supplied, a header element is created containing this text and added into the top of the dropdown list.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue("")]
+        [Description("If supplied, a header element is created containing this text and added into the top of the dropdown list.")]
+        public virtual string Title
+        {
+            get
+            {
+                return (string)this.ViewState["Title"] ?? "";
+            }
+            set
+            {
+                this.ViewState["Title"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The action to execute when the trigger field is activated. Use 'All' to run the query specified by the allQuery config option (defaults to 'Query').
         /// </summary>
         [Meta]
         [ConfigOption(JsonMode.ToLower)]
         [Category("8. ComboBox")]
         [DefaultValue(TriggerAction.Query)]
-        [Description("The action to execute when the trigger is clicked.")]
+        [Description("The action to execute when the trigger field is activated. Use 'All' to run the query specified by the allQuery config option (defaults to 'Query').")]
         public virtual TriggerAction TriggerAction
         {
             get
             {
-                return this.State.Get<TriggerAction>("TriggerAction", TriggerAction.All);
+                object obj = this.ViewState["TriggerAction"];
+                return (obj == null) ? TriggerAction.All : (TriggerAction)obj;
             }
             set
             {
-                this.State.Set("TriggerAction", value);
+                this.ViewState["TriggerAction"] = value;
             }
         }
 
         /// <summary>
-        /// true to populate and autoselect the remainder of the text being typed after a configurable delay (typeAheadDelay) if it matches a known value (defaults to false)
+        /// True to populate and autoselect the remainder of the text being typed after a configurable delay (typeAheadDelay) if it matches a known value (defaults to false).
         /// </summary>
         [Meta]
         [ConfigOption]
@@ -608,11 +803,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("TypeAhead", false);
+                object obj = this.ViewState["TypeAhead"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("TypeAhead", value);
+                this.ViewState["TypeAhead"] = value;
             }
         }
 
@@ -628,54 +824,53 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("TypeAheadDelay", 250);
+                object obj = this.ViewState["TypeAheadDelay"];
+                return (obj == null) ? 250 : (int)obj;
             }
             set
             {
-                this.State.Set("TypeAheadDelay", value);
+                this.ViewState["TypeAheadDelay"] = value;
             }
         }
 
         /// <summary>
-        /// @required The underlying data value name to bind to this ComboBox (defaults to match the value of the displayField config).
-        ///
-        /// Note: use of a valueField requires the user to make a selection in order for a value to be mapped. See also displayField.
+        /// The underlying data value name to bind to this ComboBox (defaults to undefined if mode = 'remote' or 'value' if transforming a select) Note: use of a valueField requires the user to make a selection in order for a value to be mapped.
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("8. ComboBox")]
         [DefaultValue("")]
-        [Description("The underlying data value name to bind to this ComboBox (defaults to match the value of the displayField config).")]
+        [Description("The underlying data value name to bind to this ComboBox (defaults to undefined if mode = 'remote' or 'value' if transforming a select) Note: use of a valueField requires the user to make a selection in order for a value to be mapped.")]
         public virtual string ValueField
         {
             get
             {
-                return this.State.Get<string>("ValueField", "");
+                return (string)this.ViewState["ValueField"] ?? "value";
             }
             set
             {
-                this.State.Set("ValueField", value);
+                this.ViewState["ValueField"] = value;
             }
         }
 
         /// <summary>
-        /// When using a name/value combo, if the value passed to setValue is not found in the store, valueNotFoundText will be displayed as the field text if defined (defaults to undefined). If this default text is used, it means there is no value set and no validation will occur on this field.
+        /// When using a name/value combo, if the value passed to setValue is not found in the store, valueNotFoundText will be displayed as the field text if defined (defaults to undefined).
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("8. ComboBox")]
         [DefaultValue("")]
         [Localizable(true)]
-        [Description("When using a name/value combo, if the value passed to setValue is not found in the store, valueNotFoundText will be displayed as the field text if defined (defaults to undefined). If this default text is used, it means there is no value set and no validation will occur on this field.")]
+        [Description("When using a name/value combo, if the value passed to setValue is not found in the store, valueNotFoundText will be displayed as the field text if defined (defaults to undefined).")]
         public virtual string ValueNotFoundText
         {
             get
             {
-                return this.State.Get<string>("ValueNotFoundText", "");
+                return (string)this.ViewState["ValueNotFoundText"] ?? "";
             }
             set
             {
-                this.State.Set("ValueNotFoundText", value);
+                this.ViewState["ValueNotFoundText"] = value;
             }
         }
 
@@ -683,7 +878,7 @@ namespace Ext.Net
         /// The data store to use.
         /// </summary>
         [Meta]
-        [ConfigOption("{raw}store", JsonMode.ToClientID)]
+        [ConfigOption("store", JsonMode.ToClientID)]
         [Category("8. ComboBox")]
         [DefaultValue("")]
         [IDReferenceProperty(typeof(Store))]
@@ -692,15 +887,15 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("StoreID", "");
+                return (string)this.ViewState["StoreID"] ?? "";
             }
             set
             {
-                this.State.Set("StoreID", value);
+                this.ViewState["StoreID"] = value;
             }
         }
 
-        private StoreCollection<Store> store;
+        private StoreCollection store;
 
         /// <summary>
         ///  The data store to use.
@@ -710,37 +905,53 @@ namespace Ext.Net
         [Category("7. ComboBox")]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [Description("The data store to use.")]
-        public virtual StoreCollection<Store> Store
+        public virtual StoreCollection Store
         {
             get
             {
                 if (this.store == null)
                 {
-                    this.store = new StoreCollection<Store>();
-                    this.store.AfterItemAdd += this.AfterItemAdd;
-                    this.store.AfterItemRemove += this.AfterItemRemove;
+                    this.store = new StoreCollection();
+                    this.store.AfterItemAdd += this.AfterStoreAdd;
+                    this.store.AfterItemRemove += this.AfterStoreRemove;
                 }
 
                 return this.store;
             }
         }
 
-        private ListItemCollection items;
+        private void AfterStoreRemove(Store item)
+        {
+            this.Controls.Remove(item);
+            this.LazyItems.Remove(item);
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected virtual void AfterStoreAdd(Store item)
+        {
+            this.Controls.AddAt(0, item);
+            this.LazyItems.Insert(0, item);
+        }
+
+        private ListItemCollection<T> items;
 
         /// <summary>
         /// 
         /// </summary>
-        [Meta]
         [PersistenceMode(PersistenceMode.InnerProperty)]
+        [ViewStateMember]
         [Category("8. ComboBox")]
         [Description("")]
-        public ListItemCollection Items
+        public ListItemCollection<T> Items
         {
             get
             {
                 if (items == null)
                 {
-                    items = new ListItemCollection();
+                    items = new ListItemCollection<T>();
                 }
 
                 return items;
@@ -776,11 +987,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("AlwaysMergeItems", true);
+                object obj = this.ViewState["AlwaysMergeItems"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("AlwaysMergeItems", value);
+                this.ViewState["AlwaysMergeItems"] = value;
             }
         }
 
@@ -822,38 +1034,299 @@ namespace Ext.Net
             }
         }
 
+        /// <summary>
+        /// Trigger AutoPostBack
+        /// </summary>
+        [Meta]
+        [Category("8. ComboBox")]
+        [DefaultValue(false)]
+        [Description("Trigger AutoPostBack")]
+        public virtual bool TriggerAutoPostBack
+        {
+            get
+            {
+                object obj = this.ViewState["TriggerAutoPostBack"];
+                return (obj == null) ? false : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["TriggerAutoPostBack"] = value;
+            }
+        }
+
+        private static readonly object EventTriggerClicked = new object();
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public delegate void TriggerClickedHandler(object sender, TriggerEventArgs e);
+
+		/// <summary>
+		/// 
+		/// </summary>
+        [Category("Action")]
+        [Description("Fires when a trigger has been clicked")]
+        public event TriggerClickedHandler TriggerClicked
+        {
+            add
+            {
+                Events.AddHandler(EventTriggerClicked, value);
+            }
+            remove
+            {
+                Events.RemoveHandler(EventTriggerClicked, value);
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected virtual void OnTriggerClicked(TriggerEventArgs e)
+        {
+            TriggerClickedHandler handler = (TriggerClickedHandler)Events[EventTriggerClicked];
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+        [ConfigOption("submitValue", JsonMode.Raw)]
+        [DefaultValue("")]
+		[Description("")]
+        public virtual string SubmitValueProxy
+        {
+            get 
+            { 
+                if(this.ViewState["SubmitValue"] != null)
+                {
+                    return JSON.Serialize(this.SubmitValue);
+                }
+
+                if (this.ViewState["HiddenName"] == null)
+                {
+                    return "true";
+                }
+
+                return "";
+            }
+        }
+
+        /*  Lifecycle
+            -----------------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        protected static readonly object EventValueChanged = new object();
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected static readonly object EventItemSelected = new object();
+
+        /// <summary>
+        /// Fires when the Item property has been changed
+        /// </summary>
+        [Category("Action")]
+        [Description("Fires when the Item property has been changed")]
+        public event EventHandler ValueChanged
+        {
+            add
+            {
+                this.Events.AddHandler(EventValueChanged, value);
+            }
+            remove
+            {
+                this.Events.RemoveHandler(EventValueChanged, value);
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+        [Category("Action")]
+        [Description("Fires when the Item property has been selected")]
+        public event EventHandler ItemSelected
+        {
+            add
+            {
+                this.Events.AddHandler(EventItemSelected, value);
+            }
+            remove
+            {
+                this.Events.RemoveHandler(EventItemSelected, value);
+            }
+        }
+
+        private bool onValueChangedRaised;
+        /// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected virtual void OnValueChanged(EventArgs e)
+        {
+            if(this.onValueChangedRaised)
+            {
+                return;
+            }
+
+            this.onValueChangedRaised = true;
+
+            EventHandler handler = (EventHandler)this.Events[EventValueChanged];
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected virtual void OnItemSelected(EventArgs e)
+        {
+            EventHandler handler = (EventHandler)this.Events[EventItemSelected];
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [DefaultValue(ComboAutoPostBackEvent.Select)]
+        [Category("8. ComboBox")]
+        [Description("")]
+        public ComboAutoPostBackEvent AutoPostBackEvent
+        {
+            get
+            {
+                object obj = this.ViewState["AutoPostBackEvent"];
+                return obj == null ? ComboAutoPostBackEvent.Select : (ComboAutoPostBackEvent)obj;
+            }
+            set
+            {
+                this.ViewState["AutoPostBackEvent"] = value;
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected void InitPostBack()
+        {
+            if (!this.ClientID.Equals(this.UniqueName))
+            {
+                this.CustomConfig.Add(new ConfigItem("uniqueName", this.UniqueName, ParameterMode.Value));
+            }
+
+            if (this.TriggerAutoPostBack)
+            {
+                this.PostBackArgument = "_index_";
+                string replace = "'".ConcatWith(this.PostBackArgument, "'");
+                this.On("triggerclick", new JFunction(this.PostBackFunction.Replace(replace, "index"), "el", "t", "index"));
+            }
+
+
+            if (this.AutoPostBack)
+            {
+                EventHandler handler = (EventHandler)Events[EventItemSelected];
+
+                if (handler != null)
+                {
+                    this.PostBackArgument = "select";
+
+                    this.On("select", new JFunction(this.PostBackFunction));
+                }
+                else
+                {
+                    HandlerConfig config = new HandlerConfig();
+                    config.Delay = 10;
+
+                    this.PostBackArgument = "change";
+                    this.On("blur", new JFunction(this.PostBackFunction), "this", config);
+                }
+            }
+        }
+
+        private JFunction getListParent;
+
+        /// <summary>
+        /// Returns the element used to house this ComboBox's pop-up list. Defaults to the document body.
+        /// A custom implementation may be provided as a configuration option if the floating list needs to be rendered to a different Element. 
+        /// An example might be rendering the list inside a Menu so that clicking the list does not hide the Menu:
+        /// 
+        /// <GetListParent Handler="return this.el.up('.x-menu');" />
+        /// </summary>
+        [ConfigOption(JsonMode.Raw)]
+        [Category("8. ComboBox")]
+        [DefaultValue(null)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [Description("Returns the element used to house this ComboBox's pop-up list. Defaults to the document body.")]
+        public virtual JFunction GetListParent
+        {
+            get
+            {
+                if (this.getListParent == null)
+                {
+                    this.getListParent = new JFunction();
+                }
+
+                return this.getListParent;
+            }
+        }
+
+
+
         /*  Public Methods
             -----------------------------------------------------------------------------------------------*/
 
         /// <summary>
-        /// Clears any value currently set in the ComboBox.
+        /// Clears any text/value currently set in the field
         /// </summary>
         [Meta]
+        [Description("Clears any text/value currently set in the field")]
         public virtual void ClearValue()
         {
+            RequestManager.EnsureDirectEvent(); 
             this.Call("clearValue");
         }
 
         /// <summary>
-        /// Executes a query to filter the dropdown list. Fires the beforequery event prior to performing the query allowing the query action to be canceled if needed.
+        /// Hides the dropdown list if it is currently expanded. Fires the collapse event on completion.
         /// </summary>
-        /// <param name="query">The SQL query to execute</param>
-        /// <param name="forceAll">true to force the query to execute even if there are currently fewer characters in the field than the minimum specified by the minChars config option. It also clears any filter previously saved in the current store (defaults to false)</param>
-        /// <param name="rawQuery">Pass as true if the raw typed value is being used as the query string. This causes the resulting store load to leave the raw value undisturbed.</param>
         [Meta]
-        public virtual void DoQuery(string query, bool forceAll, bool rawQuery)
+        [Description("Hides the dropdown list if it is currently expanded. Fires the collapse event on completion.")]
+        public virtual void Collapse()
         {
-            this.Call("doQuery", query, forceAll, rawQuery);
+            RequestManager.EnsureDirectEvent();
+            this.Call("collapse");
         }
 
         /// <summary>
-        /// Executes a query to filter the dropdown list. Fires the beforequery event prior to performing the query allowing the query action to be canceled if needed.
+        /// Execute a query to filter the dropdown list. Fires the beforequery event prior to performing the query allowing the query action to be canceled if needed.
         /// </summary>
         /// <param name="query">The SQL query to execute</param>
-        /// <param name="forceAll">true to force the query to execute even if there are currently fewer characters in the field than the minimum specified by the minChars config option. It also clears any filter previously saved in the current store (defaults to false)</param>
+        /// <param name="forceAll">true to force the query to execute even if there are currently fewer characters in the field than the minimum specified by the minChars config option. It also clears any filter previously saved in the current store </param>
         [Meta]
+        [Description("Execute a query to filter the dropdown list. Fires the beforequery event prior to performing the query allowing the query action to be canceled if needed.")]
         public virtual void DoQuery(string query, bool forceAll)
         {
+            RequestManager.EnsureDirectEvent();
             this.Call("doQuery", query, forceAll);
         }
 
@@ -862,29 +1335,72 @@ namespace Ext.Net
         /// </summary>
         /// <param name="query">The SQL query to execute</param>
         [Meta]
+        [Description("Execute a query to filter the dropdown list. Fires the beforequery event prior to performing the query allowing the query action to be canceled if needed.")]
         public virtual void DoQuery(string query)
         {
+            RequestManager.EnsureDirectEvent();
             this.Call("doQuery", query);
         }
 
         /// <summary>
-        /// Selects an item by a Model, or by a key value.
+        /// Expands the dropdown list if it is currently hidden. Fires the expand event on completion.
         /// </summary>
-        /// <param name="index">The zero-based index of the list item to select</param>
         [Meta]
-        public virtual void Select(int index)
+        [Description("Expands the dropdown list if it is currently hidden. Fires the expand event on completion.")]
+        public virtual void Expand()
         {
-            this.Call("select", new JRawValue("{0}.store.getAt({1})".FormatWith(this.ClientID, index)));
+            RequestManager.EnsureDirectEvent();
+            this.Call("expand");
         }
 
         /// <summary>
-        /// Selects an item by a Model, or by a key value.
+        /// Select an item in the dropdown list by its numeric index in the list. This function does NOT cause the select event to fire. The store must be loaded and the list expanded for this function to work, otherwise use setValue.
+        /// </summary>
+        /// <param name="index">The zero-based index of the list item to select</param>
+        /// <param name="scrollIntoView">False to prevent the dropdown list from autoscrolling to display the selected item if it is not currently in view</param>
+        [Meta]
+        [Description("Select an item in the dropdown list by its numeric index in the list. This function does NOT cause the select event to fire. The store must be loaded and the list expanded for this function to work, otherwise use setValue.")]
+        public virtual void Select(int index, bool scrollIntoView)
+        {
+            RequestManager.EnsureDirectEvent();
+            this.Call("select", index, scrollIntoView);
+        }
+
+        /// <summary>
+        /// Select an item in the dropdown list by its numeric index in the list. This function does NOT cause the select event to fire. The store must be loaded and the list expanded for this function to work, otherwise use setValue.
+        /// </summary>
+        /// <param name="index">The zero-based index of the list item to select</param>
+        [Meta]
+        [Description("Select an item in the dropdown list by its numeric index in the list. This function does NOT cause the select event to fire. The store must be loaded and the list expanded for this function to work, otherwise use setValue.")]
+        public virtual void Select(int index)
+        {
+            RequestManager.EnsureDirectEvent();
+            this.Call("select", index);
+        }
+
+        /// <summary>
+        /// Select an item in the dropdown list by its data value. This function does NOT cause the select event to fire. The store must be loaded and the list expanded for this function to work, otherwise use setValue.
+        /// </summary>
+        /// <param name="value">The data value of the item to select</param>
+        /// <param name="scrollIntoView">False to prevent the dropdown list from autoscrolling to display the selected item if it is not currently in view</param>
+        [Meta]
+        [Description("Select an item in the dropdown list by its data value. This function does NOT cause the select event to fire. The store must be loaded and the list expanded for this function to work, otherwise use setValue.")]
+        public virtual void SelectByValue(string value, bool scrollIntoView)
+        {
+            RequestManager.EnsureDirectEvent();
+            this.Call("selectByValue", value, scrollIntoView);
+        }
+
+        /// <summary>
+        /// Select an item in the dropdown list by its data value. This function does NOT cause the select event to fire. The store must be loaded and the list expanded for this function to work, otherwise use setValue.
         /// </summary>
         /// <param name="value">The data value of the item to select</param>
         [Meta]
-        public virtual void Select(object value)
+        [Description("Select an item in the dropdown list by its data value. This function does NOT cause the select event to fire. The store must be loaded and the list expanded for this function to work, otherwise use setValue.")]
+        public virtual void SelectByValue(string value)
         {
-            this.Call("select", value);
+            RequestManager.EnsureDirectEvent();
+            this.Call("selectByValue", value);
         }
 
         /// <summary>
@@ -1011,18 +1527,23 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// 
+        /// Sets a data value into the field and validates it. To set the value directly without validation see setRawValue.
         /// </summary>
+        /// <param name="value"></param>
         [Meta]
-        public virtual void UpdateSelectedItems()
+        [Description("Sets a data value into the field and validates it. To set the value directly without validation see setRawValue.")]
+        public virtual void SetInitValue(object value)
         {
-            this.Call("setSelectedItems", JRawValue.From(this.SelectedItems.Serialize()));
+            List<JsonConverter> converters = new List<JsonConverter>();
+            converters.Add(new CtorDateTimeJsonConverter());
+
+            this.Call("setInitValue", new JRawValue(JSON.Serialize(value, converters)));
+            this.ClearInvalid();
         }
-        
 
         #region IStore Members
 
-        SimpleStore generatedStore;
+        SimpleStore<T> generatedStore;
         /// <summary>
         /// 
         /// </summary>
@@ -1041,7 +1562,7 @@ namespace Ext.Net
 
             if (this.generatedStore == null)
             {
-                this.generatedStore = new SimpleStore(this, this.Items);
+                this.generatedStore = new SimpleStore<T>(this, this.Items);
                 this.generatedStore.EnableViewState = false;
                 this.Controls.Add(this.generatedStore);
             }

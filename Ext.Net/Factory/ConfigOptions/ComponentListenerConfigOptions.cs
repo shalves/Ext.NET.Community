@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class ComponentListener
     {
         /// <summary>
@@ -57,8 +54,6 @@ namespace Ext.Net
                 
                 list.Add("autoPostBack", new ConfigOption("autoPostBack", null, false, this.AutoPostBack ));
                 list.Add("fnInternal", new ConfigOption("fnInternal", new SerializationOptions("fn", JsonMode.Raw), "", this.FnInternal ));
-                list.Add("broadcastOnBus", new ConfigOption("broadcastOnBus", null, "", this.BroadcastOnBus ));
-                list.Add("argumentsListProxy", new ConfigOption("argumentsListProxy", new SerializationOptions("argumentsList", JsonMode.AlwaysArray), null, this.ArgumentsListProxy ));
 
                 return list;
             }

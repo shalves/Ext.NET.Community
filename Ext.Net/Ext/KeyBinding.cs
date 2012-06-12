@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -35,7 +35,7 @@ namespace Ext.Net
     /// </summary>
     [Meta]
     [Description("")]
-    public partial class KeyBinding : BaseItem
+    public partial class KeyBinding : StateManagedItem
     {
         /// <summary>
         /// 
@@ -56,11 +56,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool?>("Shift", null);
+                object obj = this.ViewState["Shift"];
+                return (obj == null) ? null : (bool?)obj;
             }
             set
             {
-                this.State.Set("Shift", value);
+                this.ViewState["Shift"] = value;
             }
         }
 
@@ -77,11 +78,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool?>("Ctrl", null);
+                object obj = this.ViewState["Ctrl"];
+                return (obj == null) ? null : (bool?)obj;
             }
             set
             {
-                this.State.Set("Ctrl", value);
+                this.ViewState["Ctrl"] = value;
             }
         }
 
@@ -98,11 +100,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool?>("Alt", null);
+                object obj = this.ViewState["Alt"];
+                return (obj == null) ? null : (bool?)obj;
             }
             set
             {
-                this.State.Set("Alt", value);
+                this.ViewState["Alt"] = value;
             }
         }
 
@@ -119,11 +122,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("StopEvent", false);
+                object obj = this.ViewState["StopEvent"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("StopEvent", value);
+                this.ViewState["StopEvent"] = value;
             }
         }
 
@@ -140,11 +144,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Scope", "");
+                object obj = this.ViewState["Scope"];
+                return (obj == null) ? "" : (string)obj;
             }
             set
             {
-                this.State.Set("Scope", value);
+                this.ViewState["Scope"] = value;
             }
         }
 
@@ -157,7 +162,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public KeyListeners Listeners
         {
@@ -259,13 +265,13 @@ namespace Ext.Net
     /// 
     /// </summary>
     [Description("")]
-    public partial class KeyBindingCollection : BaseItemCollection<KeyBinding> { }
+    public partial class KeyBindingCollection : StateManagedCollection<KeyBinding> { }
 
     /// <summary>
     /// 
     /// </summary>
     [Description("")]
-    public partial class Key : BaseItem
+    public partial class Key : StateManagedItem
     {
         /// <summary>
         /// Key code
@@ -278,11 +284,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<KeyCode>("Code", KeyCode.None);
+                object obj = this.ViewState["Code"];
+                return (obj == null) ? KeyCode.None : (KeyCode)obj;
             }
             set
             {
-                this.State.Set("Code", value);
+                this.ViewState["Code"] = value;
             }
         }
     }
@@ -291,13 +298,13 @@ namespace Ext.Net
     /// 
     /// </summary>
     [Description("")]
-    public partial class KeyCollection : BaseItemCollection<Key> { }
+    public partial class KeyCollection : StateManagedCollection<Key> { }
 
     /// <summary>
     /// 
     /// </summary>
     [Description("")]
-    public partial class KeyListeners : BaseItem
+    public partial class KeyListeners : StateManagedItem
     {
         private SimpleListener _event;
 

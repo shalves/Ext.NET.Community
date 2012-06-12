@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -37,90 +37,131 @@ namespace Ext.Net
     /// </summary>
     [Meta]
     [Description("")]
-    public abstract partial class FormPanelBase : AbstractPanel
+    public abstract partial class FormPanelBase : PanelBase
     {
         /// <summary>
-        /// Interval in milliseconds at which the form's fields are checked for value changes. Only used if the pollForChanges option is set to true. Defaults to 500 milliseconds.
+        /// (optional) The id of the FORM tag (defaults to an auto-generated id).
         /// </summary>
         [Meta]
-        [ConfigOption]
+        [ConfigOption("formId")]
         [Category("6. FormPanel")]
-        [DefaultValue(500)]
+        [DefaultValue("")]
         [NotifyParentProperty(true)]
-        [Description("Interval in milliseconds at which the form's fields are checked for value changes. Only used if the pollForChanges option is set to true. Defaults to 500 milliseconds.")]
-        public virtual int PollInterval
+        [Description("(optional) The id of the FORM tag (defaults to an auto-generated id).")]
+        public virtual string FormID
         {
             get
             {
-                return this.State.Get<int>("PollInterval", 500);
+                return (string)this.ViewState["FormID"] ?? "";
             }
             set
             {
-                this.State.Set("PollInterval", value);
+                this.ViewState["FormID"] = value;
             }
         }
 
         /// <summary>
-        /// If set to true, sets up an interval task (using the pollInterval) in which the panel's fields are repeatedly checked for changes in their values. This is in addition to the normal detection each field does on its own input element, and is not needed in most cases. It does, however, provide a means to absolutely guarantee detection of all changes including some edge cases in some browsers which do not fire native events. Defaults to false.
+        /// A css class to apply to the x-form-item of fields. This property cascades to child containers.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. FormPanel")]
+        [DefaultValue("")]
+        [NotifyParentProperty(true)]
+        [Description("A css class to apply to the x-form-item of fields. This property cascades to child containers.")]
+        public override string ItemCls
+        {
+            get
+            {
+                return (string)this.ViewState["ItemCls"] ?? "";
+            }
+            set
+            {
+                this.ViewState["ItemCls"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The milliseconds to poll valid state, ignored if monitorValid is not true (defaults to 200)
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. FormPanel")]
+        [DefaultValue(200)]
+        [NotifyParentProperty(true)]
+        [Description("The milliseconds to poll valid state, ignored if monitorValid is not true (defaults to 200)")]
+        public virtual int MonitorPoll
+        {
+            get
+            {
+                object obj = this.ViewState["MonitorPoll"];
+                return (obj == null) ? 200 : (int)obj;
+            }
+            set
+            {
+                this.ViewState["MonitorPoll"] = value;
+            }
+        }
+
+        /// <summary>
+        /// If true the form monitors its valid state client-side and fires a looping event with that state. This is required to bind buttons to the valid state using the config value formBind:true on the button.
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("6. FormPanel")]
         [DefaultValue(false)]
         [NotifyParentProperty(true)]
-        [Description("If set to true, sets up an interval task (using the pollInterval) in which the panel's fields are repeatedly checked for changes in their values. This is in addition to the normal detection each field does on its own input element, and is not needed in most cases. It does, however, provide a means to absolutely guarantee detection of all changes including some edge cases in some browsers which do not fire native events. Defaults to false.")]
-        public virtual bool PollForChanges
+        [Description("If true the form monitors its valid state client-side and fires a looping event with that state. This is required to bind buttons to the valid state using the config value formBind:true on the button.")]
+        public virtual bool MonitorValid
         {
             get
             {
-                return this.State.Get<bool>("PollForChanges", false);
+                object obj = this.ViewState["MonitorValid"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("PollForChanges", value);
-            }
-        }
-
-        /// <summary>
-        /// The Ext.container.Container.layout for the form panel's immediate child items. Defaults to 'anchor'.
-        /// </summary>
-        [Category("5. Container")]
-        [DefaultValue("anchor")]
-        [TypeConverter(typeof(LayoutConverter))]
-        [Description("The Ext.container.Container.layout for the form panel's immediate child items. Defaults to 'anchor'.")]
-        public override string Layout
-        {
-            get
-            {
-                return this.State.Get<string>("Layout", "anchor");
-            }
-            set
-            {
-                this.State.Set("Layout", value);
+                this.ViewState["MonitorValid"] = value;
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        protected override string DefaultLayout
+        [Meta]
+        [ConfigOption("renderFormElement")]
+        [DefaultValue(true)]
+        [NotifyParentProperty(true)]
+        [Description("")]
+        public virtual bool RenderFormElement
         {
             get
             {
-                return "anchor";
+                object obj = this.ViewState["RenderFormElement"];
+
+                if (obj == null)
+                {
+                    obj = !this.IsInForm;
+                }
+
+                return (bool)obj;
+            }
+            set
+            {
+                this.ViewState["RenderFormElement"] = value;
             }
         }
 
-        #region /*---- BasicForm properties -------*/
+        /*---- BasicForm properties -------*/
 
         private ParameterCollection baseParams;
 
         /// <summary>
         /// Parameters to pass with all requests. e.g. baseParams: {id: '123', foo: 'bar'}.
-        /// Parameters are encoded as standard HTTP parameters using Ext.Object.toQueryString.
         /// </summary>
         [Meta]
-        [Category("6. FormPanel")]        
+        [Category("6. FormPanel")]
+        [ViewStateMember]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [Description("Parameters to pass with all requests. e.g. baseParams: {id: '123', foo: 'bar'}.")]
@@ -141,16 +182,15 @@ namespace Ext.Net
         private ReaderCollection errorReader;
 
         /// <summary>
-        /// An Ext.data.DataReader (e.g. Ext.data.reader.Xml) to be used to read field error messages returned from 'submit' actions. This is optional as there is built-in support for processing JSON responses.
-        /// The Records which provide messages for the invalid Fields must use the Field name (or id) as the Record ID, and must contain a field called 'msg' which contains the error message.
-        /// The errorReader does not have to be a full-blown implementation of a Reader. It simply needs to implement a read(xhr) function which returns an Array of Records in an object with the following structure:
+        /// An Ext.data.DataReader (e.g. Ext.data.XmlReader) to be used to read data when reading validation errors on "submit" actions. This is completely optional as there is built-in support for processing JSON.
         /// </summary>
         [Meta]
         [ConfigOption("reader>Reader")]
-        [Category("6. FormPanel")]        
+        [Category("6. FormPanel")]
+        [ViewStateMember]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [Description("An Ext.data.DataReader (e.g. Ext.data.reader.Xml) to be used to read field error messages returned from 'submit' actions. This is optional as there is built-in support for processing JSON responses.")]
+        [Description("An Ext.data.DataReader (e.g. Ext.data.XmlReader) to be used to read data when reading validation errors on \"submit\" actions. This is completely optional as there is built-in support for processing JSON.")]
         public virtual ReaderCollection ErrorReader
         {
             get
@@ -165,36 +205,77 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// The request method to use (GET or POST) for form actions if one isn't supplied in the action options.
+        /// Set to true if this form is a file upload.
         /// </summary>
         [Meta]
-        [ConfigOption("method")]
+        [ConfigOption]
+        [DefaultValue(false)]
+        [NotifyParentProperty(true)]
+        [Description("Set to true if this form is a file upload.")]
+        public virtual bool FileUpload
+        {
+            get
+            {
+                object obj = this.ViewState["FileUpload"];
+                return obj != null ? (bool)obj : false;
+            }
+            set
+            {
+                this.ViewState["FileUpload"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The HTTP method to use. Defaults to POST if params are present, or GET if not.
+        /// </summary>
+        [Meta]
         [DefaultValue(HttpMethod.Default)]
         [NotifyParentProperty(true)]
-        [Description("The request method to use (GET or POST) for form actions if one isn't supplied in the action options.")]
+        [Description("The HTTP method to use. Defaults to POST if params are present, or GET if not.")]
         public virtual HttpMethod Method
         {
             get
             {
-                return this.State.Get<HttpMethod>("Method", HttpMethod.Default);
+                object obj = this.ViewState["Method"];
+                return (obj == null) ? HttpMethod.Default : (HttpMethod)obj;
             }
             set
             {
-                this.State.Set("Method", value);
+                this.ViewState["Method"] = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigOption("method")]
+        [DefaultValue(HttpMethod.Default)]
+        [Description("")]
+        protected virtual HttpMethod MethodProxy
+        {
+            get
+            {
+                if (this.Method == HttpMethod.Default && this.RenderFormElement)
+                {
+                    return HttpMethod.POST;
+                }
+                  
+                return this.Method;
             }
         }
 
         private ReaderCollection reader;
 
         /// <summary>
-        /// An Ext.data.DataReader (e.g. Ext.data.reader.Xml) to be used to read data when executing 'load' actions. This is optional as there is built-in support for processing JSON responses.
+        /// An Ext.data.DataReader (e.g. Ext.data.XmlReader) to be used to read data when executing "load" actions. This is optional as there is built-in support for processing JSON.
         /// </summary>
         [Meta]
         [ConfigOption("reader>Reader")]
-        [Category("6. FormPanel")]        
+        [Category("6. FormPanel")]
+        [ViewStateMember]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [Description("An Ext.data.DataReader (e.g. Ext.data.reader.Xml) to be used to read data when executing 'load' actions. This is optional as there is built-in support for processing JSON responses.")]
+        [Description("An Ext.data.DataReader (e.g. Ext.data.XmlReader) to be used to read data when executing \"load\" actions. This is optional as there is built-in support for processing JSON.")]
         public virtual ReaderCollection Reader
         {
             get
@@ -209,23 +290,24 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// If set to true, a standard HTML form submit is used instead of a XHR (Ajax) style form submission. All of the field values, plus any additional params configured via baseParams and/or the options to submit, will be included in the values submitted in the form.
+        /// If set to true, standard HTML form submits are used instead of XHR (Ajax) style form submissions. (defaults to false).
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("6. FormPanel")]
         [DefaultValue(false)]
         [NotifyParentProperty(true)]
-        [Description("If set to true, a standard HTML form submit is used instead of a XHR (Ajax) style form submission. All of the field values, plus any additional params configured via baseParams and/or the options to submit, will be included in the values submitted in the form.")]
+        [Description("If set to true, standard HTML form submits are used instead of XHR (Ajax) style form submissions. (defaults to false).")]
         public virtual bool StandardSubmit
         {
             get
             {
-                return this.State.Get<bool>("StandardSubmit", false);
+                object obj = this.ViewState["StandardSubmit"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("StandardSubmit", value);
+                this.ViewState["StandardSubmit"] = value;
             }
         }
 
@@ -241,52 +323,54 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("Timeout", 30);
+                object obj = this.ViewState["Timeout"];
+                return obj == null ? 30 : (int)this.ViewState["Timeout"];
             }
             set
             {
-                this.State.Set("Timeout", value);
+                this.ViewState["Timeout"] = value;
             }
         }
 
         /// <summary>
-        /// If set to true, reset() resets to the last loaded or setValues() data instead of when the form was first created.
+        /// If set to true, form.reset() resets to the last loaded or setValues() data instead of when the form was first created.
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("6. FormPanel")]
         [DefaultValue(false)]
         [NotifyParentProperty(true)]
-        [Description("If set to true, reset() resets to the last loaded or setValues() data instead of when the form was first created.")]
+        [Description("If set to true, form.reset() resets to the last loaded or setValues() data instead of when the form was first created.")]
         public virtual bool TrackResetOnLoad
         {
             get
             {
-                return this.State.Get<bool>("TrackResetOnLoad", false);
+                object obj = this.ViewState["TrackResetOnLoad"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("TrackResetOnLoad", value);
+                this.ViewState["TrackResetOnLoad"] = value;
             }
         }
 
         /// <summary>
-        /// The URL to use for form actions if one isn't supplied in the doAction options.
+        /// The URL to use for form actions if one isn't supplied in the action options.
         /// </summary>
         [Meta]
         [Category("6. FormPanel")]
         [DefaultValue("")]
         [NotifyParentProperty(true)]
-        [Description("The URL to use for form actions if one isn't supplied in the doAction options.")]
+        [Description("The URL to use for form actions if one isn't supplied in the action options.")]
         public virtual string Url
         {
             get
             {
-                return this.State.Get<string>("Url", "");
+                return (string)this.ViewState["Url"] ?? "";
             }
             set
             {
-                this.State.Set("Url", value);
+                this.ViewState["Url"] = value;
             }
         }
 
@@ -315,74 +399,84 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// By default wait messages are displayed with Ext.MessageBox.wait. You can target a specific element by passing it or its id or mask the form itself by passing in true.
+        /// A CSS style specification string to add to each field element in this layout (defaults to '').
         /// </summary>
         [Meta]
-        [ConfigOption]
-        [Category("6. FormPanel")]
-        [DefaultValue("")]
         [NotifyParentProperty(true)]
-        [Description("By default wait messages are displayed with Ext.MessageBox.wait. You can target a specific element by passing it or its id or mask the form itself by passing in true.")]
-        public virtual string WaitMsgTarget
+        [DefaultValue("")]
+        [Description("A CSS style specification string to add to each field element in this layout (defaults to '').")]
+        public virtual string ElementStyle
         {
             get
             {
-                return this.State.Get<string>("WaitMsgTarget", "");
+                return (string)this.ViewState["ElementStyle"] ?? "";
             }
             set
             {
-                this.State.Set("WaitMsgTarget", value);
+                this.ViewState["ElementStyle"] = value;
             }
         }
 
         /// <summary>
-        /// The default title to show for the waiting message box
+        /// True to show/hide the field label when the field is hidden. Defaults to true. 
         /// </summary>
-        [Meta]
         [ConfigOption]
-        [Category("6. FormPanel")]
-        [DefaultValue("")]
-        [NotifyParentProperty(true)]
-        [Description("The default title to show for the waiting message box")]
-        public virtual string WaitTitle
+        [DefaultValue(true)]
+        [Description("True to show/hide the field label when the field is hidden. Defaults to true.")]
+        public virtual bool TrackLabels
         {
             get
             {
-                return this.State.Get<string>("WaitTitle", "");
+                object obj = this.ViewState["TrackLabels"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("WaitTitle", value);
+                this.ViewState["TrackLabels"] = value;
             }
         }
 
-        #endregion
-
-        private Labelable fieldDefaults;
-
         /// <summary>
-        /// If specified, the properties in this object are used as default config values for each Ext.form.Labelable instance (e.g. Ext.form.field.Base or Ext.form.FieldContainer) that is added as a descendant of this container. Corresponding values specified in an individual field's own configuration, or from the defaults config of its parent container, will take precedence. See the documentation for Ext.form.Labelable to see what config options may be specified in the fieldDefaults.
+        /// 
         /// </summary>
-        [Meta]
         [ConfigOption(JsonMode.Object)]
-        [Category("6. FormPanel")]
-        [NotifyParentProperty(true)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [Description("If specified, the properties in this object are used as default config values for each Ext.form.Labelable instance (e.g. Ext.form.field.Base or Ext.form.FieldContainer) that is added as a descendant of this container. Corresponding values specified in an individual field's own configuration, or from the defaults config of its parent container, will take precedence. See the documentation for Ext.form.Labelable to see what config options may be specified in the fieldDefaults.")]
-        public virtual Labelable FieldDefaults
+        [Browsable(false)]
+        [DefaultValue(null)]
+        [Description("")]
+        protected internal FormLayoutConfig LayoutConfigProxy
         {
             get
             {
-                if (this.fieldDefaults == null)
+                if (this.LayoutConfig.Count > 0)
                 {
-                    this.fieldDefaults = new Labelable(this);
+                    return null;
                 }
 
-                return this.fieldDefaults;
+                return new FormLayoutConfig(this.TrackLabels, this.ElementStyle, this.LabelSeparator, this.LabelStyle, false, "");
             }
         }
 
         /// <summary>
+        /// The layout type to be used in this container.
+        /// </summary>
+        [Meta]
+        [Category("5. Container")]
+        [DefaultValue("form")]
+        [TypeConverter(typeof(LayoutConverter))]
+        [Description("The layout type to be used in this container.")]
+        public override string Layout
+        {
+            get
+            {
+                return (string)this.ViewState["Layout"] ?? "form";
+            }
+            set
+            {
+                this.ViewState["Layout"] = value;
+            }
+        }
+
+		/// <summary>
 		/// 
 		/// </summary>
 		[Description("")]
@@ -392,28 +486,61 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// Forces each field within the form panel to check if its value has changed.
+        /// Starts monitoring of the valid state of this form. Usually this is done by passing the config option "monitorValid"
         /// </summary>
-        public void CheckChange()
+        public void StartMonitoring()
         {
-            this.Call("checkChange");
+            this.Call("startMonitoring");
         }
 
         /// <summary>
-        /// Start an interval task to continuously poll all the fields in the form for changes in their values. This is normally started automatically by setting the pollForChanges config.
+        /// Stops monitoring of the valid state of this form
         /// </summary>
-        /// <param name="interval">The interval in milliseconds at which the check should run.</param>
-        public void StartPolling(int interval)
+        public void StopMonitoring()
         {
-            this.Call("startPolling", interval);
+            this.Call("stopMonitoring");
+        }
+
+
+        /// <summary>
+        /// Clears all invalid messages in this form.
+        /// </summary>
+        [Meta]
+        [Description("Clears all invalid messages in this form.")]
+        public virtual void ClearInvalid()
+        {
+            this.CallForm("clearInvalid");
         }
 
         /// <summary>
-        /// Stop a running interval task that was started by startPolling.
+        /// Mark fields in this form invalid in bulk.
         /// </summary>
-        public void StopPolling()
+        /// <param name="errors">An object hash of {id: msg, id2: msg2}</param>
+        [Meta]
+        [Description("Mark fields in this form invalid in bulk.")]
+        public virtual void MarkInvalid(object errors)
         {
-            this.Call("stopPolling");
+            this.CallForm("markInvalid", errors);
+        }
+
+        /// <summary>
+        /// Resets this form.
+        /// </summary>
+        [Meta]
+        [Description("Resets this form.")]
+        public virtual void Reset()
+        {
+            this.CallForm("reset");
+        }
+
+        /// <summary>
+        /// Set values for fields in this form in bulk.
+        /// </summary>
+        [Meta]
+        [Description("Set values for fields in this form in bulk.")]
+        public virtual void SetValues(object values)
+        {
+            this.CallForm("setValues", values);
         }
 
         /// <summary>
@@ -437,87 +564,13 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// Check whether the dirty state of the entire form has changed since it was last checked, and if so fire the dirtychange event. This is automatically invoked when an individual field's dirty state changes.
-        /// </summary>
-        public virtual void CheckDirty()
-        {
-            this.CallForm("checkDirty");
-        }
-
-        /// <summary>
-        /// Check whether the validity of the entire form has changed since it was last checked, and if so fire the validitychange event. This is automatically invoked when an individual field's validity changes.
-        /// </summary>
-        public virtual void CheckValidity()
-        {
-            this.CallForm("checkValidity");
-        }
-
-        /// <summary>
-        /// Clears all invalid field messages in this form.
+        /// Calls required method for all fields in this form with the passed args.
         /// </summary>
         [Meta]
-        [Description("Clears all invalid field messages in this form.")]
-        public virtual void ClearInvalid()
+        [Description("Calls required method for all fields in this form with the passed args.")]
+        protected virtual void CallFieldMethod(string fnName, object[] args)
         {
-            this.CallForm("clearInvalid");
-        }
-
-        /// <summary>
-        /// Mark fields in this form invalid in bulk.
-        /// </summary>
-        /// <param name="errors">Either an array in the form [{id:'fieldId', msg:'The message'}, ...], an object hash of {id: msg, id2: msg2}, or a Ext.data.Errors object.</param>
-        [Meta]
-        [Description("Mark fields in this form invalid in bulk.")]
-        public virtual void MarkInvalid(object errors)
-        {
-            this.CallForm("markInvalid", errors);
-        }
-
-        /// <summary>
-        /// Resets all fields in this form.
-        /// </summary>
-        [Meta]
-        [Description("Resets this form.")]
-        public virtual void Reset()
-        {
-            this.CallForm("reset");
-        }
-
-        /// <summary>
-        /// Set values for fields in this form in bulk.
-        /// </summary>
-        /// <param name="values">Either an array in the form: [{id:'clientName', value:'Fred. Olsen Lines'}, {id:'portOfLoading', value:'FXT'}] or an object hash of the form: {clientName: 'Fred. Olsen Lines', portOfLoading: 'FXT'}</param>
-        [Meta]
-        [Description("Set values for fields in this form in bulk.")]
-        public virtual void SetValues(object values)
-        {
-            this.CallForm("setValues", values);
-        }
-
-        /// <summary>
-        /// Persists the values in this form into the passed Ext.data.Model object in a beginEdit/endEdit block.
-        /// </summary>
-        public virtual void UpdateRecord()
-        {
-            this.CallForm("updateRecord");
-        }
-
-        /// <summary>
-        /// Persists the values in this form into the passed Ext.data.Model object in a beginEdit/endEdit block.
-        /// </summary>
-        /// <param name="model">The record to edit</param>
-        public virtual void UpdateRecord(ModelProxy model)
-        {
-            this.CallForm("updateRecord", new JRawValue(model.ModelInstance));
-        }
-
-        /// <summary>
-        /// Loads an Ext.data.Model into this form by calling setValues with the record data. See also trackResetOnLoad.
-        /// </summary>
-        /// <param name="model">The record to load</param>
-        public virtual void LoadRecord(ModelProxy model)
-        {
-            this.CallForm("loadRecord", new JRawValue(model.ModelInstance));
+            this.CallForm("callFieldMethod", fnName, args);
         }
     }
 }

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -35,19 +35,10 @@ namespace Ext.Net
 	[Description("")]
     public partial class TextFieldDirectEvents : FieldDirectEvents
     {
-        public TextFieldDirectEvents() { }
-
-        public TextFieldDirectEvents(Observable parent) { this.Parent = parent; }
-
         private ComponentDirectEvent autoSize;
 
         /// <summary>
-        /// Fires when the autoSize function is triggered and the field is resized according to the grow/growMin/growMax configs as a result. This event provides a hook for the developer to apply additional logic at runtime to resize the field if needed.
-        /// Parameters
-        /// item : Ext.form.field.Text
-        ///     This text field
-        /// width : Number
-        ///     The new field width
+        /// Fires when the autosize function is triggered. The field may or may not have actually changed size according to the default logic, but this event provides a hook for the developer to apply additional logic at runtime to resize the field if needed.
         /// </summary>
         [ListenerArgument(0, "item", typeof(Field), "This text field")]
         [ListenerArgument(1, "width", typeof(int), "The new field width")]
@@ -60,7 +51,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.autoSize ?? (this.autoSize = new ComponentDirectEvent(this));
+                if (this.autoSize == null)
+                {
+                    this.autoSize = new ComponentDirectEvent();
+                }
+
+                return this.autoSize;
             }
         }
 
@@ -68,10 +64,6 @@ namespace Ext.Net
 
         /// <summary>
         /// Keydown input field event. This event only fires if enableKeyEvents is set to true.
-        /// Parameters
-        /// item : Ext.form.field.Text
-        ///    This text field
-        /// e : Ext.EventObject
         /// </summary>
         [ListenerArgument(0, "item", typeof(Field), "This text field")]
         [ListenerArgument(1, "e", typeof(object), "EventObject")]
@@ -84,7 +76,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.keyDown ?? (this.keyDown = new ComponentDirectEvent(this));
+                if (this.keyDown == null)
+                {
+                    this.keyDown = new ComponentDirectEvent();
+                }
+
+                return this.keyDown;
             }
         }
 
@@ -92,10 +89,6 @@ namespace Ext.Net
 
         /// <summary>
         /// Keypress input field event. This event only fires if enableKeyEvents is set to true.
-        /// Parameters
-        /// item : Ext.form.field.Text
-        ///     This text field
-        /// e : Ext.EventObject
         /// </summary>
         [ListenerArgument(0, "item", typeof(Field), "This text field")]
         [ListenerArgument(1, "e", typeof(object), "EventObject")]
@@ -108,7 +101,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.keyPress ?? (this.keyPress = new ComponentDirectEvent(this));
+                if (this.keyPress == null)
+                {
+                    this.keyPress = new ComponentDirectEvent();
+                }
+
+                return this.keyPress;
             }
         }
 
@@ -116,10 +114,6 @@ namespace Ext.Net
 
         /// <summary>
         /// Keyup input field event. This event only fires if enableKeyEvents is set to true.
-        /// Parameters
-        /// item : Ext.form.field.Text
-        ///     This text field
-        /// e : Ext.EventObject
         /// </summary>
         [ListenerArgument(0, "item", typeof(Field), "This text field")]
         [ListenerArgument(1, "e", typeof(object), "EventObject")]
@@ -132,7 +126,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.keyUp ?? (this.keyUp = new ComponentDirectEvent(this));
+                if (this.keyUp == null)
+                {
+                    this.keyUp = new ComponentDirectEvent();
+                }
+
+                return this.keyUp;
             }
         }
 
@@ -153,7 +152,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.iconClick ?? (this.iconClick = new ComponentDirectEvent(this));
+                if (this.iconClick == null)
+                {
+                    this.iconClick = new ComponentDirectEvent();
+                }
+
+                return this.iconClick;
             }
         }
     }

@@ -15,16 +15,18 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
+using System;
 using System.ComponentModel;
+using System.Web;
 using System.Web.UI;
 
 using Ext.Net.Utilities;
@@ -38,6 +40,110 @@ namespace Ext.Net
     [Description("Provides a convenient wrapper for TextFields that adds a clickable trigger button (looks like a combobox by default). The trigger has no default action, so you must assign a function to implement the trigger click handler by overriding onTriggerClick. You can create a TriggerField directly, as it renders exactly like a combobox for which you can provide a custom implementation.")]
     public abstract partial class TriggerFieldBase : TextFieldBase
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        [Category("0. About")]
+        [Description("")]
+        public override string XType
+        {
+            get
+            {
+                return "trigger";
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        protected override void OnPreRender(EventArgs e)
+        {
+            this.RegisterIcons();
+            base.OnPreRender(e);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public virtual void RegisterIcons()
+        {
+            if (!Ext.Net.X.IsAjaxRequest || this.IsDynamic)
+            {
+                this.RegisterIcon(this.TriggerIcon);
+
+                foreach (FieldTrigger trigger in this.Triggers)
+                {
+                    this.RegisterIcon(trigger.Icon);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public void RegisterIcon(TriggerIcon icon)
+        {
+            TriggerFieldBase.RegisterTriggerIcon(icon);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        protected static void RegisterTriggerIcon(TriggerIcon icon)
+        {
+            if (icon == TriggerIcon.Combo ||
+                icon == TriggerIcon.Clear ||
+                icon == TriggerIcon.Date ||
+                icon == TriggerIcon.Search ||
+                HttpContext.Current == null)
+            {
+                return;
+            }
+
+            ResourceManager rm = ResourceManager.GetInstance(HttpContext.Current);
+            if (rm == null)
+            {
+                return;
+            }
+
+            string iconName = icon.ToString();
+            string key = "x-form-".ConcatWith(iconName.ToLower(), "-trigger");
+            if (rm.IsClientStyleBlockRegistered(key))
+            {
+                return;
+            }
+
+            string urlName = iconName.ToCharacterSeparatedFileName('-', "gif");
+            if (rm.Theme != Theme.Default && (icon == Net.TriggerIcon.Ellipsis || icon == Net.TriggerIcon.Empty))
+            {
+                urlName = string.Concat(rm.Theme.ToString().ToLowerInvariant(), ".", urlName);
+            }
+
+            string url = rm.GetWebResourceUrl(string.Format(ResourceManager.ASSEMBLYSLUG + ".ux.extensions.triggerfield.images.{0}", urlName));
+            string url1 = "";
+            string css = ".x-form-field-wrap .{0}{{background-image:url({1});cursor:pointer;}}";
+
+            if (!RequestManager.IsWebKit && iconName.StartsWith("Simple"))
+            {
+                url1 = rm.GetWebResourceUrl(string.Format(ResourceManager.ASSEMBLYSLUG + ".ux.extensions.triggerfield.images.{0}", iconName.ToCharacterSeparatedFileName('-', "").ConcatWith("-small.gif")));
+                css += " .x-small-editor .x-form-field-wrap .{0}{{background-image:url({2});cursor:pointer;}}";
+            }
+
+            if (Ext.Net.X.IsAjaxRequest)
+            {
+                //CSS.CreateStyleSheet(css.FormatWith(key, url, url1), key);
+                rm.AddScript("Ext.net.ResourceMgr.registerCssClass({0}, {1});", JSON.Serialize(key), JSON.Serialize(css.FormatWith(key, url, url1)));
+            }
+            else
+            {
+                rm.RegisterClientStyleBlock(key, css.FormatWith(key, url, url1));
+            }
+        }
+
         private FieldTrigerCollection triggers;
 
         /// <summary>
@@ -62,28 +168,6 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// false to prevent the user from typing text directly into the field; the field can only have its value set via an action invoked by the trigger. (defaults to true).
-        /// </summary>
-        [Meta]
-        [DirectEventUpdate(MethodName = "SetEditable")]
-        [ConfigOption]
-        [Category("6. TriggerField")]
-        [Bindable(true)]
-        [DefaultValue(true)]
-        [Description("false to prevent the user from typing text directly into the field; the field can only have its value set via an action invoked by the trigger. (defaults to true).")]
-        public virtual bool Editable
-        {
-            get
-            {
-                return this.State.Get<bool>("Editable", true);
-            }
-            set
-            {
-                this.State.Set("Editable", value);
-            }
-        }
-
-        /// <summary>
         /// True to hide the trigger element and display only the base text field (defaults to false).
         /// </summary>
         [Meta]
@@ -96,32 +180,35 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("HideTrigger", false);
+                object obj = this.ViewState["HideTrigger"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("HideTrigger", value);
+                this.ViewState["HideTrigger"] = value;
             }
         }
 
         /// <summary>
-        /// True to hide the predefined trigger element(defaults to false).
+        /// False to prevent the user from typing text directly into the field, the field will only respond to a click on the trigger to set the value. (defaults to true).
         /// </summary>
         [Meta]
+        [DirectEventUpdate(MethodName = "SetEditable")]
         [ConfigOption]
-        [Category("7. TriggerField")]
-        [DefaultValue(false)]
-        [DirectEventUpdate(MethodName = "SetHideBaseTrigger")]
-        [Description("True to hide the predefined trigger element (defaults to false).")]
-        public virtual bool HideBaseTrigger
+        [Category("6. TriggerField")]
+        [Bindable(true)]
+        [DefaultValue(true)]
+        [Description("False to prevent the user from typing text directly into the field, the field will only respond to a click on the trigger to set the value. (defaults to true).")]
+        public virtual bool Editable
         {
             get
             {
-                return this.State.Get<bool>("HideBaseTrigger", false);
+                object obj = this.ViewState["Editable"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("HideBaseTrigger", value);
+                this.ViewState["Editable"] = value;
             }
         }
 
@@ -137,31 +224,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("FirstBaseTrigger", false);
+                object obj = this.ViewState["FirstBaseTrigger"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("FirstBaseTrigger", value);
-            }
-        }
-
-        /// <summary>
-        /// True to attach a click repeater to the trigger. Defaults to false.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. TriggerField")]
-        [DefaultValue(false)]
-        [Description("True to attach a click repeater to the trigger. Defaults to false.")]
-        public virtual bool RepeatTriggerClick
-        {
-            get
-            {
-                return this.State.Get<bool>("RepeatTriggerClick", false);
-            }
-            set
-            {
-                this.State.Set("RepeatTriggerClick", value);
+                this.ViewState["FirstBaseTrigger"] = value;
             }
         }
 
@@ -172,15 +240,15 @@ namespace Ext.Net
         [Category("7. TriggerField")]
         [DefaultValue("")]
         [Description("A CSS class to apply to the trigger.")]
-        public virtual string TriggerCls
+        public virtual string TriggerClass
         {
             get
             {
-                return this.State.Get<string>("TriggerCls", "");
+                return (string)this.ViewState["TriggerClass"] ?? "";
             }
             set
             {
-                this.State.Set("TriggerCls", value);
+                this.ViewState["TriggerClass"] = value;
             }
         }
 
@@ -195,18 +263,19 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<TriggerIcon>("TriggerIcon", TriggerIcon.Combo);
+                object obj = this.ViewState["TriggerIcon"];
+                return (obj == null) ? TriggerIcon.Combo : (TriggerIcon)obj;
             }
             set
             {
-                this.State.Set("TriggerIcon", value);
+                this.ViewState["TriggerIcon"] = value;
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        [ConfigOption("triggerCls", JsonMode.Raw)]
+        [ConfigOption("triggerClass")]
         [DefaultValue("")]
         [Description("")]
         protected virtual string TriggerIconClsProxy
@@ -215,10 +284,10 @@ namespace Ext.Net
             {
                 if (this.TriggerIcon != TriggerIcon.Combo)
                 {
-                    return "Ext.form.field.Trigger.getIcon(".ConcatWith(JSON.Serialize(this.TriggerIcon.ToString()), ")");
+                    return "x-form-".ConcatWith(this.TriggerIcon.ToString().ToLower(), "-trigger");
                 }
 
-                return this.TriggerCls;
+                return this.TriggerClass;
             }
         }
 
@@ -229,15 +298,6 @@ namespace Ext.Net
         protected virtual void SetHideTrigger(bool hide)
         {
             this.AddScript("{0}.trigger.setDisplayed({1});", this.ClientID, JSON.Serialize(!hide));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Description("")]
-        protected virtual void SetHideBaseTrigger(bool hide)
-        {
-            this.Call("setBaseDisplayed", !hide);
         }
 
         /// <summary>
@@ -260,7 +320,7 @@ namespace Ext.Net
             RequestManager.EnsureDirectEvent();
             this.Triggers[index].HideTrigger = false;
 
-            string template = "{0}.getTrigger({1}).show();";
+            string template = "{0}.triggers[{1}].show();";
             this.AddScript(template, this.ClientID, index);
         }
 
@@ -275,7 +335,7 @@ namespace Ext.Net
             RequestManager.EnsureDirectEvent();
             this.Triggers[index].HideTrigger = true;
 
-            string template = "{0}.getTrigger({1}).hide();";
+            string template = "{0}.triggers[{1}].hide();";
             this.AddScript(template, this.ClientID, index);
         }
     }

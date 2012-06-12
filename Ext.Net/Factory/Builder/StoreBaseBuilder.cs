@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class StoreBase
     {
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TStoreBase, TBuilder> : AbstractStore.Builder<TStoreBase, TBuilder>
+        new public abstract partial class Builder<TStoreBase, TBuilder> : LazyObservable.Builder<TStoreBase, TBuilder>
             where TStoreBase : StoreBase
             where TBuilder : Builder<TStoreBase, TBuilder>
         {
@@ -58,6 +55,51 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
+			/// true to destroy the store when the component the store is bound to is destroyed (defaults to false). Note: this should be set to true when using stores that are bound to only 1 component.
+			/// </summary>
+            public virtual TBuilder AutoDestroy(bool autoDestroy)
+            {
+                this.ToComponent().AutoDestroy = autoDestroy;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// If passed, this store's load method is automatically called after creation with the autoLoad object.
+			/// </summary>
+            public virtual TBuilder AutoLoad(bool autoLoad)
+            {
+                this.ToComponent().AutoLoad = autoLoad;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Defaults to false. Set to true to have the Store and the set Proxy operate in a RESTful manner.
+			/// </summary>
+            public virtual TBuilder Restful(bool restful)
+            {
+                this.ToComponent().Restful = restful;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Save ALL fields of a modified record -- not just those that changed.
+			/// </summary>
+            public virtual TBuilder SaveAllFields(bool saveAllFields)
+            {
+                this.ToComponent().SaveAllFields = saveAllFields;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Defaults to true causing the store to automatically save records to the server when a record is modified (ie: becomes 'dirty'). Specify false to manually call save to send all modifiedRecords to the server.
+			/// </summary>
+            public virtual TBuilder AutoSave(bool autoSave)
+            {
+                this.ToComponent().AutoSave = autoSave;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
 			/// If true then submitted data will be decoded
 			/// </summary>
             public virtual TBuilder AutoDecode(bool autoDecode)
@@ -66,53 +108,71 @@ namespace Ext.Net
                 return this as TBuilder;
             }
              
+ 			// /// <summary>
+			// /// An object containing properties which are to be sent as parameters on any HTTP request.
+			// /// </summary>
+            // public virtual TBuilder BaseParams(ParameterCollection baseParams)
+            // {
+            //    this.ToComponent().BaseParams = baseParams;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// An object containing properties which are to be sent as parameters on auto load HTTP request.
+			// /// </summary>
+            // public virtual TBuilder AutoLoadParams(ParameterCollection autoLoadParams)
+            // {
+            //    this.ToComponent().AutoLoadParams = autoLoadParams;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// An object containing properties which are to be sent as parameters on any HTTP request.
+			// /// </summary>
+            // public virtual TBuilder WriteBaseParams(ParameterCollection writeBaseParams)
+            // {
+            //    this.ToComponent().WriteBaseParams = writeBaseParams;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// The Proxy object which provides access to a data object.
+			// /// </summary>
+            // public virtual TBuilder Proxy(ProxyCollection proxy)
+            // {
+            //    this.ToComponent().Proxy = proxy;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder UpdateProxy(UpdateProxyCollection updateProxy)
+            // {
+            //    this.ToComponent().UpdateProxy = updateProxy;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// The DataReader object which processes the data object and returns an Array of Ext.data.Record objects which are cached keyed by their id property.
+			// /// </summary>
+            // public virtual TBuilder Reader(ReaderCollection reader)
+            // {
+            //    this.ToComponent().Reader = reader;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
-			/// Allow the store to buffer and pre-fetch pages of records. This is to be used in conjunction with a view will tell the store to pre-fetch records ahead of a time.
+			/// True to clear all modified record information each time the store is loaded or when a record is removed. (defaults to false).
 			/// </summary>
-            public virtual TBuilder Buffered(bool buffered)
+            public virtual TBuilder PruneModifiedRecords(bool pruneModifiedRecords)
             {
-                this.ToComponent().Buffered = buffered;
+                this.ToComponent().PruneModifiedRecords = pruneModifiedRecords;
                 return this as TBuilder;
             }
              
  			/// <summary>
-			/// True to empty the store when loading another page via loadPage, nextPage or previousPage (defaults to true). Setting to false keeps existing records, allowing large data sets to be loaded one page at a time but rendered all together.
-			/// </summary>
-            public virtual TBuilder ClearOnPageLoad(bool clearOnPageLoad)
-            {
-                this.ToComponent().ClearOnPageLoad = clearOnPageLoad;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// The number of pages to keep in the cache before purging additional records. A value of 0 indicates to never purge the prefetched data. This option is only relevant when the buffered option is set to true.
-			/// </summary>
-            public virtual TBuilder PurgePageCount(int purgePageCount)
-            {
-                this.ToComponent().PurgePageCount = purgePageCount;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// True to defer any filtering operation to the server. If false, filtering is done locally on the client. Defaults to false.
-			/// </summary>
-            public virtual TBuilder RemoteFilter(bool remoteFilter)
-            {
-                this.ToComponent().RemoteFilter = remoteFilter;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// True if the grouping should apply on the server side, false if it is local only (defaults to false). If the grouping is local, it can be applied immediately to the data. If it is remote, then it will simply act as a helper, automatically sending the grouping information to the server.
-			/// </summary>
-            public virtual TBuilder RemoteGroup(bool remoteGroup)
-            {
-                this.ToComponent().RemoteGroup = remoteGroup;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// True to defer any sorting operation to the server. If false, sorting is done locally on the client. Defaults to false.
+			/// True if sorting is to be handled by requesting the Proxy to provide a refreshed version of the data object in sorted order, as opposed to sorting the Record cache in place (defaults to false). If remote sorting is specified, then clicking on a column header causes the current page to be requested from the server with the addition of the following two parameters: sort: String - The name (as specified in the Record's Field definition) of the field to sort on. dir : String - The direction of the sort, 'ASC' or 'DESC' (case-sensitive).
 			/// </summary>
             public virtual TBuilder RemoteSort(bool remoteSort)
             {
@@ -129,61 +189,14 @@ namespace Ext.Net
                 return this as TBuilder;
             }
              
- 			/// <summary>
-			/// True to use PagingStore instance
-			/// </summary>
-            public virtual TBuilder IsPagingStore(bool isPagingStore)
-            {
-                this.ToComponent().IsPagingStore = isPagingStore;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// For local filtering only, causes sort to be called whenever filter is called, causing the sorters to be reapplied after filtering. Defaults to true
-			/// </summary>
-            public virtual TBuilder SortOnFilter(bool sortOnFilter)
-            {
-                this.ToComponent().SortOnFilter = sortOnFilter;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// The direction in which sorting should be applied when grouping. Defaults to \"ASC\" - the other supported value is \"DESC\"
-			/// </summary>
-            public virtual TBuilder GroupDir(SortDirection groupDir)
-            {
-                this.ToComponent().GroupDir = groupDir;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// The (optional) field by which to group data in the store. Internally, grouping is very similar to sorting - the groupField and groupDir are injected as the first sorter (see sort). Stores support a single level of grouping, and groups can be fetched via the getGroups method.
-			/// </summary>
-            public virtual TBuilder GroupField(string groupField)
-            {
-                this.ToComponent().GroupField = groupField;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// The collection of groupers currently applied to this Store
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder Groupers(Action<DataSorterCollection> action)
-            {
-                action(this.ToComponent().Groupers);
-                return this as TBuilder;
-            }
-			 
- 			/// <summary>
-			/// The number of records considered to form a 'page'. This is used to power the built-in paging using the nextPage and previousPage functions. Defaults to 25.
-			/// </summary>
-            public virtual TBuilder PageSize(int pageSize)
-            {
-                this.ToComponent().PageSize = pageSize;
-                return this as TBuilder;
-            }
+ 			// /// <summary>
+			// /// An object which determines the Store sorting information.
+			// /// </summary>
+            // public virtual TBuilder SortInfo(SortInfo sortInfo)
+            // {
+            //    this.ToComponent().SortInfo = sortInfo;
+            //    return this as TBuilder;
+            // }
              
  			/// <summary>
 			/// If true show a warning before load/reload if store has dirty data
@@ -213,6 +226,51 @@ namespace Ext.Net
             }
              
  			/// <summary>
+			/// The refresh mode
+			/// </summary>
+            public virtual TBuilder RefreshAfterSaving(RefreshAfterSavingMode refreshAfterSaving)
+            {
+                this.ToComponent().RefreshAfterSaving = refreshAfterSaving;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The field name by which to sort the store's data (defaults to '').
+			/// </summary>
+            public virtual TBuilder GroupField(string groupField)
+            {
+                this.ToComponent().GroupField = groupField;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Group field sorting direction
+			/// </summary>
+            public virtual TBuilder GroupDir(SortDirection groupDir)
+            {
+                this.ToComponent().GroupDir = groupDir;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to sort the data on the grouping field when a grouping operation occurs, false to sort based on the existing sort info (defaults to false).
+			/// </summary>
+            public virtual TBuilder GroupOnSort(bool groupOnSort)
+            {
+                this.ToComponent().GroupOnSort = groupOnSort;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True if the grouping should apply on the server side, false if it is local only (defaults to false). If the grouping is local, it can be applied immediately to the data. If it is remote, then it will simply act as a helper, automatically sending the grouping field name as the 'groupBy' param with each XHR call.
+			/// </summary>
+            public virtual TBuilder RemoteGroup(bool remoteGroup)
+            {
+                this.ToComponent().RemoteGroup = remoteGroup;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
 			/// If true then only properties included to reader will be converted to json
 			/// </summary>
             public virtual TBuilder IgnoreExtraFields(bool ignoreExtraFields)
@@ -222,51 +280,20 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The Ext.data.reader.Reader to use to decode the server's response. This can either be a Reader instance, a config object or just a valid Reader type name (e.g. 'json', 'xml').
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder Reader(Action<ReaderCollection> action)
-            {
-                action(this.ToComponent().Reader);
-                return this as TBuilder;
-            }
-			 
- 			/// <summary>
-			/// The Ext.data.writer.Writer to use to encode any request sent to the server. This can either be a Writer instance, a config object or just a valid Writer type name (e.g. 'json', 'xml').
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder Writer(Action<WriterCollection> action)
-            {
-                action(this.ToComponent().Writer);
-                return this as TBuilder;
-            }
-			 
- 			/// <summary>
-			/// 
+			/// Show a Window with error message is DirectEvent request fails.
 			/// </summary>
-            public virtual TBuilder DataSource(object dataSource)
+            public virtual TBuilder ShowWarningOnFailure(bool showWarningOnFailure)
             {
-                this.ToComponent().DataSource = dataSource;
+                this.ToComponent().ShowWarningOnFailure = showWarningOnFailure;
                 return this as TBuilder;
             }
              
  			/// <summary>
-			/// 
+			/// Skip Id field from save data for new records.
 			/// </summary>
-            public virtual TBuilder DataSourceID(string dataSourceID)
+            public virtual TBuilder SkipIdForNewRecords(bool skipIdForNewRecords)
             {
-                this.ToComponent().DataSourceID = dataSourceID;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder DataMember(string dataMember)
-            {
-                this.ToComponent().DataMember = dataMember;
+                this.ToComponent().SkipIdForNewRecords = skipIdForNewRecords;
                 return this as TBuilder;
             }
             
@@ -275,169 +302,7 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			
  			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Add(object data)
-            {
-                this.ToComponent().Add(data);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Add(System.Collections.IEnumerable data)
-            {
-                this.ToComponent().Add(data);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder ClearFilter()
-            {
-                this.ToComponent().ClearFilter();
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder ClearFilter(bool suppressEvent)
-            {
-                this.ToComponent().ClearFilter(suppressEvent);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder ClearGrouping()
-            {
-                this.ToComponent().ClearGrouping();
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Each(JFunction fn, string scope)
-            {
-                this.ToComponent().Each(fn, scope);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Each(JFunction fn)
-            {
-                this.ToComponent().Each(fn);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Filter(string field, string value)
-            {
-                this.ToComponent().Filter(field, value);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Filter(DataFilterCollection filters)
-            {
-                this.ToComponent().Filter(filters);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder FilterBy(JFunction fn)
-            {
-                this.ToComponent().FilterBy(fn);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder FilterBy(JFunction fn, string scope)
-            {
-                this.ToComponent().FilterBy(fn, scope);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Group(string field, SortDirection direction)
-            {
-                this.ToComponent().Group(field, direction);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Group(string field)
-            {
-                this.ToComponent().Group(field);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Group(DataSorterCollection groupers)
-            {
-                this.ToComponent().Group(groupers);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Group(DataSorterCollection groupers, SortDirection direction)
-            {
-                this.ToComponent().Group(groupers, direction);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Insert(int index, object data)
-            {
-                this.ToComponent().Insert(index, data);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder Insert(int index, System.Collections.IEnumerable data)
-            {
-                this.ToComponent().Insert(index, data);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TBuilder LoadData(object data, bool append)
-            {
-                this.ToComponent().LoadData(data, append);
-                return this as TBuilder;
-            }
-            
- 			/// <summary>
-			/// 
+			/// Loads data from a passed data block. A Reader which understands the format of the data must have been configured in the constructor.
 			/// </summary>
             public virtual TBuilder LoadData(object data)
             {
@@ -446,79 +311,133 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Loads data from a passed data block. A Reader which understands the format of the data must have been configured in the constructor.
 			/// </summary>
-            public virtual TBuilder LoadPage(int page)
+            public virtual TBuilder LoadData(object data, bool append)
             {
-                this.ToComponent().LoadPage(page);
+                this.ToComponent().LoadData(data, append);
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// Add Record to the Store and fires the add event.
 			/// </summary>
-            public virtual TBuilder LoadPage()
+            public virtual TBuilder AddRecord(object values)
             {
-                this.ToComponent().LoadPage();
+                this.ToComponent().AddRecord(values);
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// Add Record to the Store and fires the add event.
 			/// </summary>
-            public virtual TBuilder Prefetch(object options)
+            public virtual TBuilder AddRecord(object values, bool commit)
             {
-                this.ToComponent().Prefetch(options);
+                this.ToComponent().AddRecord(values, commit);
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// Inserts Record into the Store at the given index and fires the add event.
 			/// </summary>
-            public virtual TBuilder Prefetch()
+            public virtual TBuilder InsertRecord(int index, object values)
             {
-                this.ToComponent().Prefetch();
+                this.ToComponent().InsertRecord(index, values);
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// Inserts Record into the Store at the given index and fires the add event.
 			/// </summary>
-            public virtual TBuilder PrefetchPage(int page, object options)
+            public virtual TBuilder InsertRecord(int index, object values, bool commit)
             {
-                this.ToComponent().PrefetchPage(page, options);
+                this.ToComponent().InsertRecord(index, values, commit);
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// (Local sort only) Inserts the passed Record into the Store at the index where it should go based on the current sort information.
 			/// </summary>
-            public virtual TBuilder PrefetchPage(int page)
+            public virtual TBuilder AddSortedRecord(object values)
             {
-                this.ToComponent().PrefetchPage(page);
+                this.ToComponent().AddSortedRecord(values);
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// (Local sort only) Inserts the passed Record into the Store at the index where it should go based on the current sort information.
 			/// </summary>
-            public virtual TBuilder PreviousPage()
+            public virtual TBuilder AddSortedRecord(object values, bool commit)
             {
-                this.ToComponent().PreviousPage();
+                this.ToComponent().AddSortedRecord(values, commit);
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// Revert to a view of the Record cache with no filtering applied.
 			/// </summary>
-            public virtual TBuilder PurgeRecords()
+            public virtual TBuilder ClearFilter()
             {
-                this.ToComponent().PurgeRecords();
+                this.ToComponent().ClearFilter();
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// Revert to a view of the Record cache with no filtering applied.
+			/// </summary>
+            public virtual TBuilder ClearFilter(bool suppressEvent)
+            {
+                this.ToComponent().ClearFilter(suppressEvent);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Commit all Records with outstanding changes. To handle updates for changes, subscribe to the Store's \"update\" event, and perform updating when the third parameter is Ext.data.Record.COMMIT.
+			/// </summary>
+            public virtual TBuilder CommitChanges()
+            {
+                this.ToComponent().CommitChanges();
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Filter the records by a specified property.
+			/// </summary>
+            public virtual TBuilder Filter(string field, string value, bool anyMatch, bool caseSensitive)
+            {
+                this.ToComponent().Filter(field, value, anyMatch, caseSensitive);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Filter by a function. The specified function will be called for each Record in this Store. If the function returns true the Record is included, otherwise it is filtered out.
+			/// </summary>
+            public virtual TBuilder FilterBy(JFunction fn)
+            {
+                this.ToComponent().FilterBy(fn);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Filter by a function. The specified function will be called for each Record in this Store. If the function returns true the Record is included, otherwise it is filtered out.
+			/// </summary>
+            public virtual TBuilder FilterBy(JFunction fn, string scope)
+            {
+                this.ToComponent().FilterBy(fn, scope);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Cancel outstanding changes on all changed records.
+			/// </summary>
+            public virtual TBuilder RejectChanges()
+            {
+                this.ToComponent().RejectChanges();
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Remove all Records from the Store and fires the clear event.
 			/// </summary>
             public virtual TBuilder RemoveAll()
             {
@@ -527,27 +446,36 @@ namespace Ext.Net
             }
             
  			/// <summary>
-			/// 
+			/// Sets the default sort column and order to be used by the next load operation.
 			/// </summary>
-            public virtual TBuilder RemoveAll(bool silent)
+            public virtual TBuilder SetDefaultSort(string field, SortDirection dir)
             {
-                this.ToComponent().RemoveAll(silent);
+                this.ToComponent().SetDefaultSort(field, dir);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Sort the Records. If remote sorting is used, the sort is performed on the server, and the cache is reloaded. If local sorting is used, the cache is sorted internally.
+			/// </summary>
+            public virtual TBuilder Sort(string field, SortDirection dir)
+            {
+                this.ToComponent().Sort(field, dir);
                 return this as TBuilder;
             }
             
  			/// <summary>
 			/// 
 			/// </summary>
-            public virtual TBuilder AddField(ModelField field, bool rebuildMeta)
+            public virtual TBuilder AddField(RecordField field, bool clearMeta)
             {
-                this.ToComponent().AddField(field, rebuildMeta);
+                this.ToComponent().AddField(field, clearMeta);
                 return this as TBuilder;
             }
             
  			/// <summary>
 			/// 
 			/// </summary>
-            public virtual TBuilder AddField(ModelField field)
+            public virtual TBuilder AddField(RecordField field)
             {
                 this.ToComponent().AddField(field);
                 return this as TBuilder;
@@ -556,16 +484,16 @@ namespace Ext.Net
  			/// <summary>
 			/// 
 			/// </summary>
-            public virtual TBuilder AddField(ModelField field, int index, bool rebuildMeta)
+            public virtual TBuilder AddField(RecordField field, int index, bool clearMeta)
             {
-                this.ToComponent().AddField(field, index, rebuildMeta);
+                this.ToComponent().AddField(field, index, clearMeta);
                 return this as TBuilder;
             }
             
  			/// <summary>
 			/// 
 			/// </summary>
-            public virtual TBuilder RemoveField(ModelField field)
+            public virtual TBuilder RemoveField(RecordField field)
             {
                 this.ToComponent().RemoveField(field);
                 return this as TBuilder;
@@ -583,18 +511,27 @@ namespace Ext.Net
  			/// <summary>
 			/// 
 			/// </summary>
-            public virtual TBuilder RebuildMeta()
+            public virtual TBuilder ClearMeta()
             {
-                this.ToComponent().RebuildMeta();
+                this.ToComponent().ClearMeta();
                 return this as TBuilder;
             }
             
  			/// <summary>
-			/// 
+			/// Update record field value
 			/// </summary>
-            public virtual TBuilder DataBind()
+            public virtual TBuilder UpdateRecordField(int rowIndex, string dataIndex, object value)
             {
-                this.ToComponent().DataBind();
+                this.ToComponent().UpdateRecordField(rowIndex, dataIndex, value);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Update record field value
+			/// </summary>
+            public virtual TBuilder UpdateRecordField(object id, string dataIndex, object value)
+            {
+                this.ToComponent().UpdateRecordField(id, dataIndex, value);
                 return this as TBuilder;
             }
             

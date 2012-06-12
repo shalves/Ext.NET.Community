@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class GridPanelDirectEvents
     {
         /// <summary>
@@ -55,14 +52,52 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
+                list.Add("bodyScroll", new ConfigOption("bodyScroll", new SerializationOptions("bodyscroll", typeof(DirectEventJsonConverter)), null, this.BodyScroll ));
+                list.Add("cellClick", new ConfigOption("cellClick", new SerializationOptions("cellclick", typeof(DirectEventJsonConverter)), null, this.CellClick ));
+                list.Add("cellContextMenu", new ConfigOption("cellContextMenu", new SerializationOptions("cellcontextmenu", typeof(DirectEventJsonConverter)), null, this.CellContextMenu ));
+                list.Add("cellDblClick", new ConfigOption("cellDblClick", new SerializationOptions("celldblclick", typeof(DirectEventJsonConverter)), null, this.CellDblClick ));
+                list.Add("cellMouseDown", new ConfigOption("cellMouseDown", new SerializationOptions("cellMouseDown", typeof(DirectEventJsonConverter)), null, this.CellMouseDown ));
+                list.Add("click", new ConfigOption("click", new SerializationOptions("click", typeof(DirectEventJsonConverter)), null, this.Click ));
+                list.Add("columnMove", new ConfigOption("columnMove", new SerializationOptions("columnmove", typeof(DirectEventJsonConverter)), null, this.ColumnMove ));
+                list.Add("columnResize", new ConfigOption("columnResize", new SerializationOptions("columnresize", typeof(DirectEventJsonConverter)), null, this.ColumnResize ));
+                list.Add("containerClick", new ConfigOption("containerClick", new SerializationOptions("containerclick", typeof(DirectEventJsonConverter)), null, this.ContainerClick ));
+                list.Add("containerContextMenu", new ConfigOption("containerContextMenu", new SerializationOptions("containercontextmenu", typeof(DirectEventJsonConverter)), null, this.ContainerContextMenu ));
+                list.Add("containerDblClick", new ConfigOption("containerDblClick", new SerializationOptions("containerdblclick", typeof(DirectEventJsonConverter)), null, this.ContainerDblClick ));
+                list.Add("containerMouseDown", new ConfigOption("containerMouseDown", new SerializationOptions("containermousedown", typeof(DirectEventJsonConverter)), null, this.ContainerMouseDown ));
+                list.Add("contextMenu", new ConfigOption("contextMenu", new SerializationOptions("contextmenu", typeof(DirectEventJsonConverter)), null, this.ContextMenu ));
+                list.Add("dblClick", new ConfigOption("dblClick", new SerializationOptions("dblclick", typeof(DirectEventJsonConverter)), null, this.DblClick ));
+                list.Add("groupChange", new ConfigOption("groupChange", new SerializationOptions("groupchange", typeof(DirectEventJsonConverter)), null, this.GroupChange ));
                 list.Add("groupClick", new ConfigOption("groupClick", new SerializationOptions("groupclick", typeof(DirectEventJsonConverter)), null, this.GroupClick ));
                 list.Add("groupContextMenu", new ConfigOption("groupContextMenu", new SerializationOptions("groupcontextmenu", typeof(DirectEventJsonConverter)), null, this.GroupContextMenu ));
                 list.Add("groupDblClick", new ConfigOption("groupDblClick", new SerializationOptions("groupdblclick", typeof(DirectEventJsonConverter)), null, this.GroupDblClick ));
-                list.Add("groupCollapse", new ConfigOption("groupCollapse", new SerializationOptions("groupcollapse", typeof(DirectEventJsonConverter)), null, this.GroupCollapse ));
-                list.Add("groupExpand", new ConfigOption("groupExpand", new SerializationOptions("groupexpand", typeof(DirectEventJsonConverter)), null, this.GroupExpand ));
+                list.Add("groupMouseDown", new ConfigOption("groupMouseDown", new SerializationOptions("groupmousedown", typeof(DirectEventJsonConverter)), null, this.GroupMouseDown ));
+                list.Add("headerClick", new ConfigOption("headerClick", new SerializationOptions("headerclick", typeof(DirectEventJsonConverter)), null, this.HeaderClick ));
+                list.Add("headerContextMenu", new ConfigOption("headerContextMenu", new SerializationOptions("headercontextmenu", typeof(DirectEventJsonConverter)), null, this.HeaderContextMenu ));
+                list.Add("headerDblClick", new ConfigOption("headerDblClick", new SerializationOptions("headerdblclick", typeof(DirectEventJsonConverter)), null, this.HeaderDblClick ));
+                list.Add("headerMouseDown", new ConfigOption("headerMouseDown", new SerializationOptions("headermousedown", typeof(DirectEventJsonConverter)), null, this.HeaderMouseDown ));
+                list.Add("keyDown", new ConfigOption("keyDown", new SerializationOptions("keydown", typeof(DirectEventJsonConverter)), null, this.KeyDown ));
+                list.Add("keyPress", new ConfigOption("keyPress", new SerializationOptions("keypress", typeof(DirectEventJsonConverter)), null, this.KeyPress ));
+                list.Add("mouseDown", new ConfigOption("mouseDown", new SerializationOptions("mousedown", typeof(DirectEventJsonConverter)), null, this.MouseDown ));
+                list.Add("mouseOut", new ConfigOption("mouseOut", new SerializationOptions("mouseout", typeof(DirectEventJsonConverter)), null, this.MouseOut ));
+                list.Add("mouseOver", new ConfigOption("mouseOver", new SerializationOptions("mouseover", typeof(DirectEventJsonConverter)), null, this.MouseOver ));
+                list.Add("mouseUp", new ConfigOption("mouseUp", new SerializationOptions("mouseup", typeof(DirectEventJsonConverter)), null, this.MouseUp ));
+                list.Add("reconfigure", new ConfigOption("reconfigure", new SerializationOptions("reconfigure", typeof(DirectEventJsonConverter)), null, this.Reconfigure ));
+                list.Add("rowBodyClick", new ConfigOption("rowBodyClick", new SerializationOptions("rowbodyclick", typeof(DirectEventJsonConverter)), null, this.RowBodyClick ));
+                list.Add("rowBodyContextMenu", new ConfigOption("rowBodyContextMenu", new SerializationOptions("rowbodycontextmenu", typeof(DirectEventJsonConverter)), null, this.RowBodyContextMenu ));
+                list.Add("rowBodyDblClick", new ConfigOption("rowBodyDblClick", new SerializationOptions("rowbodydblclick", typeof(DirectEventJsonConverter)), null, this.RowBodyDblClick ));
+                list.Add("rowBodyMouseDown", new ConfigOption("rowBodyMouseDown", new SerializationOptions("rowbodymousedown", typeof(DirectEventJsonConverter)), null, this.RowBodyMouseDown ));
+                list.Add("rowClick", new ConfigOption("rowClick", new SerializationOptions("rowclick", typeof(DirectEventJsonConverter)), null, this.RowClick ));
+                list.Add("rowContextMenu", new ConfigOption("rowContextMenu", new SerializationOptions("rowcontextmenu", typeof(DirectEventJsonConverter)), null, this.RowContextMenu ));
+                list.Add("rowDblClick", new ConfigOption("rowDblClick", new SerializationOptions("rowdblclick", typeof(DirectEventJsonConverter)), null, this.RowDblClick ));
+                list.Add("rowMouseDown", new ConfigOption("rowMouseDown", new SerializationOptions("rowmousedown", typeof(DirectEventJsonConverter)), null, this.RowMouseDown ));
+                list.Add("sortChange", new ConfigOption("sortChange", new SerializationOptions("sortchange", typeof(DirectEventJsonConverter)), null, this.SortChange ));
+                list.Add("viewReady", new ConfigOption("viewReady", new SerializationOptions("viewready", typeof(DirectEventJsonConverter)), null, this.ViewReady ));
+                list.Add("afterEdit", new ConfigOption("afterEdit", new SerializationOptions("afteredit", typeof(DirectEventJsonConverter)), null, this.AfterEdit ));
                 list.Add("beforeEdit", new ConfigOption("beforeEdit", new SerializationOptions("beforeedit", typeof(DirectEventJsonConverter)), null, this.BeforeEdit ));
-                list.Add("edit", new ConfigOption("edit", new SerializationOptions("edit", typeof(DirectEventJsonConverter)), null, this.Edit ));
                 list.Add("validateEdit", new ConfigOption("validateEdit", new SerializationOptions("validateedit", typeof(DirectEventJsonConverter)), null, this.ValidateEdit ));
+                list.Add("command", new ConfigOption("command", new SerializationOptions("command", typeof(DirectEventJsonConverter)), null, this.Command ));
+                list.Add("groupCommand", new ConfigOption("groupCommand", new SerializationOptions("groupcommand", typeof(DirectEventJsonConverter)), null, this.GroupCommand ));
+                list.Add("filterUpdate", new ConfigOption("filterUpdate", new SerializationOptions("filterupdate", typeof(DirectEventJsonConverter)), null, this.FilterUpdate ));
 
                 return list;
             }

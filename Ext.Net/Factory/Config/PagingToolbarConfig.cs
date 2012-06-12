@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class PagingToolbar
     {
 		/*  Ctor
@@ -81,6 +78,24 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
+			private int pageIndex = 1;
+
+			/// <summary>
+			/// The index of current page.
+			/// </summary>
+			[DefaultValue(1)]
+			public virtual int PageIndex 
+			{ 
+				get
+				{
+					return this.pageIndex;
+				}
+				set
+				{
+					this.pageIndex = value;
+				}
+			}
+
 			private bool displayInfo = false;
 
 			/// <summary>
@@ -102,7 +117,7 @@ namespace Ext.Net
 			private string displayMsg = "Displaying {0} - {1} of {2}";
 
 			/// <summary>
-			/// The paging status message to display. Note that this string is formatted using the braced numbers {0}-{2} as tokens that are replaced by the values for start, end and total respectively. These tokens should be preserved when overriding this string if showing those values is desired. Defaults to: \"Displaying {0} - {1} of {2}\"
+			/// The paging status message to display (defaults to 'Displaying {0} - {1} of {2}'). Note that this string is formatted using the braced numbers 0-2 as tokens that are replaced by the values for start, end and total respectively. These tokens should be preserved when overriding this string if showing those values is desired.
 			/// </summary>
 			[DefaultValue("Displaying {0} - {1} of {2}")]
 			public virtual string DisplayMsg 
@@ -135,10 +150,28 @@ namespace Ext.Net
 				}
 			}
 
+			private int pageSize = 20;
+
+			/// <summary>
+			/// The number of records to display per page (defaults to 20).
+			/// </summary>
+			[DefaultValue(20)]
+			public virtual int PageSize 
+			{ 
+				get
+				{
+					return this.pageSize;
+				}
+				set
+				{
+					this.pageSize = value;
+				}
+			}
+
 			private string storeID = "";
 
 			/// <summary>
-			/// The Ext.data.Store the paging toolbar should use as its data source.
+			/// The data store to use.
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string StoreID 
@@ -156,7 +189,7 @@ namespace Ext.Net
 			private string afterPageText = "of {0}";
 
 			/// <summary>
-			/// Customizable piece of the default paging text. Note that this string is formatted using {0} as a token that is replaced by the number of total pages. This token should be preserved when overriding this string if showing the total page count is desired. Defaults to: \"of {0}\"
+			/// Customizable piece of the default paging text (defaults to 'of {0}'). Note that this string is formatted using {0} as a token that is replaced by the number of total pages. This token should be preserved when overriding this string if showing the total page count is desired.
 			/// </summary>
 			[DefaultValue("of {0}")]
 			public virtual string AfterPageText 
@@ -174,7 +207,7 @@ namespace Ext.Net
 			private string beforePageText = "Page";
 
 			/// <summary>
-			/// The text displayed before the input item. Defaults to: \"Page\"
+			/// Customizable piece of the default paging text (defaults to 'Page')
 			/// </summary>
 			[DefaultValue("Page")]
 			public virtual string BeforePageText 
@@ -192,7 +225,7 @@ namespace Ext.Net
 			private string firstText = "First Page";
 
 			/// <summary>
-			/// The quicktip text displayed for the first page button. Note: quick tips must be initialized for the quicktip to show. Defaults to: \"First Page\"
+			/// Customizable piece of the default paging text (defaults to 'First Page')
 			/// </summary>
 			[DefaultValue("First Page")]
 			public virtual string FirstText 
@@ -207,28 +240,10 @@ namespace Ext.Net
 				}
 			}
 
-			private int inputItemWidth = 30;
-
-			/// <summary>
-			/// The width in pixels of the input field used to display and change the current page number. Defaults to: 30
-			/// </summary>
-			[DefaultValue(30)]
-			public virtual int InputItemWidth 
-			{ 
-				get
-				{
-					return this.inputItemWidth;
-				}
-				set
-				{
-					this.inputItemWidth = value;
-				}
-			}
-
 			private string lastText = "Last Page";
 
 			/// <summary>
-			/// The quicktip text displayed for the last page button. Note: quick tips must be initialized for the quicktip to show. Defaults to: \"Last Page\"
+			/// Customizable piece of the default paging text (defaults to 'Last Page')
 			/// </summary>
 			[DefaultValue("Last Page")]
 			public virtual string LastText 
@@ -246,7 +261,7 @@ namespace Ext.Net
 			private string nextText = "Next Page";
 
 			/// <summary>
-			/// The quicktip text displayed for the next page button. Note: quick tips must be initialized for the quicktip to show. Defaults to: \"Next Page\"
+			/// Customizable piece of the default paging text (defaults to 'Next Page')
 			/// </summary>
 			[DefaultValue("Next Page")]
 			public virtual string NextText 
@@ -261,28 +276,10 @@ namespace Ext.Net
 				}
 			}
 
-			private bool prependButtons = false;
-
-			/// <summary>
-			/// true to insert any configured items before the paging buttons. Defaults to: false
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool PrependButtons 
-			{ 
-				get
-				{
-					return this.prependButtons;
-				}
-				set
-				{
-					this.prependButtons = value;
-				}
-			}
-
 			private string prevText = "Previous Page";
 
 			/// <summary>
-			/// The quicktip text displayed for the previous page button. Note: quick tips must be initialized for the quicktip to show. Defaults to: \"Previous Page\"
+			/// Customizable piece of the default paging text (defaults to 'Previous Page')
 			/// </summary>
 			[DefaultValue("Previous Page")]
 			public virtual string PrevText 
@@ -300,7 +297,7 @@ namespace Ext.Net
 			private string refreshText = "Refresh";
 
 			/// <summary>
-			/// The quicktip text displayed for the Refresh button. Note: quick tips must be initialized for the quicktip to show. Defaults to: \"Refresh\"
+			/// Customizable piece of the default paging text (defaults to 'Refresh')
 			/// </summary>
 			[DefaultValue("Refresh")]
 			public virtual string RefreshText 
@@ -333,6 +330,24 @@ namespace Ext.Net
 				}
 			}
         
+			private ParameterCollection paramNames = null;
+
+			/// <summary>
+			/// Object mapping of parameter names for load calls (defaults to {start: 'start', limit: 'limit'})
+			/// </summary>
+			public ParameterCollection ParamNames
+			{
+				get
+				{
+					if (this.paramNames == null)
+					{
+						this.paramNames = new ParameterCollection();
+					}
+			
+					return this.paramNames;
+				}
+			}
+			        
 			private PagingToolbarListeners listeners = null;
 
 			/// <summary>

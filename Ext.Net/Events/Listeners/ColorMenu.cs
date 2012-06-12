@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -38,13 +38,9 @@ namespace Ext.Net
         private ComponentListener select;
 
 		/// <summary>
-        /// Fires when a color is selected
-        /// Parameters
-        /// item : Ext.picker.Color
-        /// color : String
-        ///     The 6-digit color hex code (without the # symbol)
+		/// 
 		/// </summary>
-        [ListenerArgument(0, "item", typeof(ColorPicker), "palette")]
+        [ListenerArgument(0, "item", typeof(ColorPalette), "palette")]
         [ListenerArgument(1, "color", typeof(object), "color")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("select", typeof(ListenerJsonConverter))]
@@ -55,7 +51,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.select ?? (this.select = new ComponentListener());
+                if (this.select == null)
+                {
+                    this.select = new ComponentListener();
+                }
+
+                return this.select;
             }
         }
     }

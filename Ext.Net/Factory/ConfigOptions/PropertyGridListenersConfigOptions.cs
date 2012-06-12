@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class PropertyGridListeners
     {
         /// <summary>
@@ -57,6 +54,9 @@ namespace Ext.Net
                 
                 list.Add("beforePropertyChange", new ConfigOption("beforePropertyChange", new SerializationOptions("beforepropertychange", typeof(ListenerJsonConverter)), null, this.BeforePropertyChange ));
                 list.Add("propertyChange", new ConfigOption("propertyChange", new SerializationOptions("propertychange", typeof(ListenerJsonConverter)), null, this.PropertyChange ));
+                list.Add("beforeSave", new ConfigOption("beforeSave", new SerializationOptions("beforesave", typeof(ListenerJsonConverter)), null, this.BeforeSave ));
+                list.Add("save", new ConfigOption("save", new SerializationOptions("save", typeof(ListenerJsonConverter)), null, this.Save ));
+                list.Add("saveException", new ConfigOption("saveException", new SerializationOptions("saveexception", typeof(ListenerJsonConverter)), null, this.SaveException ));
 
                 return list;
             }

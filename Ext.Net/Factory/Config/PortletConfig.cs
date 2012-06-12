@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class Portlet
     {
 		/*  Ctor
@@ -81,6 +78,42 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
+			private bool collapsible = true;
+
+			/// <summary>
+			/// True to make the panel collapsible and have the expand/collapse toggle button automatically rendered into the header tool button area, false to keep the panel statically sized with no button (defaults to false).
+			/// </summary>
+			[DefaultValue(true)]
+			public override bool Collapsible 
+			{ 
+				get
+				{
+					return this.collapsible;
+				}
+				set
+				{
+					this.collapsible = value;
+				}
+			}
+
+			private bool draggable = true;
+
+			/// <summary>
+			/// True to enable dragging of this Panel (defaults to false).
+			/// </summary>
+			[DefaultValue(true)]
+			public override bool Draggable 
+			{ 
+				get
+				{
+					return this.draggable;
+				}
+				set
+				{
+					this.draggable = value;
+				}
+			}
+
         }
     }
 }

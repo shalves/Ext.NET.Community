@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class TextFieldBase
     {
         /// <summary>
@@ -61,11 +58,10 @@ namespace Ext.Net
                 list.Add("emptyClass", new ConfigOption("emptyClass", null, "", this.EmptyClass ));
                 list.Add("emptyText", new ConfigOption("emptyText", null, "", this.EmptyText ));
                 list.Add("enableKeyEvents", new ConfigOption("enableKeyEvents", null, false, this.EnableKeyEvents ));
-                list.Add("enforceMaxLength", new ConfigOption("enforceMaxLength", null, false, this.EnforceMaxLength ));
                 list.Add("grow", new ConfigOption("grow", null, false, this.Grow ));
-                list.Add("growAppend", new ConfigOption("growAppend", null, "W", this.GrowAppend ));
                 list.Add("growMax", new ConfigOption("growMax", null, Unit.Pixel(800), this.GrowMax ));
                 list.Add("growMin", new ConfigOption("growMin", null, Unit.Pixel(30), this.GrowMin ));
+                list.Add("inputType", new ConfigOption("inputType", new SerializationOptions(JsonMode.ToLower), InputType.Text, this.InputType ));
                 list.Add("maskRe", new ConfigOption("maskRe", new SerializationOptions(typeof(RegexJsonConverter)), "", this.MaskRe ));
                 list.Add("maxLength", new ConfigOption("maxLength", null, -1, this.MaxLength ));
                 list.Add("maxLengthText", new ConfigOption("maxLengthText", null, "", this.MaxLengthText ));
@@ -74,9 +70,9 @@ namespace Ext.Net
                 list.Add("regex", new ConfigOption("regex", new SerializationOptions(typeof(RegexJsonConverter)), "", this.Regex ));
                 list.Add("regexText", new ConfigOption("regexText", null, "", this.RegexText ));
                 list.Add("selectOnFocus", new ConfigOption("selectOnFocus", null, false, this.SelectOnFocus ));
-                list.Add("size", new ConfigOption("size", null, 20, this.Size ));
                 list.Add("stripCharsRe", new ConfigOption("stripCharsRe", new SerializationOptions(typeof(RegexJsonConverter)), "", this.StripCharsRe ));
-                list.Add("validator", new ConfigOption("validator", new SerializationOptions(JsonMode.Raw), null, this.Validator ));
+                list.Add("truncate", new ConfigOption("truncate", null, true, this.Truncate ));
+                list.Add("validator", new ConfigOption("validator", new SerializationOptions(JsonMode.Raw), "", this.Validator ));
                 list.Add("vtype", new ConfigOption("vtype", null, "", this.Vtype ));
                 list.Add("vtypeText", new ConfigOption("vtypeText", null, "", this.VtypeText ));
                 list.Add("iconClsProxy", new ConfigOption("iconClsProxy", new SerializationOptions("iconCls"), "", this.IconClsProxy ));

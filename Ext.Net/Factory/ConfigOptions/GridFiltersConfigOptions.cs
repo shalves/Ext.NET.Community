@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class GridFilters
     {
         /// <summary>
@@ -55,14 +52,13 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
-                list.Add("autoReload", new ConfigOption("autoReload", null, true, this.AutoReload ));
                 list.Add("updateBuffer", new ConfigOption("updateBuffer", null, 500, this.UpdateBuffer ));
+                list.Add("paramPrefix", new ConfigOption("paramPrefix", null, "gridfilters", this.ParamPrefix ));
                 list.Add("filterCls", new ConfigOption("filterCls", null, "ux-filtered-column", this.FilterCls ));
                 list.Add("local", new ConfigOption("local", null, false, this.Local ));
-                list.Add("menuFiltersText", new ConfigOption("menuFiltersText", null, "Filters", this.MenuFiltersText ));
-                list.Add("paramPrefix", new ConfigOption("paramPrefix", null, "filter", this.ParamPrefix ));
+                list.Add("autoReload", new ConfigOption("autoReload", null, true, this.AutoReload ));
                 list.Add("showMenu", new ConfigOption("showMenu", null, true, this.ShowMenu ));
-                list.Add("stateId", new ConfigOption("stateId", null, "", this.StateId ));
+                list.Add("filtersText", new ConfigOption("filtersText", new SerializationOptions("menuFilterText"), "Filters", this.FiltersText ));
                 list.Add("filters", new ConfigOption("filters", new SerializationOptions("filters", JsonMode.AlwaysArray), null, this.Filters ));
                 list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
                 list.Add("directEvents", new ConfigOption("directEvents", new SerializationOptions("directEvents", JsonMode.Object), null, this.DirectEvents ));

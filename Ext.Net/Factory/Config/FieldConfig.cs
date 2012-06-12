@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public abstract partial class Field
     {
         /// <summary>
         /// 
         /// </summary>
-        new public abstract partial class Config : ComponentBase.Config 
+        new public abstract partial class Config : BoxComponentBase.Config 
         { 
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
@@ -64,24 +61,6 @@ namespace Ext.Net
 				}
 			}
 
-			private string postBackEvent = "change";
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue("change")]
-			public virtual string PostBackEvent 
-			{ 
-				get
-				{
-					return this.postBackEvent;
-				}
-				set
-				{
-					this.postBackEvent = value;
-				}
-			}
-
 			private bool causesValidation = false;
 
 			/// <summary>
@@ -97,6 +76,24 @@ namespace Ext.Net
 				set
 				{
 					this.causesValidation = value;
+				}
+			}
+
+			private string dataIndex = "";
+
+			/// <summary>
+			/// (optional) The name of the field in the grid's Ext.data.Store's Ext.data.Record definition from which to draw the column's value.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string DataIndex 
+			{ 
+				get
+				{
+					return this.dataIndex;
+				}
+				set
+				{
+					this.dataIndex = value;
 				}
 			}
 
@@ -118,381 +115,111 @@ namespace Ext.Net
 				}
 			}
 
-			private string activeError = null;
+			private string name = "";
 
 			/// <summary>
-			/// If specified, then the component will be displayed with this value as its active error when first rendered. Defaults to undefined. Use setActiveError or unsetActiveError to change it after component creation.
+			/// The field's HTML name attribute (defaults to ''). Note: this property must be set if this field is to be automatically included with form submit().
 			/// </summary>
-			[DefaultValue(null)]
-			public virtual string ActiveError 
+			[DefaultValue("")]
+			public virtual string Name 
 			{ 
 				get
 				{
-					return this.activeError;
+					return this.name;
 				}
 				set
 				{
-					this.activeError = value;
+					this.name = value;
 				}
 			}
-        
-			private XTemplate activeErrorsTpl = null;
+
+			private string autoCreate = "";
 
 			/// <summary>
-			/// The template used to format the Array of error messages passed to setActiveErrors into a single HTML string. By default this renders each message as an item in an unordered list.
+			/// A DomHelper element spec (defaults to {tag: 'input', type: 'text', size: '20', autocomplete: 'off'}).
 			/// </summary>
-			public XTemplate ActiveErrorsTpl
-			{
+			[DefaultValue("")]
+			public virtual string AutoCreate 
+			{ 
 				get
 				{
-					if (this.activeErrorsTpl == null)
-					{
-						this.activeErrorsTpl = new XTemplate();
-					}
-			
-					return this.activeErrorsTpl;
+					return this.autoCreate;
+				}
+				set
+				{
+					this.autoCreate = value;
 				}
 			}
-			
-			private bool autoFitErrors = true;
+
+			private string fieldClass = "";
 
 			/// <summary>
-			/// Whether to adjust the component's body area to make room for 'side' or 'under' error messages. Defaults to true.
+			/// The default CSS class for the field (defaults to 'x-form-field').
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string FieldClass 
+			{ 
+				get
+				{
+					return this.fieldClass;
+				}
+				set
+				{
+					this.fieldClass = value;
+				}
+			}
+
+			private string focusClass = "";
+
+			/// <summary>
+			/// The CSS class to use when the field receives focus (defaults to 'x-form-focus').
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string FocusClass 
+			{ 
+				get
+				{
+					return this.focusClass;
+				}
+				set
+				{
+					this.focusClass = value;
+				}
+			}
+
+			private bool hideWithLabel = true;
+
+			/// <summary>
+			/// True to hide the label when the field hide
 			/// </summary>
 			[DefaultValue(true)]
-			public virtual bool AutoFitErrors 
+			public virtual bool HideWithLabel 
 			{ 
 				get
 				{
-					return this.autoFitErrors;
+					return this.hideWithLabel;
 				}
 				set
 				{
-					this.autoFitErrors = value;
+					this.hideWithLabel = value;
 				}
 			}
 
-			private string baseBodyCls = "x-form-item-body";
+			private string invalidClass = "";
 
 			/// <summary>
-			/// The CSS class to be applied to the body content element. Defaults to 'x-form-item-body'.
-			/// </summary>
-			[DefaultValue("x-form-item-body")]
-			public virtual string BaseBodyCls 
-			{ 
-				get
-				{
-					return this.baseBodyCls;
-				}
-				set
-				{
-					this.baseBodyCls = value;
-				}
-			}
-
-			private int checkChangeBuffer = 50;
-
-			/// <summary>
-			/// Defines a timeout in milliseconds for buffering checkChangeEvents that fire in rapid succession. Defaults to 50 milliseconds.
-			/// </summary>
-			[DefaultValue(50)]
-			public virtual int CheckChangeBuffer 
-			{ 
-				get
-				{
-					return this.checkChangeBuffer;
-				}
-				set
-				{
-					this.checkChangeBuffer = value;
-				}
-			}
-
-			private string[] checkChangeEvents = null;
-
-			/// <summary>
-			/// A list of event names that will be listened for on the field's input element, which will cause the field's value to be checked for changes. If a change is detected, the change event will be fired, followed by validation if the validateOnChange option is enabled.
-			/// </summary>
-			[DefaultValue(null)]
-			public virtual string[] CheckChangeEvents 
-			{ 
-				get
-				{
-					return this.checkChangeEvents;
-				}
-				set
-				{
-					this.checkChangeEvents = value;
-				}
-			}
-
-			private string clearCls = "x-clear";
-
-			/// <summary>
-			/// The CSS class used to to apply to the special clearing div rendered directly after each form field wrapper to provide field clearing (defaults to 'x-form-clear-left').
-			/// </summary>
-			[DefaultValue("x-clear")]
-			public virtual string ClearCls 
-			{ 
-				get
-				{
-					return this.clearCls;
-				}
-				set
-				{
-					this.clearCls = value;
-				}
-			}
-
-			private string dirtyCls = "x-form-dirty";
-
-			/// <summary>
-			/// The CSS class to use when the field value is dirty.
-			/// </summary>
-			[DefaultValue("x-form-dirty")]
-			public virtual string DirtyCls 
-			{ 
-				get
-				{
-					return this.dirtyCls;
-				}
-				set
-				{
-					this.dirtyCls = value;
-				}
-			}
-
-			private string errorMsgCls = "x-form-error-msg";
-
-			/// <summary>
-			/// The CSS class to be applied to the error message element. Defaults to 'x-form-error-msg'.
-			/// </summary>
-			[DefaultValue("x-form-error-msg")]
-			public virtual string ErrorMsgCls 
-			{ 
-				get
-				{
-					return this.errorMsgCls;
-				}
-				set
-				{
-					this.errorMsgCls = value;
-				}
-			}
-
-			private string fieldBodyCls = "";
-
-			/// <summary>
-			/// An extra CSS class to be applied to the body content element in addition to fieldBodyCls. Defaults to empty.
+			/// The CSS class to use when marking a field invalid (defaults to 'x-form-invalid').
 			/// </summary>
 			[DefaultValue("")]
-			public virtual string FieldBodyCls 
+			public virtual string InvalidClass 
 			{ 
 				get
 				{
-					return this.fieldBodyCls;
+					return this.invalidClass;
 				}
 				set
 				{
-					this.fieldBodyCls = value;
-				}
-			}
-
-			private string fieldCls = "";
-
-			/// <summary>
-			/// The default CSS class for the field input (defaults to 'x-form-field').
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string FieldCls 
-			{ 
-				get
-				{
-					return this.fieldCls;
-				}
-				set
-				{
-					this.fieldCls = value;
-				}
-			}
-
-			private string fieldLabel = "";
-
-			/// <summary>
-			/// The label for the field. It gets appended with the labelSeparator, and its position and sizing is determined by the labelAlign, labelWidth, and labelPad configs. Defaults to undefined.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string FieldLabel 
-			{ 
-				get
-				{
-					return this.fieldLabel;
-				}
-				set
-				{
-					this.fieldLabel = value;
-				}
-			}
-
-			private string fieldStyle = "";
-
-			/// <summary>
-			/// Optional CSS style(s) to be applied to the field input element. Should be a valid argument to Ext.Element.applyStyles. Defaults to undefined. See also the setFieldStyle method for changing the style after initialization.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string FieldStyle 
-			{ 
-				get
-				{
-					return this.fieldStyle;
-				}
-				set
-				{
-					this.fieldStyle = value;
-				}
-			}
-        
-			private XTemplate fieldSubTpl = null;
-
-			/// <summary>
-			/// The content of the field body is defined by this config option.
-			/// </summary>
-			public XTemplate FieldSubTpl
-			{
-				get
-				{
-					if (this.fieldSubTpl == null)
-					{
-						this.fieldSubTpl = new XTemplate();
-					}
-			
-					return this.fieldSubTpl;
-				}
-			}
-			
-			private string focusCls = "x-form-focus";
-
-			/// <summary>
-			/// The CSS class to use when the field receives focus (defaults to 'x-form-focus')
-			/// </summary>
-			[DefaultValue("x-form-focus")]
-			public virtual string FocusCls 
-			{ 
-				get
-				{
-					return this.focusCls;
-				}
-				set
-				{
-					this.focusCls = value;
-				}
-			}
-
-			private string formItemCls = "x-form-item";
-
-			/// <summary>
-			/// A CSS class to be applied to the outermost element to denote that it is participating in the form field layout. Defaults to 'x-form-item'.
-			/// </summary>
-			[DefaultValue("x-form-item")]
-			public virtual string FormItemCls 
-			{ 
-				get
-				{
-					return this.formItemCls;
-				}
-				set
-				{
-					this.formItemCls = value;
-				}
-			}
-
-			private bool hideEmptyLabel = true;
-
-			/// <summary>
-			///  When set to true, the label element (fieldLabel and labelSeparator) will be automatically hidden if the fieldLabel is empty.
-			/// </summary>
-			[DefaultValue(true)]
-			public virtual bool HideEmptyLabel 
-			{ 
-				get
-				{
-					return this.hideEmptyLabel;
-				}
-				set
-				{
-					this.hideEmptyLabel = value;
-				}
-			}
-
-			private bool hideLabel = false;
-
-			/// <summary>
-			/// Set to true to completely hide the label element (fieldLabel and labelSeparator). Defaults to false.
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool HideLabel 
-			{ 
-				get
-				{
-					return this.hideLabel;
-				}
-				set
-				{
-					this.hideLabel = value;
-				}
-			}
-
-			private string inputID = "";
-
-			/// <summary>
-			/// The id that will be given to the generated input DOM element. Defaults to an automatically generated id. If you configure this manually, you must make sure it is unique in the document.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string InputID 
-			{ 
-				get
-				{
-					return this.inputID;
-				}
-				set
-				{
-					this.inputID = value;
-				}
-			}
-
-			private InputType inputType = InputType.Text;
-
-			/// <summary>
-			/// The type attribute for input fields.
-			/// </summary>
-			[DefaultValue(InputType.Text)]
-			public virtual InputType InputType 
-			{ 
-				get
-				{
-					return this.inputType;
-				}
-				set
-				{
-					this.inputType = value;
-				}
-			}
-
-			private string invalidCls = "x-form-invalid";
-
-			/// <summary>
-			/// The CSS class to use when marking the component invalid (defaults to 'x-form-invalid')
-			/// </summary>
-			[DefaultValue("x-form-invalid")]
-			public virtual string InvalidCls 
-			{ 
-				get
-				{
-					return this.invalidCls;
-				}
-				set
-				{
-					this.invalidCls = value;
+					this.invalidClass = value;
 				}
 			}
 
@@ -514,118 +241,28 @@ namespace Ext.Net
 				}
 			}
 
-			private LabelAlign labelAlign = LabelAlign.Left;
+			private string msgFx = "normal";
 
 			/// <summary>
-			/// Controls the position and alignment of the fieldLabel.
+			/// EXPERIMENTAL The effect used when displaying a validation message under the field (defaults to 'normal').
 			/// </summary>
-			[DefaultValue(LabelAlign.Left)]
-			public virtual LabelAlign LabelAlign 
+			[DefaultValue("normal")]
+			public virtual string MsgFx 
 			{ 
 				get
 				{
-					return this.labelAlign;
+					return this.msgFx;
 				}
 				set
 				{
-					this.labelAlign = value;
-				}
-			}
-
-			private string labelCls = "";
-
-			/// <summary>
-			/// The CSS class to be applied to the label element.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string LabelCls 
-			{ 
-				get
-				{
-					return this.labelCls;
-				}
-				set
-				{
-					this.labelCls = value;
-				}
-			}
-
-			private int labelPad = 5;
-
-			/// <summary>
-			/// The amount of space in pixels between the fieldLabel and the input field. Defaults to 5.
-			/// </summary>
-			[DefaultValue(5)]
-			public virtual int LabelPad 
-			{ 
-				get
-				{
-					return this.labelPad;
-				}
-				set
-				{
-					this.labelPad = value;
-				}
-			}
-
-			private string labelSeparator = ":";
-
-			/// <summary>
-			/// Character(s) to be inserted at the end of the label text.
-			/// </summary>
-			[DefaultValue(":")]
-			public virtual string LabelSeparator 
-			{ 
-				get
-				{
-					return this.labelSeparator;
-				}
-				set
-				{
-					this.labelSeparator = value;
-				}
-			}
-
-			private string labelStyle = "";
-
-			/// <summary>
-			/// A CSS style specification string to apply directly to this field's label. Defaults to undefined.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string LabelStyle 
-			{ 
-				get
-				{
-					return this.labelStyle;
-				}
-				set
-				{
-					this.labelStyle = value;
-				}
-			}
-
-			private int labelWidth = 100;
-
-			/// <summary>
-			/// The width of the fieldLabel in pixels. Only applicable if the labelAlign is set to \"left\" or \"right\". Defaults to 100.
-			/// </summary>
-			[DefaultValue(100)]
-			public virtual int LabelWidth 
-			{ 
-				get
-				{
-					return this.labelWidth;
-				}
-				set
-				{
-					this.labelWidth = value;
+					this.msgFx = value;
 				}
 			}
 
 			private MessageTarget msgTarget = MessageTarget.Qtip;
 
 			/// <summary>
-			/// The location where the error message text should display.
+			/// The location where error text should display. (defaults to 'Qtip').
 			/// </summary>
 			[DefaultValue(MessageTarget.Qtip)]
 			public virtual MessageTarget MsgTarget 
@@ -640,64 +277,10 @@ namespace Ext.Net
 				}
 			}
 
-			private string msgTargetElement = "";
-
-			/// <summary>
-			/// Add the error message directly to the innerHTML of the specified element.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string MsgTargetElement 
-			{ 
-				get
-				{
-					return this.msgTargetElement;
-				}
-				set
-				{
-					this.msgTargetElement = value;
-				}
-			}
-
-			private string name = "";
-
-			/// <summary>
-			/// The field's HTML name attribute (defaults to ''). Note: this property must be set if this field is to be automatically included with form submit().
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string Name 
-			{ 
-				get
-				{
-					return this.name;
-				}
-				set
-				{
-					this.name = value;
-				}
-			}
-
-			private bool preventMark = false;
-
-			/// <summary>
-			/// true to disable displaying any error message set on this object. Defaults to false.
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool PreventMark 
-			{ 
-				get
-				{
-					return this.preventMark;
-				}
-				set
-				{
-					this.preventMark = value;
-				}
-			}
-
 			private bool readOnly = false;
 
 			/// <summary>
-			/// true to mark the field as readOnly in HTML (defaults to false).
+			/// True to mark the field as readOnly in HTML (defaults to false) -- Note: this only sets the element's readOnly DOM attribute.
 			/// </summary>
 			[DefaultValue(false)]
 			public virtual bool ReadOnly 
@@ -712,39 +295,21 @@ namespace Ext.Net
 				}
 			}
 
-			private string readOnlyCls = "";
+			private bool preventMark = false;
 
 			/// <summary>
-			/// The CSS class applied to the component's main element when it is readOnly.
+			/// True to disable marking the field invalid
 			/// </summary>
-			[DefaultValue("")]
-			public virtual string ReadOnlyCls 
+			[DefaultValue(false)]
+			public virtual bool PreventMark 
 			{ 
 				get
 				{
-					return this.readOnlyCls;
+					return this.preventMark;
 				}
 				set
 				{
-					this.readOnlyCls = value;
-				}
-			}
-
-			private bool submitValue = true;
-
-			/// <summary>
-			/// Setting this to false will prevent the field from being submitted even when it is not disabled. Defaults to true.
-			/// </summary>
-			[DefaultValue(true)]
-			public virtual bool SubmitValue 
-			{ 
-				get
-				{
-					return this.submitValue;
-				}
-				set
-				{
-					this.submitValue = value;
+					this.preventMark = value;
 				}
 			}
 
@@ -769,7 +334,7 @@ namespace Ext.Net
 			private bool validateOnBlur = true;
 
 			/// <summary>
-			/// Whether the field should validate when it loses focus (defaults to true). This will cause fields to be validated as the user steps through the fields in the form regardless of whether they are making changes to those fields along the way. See also validateOnChange.
+			/// Whether the field should validate when it loses focus (defaults to true).
 			/// </summary>
 			[DefaultValue(true)]
 			public virtual bool ValidateOnBlur 
@@ -784,39 +349,57 @@ namespace Ext.Net
 				}
 			}
 
-			private bool validateOnChange = true;
+			private int validationDelay = 250;
 
 			/// <summary>
-			/// Specifies whether this field should be validated immediately whenever a change in its value is detected.
+			/// The length of time in milliseconds after user input begins until validation is initiated (defaults to 250).
 			/// </summary>
-			[DefaultValue(true)]
-			public virtual bool ValidateOnChange 
+			[DefaultValue(250)]
+			public virtual int ValidationDelay 
 			{ 
 				get
 				{
-					return this.validateOnChange;
+					return this.validationDelay;
 				}
 				set
 				{
-					this.validateOnChange = value;
+					this.validationDelay = value;
 				}
 			}
 
-			private bool preserveIndicatorIcon = false;
+			private string validationEvent = "";
 
 			/// <summary>
-			/// Preserve indicator icon place. Defaults to false
+			/// The event that should initiate field validation. Set to false to disable automatic validation (defaults to 'keyup').
 			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool PreserveIndicatorIcon 
+			[DefaultValue("")]
+			public virtual string ValidationEvent 
 			{ 
 				get
 				{
-					return this.preserveIndicatorIcon;
+					return this.validationEvent;
 				}
 				set
 				{
-					this.preserveIndicatorIcon = value;
+					this.validationEvent = value;
+				}
+			}
+
+			private bool validateOnEvent = true;
+
+			/// <summary>
+			/// Set to false to disable automatic validation
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool ValidateOnEvent 
+			{ 
+				get
+				{
+					return this.validateOnEvent;
+				}
+				set
+				{
+					this.validateOnEvent = value;
 				}
 			}
 
@@ -981,25 +564,25 @@ namespace Ext.Net
 					this.noteEncode = value;
 				}
 			}
-        
-			private JFunction getErrors = null;
+
+			private bool submitValue = true;
 
 			/// <summary>
-			/// Runs this field's validators and returns an array of error messages for any validation failures.
+			/// False to clear the name attribute on the field so that it is not submitted during a form post. If a hiddenName is specified, setting this to true will cause both the hidden field and the element to be submitted. Defaults to undefined.
 			/// </summary>
-			public JFunction GetErrors
-			{
+			[DefaultValue(true)]
+			public virtual bool SubmitValue 
+			{ 
 				get
 				{
-					if (this.getErrors == null)
-					{
-						this.getErrors = new JFunction();
-					}
-			
-					return this.getErrors;
+					return this.submitValue;
+				}
+				set
+				{
+					this.submitValue = value;
 				}
 			}
-			
+
 			private object value = null;
 
 			/// <summary>
@@ -1071,7 +654,25 @@ namespace Ext.Net
 					this.isRemoteValidation = value;
 				}
 			}
+        
+			private JFunction getErrors = null;
 
+			/// <summary>
+			/// Runs this field's validators and returns an array of error messages for any validation failures.
+			/// </summary>
+			public JFunction GetErrors
+			{
+				get
+				{
+					if (this.getErrors == null)
+					{
+						this.getErrors = new JFunction();
+					}
+			
+					return this.getErrors;
+				}
+			}
+			
         }
     }
 }

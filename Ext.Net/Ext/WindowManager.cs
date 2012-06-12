@@ -15,25 +15,22 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
+using System.Web;
 using System.ComponentModel;
 
 namespace Ext.Net
 {
 	/// <summary>
-	/// The default global floating Component group that is available automatically.
-    ///
-    /// This manages instances of floating Components which were rendered programatically without being added to a Container, and for floating Components which were added into non-floating Containers.
-    ///
-    /// Floating Containers create their own instance of ZIndexManager, and floating Components added at any depth below there are managed by that ZIndexManager.
+	/// 
 	/// </summary>
 	[Description("")]
     public partial class WindowManager : ScriptClass
@@ -67,66 +64,52 @@ namespace Ext.Net
             -----------------------------------------------------------------------------------------------*/
 
         /// <summary>
-        /// Brings the specified Component to the front of any other active Components in this ZIndexManager.
+        /// Brings the specified window to the front of any other active windows.
         /// </summary>
-        /// <param name="compID">The id of the Component or a Ext.Component instance</param>
-        public virtual void BringToFront(string compID)
+        /// <param name="windowID">The id of the window</param>
+        /// <returns>WindowMgr</returns>
+        public virtual void BringToFront(string windowID)
         {
-            this.Call("bringToFront", compID);
+            this.Call("bringToFront", windowID);
         }
 
         /// <summary>
-        /// Brings the specified Component to the front of any other active Components in this ZIndexManager.
+        /// Brings the specified window to the front of any other active windows.
         /// </summary>
-        /// <param name="comp">The id of the Component or a Ext.Component instance</param>
-        public virtual void BringToFront(AbstractComponent comp)
+        /// <param name="window">Window</param>
+        /// <returns>WindowMgr</returns>
+        public virtual void BringToFront(WindowBase window)
         {
-            this.BringToFront(comp.ClientID);
+            this.BringToFront(window.ClientID);
         }
 
         /// <summary>
-        /// Executes the specified function once for every Component in this ZIndexManager, passing each Component as the only parameter. Returning false from the function will stop the iteration.
+        /// Hides all windows in the group.
         /// </summary>
-        /// <param name="fn">The function to execute for each item</param>
-        public virtual void Each(JFunction fn)
-        {
-            this.Call("each", fn);
-        }
-
-        /// <summary>
-        /// Executes the specified function once for every Component in this ZIndexManager, passing each Component as the only parameter. Returning false from the function will stop the iteration.
-        /// </summary>
-        /// <param name="fn">The function to execute for each item</param>
-        /// <param name="scope">(optional) The scope (this reference) in which the function is executed. Defaults to the current Component in the iteration.</param>
-        public virtual void Each(JFunction fn, string scope)
-        {
-            this.Call("each", fn, new JRawValue(scope));
-        }
-
-        /// <summary>
-        /// Hides all Components managed by this ZIndexManager.
-        /// </summary>
+        /// <returns>WindowMgr</returns>
         public virtual void HideAll()
         {
             this.Call("hideAll");
         }
 
         /// <summary>
-        /// Sends the specified Component to the back of other active Components in this ZIndexManager.
+        /// Sends the specified window to the back of other active windows.
         /// </summary>
-        /// <param name="compID">The id of the Component or a Ext.Component instance</param>
-        public virtual void SendToBack(string compID)
+        /// <param name="windowID">The id of the window</param>
+        /// <returns>WindowMgr</returns>
+        public virtual void SendToBack(string windowID)
         {
-            this.Call("sendToBack", compID);
+            this.Call("sendToBack", windowID);
         }
 
         /// <summary>
-        /// Sends the specified Component to the back of other active Components in this ZIndexManager.
+        /// Sends the specified window to the back of other active windows.
         /// </summary>
-        /// <param name="comp">The id of the Component or a Ext.Component instance</param>
-        public virtual void SendToBack(AbstractComponent comp)
+        /// <param name="window">Window</param>
+        /// <returns>WindowMgr</returns>
+        public virtual void SendToBack(WindowBase window)
         {
-            this.SendToBack(comp.ClientID);
+            this.SendToBack(window.ClientID);
         }
     }
 }

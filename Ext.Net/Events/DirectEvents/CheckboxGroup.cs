@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,86 +33,30 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class CheckboxGroupDirectEvents : FieldContainerDirectEvents
+    public partial class CheckboxGroupDirectEvents : FieldDirectEvents
     {
-        public CheckboxGroupDirectEvents() { }
-
-        public CheckboxGroupDirectEvents(Observable parent) { this.Parent = parent; }
-
         private ComponentDirectEvent change;
 
         /// <summary>
-        /// Fires when a user-initiated change is detected in the value of the field.
-        /// Parameters
-        /// item : Ext.form.field.Field
-        /// newValue : Mixed
-        ///     The new value
-        /// oldValue : Mixed
-        ///     The original value
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
+        /// Fires when the state of a child checkbox changes.
         /// </summary>
-        [ListenerArgument(0, "item", typeof(Field), "this")]
-        [ListenerArgument(1, "newValue", typeof(object), "The new value")]
-        [ListenerArgument(2, "oldValue", typeof(object), "The original value")]
+        [ListenerArgument(0, "item", typeof(CheckboxGroup), "this")]
+        [ListenerArgument(1, "checked", typeof(object), "An array containing the checked boxes.")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("change", typeof(DirectEventJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when a user-initiated change is detected in the value of the field.")]
-        public virtual ComponentDirectEvent Change
+        [Description("Fires when the state of a child checkbox changes.")]
+        public override ComponentDirectEvent Change
         {
             get
             {
-                return this.change ?? (this.change = new ComponentDirectEvent(this));
-            }
-        }
+                if (this.change == null)
+                {
+                    this.change = new ComponentDirectEvent();
+                }
 
-        private ComponentDirectEvent dirtyChange;
-
-        /// <summary>
-        /// Fires when a change in the field's isDirty state is detected.
-        /// Parameters
-        /// item : Ext.form.field.Field
-        /// isDirty : Boolean
-        ///    Whether or not the field is now dirty
-        /// </summary>
-        [ListenerArgument(0, "item", typeof(Field), "this")]
-        [ListenerArgument(1, "newValue", typeof(object), "The new value")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("dirtychange", typeof(DirectEventJsonConverter))]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("Fires when a change in the field's isDirty state is detected.")]
-        public virtual ComponentDirectEvent DirtyChange
-        {
-            get
-            {
-                return this.dirtyChange ?? (this.dirtyChange = new ComponentDirectEvent(this));
-            }
-        }
-
-        private ComponentDirectEvent validityChange;
-
-        /// <summary>
-        /// Fires when a change in the field's validity is detected.
-        /// Parameters
-        /// item : Ext.form.field.Field
-        /// isValid : Boolean
-        ///     Whether or not the field is now valid
-        /// </summary>
-        [ListenerArgument(0, "item", typeof(Field), "this")]
-        [ListenerArgument(1, "isValid", typeof(bool), "")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("validitychange", typeof(DirectEventJsonConverter))]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("Fires when a change in the field's validity is detected.")]
-        public virtual ComponentDirectEvent ValidityChange
-        {
-            get
-            {
-                return this.validityChange ?? (this.validityChange = new ComponentDirectEvent(this));
+                return this.change;
             }
         }
     }

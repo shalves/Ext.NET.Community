@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -29,7 +29,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Web.UI;
-using Ext.Net.Utilities;
 
 namespace Ext.Net
 {
@@ -72,7 +71,18 @@ namespace Ext.Net
         [Description("")]
         public string ToScript(Control owner)
         {
-            return "Ext.History.initEx({0});".FormatWith(new ClientConfig().Serialize(this, true));
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendFormat("Ext.apply(Ext.History, {0});", new ClientConfig().Serialize(this, true));
+            
+            if (this.IsIdRequired)
+            {
+                sb.AppendFormat("this.{0} = Ext.History;", this.ClientID);
+            }
+            
+            sb.Append("Ext.History.init();");
+
+            return sb.ToString();
         }
 
         /// <summary>
@@ -113,6 +123,60 @@ namespace Ext.Net
             }
         }
 
+        /// <summary>
+        /// False to don't render form tags. By default check ASP.NET form and if it is absent then render form.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("3. History")]
+        [DefaultValue(true)]
+        [Description("False to don't render form tags. By default check ASP.NET form and if it is absent then render form.")]
+        public virtual bool RenderForm
+        {
+            get
+            {
+                object obj = this.ViewState["RenderForm"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["RenderForm"] = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="writer"></param>
+        [Description("")]
+        protected override void Render(HtmlTextWriter writer)
+        {
+            base.Render(writer);
+
+            if (!this.IsInForm && this.RenderForm)
+            {
+                writer.Write("<form id=\"history-form\" class=\"x-hidden\">");
+            }
+            else
+            {
+                writer.Write("<div class=\"x-hidden\">");
+            }
+
+            string src = X.IsSecureConnection && X.IsIE ? "javascript:''" : "about:blank";
+
+            writer.Write("<input type=\"hidden\" id=\"x-history-field\" />");
+            writer.Write(string.Format("<iframe id=\"x-history-frame\" src=\"{0}\"></iframe>", src));
+
+            if (!this.IsInForm && this.RenderForm)
+            {
+                writer.Write("</form>");
+            }
+            else
+            {
+                writer.Write("</div>");
+            }
+        }
+
         private HistoryListeners listeners;
 
         /// <summary>
@@ -123,7 +187,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public HistoryListeners Listeners
         {
@@ -149,7 +214,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side DirectEventHandlers")]
         public HistoryDirectEvents DirectEvents
         {
@@ -157,7 +223,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new HistoryDirectEvents(this);
+                    this.directEvents = new HistoryDirectEvents();
                 }
 
                 return this.directEvents;

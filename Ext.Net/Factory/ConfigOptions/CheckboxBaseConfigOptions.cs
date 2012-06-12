@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,9 +36,6 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class CheckboxBase
     {
         /// <summary>
@@ -56,13 +53,14 @@ namespace Ext.Net
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
                 list.Add("boxLabel", new ConfigOption("boxLabel", null, "", this.BoxLabel ));
-                list.Add("boxLabelAlign", new ConfigOption("boxLabelAlign", null, BoxLabelAlign.After, this.BoxLabelAlign ));
                 list.Add("boxLabelStyle", new ConfigOption("boxLabelStyle", null, "", this.BoxLabelStyle ));
-                list.Add("boxLabelCls", new ConfigOption("boxLabelCls", new SerializationOptions("boxLabelClsExtra"), "", this.BoxLabelCls ));
-                list.Add("checkedCls", new ConfigOption("checkedCls", null, "", this.CheckedCls ));
+                list.Add("boxLabelCls", new ConfigOption("boxLabelCls", null, "", this.BoxLabelCls ));
+                list.Add("checkedCls", new ConfigOption("checkedCls", null, "x-form-check-checked", this.CheckedCls ));
+                list.Add("focusCls", new ConfigOption("focusCls", null, "x-form-check-focus", this.FocusCls ));
                 list.Add("inputValue", new ConfigOption("inputValue", null, "", this.InputValue ));
+                list.Add("mouseDownCls", new ConfigOption("mouseDownCls", null, "x-form-check-down", this.MouseDownCls ));
+                list.Add("overCls", new ConfigOption("overCls", null, "x-form-check-over", this.OverCls ));
                 list.Add("tag", new ConfigOption("tag", null, "", this.Tag ));
-                list.Add("uncheckedValue", new ConfigOption("uncheckedValue", null, null, this.UncheckedValue ));
 
                 return list;
             }

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -27,7 +27,10 @@
 using System.ComponentModel;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
+
+using Ext.Net.Utilities;
 using System;
 
 namespace Ext.Net
@@ -40,6 +43,80 @@ namespace Ext.Net
     {
         private readonly Stream response;
         private readonly StringBuilder html;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string OPEN_SCRIPT_TAG = "<Ext.Net.InitScript>";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string CLOSE_SCRIPT_TAG = "</Ext.Net.InitScript>";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string OPEN_SCRIPT_FILES_TAG = "<Ext.Net.InitScriptFiles>";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string CLOSE_SCRIPT_FILES_TAG = "</Ext.Net.InitScriptFiles>";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string OPEN_STYLE_TAG = "<Ext.Net.InitStyle>";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string CLOSE_STYLE_TAG = "</Ext.Net.InitStyle>";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string OPEN_WARNING_TAG = "<Ext.Net.InitScript.Warning>";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string CLOSE_WARNING_TAG = "</Ext.Net.InitScript.Warning>";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string INIT_SCRIPT_PLACEHOLDER = "<Ext.Net.InitScriptPlaceholder />";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string INIT_SCRIPT_FILES_PLACEHOLDER = "<Ext.Net.ScriptFilesPlaceholder />";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string CONFIG_SCRIPT_PLACEHOLDER = "<Ext.Net.ConfigScriptPlaceholder />";
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public const string INIT_STYLE_PLACEHOLDER = "<Ext.Net.InitStylePlaceholder />";
+        //private const string REMOVE_VIEWSTATE_PATTERN = "<div>[\\r|\\t|\\s]*<input.*name=\"__EVENTVALIDATION\"[^>].*/>[\\r|\\t|\\s]*</div>|<input.*name=\"__(VIEWSTATE|VIEWSTATEENCRYPTED)\"[^>].*/>|<script[^>]*>[\\w|\\t|\\r|\\W]*?function __doPostBack[\\w|\\t|\\r|\\W]*?</script>";
+        private const string REMOVE_VIEWSTATE_PATTERN = "<div>[\\r|\\t|\\s]*<input.*name=\"__EVENTVALIDATION\"[^>].*/>[\\r|\\t|\\s]*</div>|<input.*name=\"__(VIEWSTATE|VIEWSTATEENCRYPTED)\"[^>].*/>";
 
 		/// <summary>
 		/// 
@@ -72,25 +149,78 @@ namespace Ext.Net
                 return;  
             }
 
-            this.Transform();       
-            
-            byte[] data = Encoding.UTF8.GetBytes(this.html.ToString());
+            var start = DateTime.Now.Ticks;
+
+            if (ResourceManager.DisableViewStateStatic)
+            {
+                this.RemoveViewState();
+            }
+
+            this.RemoveWarning();
+
+            this.ReplacePlaceHolder(InitScriptFilter.INIT_SCRIPT_PLACEHOLDER, OPEN_SCRIPT_TAG, CLOSE_SCRIPT_TAG);
+            this.ReplacePlaceHolder(InitScriptFilter.CONFIG_SCRIPT_PLACEHOLDER, OPEN_SCRIPT_TAG, CLOSE_SCRIPT_TAG);
+            this.ReplacePlaceHolder(InitScriptFilter.INIT_SCRIPT_FILES_PLACEHOLDER, OPEN_SCRIPT_FILES_TAG, CLOSE_SCRIPT_FILES_TAG);
+            this.ReplacePlaceHolder(InitScriptFilter.INIT_STYLE_PLACEHOLDER, OPEN_STYLE_TAG, CLOSE_STYLE_TAG);
+
+            //var end = DateTime.Now.Ticks;
+            //string ticksMsg = string.Format("ticks({0});", TimeSpan.FromTicks(end - start).TotalMilliseconds);
+            //this.html.Replace("Ext.onReady(function(){", "Ext.onReady(function(){" + ticksMsg);
+
+            byte[] data = System.Text.Encoding.UTF8.GetBytes(this.html.ToString());
             this.response.Write(data, 0, data.Length);
             this.response.Flush();
         }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        protected virtual void Transform()
+
+        private static Regex ViewState_RE = new Regex(InitScriptFilter.REMOVE_VIEWSTATE_PATTERN, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private void RemoveViewState()
         {
-            //var start = DateTime.Now.Ticks;
-            string h = ExtNetTransformer.Transform(this.html.ToString());
-            this.html.Remove(0, this.html.Length);
-            this.html.Append(h);
-            //var end = DateTime.Now.Ticks;            
-            //string ticksMsg = string.Format("ticks({0});",TimeSpan.FromTicks(end - start).TotalMilliseconds);
-            //this.html.Replace("Ext.onReady(function(){", "Ext.onReady(function(){"+ticksMsg);
+            foreach (Match match in ViewState_RE.Matches(this.html.ToString()))
+            {
+                this.html.Replace(match.Value, "");
+            }
+        }
+
+        private void RemoveWarning()
+        {
+            int start = this.html.ToString().IndexOf(InitScriptFilter.OPEN_WARNING_TAG);
+
+            if (start >= 0)
+            {
+                int end = this.html.ToString().IndexOf(InitScriptFilter.CLOSE_WARNING_TAG) + InitScriptFilter.CLOSE_WARNING_TAG.Length;
+                this.html.Remove(start, end - start);
+            }
+        }
+
+        private void ReplacePlaceHolder(string placeHolderMarker, string openTag, string closeTag)
+        {
+            int index = this.html.ToString().IndexOf(placeHolderMarker);
+
+            if (index >= 0)
+            {
+                string script = this.html.ToString().RightOf(openTag).LeftOf(closeTag);
+
+                if (script.IsNotEmpty())
+                {
+                    int start = this.html.ToString().IndexOf(openTag);
+                    int end = this.html.ToString().IndexOf(closeTag) + closeTag.Length;
+                    this.html.Remove(start, end - start);
+
+                    if (index > start)
+                    {
+                        index = this.html.ToString().IndexOf(placeHolderMarker);
+                    }
+                    
+                    //Probably better perfomance because we don't need to search marker again, we know its index
+                    this.html.Remove(index, placeHolderMarker.Length);
+                    this.html.Insert(index, script);
+                }
+                else
+                {
+                    this.html.Remove(index, placeHolderMarker.Length);
+                }
+            }
         }
 
 		/// <summary>

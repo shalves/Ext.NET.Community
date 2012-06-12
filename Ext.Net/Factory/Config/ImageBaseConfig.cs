@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,19 +33,52 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public abstract partial class ImageBase
     {
         /// <summary>
         /// 
         /// </summary>
-        new public abstract partial class Config : ComponentBase.Config 
+        new public abstract partial class Config : BoxComponentBase.Config 
         { 
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
+			private Unit height = Unit.Empty;
+
+			/// <summary>
+			/// The height of this component in pixels (defaults to auto).
+			/// </summary>
+			[DefaultValue(typeof(Unit), "")]
+			public override Unit Height 
+			{ 
+				get
+				{
+					return this.height;
+				}
+				set
+				{
+					this.height = value;
+				}
+			}
+
+			private Unit width = Unit.Empty;
+
+			/// <summary>
+			/// The width of this component in pixels (defaults to auto).
+			/// </summary>
+			[DefaultValue(typeof(Unit), "")]
+			public override Unit Width 
+			{ 
+				get
+				{
+					return this.width;
+				}
+				set
+				{
+					this.width = value;
+				}
+			}
+
 			private string imageUrl = "";
 
 			/// <summary>
@@ -154,6 +187,24 @@ namespace Ext.Net
 				}
 			}
 
+			private bool resizable = false;
+
+			/// <summary>
+			/// true to allow resize the image
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool Resizable 
+			{ 
+				get
+				{
+					return this.resizable;
+				}
+				set
+				{
+					this.resizable = value;
+				}
+			}
+
 			private int monitorPoll = 200;
 
 			/// <summary>
@@ -171,7 +222,25 @@ namespace Ext.Net
 					this.monitorPoll = value;
 				}
 			}
+        
+			private Resizable resizeConfig = null;
 
+			/// <summary>
+			/// Resize object config
+			/// </summary>
+			public Resizable ResizeConfig
+			{
+				get
+				{
+					if (this.resizeConfig == null)
+					{
+						this.resizeConfig = new Resizable();
+					}
+			
+					return this.resizeConfig;
+				}
+			}
+			
 			private int xDelta = 0;
 
 			/// <summary>

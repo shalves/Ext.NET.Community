@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class FieldSet
     {
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : AbstractContainer.Builder<FieldSet, FieldSet.Builder>
+        public partial class Builder : Panel.Builder<FieldSet, FieldSet.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -78,7 +75,16 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
-			/// The name to assign to the fieldset's checkbox if checkboxToggle = true (defaults to '[fieldset id]-checkbox').
+			/// True to render a checkbox into the fieldset frame just in front of the legend (defaults to false). The fieldset will be expanded or collapsed when the checkbox is toggled.
+			/// </summary>
+            public virtual FieldSet.Builder AnimCollapse(bool animCollapse)
+            {
+                this.ToComponent().AnimCollapse = animCollapse;
+                return this as FieldSet.Builder;
+            }
+             
+ 			/// <summary>
+			/// True to render a checkbox into the fieldset frame just in front of the legend (defaults to false). The fieldset will be expanded or collapsed when the checkbox is toggled.
 			/// </summary>
             public virtual FieldSet.Builder CheckboxName(string checkboxName)
             {
@@ -87,7 +93,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// Set to true to render a checkbox into the fieldset frame just in front of the legend to expand/collapse the fieldset when the checkbox is toggled. (defaults to false). This checkbox will be included in form submits using the checkboxName.
+			/// True to render a checkbox into the fieldset frame just in front of the legend (defaults to false). The fieldset will be expanded or collapsed when the checkbox is toggled.
 			/// </summary>
             public virtual FieldSet.Builder CheckboxToggle(bool checkboxToggle)
             {
@@ -96,54 +102,32 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// Set to true to render the fieldset as collapsed by default. If checkboxToggle is specified, the checkbox will also be unchecked by default.
+			/// A css class to apply to the x-form-items of fields. This property cascades to child containers.
 			/// </summary>
-            public virtual FieldSet.Builder Collapsed(bool collapsed)
+            public virtual FieldSet.Builder ItemCls(string itemCls)
             {
-                this.ToComponent().Collapsed = collapsed;
+                this.ToComponent().ItemCls = itemCls;
                 return this as FieldSet.Builder;
             }
              
  			/// <summary>
-			/// Set to true to make the fieldset collapsible and have the expand/collapse toggle button automatically rendered into the legend element, false to keep the fieldset statically sized with no collapse button (defaults to false). Another option is to configure checkboxToggle. Use the collapsed config to collapse the fieldset by default.
+			/// The width of labels. This property cascades to child containers.
 			/// </summary>
-            public virtual FieldSet.Builder Collapsible(bool collapsible)
+            public virtual FieldSet.Builder LabelWidth(int labelWidth)
             {
-                this.ToComponent().Collapsible = collapsible;
+                this.ToComponent().LabelWidth = labelWidth;
                 return this as FieldSet.Builder;
             }
              
  			/// <summary>
-			/// A title to be displayed in the fieldset's legend. May contain HTML markup.
+			/// The Ext.Container.layout to use inside the fieldset (defaults to 'form').
 			/// </summary>
-            public virtual FieldSet.Builder Title(string title)
+            public virtual FieldSet.Builder Layout(string layout)
             {
-                this.ToComponent().Title = title;
+                this.ToComponent().Layout = layout;
                 return this as FieldSet.Builder;
             }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of FieldSet.Builder</returns>
-            public virtual FieldSet.Builder Listeners(Action<FieldSetListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as FieldSet.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of FieldSet.Builder</returns>
-            public virtual FieldSet.Builder DirectEvents(Action<FieldSetDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as FieldSet.Builder;
-            }
-			
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

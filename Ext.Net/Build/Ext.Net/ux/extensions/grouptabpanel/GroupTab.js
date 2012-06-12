@@ -26,7 +26,7 @@ Ext.ux.GroupTab = Ext.extend(Ext.Container, {
             this.activeTabField = new Ext.form.Hidden({ 
                 id    : this.id + "_ActiveTab", 
                 name  : this.id + "_ActiveTab", 
-                value : this.id + ":" + (this.activeTab || 0)
+                value : this.id + ":" + (this.activeTab || -1)
             });
 
 			this.on("beforedestroy", function () { 
@@ -170,10 +170,11 @@ Ext.ux.GroupTab = Ext.extend(Ext.Container, {
     afterRender: function () {
         Ext.ux.GroupTab.superclass.afterRender.call(this);
         
-        if (this.activeTab !== undefined) {
+        if (this.activeTab !== null) {
             var item = (typeof this.activeTab == 'object') ? this.activeTab : this.items.get(this.activeTab);
             delete this.activeTab;
             this.setActiveTab(item);
+            this.activeTabInitiated = true;
         }
     },
     

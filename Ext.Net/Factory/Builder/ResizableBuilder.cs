@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class Resizable
     {
         /// <summary>
@@ -311,39 +308,33 @@ namespace Ext.Net
                 return this as Resizable.Builder;
             }
              
- 			/// <summary>
-			/// Performs resizing of the associated Element. 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Resizable.Builder</returns>
-            public virtual Resizable.Builder ResizeElement(Action<JFunction> action)
-            {
-                action(this.ToComponent().ResizeElement);
-                return this as Resizable.Builder;
-            }
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Resizable.Builder</returns>
-            public virtual Resizable.Builder Listeners(Action<ResizableListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as Resizable.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEventHandlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Resizable.Builder</returns>
-            public virtual Resizable.Builder DirectEvents(Action<ResizableDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as Resizable.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// Performs resizing of the associated Element. 
+			// /// </summary>
+            // public virtual TBuilder ResizeElement(JFunction resizeElement)
+            // {
+            //    this.ToComponent().ResizeElement = resizeElement;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(ResizableListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side DirectEventHandlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(ResizableDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,6 +25,9 @@
  ********/
 
 using System.ComponentModel;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using Ext.Net.Utilities;
 
 namespace Ext.Net
 {
@@ -33,7 +36,7 @@ namespace Ext.Net
     /// </summary>
     [Meta]
     [Description("")]
-    public abstract partial class MenuBase : AbstractPanel, INoneContentable
+    public abstract partial class MenuBase : ContainerBase
     {
 		/// <summary>
 		/// 
@@ -47,10 +50,10 @@ namespace Ext.Net
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        [Description("")]
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
         public override bool IsDefault
         {
             get
@@ -68,6 +71,96 @@ namespace Ext.Net
             set;
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        protected override bool UseDefaultLayout
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// The default type of content Container represented by this object as registered in Ext.ComponentMgr (defaults to 'panel').
+        /// </summary>
+        [Meta]
+        [Category("5. Container")]
+        [DefaultValue("MenuItem")]
+        [NotifyParentProperty(true)]
+        [Description("The default type of content Container represented by this object as registered in Ext.ComponentMgr (defaults to 'panel').")]
+        public override string DefaultType
+        {
+            get
+            {
+                return (string)this.ViewState["DefaultType"] ?? "MenuItem";
+            }
+            set
+            {
+                this.ViewState["DefaultType"] = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigOption("defaultType")]
+        [DefaultValue("menuitem")]
+        [Description("")]
+        protected override string DefaultTypeProxy
+        {
+            get
+            {
+                return base.DefaultTypeProxy;
+            }
+        }
+
+        /// <summary>
+        /// Whenever a menu gets so long that the items won't fit the viewable area, it provides the user with an easy UI to scroll the menu.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. Menu")]
+        [DefaultValue(false)]
+        [NotifyParentProperty(true)]
+        [Description("Whenever a menu gets so long that the items won't fit the viewable area, it provides the user with an easy UI to scroll the menu.")]
+        public virtual bool EnableScrolling
+        {
+            get
+            {
+                object obj = this.ViewState["EnableScrolling"];
+                return (obj == null) ? false : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["EnableScrolling"] = value;
+            }
+        }
+
+        /// <summary>
+        /// By default, a Menu configured as floating:true will be rendered as an Ext.Layer (an absolutely positioned, floating Component with zindex=15000). If configured as floating:false, the Menu may be used as child item of another Container instead of a free-floating Layer.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. Menu")]
+        [DefaultValue(true)]
+        [NotifyParentProperty(true)]
+        [Description("By default, a Menu configured as floating:true will be rendered as an Ext.Layer (an absolutely positioned, floating Component with zindex=15000). If configured as floating:false, the Menu may be used as child item of another Container instead of a free-floating Layer.")]
+        public virtual bool Floating
+        {
+            get
+            {
+                object obj = this.ViewState["Floating"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["Floating"] = value;
+            }
+        }
+
         /// <summary>
         /// True to allow multiple menus to be displayed at the same time (defaults to false).
         /// </summary>
@@ -81,126 +174,181 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("AllowOtherMenus", false);
+                object obj = this.ViewState["AllowOtherMenus"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("AllowOtherMenus", value);
+                this.ViewState["AllowOtherMenus"] = value;
             }
         }
 
         /// <summary>
-        /// The default Ext.Element#getAlignToXY anchor position value for this menu relative to its element of origin. Defaults to: "tl-bl?"
+        /// The default Ext.Element.alignTo anchor position value for this menu relative to its element of origin (defaults to \"tl-bl?\")
         /// </summary>
         [Meta]
-        [ConfigOption]
         [Category("6. Menu")]
-        [DefaultValue("tl-bl?")]
+        [DefaultValue("")]
         [NotifyParentProperty(true)]
-        [Description("The default Ext.Element#getAlignToXY anchor position value for this menu relative to its element of origin. Defaults to: \"tl-bl?\"")]
+        [Description("The default Ext.Element.alignTo anchor position value for this menu relative to its element of origin (defaults to \"tl-bl?\")")]
         public virtual string DefaultAlign
         {
             get
             {
-                return this.State.Get<string>("DefaultAlign", "tl-bl?");
+                return (string)this.ViewState["DefaultAlign"] ?? "";
             }
             set
             {
-                this.State.Set("DefaultAlign", value);
+                this.ViewState["DefaultAlign"] = value;
             }
         }
 
         /// <summary>
-        /// The default type of content Container represented by this object as registered in Ext.ComponentMgr (defaults to 'panel').
+        /// X offset in pixels by which to change the default Menu popup position after aligning according to the defaultAlign configuration. 
         /// </summary>
+        [Meta]
         [ConfigOption]
-        [Category("5. Container")]
-        [DefaultValue("menuitem")]
+        [Category("6. Menu")]
+        [DefaultValue(0)]
         [NotifyParentProperty(true)]
-        [Description("The default type of content Container represented by this object as registered in Ext.ComponentMgr (defaults to 'panel').")]
-        public override string DefaultType
+        [Description("X offset in pixels by which to change the default Menu popup position after aligning according to the defaultAlign configuration.")]
+        public virtual int OffsetX
         {
             get
             {
-                return this.State.Get<string>("DefaultType", "menuitem");
+                object obj = this.ViewState["OffsetX"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("DefaultType", value);
+                this.ViewState["OffsetX"] = value;
             }
         }
 
         /// <summary>
-        /// A Menu configured as floating: true (the default) will be rendered as an absolutely positioned, floating Component. If configured as floating: false, the Menu may be used as a child item of another Container. Defaults to: true
-        /// </summary>        
+        /// Y offset in pixels by which to change the default Menu popup position after aligning according to the defaultAlign configuration. 
+        /// </summary>
+        [Meta]
+        [ConfigOption]
         [Category("6. Menu")]
-        [DefaultValue(true)]
+        [DefaultValue(0)]
         [NotifyParentProperty(true)]
-        [Description("A Menu configured as floating: true (the default) will be rendered as an absolutely positioned, floating Component. If configured as floating: false, the Menu may be used as a child item of another Container. Defaults to: true")]
-        public override bool Floating
+        [Description("Y offset in pixels by which to change the default Menu popup position after aligning according to the defaultAlign configuration.")]
+        public virtual int OffsetY
         {
             get
             {
-                return this.State.Get<bool>("Floating", true);
+                object obj = this.ViewState["OffsetY"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("Floating", value);
+                this.ViewState["OffsetY"] = value;
             }
         }
 
         /// <summary>
         /// 
-        /// </summary>        
-        [DefaultValue(true)]
-        [ConfigOption("floating")]
-        protected override bool FloatingProxy
+        /// </summary>
+        [ConfigOption(JsonMode.Raw)]
+        [DefaultValue("")]
+        [Description("")]
+        protected internal string DefaultOffsets
         {
             get
             {
-                return this.Floating && (this.FloatingConfig == null || this.FloatingConfig.Serialize(false) == Const.EmptyObject) ? true : false;
+                if (this.OffsetX == 0 && this.OffsetY == 0)
+                {
+                    return "";
+                }
+
+                return "[".ConcatWith(this.OffsetX, ",", this.OffsetY, "]");
             }
         }
 
         /// <summary>
-        /// True to ignore clicks on any item in this menu that is a parent item (displays a submenu) so that the submenu is not dismissed when clicking the parent item. Defaults to: false
+        /// True to ignore clicks on any item in this menu that is a parent item (displays a submenu) so that the submenu is not dismissed when clicking the parent item (defaults to false).
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("6. Menu")]
         [DefaultValue(false)]
         [NotifyParentProperty(true)]
-        [Description("True to ignore clicks on any item in this menu that is a parent item (displays a submenu) so that the submenu is not dismissed when clicking the parent item. Defaults to: false")]
+        [Description("True to ignore clicks on any item in this menu that is a parent item (displays a submenu) so that the submenu is not dismissed when clicking the parent item (defaults to false).")]
         public virtual bool IgnoreParentClicks
         {
             get
             {
-                return this.State.Get<bool>("IgnoreParentClicks", false);
+                object obj = this.ViewState["IgnoreParentClicks"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
-            {                
-                this.State.Set("IgnoreParentClicks", value);
+            {
+                this.ViewState["IgnoreParentClicks"] = value;
             }
         }
 
         /// <summary>
-        /// True to remove the incised line down the left side of the menu and to not indent general Component items. Defaults to: false
+        /// The minimum width of the menu in pixels (defaults to 120).
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("6. Menu")]
-        [DefaultValue(false)]
+        [DefaultValue(typeof(Unit), "120")]
         [NotifyParentProperty(true)]
-        [Description("True to remove the incised line down the left side of the menu and to not indent general Component items. Defaults to: false")]
-        public virtual bool Plain
+        [Description("The minimum width of the menu in pixels (defaults to 120).")]
+        public override Unit MinWidth
         {
             get
             {
-                return this.State.Get<bool>("Plain", false);
+                return this.UnitPixelTypeCheck(ViewState["MinWidth"], Unit.Pixel(120), "MinWidth");
             }
             set
             {
-                this.State.Set("Plain", value);
+                this.ViewState["MinWidth"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The maximum height of the menu. Only applies when enableScrolling is set to True (defaults to null).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. Menu")]
+        [DefaultValue(typeof(Unit), "")]
+        [NotifyParentProperty(true)]
+        [Description("The maximum height of the menu. Only applies when enableScrolling is set to True (defaults to null).")]
+        public override Unit MaxHeight
+        {
+            get
+            {
+                return this.UnitPixelTypeCheck(ViewState["MaxHeight"], Unit.Empty, "MaxHeight");
+            }
+            set
+            {
+                this.ViewState["MaxHeight"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The amount to scroll the menu. Only applies when enableScrolling is set to True (defaults to 24).
+        /// </summary>
+        [Meta]
+        [ConfigOption(JsonMode.Raw)]
+        [Category("6. Menu")]
+        [DefaultValue(24)]
+        [NotifyParentProperty(true)]
+        [Description("The amount to scroll the menu. Only applies when enableScrolling is set to True (defaults to 24).")]
+        public virtual int ScrollIncrement
+        {
+            get
+            {
+                object obj = this.ViewState["ScrollIncrement"];
+                return (obj == null) ? 24 : (int)obj;
+            }
+            set
+            {
+                this.ViewState["ScrollIncrement"] = value;
             }
         }
 
@@ -217,11 +365,55 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("ShowSeparator", true);
+                object obj = this.ViewState["ShowSeparator"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("ShowSeparator", value);
+                this.ViewState["ShowSeparator"] = value;
+            }
+        }
+
+        /// <summary>
+        /// True or \"sides\" for the default effect, \"frame\" for 4-way shadow, and \"drop\" for bottom-right shadow (defaults to \"sides\")
+        /// </summary>
+        [Meta]
+        [ConfigOption(typeof(ShadowJsonConverter))]
+        [Category("6. Menu")]
+        [DefaultValue(ShadowMode.Sides)]
+        [NotifyParentProperty(true)]
+        [Description("True or \"sides\" for the default effect, \"frame\" for 4-way shadow, and \"drop\" for bottom-right shadow (defaults to \"sides\")")]
+        public virtual ShadowMode Shadow
+        {
+            get
+            {
+                object obj = this.ViewState["Shadow"];
+                return (obj == null) ? ShadowMode.Sides : (ShadowMode)obj;
+            }
+            set
+            {
+                this.ViewState["Shadow"] = value;
+            }
+        }
+
+        /// <summary>
+        /// The Ext.Element.alignTo anchor position value to use for submenus of this menu (defaults to \"tl-tr?\")
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. Menu")]
+        [DefaultValue("")]
+        [NotifyParentProperty(true)]
+        [Description("The Ext.Element.alignTo anchor position value to use for submenus of this menu (defaults to \"tl-tr?\")")]
+        public virtual string SubMenuAlign
+        {
+            get
+            {
+                return (string)this.ViewState["SubMenuAlign"] ?? "";
+            }
+            set
+            {
+                this.ViewState["SubMenuAlign"] = value;
             }
         }
 
@@ -237,11 +429,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("DisableMenuNavigation", false);
+                object obj = this.ViewState["DisableMenuNavigation"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("DisableMenuNavigation", value);
+                this.ViewState["DisableMenuNavigation"] = value;
             }
         }
 
@@ -258,11 +451,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("RenderToForm", false);
+                object obj = this.ViewState["RenderToForm"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("RenderToForm", value);
+                this.ViewState["RenderToForm"] = value;
             }
         }
 
@@ -285,45 +479,49 @@ namespace Ext.Net
             -----------------------------------------------------------------------------------------------*/
 
         /// <summary>
-        /// Deactivates the current active item on the menu, if one exists.
+        /// Hides this menu and optionally all parent menus
         /// </summary>
+        /// <param name="deep">True to hide all parent menus recursively, if any</param>
         [Meta]
-        public virtual void DeactivateActiveItem()
+        [Description("Hides this menu and optionally all parent menus")]
+        public virtual void Hide(bool deep)
         {
-            this.Call("deactivateActiveItem");
+            this.Call("hide", deep);
         }
 
         /// <summary>
-        /// Shows the floating menu by the specified Component or Element.
+        /// Displays this menu relative to another element
         /// </summary>
-        /// <param name="element">The Ext.Component or Ext.Element to show the menu by.</param>
-        /// <param name="position">Alignment position as used by Ext.Element.getAlignToXY. Defaults to defaultAlign.</param>
-        /// <param name="offsets">Alignment offsets as used by Ext.Element.getAlignToXY. Defaults to undefined.</param>
+        /// <param name="element">The element to align to</param>
+        /// <param name="position">The Ext.Element.alignTo anchor position to use in aligning to the element</param>
         [Meta]
-        public virtual void ShowBy(string element, string position, int[] offsets)
-        {            
-            this.Call("show", new JRawValue(element), position, offsets);
-        }
-
-        /// <summary>
-        /// Shows the floating menu by the specified Component or Element.
-        /// </summary>
-        /// <param name="element">The Ext.Component or Ext.Element to show the menu by.</param>
-        /// <param name="position">Alignment position as used by Ext.Element.getAlignToXY. Defaults to defaultAlign.</param>
-        [Meta]
-        public virtual void ShowBy(string element, string position)
+        [Description("Displays this menu relative to another element")]
+        public virtual void Show(string element, string position)
         {
             this.Call("show", new JRawValue(element), position);
         }
 
         /// <summary>
-        /// Shows the floating menu by the specified Component or Element.
+        /// Displays this menu relative to another element
         /// </summary>
-        /// <param name="element">The Ext.Component or Ext.Element to show the menu by.</param>
+        /// <param name="element">The element to align to</param>
         [Meta]
-        public virtual void ShowBy(string element)
+        [Description("Displays this menu relative to another element")]
+        public virtual void Show(string element)
         {
             this.Call("show", new JRawValue(element));
+        }
+
+        /// <summary>
+        /// Displays this menu at a specific xy position
+        /// </summary>
+        /// <param name="x">Contains [x] value for the position at which to show the menu (coordinates are page-based)</param>
+        /// <param name="y">Contains [y] value for the position at which to show the menu (coordinates are page-based)</param>
+        [Meta]
+        [Description("Displays this menu at a specific xy position")]
+        public virtual void ShowAt(int x, int y)
+        {
+            this.Call("showAt", new int[] { x, y });
         }
     }
 }

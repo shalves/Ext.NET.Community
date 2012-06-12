@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class ToolTip
     {
         /// <summary>
@@ -78,25 +75,7 @@ namespace Ext.Net
 				-----------------------------------------------------------------------------------------------*/
 			 
  			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ToolTip.Builder ForceRendering(bool forceRendering)
-            {
-                this.ToComponent().ForceRendering = forceRendering;
-                return this as ToolTip.Builder;
-            }
-             
- 			/// <summary>
-			/// If specified, indicates that the tip should be anchored to a particular side of the target element or mouse pointer (\"top\", \"right\", \"bottom\", or \"left\"), with an arrow pointing back at the target or mouse pointer. If constrainPosition is enabled, this will be used as a preferred value only and may be flipped as needed.
-			/// </summary>
-            public virtual ToolTip.Builder Anchor(string anchor)
-            {
-                this.ToComponent().Anchor = anchor;
-                return this as ToolTip.Builder;
-            }
-             
- 			/// <summary>
-			/// A numeric pixel value used to offset the default position of the anchor arrow. When the anchor position is on the top or bottom of the tooltip, anchorOffset will be used as a horizontal offset. Likewise, when the anchor position is on the left or right side, anchorOffset will be used as a vertical offset. Defaults to: 0
+			/// A numeric pixel value used to offset the default position of the anchor arrow (defaults to 0). When the anchor position is on the top or bottom of the tooltip, anchorOffset will be used as a horizontal offset. Likewise, when the anchor position is on the left or right side, anchorOffset will be used as a vertical offset.
 			/// </summary>
             public virtual ToolTip.Builder AnchorOffset(int anchorOffset)
             {
@@ -105,7 +84,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// True to anchor the tooltip to the target element, false to anchor it relative to the mouse coordinates. When anchorToTarget is true, use defaultAlign to control tooltip alignment to the target element. When anchorToTarget is false, use anchor instead to control alignment. Defaults to: true
+			/// True to automatically hide the tooltip after the mouse exits the target element or after the dismissDelay has expired if set (defaults to true). If closable = true a close tool button will be rendered into the tooltip header.
 			/// </summary>
             public virtual ToolTip.Builder AnchorToTarget(bool anchorToTarget)
             {
@@ -167,17 +146,15 @@ namespace Ext.Net
                 return this as ToolTip.Builder;
             }
              
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ToolTip.Builder</returns>
-            public virtual ToolTip.Builder TargetControl(Action<Control> action)
-            {
-                action(this.ToComponent().TargetControl);
-                return this as ToolTip.Builder;
-            }
-			 
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder TargetControl(Control targetControl)
+            // {
+            //    this.ToComponent().TargetControl = targetControl;
+            //    return this as TBuilder;
+            // }
+             
  			/// <summary>
 			/// The target id to associate with this tooltip.
 			/// </summary>
@@ -196,32 +173,37 @@ namespace Ext.Net
                 return this as ToolTip.Builder;
             }
              
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ToolTip.Builder</returns>
-            public virtual ToolTip.Builder Listeners(Action<PanelListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as ToolTip.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ToolTip.Builder</returns>
-            public virtual ToolTip.Builder DirectEvents(Action<PanelDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as ToolTip.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(PanelListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
+             
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(PanelDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/
 			
+ 			/// <summary>
+			/// Update the html of the Body, optionally searching for and processing scripts.
+			/// </summary>
+            public virtual ToolTip.Builder Update(string html)
+            {
+                this.ToComponent().Update(html);
+                return this;
+            }
+            
         }
 
         /// <summary>

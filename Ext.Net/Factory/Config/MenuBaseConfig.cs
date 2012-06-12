@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,19 +33,70 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public abstract partial class MenuBase
     {
         /// <summary>
         /// 
         /// </summary>
-        new public abstract partial class Config : AbstractPanel.Config 
+        new public abstract partial class Config : ContainerBase.Config 
         { 
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
+			private string defaultType = "MenuItem";
+
+			/// <summary>
+			/// The default type of content Container represented by this object as registered in Ext.ComponentMgr (defaults to 'panel').
+			/// </summary>
+			[DefaultValue("MenuItem")]
+			public override string DefaultType 
+			{ 
+				get
+				{
+					return this.defaultType;
+				}
+				set
+				{
+					this.defaultType = value;
+				}
+			}
+
+			private bool enableScrolling = false;
+
+			/// <summary>
+			/// Whenever a menu gets so long that the items won't fit the viewable area, it provides the user with an easy UI to scroll the menu.
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool EnableScrolling 
+			{ 
+				get
+				{
+					return this.enableScrolling;
+				}
+				set
+				{
+					this.enableScrolling = value;
+				}
+			}
+
+			private bool floating = true;
+
+			/// <summary>
+			/// By default, a Menu configured as floating:true will be rendered as an Ext.Layer (an absolutely positioned, floating Component with zindex=15000). If configured as floating:false, the Menu may be used as child item of another Container instead of a free-floating Layer.
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool Floating 
+			{ 
+				get
+				{
+					return this.floating;
+				}
+				set
+				{
+					this.floating = value;
+				}
+			}
+
 			private bool allowOtherMenus = false;
 
 			/// <summary>
@@ -64,12 +115,12 @@ namespace Ext.Net
 				}
 			}
 
-			private string defaultAlign = "tl-bl?";
+			private string defaultAlign = "";
 
 			/// <summary>
-			/// The default Ext.Element#getAlignToXY anchor position value for this menu relative to its element of origin. Defaults to: \"tl-bl?\"
+			/// The default Ext.Element.alignTo anchor position value for this menu relative to its element of origin (defaults to \"tl-bl?\")
 			/// </summary>
-			[DefaultValue("tl-bl?")]
+			[DefaultValue("")]
 			public virtual string DefaultAlign 
 			{ 
 				get
@@ -82,10 +133,46 @@ namespace Ext.Net
 				}
 			}
 
+			private int offsetX = 0;
+
+			/// <summary>
+			/// X offset in pixels by which to change the default Menu popup position after aligning according to the defaultAlign configuration.
+			/// </summary>
+			[DefaultValue(0)]
+			public virtual int OffsetX 
+			{ 
+				get
+				{
+					return this.offsetX;
+				}
+				set
+				{
+					this.offsetX = value;
+				}
+			}
+
+			private int offsetY = 0;
+
+			/// <summary>
+			/// Y offset in pixels by which to change the default Menu popup position after aligning according to the defaultAlign configuration.
+			/// </summary>
+			[DefaultValue(0)]
+			public virtual int OffsetY 
+			{ 
+				get
+				{
+					return this.offsetY;
+				}
+				set
+				{
+					this.offsetY = value;
+				}
+			}
+
 			private bool ignoreParentClicks = false;
 
 			/// <summary>
-			/// True to ignore clicks on any item in this menu that is a parent item (displays a submenu) so that the submenu is not dismissed when clicking the parent item. Defaults to: false
+			/// True to ignore clicks on any item in this menu that is a parent item (displays a submenu) so that the submenu is not dismissed when clicking the parent item (defaults to false).
 			/// </summary>
 			[DefaultValue(false)]
 			public virtual bool IgnoreParentClicks 
@@ -100,21 +187,57 @@ namespace Ext.Net
 				}
 			}
 
-			private bool plain = false;
+			private Unit minWidth = Unit.Pixel(120);
 
 			/// <summary>
-			/// True to remove the incised line down the left side of the menu and to not indent general Component items. Defaults to: false
+			/// The minimum width of the menu in pixels (defaults to 120).
 			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool Plain 
+			[DefaultValue(typeof(Unit), "120")]
+			public override Unit MinWidth 
 			{ 
 				get
 				{
-					return this.plain;
+					return this.minWidth;
 				}
 				set
 				{
-					this.plain = value;
+					this.minWidth = value;
+				}
+			}
+
+			private Unit maxHeight = Unit.Empty;
+
+			/// <summary>
+			/// The maximum height of the menu. Only applies when enableScrolling is set to True (defaults to null).
+			/// </summary>
+			[DefaultValue(typeof(Unit), "")]
+			public override Unit MaxHeight 
+			{ 
+				get
+				{
+					return this.maxHeight;
+				}
+				set
+				{
+					this.maxHeight = value;
+				}
+			}
+
+			private int scrollIncrement = 24;
+
+			/// <summary>
+			/// The amount to scroll the menu. Only applies when enableScrolling is set to True (defaults to 24).
+			/// </summary>
+			[DefaultValue(24)]
+			public virtual int ScrollIncrement 
+			{ 
+				get
+				{
+					return this.scrollIncrement;
+				}
+				set
+				{
+					this.scrollIncrement = value;
 				}
 			}
 
@@ -133,6 +256,42 @@ namespace Ext.Net
 				set
 				{
 					this.showSeparator = value;
+				}
+			}
+
+			private ShadowMode shadow = ShadowMode.Sides;
+
+			/// <summary>
+			/// True or \"sides\" for the default effect, \"frame\" for 4-way shadow, and \"drop\" for bottom-right shadow (defaults to \"sides\")
+			/// </summary>
+			[DefaultValue(ShadowMode.Sides)]
+			public virtual ShadowMode Shadow 
+			{ 
+				get
+				{
+					return this.shadow;
+				}
+				set
+				{
+					this.shadow = value;
+				}
+			}
+
+			private string subMenuAlign = "";
+
+			/// <summary>
+			/// The Ext.Element.alignTo anchor position value to use for submenus of this menu (defaults to \"tl-tr?\")
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string SubMenuAlign 
+			{ 
+				get
+				{
+					return this.subMenuAlign;
+				}
+				set
+				{
+					this.subMenuAlign = value;
 				}
 			}
 

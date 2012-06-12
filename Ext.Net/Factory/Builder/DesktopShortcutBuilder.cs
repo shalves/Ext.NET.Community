@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class DesktopShortcut
     {
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseItem.Builder<DesktopShortcut, DesktopShortcut.Builder>
+        public partial class Builder : StateManagedItem.Builder<DesktopShortcut, DesktopShortcut.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -80,6 +77,24 @@ namespace Ext.Net
  			/// <summary>
 			/// 
 			/// </summary>
+            public virtual DesktopShortcut.Builder ModuleID(string moduleID)
+            {
+                this.ToComponent().ModuleID = moduleID;
+                return this as DesktopShortcut.Builder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual DesktopShortcut.Builder ShortcutID(string shortcutID)
+            {
+                this.ToComponent().ShortcutID = shortcutID;
+                return this as DesktopShortcut.Builder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
             public virtual DesktopShortcut.Builder IconCls(string iconCls)
             {
                 this.ToComponent().IconCls = iconCls;
@@ -89,18 +104,9 @@ namespace Ext.Net
  			/// <summary>
 			/// 
 			/// </summary>
-            public virtual DesktopShortcut.Builder SortIndex(int sortIndex)
+            public virtual DesktopShortcut.Builder Text(string text)
             {
-                this.ToComponent().SortIndex = sortIndex;
-                return this as DesktopShortcut.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual DesktopShortcut.Builder Name(string name)
-            {
-                this.ToComponent().Name = name;
+                this.ToComponent().Text = text;
                 return this as DesktopShortcut.Builder;
             }
              
@@ -119,60 +125,6 @@ namespace Ext.Net
             public virtual DesktopShortcut.Builder Y(string y)
             {
                 this.ToComponent().Y = y;
-                return this as DesktopShortcut.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual DesktopShortcut.Builder TextCls(string textCls)
-            {
-                this.ToComponent().TextCls = textCls;
-                return this as DesktopShortcut.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual DesktopShortcut.Builder Handler(string handler)
-            {
-                this.ToComponent().Handler = handler;
-                return this as DesktopShortcut.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual DesktopShortcut.Builder Hidden(bool hidden)
-            {
-                this.ToComponent().Hidden = hidden;
-                return this as DesktopShortcut.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual DesktopShortcut.Builder Module(string module)
-            {
-                this.ToComponent().Module = module;
-                return this as DesktopShortcut.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual DesktopShortcut.Builder QTitle(string qTitle)
-            {
-                this.ToComponent().QTitle = qTitle;
-                return this as DesktopShortcut.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual DesktopShortcut.Builder QTip(string qTip)
-            {
-                this.ToComponent().QTip = qTip;
                 return this as DesktopShortcut.Builder;
             }
             

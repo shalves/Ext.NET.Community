@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,10 +36,7 @@ using Newtonsoft.Json;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public abstract partial class MultiSelectBase
+    public abstract partial class MultiSelectBase<T>
     {
         /// <summary>
         /// 
@@ -55,30 +52,35 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
-                list.Add("storeID", new ConfigOption("storeID", new SerializationOptions("{raw}store", JsonMode.ToClientID), "", this.StoreID ));
+                list.Add("storeID", new ConfigOption("storeID", new SerializationOptions("store", JsonMode.ToClientID), "", this.StoreID ));
                 list.Add("store", new ConfigOption("store", new SerializationOptions("store>Primary"), null, this.Store ));
                 list.Add("itemsProxy", new ConfigOption("itemsProxy", new SerializationOptions("store", JsonMode.Raw), "", this.ItemsProxy ));
-                list.Add("selectedItems", new ConfigOption("selectedItems", new SerializationOptions(JsonMode.AlwaysArray), null, this.SelectedItems ));
-                list.Add("listTitle", new ConfigOption("listTitle", null, "", this.ListTitle ));
-                list.Add("dragGroup", new ConfigOption("dragGroup", null, "", this.DragGroup ));
-                list.Add("dropGroup", new ConfigOption("dropGroup", null, "", this.DropGroup ));
-                list.Add("dDReorder", new ConfigOption("dDReorder", new SerializationOptions("ddReorder"), false, this.DDReorder ));
-                list.Add("topBar", new ConfigOption("topBar", new SerializationOptions("tbar", typeof(SingleItemCollectionJsonConverter)), null, this.TopBar ));
-                list.Add("appendOnly", new ConfigOption("appendOnly", null, false, this.AppendOnly ));
-                list.Add("displayField", new ConfigOption("displayField", null, "text", this.DisplayField ));
+                list.Add("displayField", new ConfigOption("displayField", null, "", this.DisplayField ));
                 list.Add("valueField", new ConfigOption("valueField", null, "", this.ValueField ));
                 list.Add("allowBlank", new ConfigOption("allowBlank", null, true, this.AllowBlank ));
-                list.Add("maxSelections", new ConfigOption("maxSelections", null, int.MaxValue, this.MaxSelections ));
-                list.Add("minSelections", new ConfigOption("minSelections", null, 0, this.MinSelections ));
-                list.Add("blankText", new ConfigOption("blankText", null, "This field is required", this.BlankText ));
-                list.Add("maxSelectionsText", new ConfigOption("maxSelectionsText", null, "Maximum {0} item(s) allowed", this.MaxSelectionsText ));
-                list.Add("minSelectionsText", new ConfigOption("minSelectionsText", null, "Minimum {0} item(s) required", this.MinSelectionsText ));
-                list.Add("delimiter", new ConfigOption("delimiter", null, ",", this.Delimiter ));
+                list.Add("maxLength", new ConfigOption("maxLength", null, -1, this.MaxLength ));
+                list.Add("minLength", new ConfigOption("minLength", null, 0, this.MinLength ));
+                list.Add("maxLengthText", new ConfigOption("maxLengthText", null, "", this.MaxLengthText ));
+                list.Add("minLengthText", new ConfigOption("minLengthText", null, "", this.MinLengthText ));
+                list.Add("blankText", new ConfigOption("blankText", null, "", this.BlankText ));
                 list.Add("copy", new ConfigOption("copy", null, false, this.Copy ));
-                list.Add("multiSelect", new ConfigOption("multiSelect", null, false, this.MultiSelect ));
-                list.Add("simpleSelect", new ConfigOption("simpleSelect", null, true, this.SimpleSelect ));
-                list.Add("singleSelect", new ConfigOption("singleSelect", null, false, this.SingleSelect ));
-                list.Add("listConfig", new ConfigOption("listConfig", new SerializationOptions("listConfig", typeof(LazyControlJsonConverter)), null, this.ListConfig ));
+                list.Add("allowDuplicates", new ConfigOption("allowDuplicates", new SerializationOptions("allowDup"), false, this.AllowDuplicates ));
+                list.Add("allowTrash", new ConfigOption("allowTrash", null, false, this.AllowTrash ));
+                list.Add("legend", new ConfigOption("legend", null, "", this.Legend ));
+                list.Add("delimiter", new ConfigOption("delimiter", null, ",", this.Delimiter ));
+                list.Add("dragGroup", new ConfigOption("dragGroup", null, "", this.DragGroup ));
+                list.Add("dropGroup", new ConfigOption("dropGroup", null, "", this.DropGroup ));
+                list.Add("appendOnly", new ConfigOption("appendOnly", null, false, this.AppendOnly ));
+                list.Add("sortField", new ConfigOption("sortField", null, "", this.SortField ));
+                list.Add("direction", new ConfigOption("direction", new SerializationOptions(JsonMode.ToLower), SortDirection.ASC, this.Direction ));
+                list.Add("submitText", new ConfigOption("submitText", null, true, this.SubmitText ));
+                list.Add("submitIndexes", new ConfigOption("submitIndexes", null, true, this.SubmitIndexes ));
+                list.Add("fireSelectOnLoad", new ConfigOption("fireSelectOnLoad", null, false, this.FireSelectOnLoad ));
+                list.Add("multiSelect", new ConfigOption("multiSelect", null, true, this.MultiSelect ));
+                list.Add("keepSelectionOnClick", new ConfigOption("keepSelectionOnClick", new SerializationOptions(JsonMode.ToLower), KeepSelectionMode.Always, this.KeepSelectionOnClick ));
+                list.Add("bodyStyle", new ConfigOption("bodyStyle", null, "", this.BodyStyle ));
+                list.Add("bottomBar", new ConfigOption("bottomBar", new SerializationOptions("bbar", typeof(ItemCollectionJsonConverter)), null, this.BottomBar ));
+                list.Add("topBar", new ConfigOption("topBar", new SerializationOptions("tbar", typeof(ItemCollectionJsonConverter)), null, this.TopBar ));
 
                 return list;
             }

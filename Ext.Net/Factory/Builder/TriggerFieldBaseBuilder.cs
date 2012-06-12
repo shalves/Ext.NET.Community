@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class TriggerFieldBase
     {
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TTriggerFieldBase, TBuilder> : TextFieldBase.Builder<TTriggerFieldBase, TBuilder>
+        new public abstract partial class Builder<TTriggerFieldBase, TBuilder> : TextFieldBase.Builder<TTriggerFieldBase, TBuilder>
             where TTriggerFieldBase : TriggerFieldBase
             where TBuilder : Builder<TTriggerFieldBase, TBuilder>
         {
@@ -57,25 +54,14 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TBuilder</returns>
-            public virtual TBuilder Triggers(Action<FieldTrigerCollection> action)
-            {
-                action(this.ToComponent().Triggers);
-                return this as TBuilder;
-            }
-			 
- 			/// <summary>
-			/// false to prevent the user from typing text directly into the field; the field can only have its value set via an action invoked by the trigger. (defaults to true).
-			/// </summary>
-            public virtual TBuilder Editable(bool editable)
-            {
-                this.ToComponent().Editable = editable;
-                return this as TBuilder;
-            }
+ 			// /// <summary>
+			// /// 
+			// /// </summary>
+            // public virtual TBuilder Triggers(FieldTrigerCollection triggers)
+            // {
+            //    this.ToComponent().Triggers = triggers;
+            //    return this as TBuilder;
+            // }
              
  			/// <summary>
 			/// True to hide the trigger element and display only the base text field (defaults to false).
@@ -87,11 +73,11 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// True to hide the predefined trigger element (defaults to false).
+			/// False to prevent the user from typing text directly into the field, the field will only respond to a click on the trigger to set the value. (defaults to true).
 			/// </summary>
-            public virtual TBuilder HideBaseTrigger(bool hideBaseTrigger)
+            public virtual TBuilder Editable(bool editable)
             {
-                this.ToComponent().HideBaseTrigger = hideBaseTrigger;
+                this.ToComponent().Editable = editable;
                 return this as TBuilder;
             }
              
@@ -105,20 +91,11 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// True to attach a click repeater to the trigger. Defaults to false.
-			/// </summary>
-            public virtual TBuilder RepeatTriggerClick(bool repeatTriggerClick)
-            {
-                this.ToComponent().RepeatTriggerClick = repeatTriggerClick;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
 			/// A CSS class to apply to the trigger.
 			/// </summary>
-            public virtual TBuilder TriggerCls(string triggerCls)
+            public virtual TBuilder TriggerClass(string triggerClass)
             {
-                this.ToComponent().TriggerCls = triggerCls;
+                this.ToComponent().TriggerClass = triggerClass;
                 return this as TBuilder;
             }
              

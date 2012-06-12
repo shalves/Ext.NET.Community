@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class NumberFieldBase
     {
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TNumberFieldBase, TBuilder> : SpinnerFieldBase.Builder<TNumberFieldBase, TBuilder>
+        new public abstract partial class Builder<TNumberFieldBase, TBuilder> : TextFieldBase.Builder<TNumberFieldBase, TBuilder>
             where TNumberFieldBase : NumberFieldBase
             where TBuilder : Builder<TNumberFieldBase, TBuilder>
         {
@@ -57,6 +54,33 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
+ 			// /// <summary>
+			// /// The fields null value.
+			// /// </summary>
+            // public virtual TBuilder EmptyValue(object emptyValue)
+            // {
+            //    this.ToComponent().EmptyValue = emptyValue;
+            //    return this as TBuilder;
+            // }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder InputType(InputType inputType)
+            {
+                this.ToComponent().InputType = inputType;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The Text value to initialize this field with.
+			/// </summary>
+            public virtual TBuilder Text(string text)
+            {
+                this.ToComponent().Text = text;
+                return this as TBuilder;
+            }
+             
  			/// <summary>
 			/// The Number (double) to initialize this field with.
 			/// </summary>
@@ -76,11 +100,20 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// True to automatically strip not allowed characters from the field. Defaults to false
+			/// False to disallow trim trailed zeros.
 			/// </summary>
-            public virtual TBuilder AutoStripChars(bool autoStripChars)
+            public virtual TBuilder TrimTrailedZeros(bool trimTrailedZeros)
             {
-                this.ToComponent().AutoStripChars = autoStripChars;
+                this.ToComponent().TrimTrailedZeros = trimTrailedZeros;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// False to prevent entering a negative sign (defaults to true).
+			/// </summary>
+            public virtual TBuilder AllowNegative(bool allowNegative)
+            {
+                this.ToComponent().AllowNegative = allowNegative;
                 return this as TBuilder;
             }
              
@@ -121,7 +154,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The maximum allowed value (defaults to Number.MAX_VALUE). Will be used by the field's validation logic, and for enabling/disabling the up spinner button.
+			/// The maximum allowed value (defaults to Double.MaxValue)
 			/// </summary>
             public virtual TBuilder MaxValue(Double maxValue)
             {
@@ -139,7 +172,7 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// The minimum allowed value (defaults to Number.NEGATIVE_INFINITY). Will be used by the field's validation logic, and for enabling/disabling the down spinner button.
+			/// The minimum allowed value (defaults to Double.MinValue)
 			/// </summary>
             public virtual TBuilder MinValue(Double minValue)
             {
@@ -153,33 +186,6 @@ namespace Ext.Net
             public virtual TBuilder NanText(string nanText)
             {
                 this.ToComponent().NanText = nanText;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// Error text to display if the value is negative and minValue is set to 0. This is used instead of the minText in that circumstance only.
-			/// </summary>
-            public virtual TBuilder NegativeText(string negativeText)
-            {
-                this.ToComponent().NegativeText = negativeText;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// Specifies a numeric interval by which the field's value will be incremented or decremented when the user invokes the spinner. Defaults to 1.
-			/// </summary>
-            public virtual TBuilder Step(double step)
-            {
-                this.ToComponent().Step = step;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// False to disallow trim trailed zeros.
-			/// </summary>
-            public virtual TBuilder TrimTrailedZeros(bool trimTrailedZeros)
-            {
-                this.ToComponent().TrimTrailedZeros = trimTrailedZeros;
                 return this as TBuilder;
             }
             

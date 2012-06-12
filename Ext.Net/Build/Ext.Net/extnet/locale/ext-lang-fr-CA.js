@@ -1,219 +1,221 @@
-﻿/**
+﻿/*!
+ * Ext JS Library 3.3.0
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+﻿/*
  * France (Canadian) translation
  * By BernardChhun
  * 04-08-2007, 03:07 AM
  */
-Ext.onReady(function() {
-    var cm = Ext.ClassManager, 
-        exists = Ext.Function.bind(cm.get, cm);
 
-    if(Ext.Updater) {
-        Ext.Updater.defaults.indicatorText = '<div class="loading-indicator">En cours de chargement...</div>';
-    }
+Ext.UpdateManager.defaults.indicatorText = '<div class="loading-indicator">En cours de chargement...</div>';
 
-    if(exists('Ext.view.View')){
-        Ext.view.View.prototype.emptyText = "";
-    }
+if (Ext.View) {
+   Ext.View.prototype.emptyText = "";
+}
 
-    if(exists('Ext.grid.Panel')){
-        Ext.grid.Panel.prototype.ddText = "{0} ligne(s) sélectionné(s)";
-    }
+if (Ext.grid.GridPanel) {
+   Ext.grid.GridPanel.prototype.ddText = "{0} ligne(s) sélectionné(s)";
+}
 
-    if(Ext.TabPanelItem){
-        Ext.TabPanelItem.prototype.closeText = "Fermer cette onglet";
-    }
+if (Ext.TabPanelItem) {
+   Ext.TabPanelItem.prototype.closeText = "Fermer cette onglet";
+}
 
-    if(exists('Ext.form.field.Base')){
-        Ext.form.field.Base.prototype.invalidText = "La valeur de ce champ est invalide";
-    }
+if (Ext.form.Field) {
+   Ext.form.Field.prototype.invalidText = "La valeur de ce champ est invalide";
+}
 
-    if(Ext.LoadMask){
-        Ext.LoadMask.prototype.msg = "En cours de chargement...";
-    }
+if (Ext.LoadMask) {
+    Ext.LoadMask.prototype.msg = "En cours de chargement...";
+}
 
-    if(Ext.Date){
-        Ext.Date.shortMonthNames = [
-        "Janv",
-        "Févr",
-        "Mars",
-        "Avr",
-        "Mai",
-        "Juin",
-        "Juil",
-        "Août",
-        "Sept",
-        "Oct",
-        "Nov",
-        "Déc"
-        ];
+Date.shortMonthNames = [
+   "Janv",
+   "Févr",
+   "Mars",
+   "Avr",
+   "Mai",
+   "Juin",
+   "Juil",
+   "Août",
+   "Sept",
+   "Oct",
+   "Nov",
+   "Déc"
+];
 
-        Ext.Date.getShortMonthName = function(month) {
-            return Ext.Date.shortMonthNames[month];
-        };
+Date.getShortMonthName = function (month) {
+  return Date.shortMonthNames[month];
+};
 
-        Ext.Date.monthNames = [
-        "Janvier",
-        "Février",
-        "Mars",
-        "Avril",
-        "Mai",
-        "Juin",
-        "Juillet",
-        "Août",
-        "Septembre",
-        "Octobre",
-        "Novembre",
-        "Décembre"
-        ];
+Date.monthNames = [
+   "Janvier",
+   "Février",
+   "Mars",
+   "Avril",
+   "Mai",
+   "Juin",
+   "Juillet",
+   "Août",
+   "Septembre",
+   "Octobre",
+   "Novembre",
+   "Décembre"
+];
 
-        Ext.Date.monthNumbers = {
-            "Janvier" : 0,
-            "Février" : 1,
-            "Mars" : 2,
-            "Avril" : 3,
-            "Mai" : 4,
-            "Juin" : 5,
-            "Juillet" : 6,
-            "Août" : 7,
-            "Septembre" : 8,
-            "Octobre" : 9,
-            "Novembre" : 10,
-            "Décembre" : 11
-        };
+Date.monthNumbers = {
+  "Janvier" : 0,
+  "Février" : 1,
+  "Mars" : 2,
+  "Avril" : 3,
+  "Mai" : 4,
+  "Juin" : 5,
+  "Juillet" : 6,
+  "Août" : 7,
+  "Septembre" : 8,
+  "Octobre" : 9,
+  "Novembre" : 10,
+  "Décembre" : 11
+};
 
-        Ext.Date.getMonthNumber = function(name) {
-            return Ext.Date.monthNumbers[Ext.util.Format.capitalize(name)];
-        };
+Date.getMonthNumber = function (name) {
+  return Date.monthNumbers[Ext.util.Format.capitalize(name)];
+};
 
-        Ext.Date.dayNames = [
-        "Dimanche",
-        "Lundi",
-        "Mardi",
-        "Mercredi",
-        "Jeudi",
-        "Vendredi",
-        "Samedi"
-        ];
+Date.dayNames = [
+   "Dimanche",
+   "Lundi",
+   "Mardi",
+   "Mercredi",
+   "Jeudi",
+   "Vendredi",
+   "Samedi"
+];
 
-        Ext.Date.getShortDayName = function(day) {
-            return Ext.Date.dayNames[day].substring(0, 3);
-        };
-    }
-    if(Ext.MessageBox){
-        Ext.MessageBox.buttonText = {
-            ok     : "OK",
-            cancel : "Annuler",
-            yes    : "Oui",
-            no     : "Non"
-        };
-    }
+Date.getShortDayName = function (day) {
+  return Date.dayNames[day].substring(0, 3);
+};
 
-    if(exists('Ext.util.Format')){
-        Ext.apply(Ext.util.Format, {
-            thousandSeparator: '.',
-            decimalSeparator: ',',
-            currencySign: '$',  // Canadian Dollar
-            dateFormat: 'd/m/Y'
-        });
-    }
+if (Ext.MessageBox) {
+   Ext.MessageBox.buttonText = {
+      ok     : "OK",
+      cancel : "Annuler",
+      yes    : "Oui",
+      no     : "Non"
+   };
+}
 
-    if(exists('Ext.picker.Date')){
-        Ext.apply(Ext.picker.Date.prototype, {
-            todayText         : "Aujourd'hui",
-            minText           : "Cette date est plus petite que la date minimum",
-            maxText           : "Cette date est plus grande que la date maximum",
-            disabledDaysText  : "",
-            disabledDatesText : "",
-            monthNames	: Ext.Date.monthNames,
-            dayNames		: Ext.Date.dayNames,
-            nextText          : 'Prochain mois (CTRL+Fléche droite)',
-            prevText          : 'Mois précédent (CTRL+Fléche gauche)',
-            monthYearText     : 'Choissisez un mois (CTRL+Fléche haut ou bas pour changer d\'année.)',
-            todayTip          : "{0} (Barre d'espace)",
-            format            : "d/m/y"
-        });
-    }
+if (Ext.util.Format) {
+   Ext.util.Format.date = function (v, format) {
+      if (!v) return "";
+      if (!(v instanceof Date)) v = new Date(Date.parse(v));
+      return v.dateFormat(format || "d/m/Y");
+   };
+}
 
-    if(exists('Ext.toolbar.Paging')){
-        Ext.apply(Ext.PagingToolbar.prototype, {
-            beforePageText : "Page",
-            afterPageText  : "de {0}",
-            firstText      : "Première page",
-            prevText       : "Page précédente",
-            nextText       : "Prochaine page",
-            lastText       : "Dernière page",
-            refreshText    : "Recharger la page",
-            displayMsg     : "Page courante {0} - {1} de {2}",
-            emptyMsg       : 'Aucune donnée à afficher'
-        });
-    }
+if (Ext.DatePicker) {
+   Ext.apply(Ext.DatePicker.prototype, {
+      todayText         : "Aujourd'hui",
+      minText           : "Cette date est plus petite que la date minimum",
+      maxText           : "Cette date est plus grande que la date maximum",
+      disabledDaysText  : "",
+      disabledDatesText : "",
+      monthNames	: Date.monthNames,
+      dayNames		: Date.dayNames,
+      nextText          : 'Prochain mois (CTRL+Fléche droite)',
+      prevText          : 'Mois précédent (CTRL+Fléche gauche)',
+      monthYearText     : 'Choissisez un mois (CTRL+Fléche haut ou bas pour changer d\'année.)',
+      todayTip          : "{0} (Barre d'espace)",
+      format            : "d/m/y"
+   });
+}
 
-    if(exists('Ext.form.field.Text')){
-        Ext.apply(Ext.form.field.Text.prototype, {
-            minLengthText : "La longueur minimum de ce champ est de {0} caractères",
-            maxLengthText : "La longueur maximum de ce champ est de {0} caractères",
-            blankText     : "Ce champ est obligatoire",
-            regexText     : "",
-            emptyText     : null
-        });
-    }
+if (Ext.PagingToolbar) {
+   Ext.apply(Ext.PagingToolbar.prototype, {
+      beforePageText : "Page",
+      afterPageText  : "de {0}",
+      firstText      : "Première page",
+      prevText       : "Page précédente",
+      nextText       : "Prochaine page",
+      lastText       : "Dernière page",
+      refreshText    : "Recharger la page",
+      displayMsg     : "Page courante {0} - {1} de {2}",
+      emptyMsg       : 'Aucune donnée à afficher'
+   });
+}
 
-    if(exists('Ext.form.field.Number')){
-        Ext.apply(Ext.form.field.Number.prototype, {
-            minText : "La valeur minimum de ce champ doit être de {0}",
-            maxText : "La valeur maximum de ce champ doit être de {0}",
-            nanText : "{0} n'est pas un nombre valide"
-        });
-    }
+if (Ext.form.TextField) {
+   Ext.apply(Ext.form.TextField.prototype, {
+      minLengthText : "La longueur minimum de ce champ est de {0} caractères",
+      maxLengthText : "La longueur maximum de ce champ est de {0} caractères",
+      blankText     : "Ce champ est obligatoire",
+      regexText     : "",
+      emptyText     : null
+   });
+}
 
-    if(exists('Ext.form.field.Date')){
-        Ext.apply(Ext.form.field.Date.prototype, {
-            disabledDaysText  : "Désactivé",
-            disabledDatesText : "Désactivé",
-            minText           : "La date de ce champ doit être avant le {0}",
-            maxText           : "La date de ce champ doit être après le {0}",
-            invalidText       : "{0} n'est pas une date valide - il doit être au format suivant: {1}",
-            format            : "d/m/y"
-        });
-    }
+if (Ext.form.NumberField) {
+   Ext.apply(Ext.form.NumberField.prototype, {
+      minText : "La valeur minimum de ce champ doit être de {0}",
+      maxText : "La valeur maximum de ce champ doit être de {0}",
+      nanText : "{0} n'est pas un nombre valide"
+   });
+}
 
-    if(exists('Ext.form.field.ComboBox')){
-        Ext.apply(Ext.form.field.ComboBox.prototype, {
-            valueNotFoundText : undefined
-        });
-        Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
-            loadingText       : "En cours de chargement..."
-        });
-    }
+if (Ext.form.DateField) {
+   Ext.apply(Ext.form.DateField.prototype, {
+      disabledDaysText  : "Désactivé",
+      disabledDatesText : "Désactivé",
+      minText           : "La date de ce champ doit être avant le {0}",
+      maxText           : "La date de ce champ doit être après le {0}",
+      invalidText       : "{0} n'est pas une date valide - il doit être au format suivant: {1}",
+      format            : "d/m/y"
+   });
+}
 
-    if(exists('Ext.form.field.VTypes')){
-        Ext.apply(Ext.form.field.VTypes, {
-            emailText    : 'Ce champ doit contenir un courriel et doit être sous ce format: "usager@example.com"',
-            urlText      : 'Ce champ doit contenir une URL sous le format suivant: "http:/'+'/www.example.com"',
-            alphaText    : 'Ce champ ne peut contenir que des lettres et le caractère souligné (_)',
-            alphanumText : 'Ce champ ne peut contenir que des caractères alphanumériques ainsi que le caractère souligné (_)'
-        });
-    }
+if (Ext.form.ComboBox) {
+   Ext.apply(Ext.form.ComboBox.prototype, {
+      loadingText       : "En cours de chargement...",
+      valueNotFoundText : undefined
+   });
+}
 
-    if(exists('Ext.grid.header.Container')){
-        Ext.apply(Ext.grid.header.Container.prototype, {
-            sortAscText  : "Tri ascendant",
-            sortDescText : "Tri descendant",
-            lockText     : "Verrouillé la colonne",
-            unlockText   : "Déverrouillé la colonne",
-            columnsText  : "Colonnes"
-        });
-    }
+if (Ext.form.VTypes) {
+   Ext.apply(Ext.form.VTypes, {
+      emailText    : 'Ce champ doit contenir un courriel et doit être sous ce format: "usager@example.com"',
+      urlText      : 'Ce champ doit contenir une URL sous le format suivant: "http:/'+'/www.example.com"',
+      alphaText    : 'Ce champ ne peut contenir que des lettres et le caractère souligné (_)',
+      alphanumText : 'Ce champ ne peut contenir que des caractères alphanumériques ainsi que le caractère souligné (_)'
+   });
+}
 
-    if(exists('Ext.grid.PropertyColumnModel')){
-        Ext.apply(Ext.grid.PropertyColumnModel.prototype, {
-            nameText   : "Propriété",
-            valueText  : "Valeur",
-            dateFormat : "d/m/Y"
-        });
-    }
+if (Ext.grid.GridView) {
+   Ext.apply(Ext.grid.GridView.prototype, {
+      sortAscText  : "Tri ascendant",
+      sortDescText : "Tri descendant",
+      lockText     : "Verrouillé la colonne",
+      unlockText   : "Déverrouillé la colonne",
+      columnsText  : "Colonnes"
+   });
+}
 
-});Ext.Date.shortMonthNames = [
+if (Ext.grid.PropertyColumnModel) {
+   Ext.apply(Ext.grid.PropertyColumnModel.prototype, {
+      nameText   : "Propriété",
+      valueText  : "Valeur",
+      dateFormat : "d/m/Y"
+   });
+}
+
+if (Ext.layout.BorderLayout && Ext.layout.BorderLayout.SplitRegion) {
+   Ext.apply(Ext.layout.BorderLayout.SplitRegion.prototype, {
+      splitTip            : "Cliquer et glisser pour redimensionner le panneau.",
+      collapsibleSplitTip : "Cliquer et glisser pour redimensionner le panneau. Double-cliquer pour cacher le panneau."
+   });
+}Date.shortMonthNames = [
    "janv.",
    "févr.",
    "mars",
@@ -228,7 +230,7 @@ Ext.onReady(function() {
    "déc."
 ];
 
-Ext.Date.monthNames = [
+Date.monthNames = [
    "janvier",
    "février",
    "mars",
@@ -243,7 +245,7 @@ Ext.Date.monthNames = [
    "décembre"
 ];
 
-Ext.Date.monthNumbers = {
+Date.monthNumbers = {
   "jan" : 0,
   "fév" : 1,
   "mar" : 2,
@@ -258,12 +260,12 @@ Ext.Date.monthNumbers = {
   "déc" : 11
 };
 
-Ext.Date.getMonthNumber = function(name) {
+Date.getMonthNumber = function (name) {
   var m = name.substring(0, 1).toLowerCase() + name.substring(1, 3).toLowerCase();
-  if(m == "jui"){    m = name.substring(0, 1).toLowerCase() + name.substring(1, 4).toLowerCase();  }  return Ext.Date.monthNumbers[m];
+  if (m === "jui") {    m = name.substring(0, 1).toLowerCase() + name.substring(1, 4).toLowerCase();  }  return Date.monthNumbers[m];
 };
 
-Ext.Date.dayNames = [
+Date.dayNames = [
    "dimanche",
    "lundi",
    "mardi",
@@ -273,8 +275,8 @@ Ext.Date.dayNames = [
    "samedi"
 ];
 
-Ext.Date.getShortDayName = function(day) {
-  return Ext.Date.dayNames[day].substring(0, 3).toLowerCase() + ".";
+Date.getShortDayName = function (day) {
+  return Date.dayNames[day].substring(0, 3).toLowerCase() + ".";
 };
 
 if (Ext.form.NumberField) {

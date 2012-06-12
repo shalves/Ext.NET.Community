@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class RowNumbererColumn
     {
 		/*  Ctor
@@ -81,13 +78,31 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
+			private Unit width = Unit.Pixel(-1);
+
+			/// <summary>
+			/// (optional) The initial width in pixels of the column. Using this instead of Ext.grid.Grid.autoSizeColumns is more efficient.
+			/// </summary>
+			[DefaultValue(typeof(Unit), "-1")]
+			public override Unit Width 
+			{ 
+				get
+				{
+					return this.width;
+				}
+				set
+				{
+					this.width = value;
+				}
+			}
+
 			private int rowSpan = 1;
 
 			/// <summary>
-			/// RowSpan attribute for the checkbox table cell
+			/// 
 			/// </summary>
 			[DefaultValue(1)]
-			public override int RowSpan 
+			public virtual int RowSpan 
 			{ 
 				get
 				{

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class ClickRepeater
     {
 		/*  Ctor
@@ -153,21 +150,21 @@ namespace Ext.Net
 				}
 			}
 
-			private string pressedCls = "";
+			private string pressClass = "";
 
 			/// <summary>
 			/// A CSS class name to be applied to the element while pressed.
 			/// </summary>
 			[DefaultValue("")]
-			public virtual string PressedCls 
+			public virtual string PressClass 
 			{ 
 				get
 				{
-					return this.pressedCls;
+					return this.pressClass;
 				}
 				set
 				{
-					this.pressedCls = value;
+					this.pressClass = value;
 				}
 			}
 

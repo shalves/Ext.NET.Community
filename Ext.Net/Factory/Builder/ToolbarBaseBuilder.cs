@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,15 +33,12 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public abstract partial class ToolbarBase
     {
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TToolbarBase, TBuilder> : AbstractContainer.Builder<TToolbarBase, TBuilder>
+        new public abstract partial class Builder<TToolbarBase, TBuilder> : ContainerBase.Builder<TToolbarBase, TBuilder>
             where TToolbarBase : ToolbarBase
             where TBuilder : Builder<TToolbarBase, TBuilder>
         {
@@ -57,6 +54,15 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
+ 			/// <summary>
+			/// The default type of content Container represented by this object as registered in Ext.ComponentMgr (defaults to 'panel').
+			/// </summary>
+            public virtual TBuilder DefaultType(string defaultType)
+            {
+                this.ToComponent().DefaultType = defaultType;
+                return this as TBuilder;
+            }
+             
  			/// <summary>
 			/// True to use flat style.
 			/// </summary>
@@ -76,29 +82,11 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// Configure true to make the toolbar provide a button which activates a dropdown Menu to show items which overflow the Toolbar's width.
+			/// Defaults to false. Configure <tt>true</tt> to make the toolbar provide a button which activates a dropdown Menu to show items which overflow the Toolbar's width.
 			/// </summary>
             public virtual TBuilder EnableOverflow(bool enableOverflow)
             {
                 this.ToComponent().EnableOverflow = enableOverflow;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// Configure the icon class of the overflow button. Defaults to: \"x-toolbar-more-icon\"
-			/// </summary>
-            public virtual TBuilder MenuTriggerCls(string menuTriggerCls)
-            {
-                this.ToComponent().MenuTriggerCls = menuTriggerCls;
-                return this as TBuilder;
-            }
-             
- 			/// <summary>
-			/// Set to true to make the toolbar vertical. The layout will become a vbox. Defaults to: false
-			/// </summary>
-            public virtual TBuilder Vertical(bool vertical)
-            {
-                this.ToComponent().Vertical = vertical;
                 return this as TBuilder;
             }
             

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -65,7 +65,7 @@ namespace Ext.Net
 
         internal override string GetClientConstructor(bool instanceOnly, string body)
         {
-            string template = (instanceOnly) ? "new {1}({2},{3})" : "window.{0}=new {1}({2},{3});";
+            string template = (instanceOnly) ? "new {1}({2},{3})" : "this.{0}=new {1}({2},{3});";
 
             return string.Format(template, this.ClientID, "Ext.Resizable", this.ElementProxy, body ?? this.InitialConfig);
         }
@@ -96,11 +96,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Element", "");
+                return (string)this.ViewState["Element"] ?? "";
             }
             set
             {
-                this.State.Set("Element", value);
+                this.ViewState["Element"] = value;
             }
         }
 
@@ -112,15 +112,16 @@ namespace Ext.Net
         [DefaultValue(typeof(Size), "")]
         [NotifyParentProperty(true)]
         [Description("The array [width, height] with values to be added to the resize operation's new size (defaults to [0, 0])")]
-        public virtual Size Adjustments
+        public Size Adjustments
         {
             get
             {
-                return this.State.Get<Size>("Adjustments", Size.Empty);
+                object obj = this.ViewState["Adjustments"];
+                return obj != null ? (Size)obj : Size.Empty;
             }
             set
             {
-                this.State.Set("Adjustments", value);
+                this.ViewState["Adjustments"] = value;
             }
         }
 
@@ -130,7 +131,7 @@ namespace Ext.Net
         [ConfigOption("adjustments", JsonMode.Raw)]
         [DefaultValue("")]
         [Description("")]
-        protected virtual string AdjustmentsProxy
+        protected string AdjustmentsProxy
         {
             get
             {
@@ -156,11 +157,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Animate", false);
+                object obj = this.ViewState["Animate"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Animate", value);
+                this.ViewState["Animate"] = value;
             }
         }
 
@@ -177,11 +179,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("DisableTrackOver", false);
+                object obj = this.ViewState["DisableTrackOver"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("DisableTrackOver", value);
+                this.ViewState["DisableTrackOver"] = value;
             }
         }
 
@@ -198,11 +201,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Draggable", false);
+                object obj = this.ViewState["Draggable"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Draggable", value);
+                this.ViewState["Draggable"] = value;
             }
         }
 
@@ -218,11 +222,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<double>("Duration", 0.35);
+                object obj = this.ViewState["Duration"];
+                return (obj == null) ? 0.35 : (double)obj;
             }
             set
             {
-                this.State.Set("Duration", value);
+                this.ViewState["Duration"] = value;
             }
         }
 
@@ -239,11 +244,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Dynamic", false);
+                object obj = this.ViewState["Dynamic"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Dynamic", value);
+                this.ViewState["Dynamic"] = value;
             }
         }
 
@@ -253,17 +259,18 @@ namespace Ext.Net
         [Meta]
         [ConfigOption(JsonMode.ToCamelLower)]
         [Category("3. Resizable")]
-        [DefaultValue(Easing.EaseOut)]
+        [DefaultValue(Easing.EaseOutStrong)]
         [Description("Animation easing if animate = true (defaults to 'easeOutStrong')")]
         public virtual Easing Easing
         {
             get
             {
-                return this.State.Get<Easing>("Easing", Easing.EaseOut);
+                object obj = this.ViewState["Easing"];
+                return (obj == null) ? Easing.EaseOutStrong : (Easing)obj;
             }
             set
             {
-                this.State.Set("Easing", value);
+                this.ViewState["Easing"] = value;
             }
         }
 
@@ -280,11 +287,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("EnabledResizing", true);
+                object obj = this.ViewState["EnabledResizing"];
+                return (obj == null) ? true : (bool)obj;
             }
             set
             {
-                this.State.Set("EnabledResizing", value);
+                this.ViewState["EnabledResizing"] = value;
             }
         }
 
@@ -299,11 +307,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<ResizeHandle>("Handles", ResizeHandle.None);
+                object obj = this.ViewState["Handles"];
+                return (obj == null) ? ResizeHandle.None : (ResizeHandle)obj;
             }
             set
             {
-                this.State.Set("Handles", value);
+                this.ViewState["Handles"] = value;
             }
         }
 
@@ -320,11 +329,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("HandlesSummary", "");
+                return (string)this.ViewState["HandlesSummary"] ?? "";
             }
             set
             {
-                this.State.Set("HandlesSummary", value);
+                this.ViewState["HandlesSummary"] = value;
             }
         }
 
@@ -379,11 +388,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.UnitPixelTypeCheck(State["Width"], Unit.Empty, "Width");
+                return this.UnitPixelTypeCheck(ViewState["Width"], Unit.Empty, "Width");
             }
             set
             {
-                this.State.Set("Width", value);
+                this.ViewState["Width"] = value;
             }
         }
 
@@ -400,11 +409,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.UnitPixelTypeCheck(State["Height"], Unit.Empty, "Height");
+                return this.UnitPixelTypeCheck(ViewState["Height"], Unit.Empty, "Height");
             }
             set
             {
-                this.State.Set("Height", value);
+                this.ViewState["Height"] = value;
             }
         }
 
@@ -420,11 +429,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("HeightIncrement", 0);
+                object obj = this.ViewState["HeightIncrement"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("HeightIncrement", value);
+                this.ViewState["HeightIncrement"] = value;
             }
         }
 
@@ -440,11 +450,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("MaxHeight", 10000);
+                object obj = this.ViewState["MaxHeight"];
+                return (obj == null) ? 10000 : (int)obj;
             }
             set
             {
-                this.State.Set("MaxHeight", value);
+                this.ViewState["MaxHeight"] = value;
             }
         }
 
@@ -460,11 +471,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("MaxWidth", 10000);
+                object obj = this.ViewState["MaxWidth"];
+                return (obj == null) ? 10000 : (int)obj;
             }
             set
             {
-                this.State.Set("MaxWidth", value);
+                this.ViewState["MaxWidth"] = value;
             }
         }
 
@@ -480,11 +492,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("MinHeight", 5);
+                object obj = this.ViewState["MinHeight"];
+                return (obj == null) ? 5 : (int)obj;
             }
             set
             {
-                this.State.Set("MinHeight", value);
+                this.ViewState["MinHeight"] = value;
             }
         }
 
@@ -500,11 +513,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("MinWidth", 5);
+                object obj = this.ViewState["MinWidth"];
+                return (obj == null) ? 5 : (int)obj;
             }
             set
             {
-                this.State.Set("MinWidth", value);
+                this.ViewState["MinWidth"] = value;
             }
         }
 
@@ -520,11 +534,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("MinX", 0);
+                object obj = this.ViewState["MinX"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("MinX", value);
+                this.ViewState["MinX"] = value;
             }
         }
 
@@ -540,11 +555,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("MinY", 0);
+                object obj = this.ViewState["MinY"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("MinY", value);
+                this.ViewState["MinY"] = value;
             }
         }
 
@@ -561,11 +577,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Pinned", false);
+                object obj = this.ViewState["Pinned"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Pinned", value);
+                this.ViewState["Pinned"] = value;
             }
         }
 
@@ -582,11 +599,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("PreserveRatio", false);
+                object obj = this.ViewState["PreserveRatio"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("PreserveRatio", value);
+                this.ViewState["PreserveRatio"] = value;
             }
         }
 
@@ -603,11 +621,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("ResizeChild", "");
+                return (string)this.ViewState["ResizeChild"] ?? "";
             }
             set
             {
-                this.State.Set("ResizeChild", value);
+                this.ViewState["ResizeChild"] = value;
             }
         }
 
@@ -624,11 +642,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Transparent", false);
+                object obj = this.ViewState["Transparent"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Transparent", value);
+                this.ViewState["Transparent"] = value;
             }
         }
 
@@ -644,11 +663,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<int>("WidthIncrement", 0);
+                object obj = this.ViewState["WidthIncrement"];
+                return (obj == null) ? 0 : (int)obj;
             }
             set
             {
-                this.State.Set("WidthIncrement", value);
+                this.ViewState["WidthIncrement"] = value;
             }
         }
 
@@ -665,11 +685,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<bool>("Wrap", false);
+                object obj = this.ViewState["Wrap"];
+                return (obj == null) ? false : (bool)obj;
             }
             set
             {
-                this.State.Set("Wrap", value);
+                this.ViewState["Wrap"] = value;
             }
         }
 
@@ -712,7 +733,8 @@ namespace Ext.Net
         [Category("2. Observable")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ViewStateMember]
         [Description("Client-side JavaScript Event Handlers")]
         public ResizableListeners Listeners
         {
@@ -737,7 +759,8 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("directEvents", JsonMode.Object)]        
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [ViewStateMember]
         [Description("Server-side DirectEventHandlers")]
         public ResizableDirectEvents DirectEvents
         {
@@ -745,7 +768,7 @@ namespace Ext.Net
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new ResizableDirectEvents(this);
+                    this.directEvents = new ResizableDirectEvents();
                 }
 
                 return this.directEvents;

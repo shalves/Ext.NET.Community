@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -44,7 +44,7 @@ namespace Ext.Net
 		/// 
 		/// </summary>
 		[Description("")]
-        protected DefaultScriptBuilder(BaseControl control) : base(control) { }
+        protected DefaultScriptBuilder(XControl control) : base(control) { }
 
 		/// <summary>
 		/// 
@@ -77,12 +77,6 @@ namespace Ext.Net
         {
             return this.Build(mode, element, index, selfRendering, false);
         }
-
-        [Description("")]
-        public virtual string Build(RenderMode mode, string element, int? index, bool selfRendering, bool forceResources)
-        {
-            return this.Build(mode, element, index, selfRendering, forceResources, null, false);
-        }
         
         /// <summary>
         /// 
@@ -91,28 +85,27 @@ namespace Ext.Net
         /// <param name="element"></param>
         /// <param name="index"></param>
         /// <param name="selfRendering"></param>
-        /// <param name="forceResources"></param>
         /// <returns></returns>
         [Description("")]
-        public virtual string Build(RenderMode mode, string element, int? index, bool selfRendering, bool forceResources, string method, bool forceLazy)
+        public virtual string Build(RenderMode mode, string element, int? index, bool selfRendering, bool forceResources)
         {
             this.ForceResources = forceResources;
 
             if (this.script == null)
             {
-                AbstractComponent cmp = this.Control as AbstractComponent;
+                Component cmp = this.Control as Component;
 
                 switch (mode)
                 {
                     case RenderMode.RenderTo:
                         if (cmp == null)
                         {
-                            throw new Exception("RenderTo mode can be applied to only a AbstractComponent.");
+                            throw new Exception("RenderTo mode can be applied to only a Component.");
                         }
 
                         if (string.IsNullOrEmpty(element))
                         {
-                            element = "={Ext.net.ResourceMgr.getRenderTarget()}";
+                            throw new Exception("You must specify an element for RenderTo mode.");
                         }
 
                         if (this.Control.IsLazy)
@@ -127,7 +120,7 @@ namespace Ext.Net
                     case RenderMode.InsertTo:
                         if (cmp == null)
                         {
-                            throw new Exception("AddTo mode can be applied to only a AbstractComponent.");
+                            throw new Exception("AddTo mode can be applied to only a Component.");
                         }
 
                         if (string.IsNullOrEmpty(element))
@@ -145,37 +138,35 @@ namespace Ext.Net
                             throw new Exception("You have to provide the index for the InsertTo mode.");
                         }
 
-                        cmp.PreventRenderTo = true;
+                        cmp.AutoRender = false;
                         break;
                 }
 
                 Page pageHolder = null;
                 bool isLazy = this.Control.IsLazy;
                 this.Control.IsDynamicLazy = isLazy || (mode == RenderMode.AddTo || mode == RenderMode.InsertTo);
-                Control parent = null;
+                Control parent = null;// this.Control.ParentComponentNotLayout;
                 this.Control.TopDynamicControl = true;
                 this.Control.ForceIdRendering = true;
-                this.Control.ForceLazy = forceLazy;
 
                 if (selfRendering && this.Control.Page == null)
                 {
                     pageHolder = new SelfRenderingPage();
 
-                    ResourceManager newMgr = new ResourceManager(true);
+                    ResourceManager newMgr = new ResourceManager();
                     newMgr.RenderScripts = ResourceLocationType.None;
                     newMgr.RenderStyles = ResourceLocationType.None;
-                    newMgr.IDMode = IDMode.Explicit;
+                    newMgr.IDMode = IDMode.Client;
                     newMgr.IsDynamic = true;
                     pageHolder.Controls.Add(newMgr);
-					this.ResourceManager = newMgr;
 
                     pageHolder.Controls.Add(this.Control);   
                 }
                 else if (selfRendering && this.Control.Page is ISelfRenderingPage)
                 {
                     pageHolder = this.Control.Page;
-                    ResourceManager newMgr = Ext.Net.Utilities.ControlUtils.FindControl<ResourceManager>(pageHolder);
-					this.ResourceManager = newMgr;
+                    ResourceManager newMgr = ControlUtils.FindControl<ResourceManager>(pageHolder);
+
                     if (newMgr != null)
                     {
                         newMgr.IsDynamic = true;
@@ -184,15 +175,40 @@ namespace Ext.Net
 
                 StringBuilder sb = new StringBuilder();
 
-                if (this.Control.ClientID.IsNotEmpty() && !this.Control.IsGeneratedID)
+                List<XControl> childControls = this.FindControls(this.Control, selfRendering, sb, null);
+                childControls.Insert(0, this.Control);
+                /*
+                foreach (XControl c in childControls)
+                {
+                    if (c.Visible || Object.ReferenceEquals(c, this.Control))
+                    {
+                        c.EnsureDynamicID();
+
+                        foreach (KeyValuePair<long, string> proxyScript in c.ProxyScripts)
+                        {
+                            if (proxyScript.Value.IsNotEmpty())
+                            {
+                                this.ScriptOnReadyBag.Add(proxyScript.Key, proxyScript.Value);                                
+                            }
+                        }
+                        
+                        c.ProxyScripts.Clear();
+                    }
+                }
+
+                foreach (KeyValuePair<long, string> script in this.ScriptOnReadyBag)
+                {
+                    sb.Append(script.Value);
+                }
+
+                this.ScriptOnReadyBag.Clear();
+                */
+                if (this.Control.ClientID.IsNotEmpty())
                 {
                     sb.AppendFormat("Ext.net.ResourceMgr.destroyCmp(\"{0}\");", this.Control.ClientID);
                 }
 
-                List<BaseControl> childControls = this.FindControls(this.Control, selfRendering, sb, null, null);
-                childControls.Insert(0, this.Control);
-
-                foreach (BaseControl c in childControls)
+                foreach (XControl c in childControls)
                 {
                     if (c.Visible || Object.ReferenceEquals(c, this.Control))
                     {
@@ -209,15 +225,15 @@ namespace Ext.Net
                 {
                     this.RegisterHtml(sb, pageHolder);
 
-                    foreach (BaseControl c in childControls)
+                    foreach (XControl c in childControls)
                     {
                         c.DeferInitScriptGeneration = false;
                     }
 
-                    List<BaseControl> newChildControls = this.FindControls(this.Control, false, sb, null, null);
+                    List<XControl> newChildControls = this.FindControls(this.Control, false, sb, null);
                     newChildControls.Insert(0, this.Control);
 
-                    foreach (BaseControl c in newChildControls)
+                    foreach (XControl c in newChildControls)
                     {
                         if (!childControls.Contains(c) && (c.Visible || Object.ReferenceEquals(c, this.Control)))
                         {
@@ -231,7 +247,7 @@ namespace Ext.Net
                     childControls = newChildControls;
                 }
 
-                foreach (BaseControl c in childControls)
+                foreach (XControl c in childControls)
                 {
                     if (c.Visible || Object.ReferenceEquals(c, this.Control))
                     {
@@ -240,17 +256,19 @@ namespace Ext.Net
                     }
                 }
 
-                string methodTemplate = string.Concat(".",method ?? "add","(");
+                string methodTemplate = ".addAndDoLayout(";
 
                 if (mode == RenderMode.InsertTo)
                 {
-                    methodTemplate = string.Concat(".", method ?? "insert", "(", index.Value, ",");
+                    methodTemplate = ".insertAndDoLayout({0},".FormatWith(index.Value);
                 }
-                
-                foreach (BaseControl c in childControls)
+
+                foreach (XControl c in childControls)
                 {
                     if (c.Visible || Object.ReferenceEquals(c, this.Control))
                     {
+                        c.EnsureDynamicID();
+
                         if (Object.ReferenceEquals(c, this.Control) && isLazy)
                         {
                             this.ScriptClientInitBag.Add(c.ClientInitID + "_BeforeScript", c.BeforeScript);
@@ -263,19 +281,14 @@ namespace Ext.Net
                             }
                             else
                             {
-                                this.ScriptClientInitBag.Add(c.ClientInitID, c.ParentComponent.ClientID.ConcatWith(methodTemplate, initScript, ");"));
+                                this.ScriptClientInitBag.Add(c.ClientInitID, c.ParentComponentNotLayout.ClientID.ConcatWith(methodTemplate, initScript, ");"));
                             }
 
                             this.ScriptClientInitBag.Add(c.ClientInitID + "_AfterScript", c.AfterScript);
                         }
                         else
                         {
-                            string script = Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string>{                        
-                                                {"ref", c.IsLazy ? c.ClientInitID : "init_script"},
-                                                {"index", ResourceManager.ScriptOrderNumber.ToString()}
-                                            }, c.BuildInitScript());
-
-                            this.ScriptClientInitBag.Add(c.ClientInitID, script);
+                            this.ScriptClientInitBag.Add(c.ClientInitID, c.BuildInitScript());
                         }
                         
                         c.AlreadyRendered = true;
@@ -294,38 +307,31 @@ namespace Ext.Net
                 {
                     foreach (KeyValuePair<string, string> item in this.ScriptClientInitBag)
                     {
-                        sb.Append(this.ScriptClientInitBag[item.Key]);
+                        sb.Append(this.Combine(item.Key));
                     }
                 }
 
-                sb.Append(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{                        
-                    {"id", "init_script"}                            
-                }));
-
                 if (mode == RenderMode.AddTo || mode == RenderMode.InsertTo)
                 {
-                    var elementGet = element.Contains(".") ? element : "Ext.getCmp({0})".FormatWith(JSON.Serialize(element));
-                    sb.Append(elementGet.ConcatWith(methodTemplate, this.Control.ForceLazy ? this.Control.ConfigID : this.Control.ClientID, ");"));
+                    sb.Append(element.ConcatWith(methodTemplate, this.Control.ClientID, ");"));
                 }
 
                 foreach (KeyValuePair<long, string> script in this.ScriptOnReadyBag)
                 {
                     sb.Append(script.Value);
                 }
-                
-                this.script = this.RegisterResources(sb.ToString());                
+
+                this.script = this.RegisterResources(sb.ToString());
             }
 
-            this.Control.ForceLazy = false;
-
-            return Transformer.NET.Html.HtmlTransformer.Transform(this.script);
+            return this.script;
         }
 
 		/// <summary>
 		/// 
 		/// </summary>
 		[Description("")]
-        public static DefaultScriptBuilder Create(BaseControl control)
+        public static DefaultScriptBuilder Create(XControl control)
         {
             return new DefaultScriptBuilder(control);
         }

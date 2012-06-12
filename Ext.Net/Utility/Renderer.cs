@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,6 +25,7 @@
  ********/
 
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Globalization;
 using System.Web.UI.WebControls;
 
@@ -33,42 +34,13 @@ using Ext.Net.Utilities;
 namespace Ext.Net
 {
     /// <summary>
-    /// A function used to generate HTML markup for a cell given the cell's data value.
-    /// If not specified, the default renderer uses the raw data value.
     /// 
-    /// Sets the rendering (formatting) function for a column. 
-    /// See Ext.util.Format for some default formatting functions.
-    ///
-    /// The render function is called with the following parameters:
-    ///     value : Object
-    ///         The data value for the cell.
-    ///     metadata : Object
-    ///         An object in which you may set the following attributes:
-    ///         
-    ///         tdCls : String
-    ///             A CSS class name to add to the cell's TD element.
-    ///         tdAttr : String
-    ///             An HTML attribute definition string to apply to the data container element
-    ///              within the table cell (e.g. 'style="color:red;"').
-    ///         style : String
-    ///     
-    ///     record : Ext.data.record
-    ///         The Ext.data.Record from which the data was extracted.
-    ///     rowIndex : Number
-    ///         Row index
-    ///     colIndex : Number
-    ///         Column index
-    ///     store : Ext.data.Store
-    ///         The Ext.data.Store object from which the Record was extracted.
-    ///     view : Ext.grid.View
-    /// Returns:
-    ///     void
     /// </summary>
     [DefaultProperty("Handler")]
     [TypeConverter(typeof(RendererConverter))]
     [ToolboxItem(false)]
     [Description("")]
-    public partial class Renderer : BaseItem
+    public partial class Renderer : StateManagedItem
     {
         private string[] args;
 
@@ -100,7 +72,7 @@ namespace Ext.Net
             {
                 if (this.args == null && !this.DesignMode)
                 {
-                    this.args = new string[] { "value", "metadata", "record", "rowIndex", "colIndex", "store", "view" };
+                    this.args = new string[] { "value", "metadata", "record", "rowIndex", "colIndex", "store" };
                 }
                 return this.args;
             }
@@ -162,11 +134,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Fn", "");
+                return (string)this.ViewState["Fn"] ?? "";
             }
             set
             {
-                this.State.Set("Fn", value);
+                this.ViewState["Fn"] = value;
             }
         }
 
@@ -180,11 +152,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Handler", "");
+                return (string)this.ViewState["Handler"] ?? "";
             }
             set
             {
-                this.State.Set("Handler", value);
+                this.ViewState["Handler"] = value;
             }
         }
 
@@ -199,11 +171,11 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string>("Scope", "");
+                return (string)this.ViewState["Scope"] ?? "";
             }
             set
             {
-                this.State.Set("Scope", value);
+                this.ViewState["Scope"] = value;
             }
         }
 
@@ -217,11 +189,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<RendererFormat>("Format", RendererFormat.None);
+                object obj = this.ViewState["Format"];
+                return (obj == null) ? RendererFormat.None : (RendererFormat)obj;
             }
             set
             {
-                this.State.Set("Format", value);
+                this.ViewState["Format"] = value;
             }
         }
 
@@ -236,11 +209,12 @@ namespace Ext.Net
         {
             get
             {
-                return this.State.Get<string[]>("FormatArgs", null);
+                object obj = this.ViewState["FormatArgs"];
+                return (obj == null) ? null : (string[])obj;
             }
             set
             {
-                this.State.Set("FormatArgs", value);
+                this.ViewState["FormatArgs"] = value;
             }
         }
 

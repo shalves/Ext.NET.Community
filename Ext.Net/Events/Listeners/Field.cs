@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,14 +33,12 @@ namespace Ext.Net
 	/// 
 	/// </summary>
 	[Description("")]
-    public partial class FieldListeners : AbstractComponentListeners
+    public partial class FieldListeners : BoxComponentListeners
     {
         private ComponentListener blur;
 
         /// <summary>
         /// Fires when this field loses input focus.
-        /// Parameters:
-        ///     item : Ext.form.field.Base
         /// </summary>
         [ListenerArgument(0, "item", typeof(Field), "this")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
@@ -52,22 +50,19 @@ namespace Ext.Net
         {
             get
             {
-                return this.blur ?? (this.blur = new ComponentListener());
+                if (this.blur == null)
+                {
+                    this.blur = new ComponentListener();
+                }
+
+                return this.blur;
             }
         }
 
         private ComponentListener change;
 
         /// <summary>
-        /// Fires when a user-initiated change is detected in the value of the field.
-        /// Parameters
-        /// item : Ext.form.field.Field
-        /// newValue : Mixed
-        ///     The new value
-        /// oldValue : Mixed
-        ///     The original value
-        /// options : Object
-        ///     The options object passed to Ext.util.Observable.addListener.
+        /// Fires just before the field blurs if the field value has changed.
         /// </summary>
         [ListenerArgument(0, "item", typeof(Field), "this")]
         [ListenerArgument(1, "newValue", typeof(object), "The new value")]
@@ -76,84 +71,17 @@ namespace Ext.Net
         [ConfigOption("change", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when a user-initiated change is detected in the value of the field.")]
+        [Description("Fires just before the field blurs if the field value has changed.")]
         public virtual ComponentListener Change
         {
             get
             {
-                return this.change ?? (this.change = new ComponentListener());
-            }
-        }
+                if (this.change == null)
+                {
+                    this.change = new ComponentListener();
+                }
 
-        private ComponentListener dirtyChange;
-
-        /// <summary>
-        /// Fires when a change in the field's isDirty state is detected.
-        /// Parameters
-        /// item : Ext.form.field.Field
-        /// isDirty : Boolean
-        ///    Whether or not the field is now dirty
-        /// </summary>
-        [ListenerArgument(0, "item", typeof(Field), "this")]
-        [ListenerArgument(1, "newValue", typeof(object), "The new value")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("dirtychange", typeof(ListenerJsonConverter))]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("Fires when a change in the field's isDirty state is detected.")]
-        public virtual ComponentListener DirtyChange
-        {
-            get
-            {
-                return this.dirtyChange ?? (this.dirtyChange = new ComponentListener());
-            }
-        }
-
-        private ComponentListener validityChange;
-
-        /// <summary>
-        /// Fires when a change in the field's validity is detected.
-        /// Parameters
-        /// item : Ext.form.field.Field
-        /// isValid : Boolean
-        ///     Whether or not the field is now valid
-        /// </summary>
-        [ListenerArgument(0, "item", typeof(Field), "this")]
-        [ListenerArgument(1, "isValid", typeof(bool), "")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("validitychange", typeof(ListenerJsonConverter))]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("Fires when a change in the field's validity is detected.")]
-        public virtual ComponentListener ValidityChange
-        {
-            get
-            {
-                return this.validityChange ?? (this.validityChange = new ComponentListener());
-            }
-        }
-
-        private ComponentListener errorChange;
-
-        /// <summary>
-        /// Fires when the active error message is changed via setActiveError.
-        /// Parameters
-        /// item : Ext.form.Labelable
-        /// error : String
-        ///     The active error message
-        /// </summary>
-        [ListenerArgument(0, "item", typeof(Field), "this")]
-        [ListenerArgument(1, "error", typeof(object), "The active error message")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [ConfigOption("errorchange", typeof(ListenerJsonConverter))]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("Fires when the active error message is changed via setActiveError.")]
-        public virtual ComponentListener ErrorChange
-        {
-            get
-            {
-                return this.errorChange ?? (this.errorChange = new ComponentListener());
+                return this.change;
             }
         }
 
@@ -172,18 +100,44 @@ namespace Ext.Net
         {
             get
             {
-                return this.focus ?? (this.focus = new ComponentListener());
+                if (this.focus == null)
+                {
+                    this.focus = new ComponentListener();
+                }
+
+                return this.focus;
+            }
+        }
+
+        private ComponentListener invalid;
+
+        /// <summary>
+        /// Fires after the field has been marked as invalid.
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(Field), "this")]
+        [ListenerArgument(1, "msg", typeof(string), "the validation message")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("invalid", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires after the field has been marked as invalid.")]
+        public virtual ComponentListener Invalid
+        {
+            get
+            {
+                if (this.invalid == null)
+                {
+                    this.invalid = new ComponentListener();
+                }
+
+                return this.invalid;
             }
         }
 
         private ComponentListener specialKey;
 
         /// <summary>
-        /// Fires when any key related to navigation (arrows, tab, enter, esc, etc.) is pressed. To handle other keys see Ext.util.KeyMap. You can check Ext.EventObject.getKey to determine which key was pressed. 
-        /// Parameters
-        /// item : Ext.form.field.Base
-        /// e : Ext.EventObject
-        ///     The event object
+        /// Fires when any key related to navigation (arrows, tab, enter, esc, etc.) is pressed.
         /// </summary>
         [ListenerArgument(0, "item", typeof(Field), "this")]
         [ListenerArgument(1, "e", typeof(object), "The event object")]
@@ -191,12 +145,41 @@ namespace Ext.Net
         [ConfigOption("specialkey", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
-        [Description("Fires when any key related to navigation (arrows, tab, enter, esc, etc.) is pressed. To handle other keys see Ext.util.KeyMap. You can check Ext.EventObject.getKey to determine which key was pressed.")]
+        [Description("Fires when any key related to navigation (arrows, tab, enter, esc, etc.) is pressed.")]
         public virtual ComponentListener SpecialKey
         {
             get
             {
-                return this.specialKey ?? (this.specialKey = new ComponentListener());
+                if (this.specialKey == null)
+                {
+                    this.specialKey = new ComponentListener();
+                }
+
+                return this.specialKey;
+            }
+        }
+
+        private ComponentListener valid;
+
+        /// <summary>
+        /// Fires after the field has been validated with no errors.
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(Field), "this")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("valid", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires after the field has been validated with no errors.")]
+        public virtual ComponentListener Valid
+        {
+            get
+            {
+                if (this.valid == null)
+                {
+                    this.valid = new ComponentListener();
+                }
+
+                return this.valid;
             }
         }
 

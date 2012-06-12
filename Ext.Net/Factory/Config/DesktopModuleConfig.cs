@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class DesktopModule
     {
 		/*  Ctor
@@ -64,7 +61,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        new public partial class Config : BaseItem.Config 
+        new public partial class Config : StateManagedItem.Config 
         { 
 			/*  Implicit DesktopModule.Config Conversion to DesktopModule.Builder
 				-----------------------------------------------------------------------------------------------*/
@@ -98,43 +95,25 @@ namespace Ext.Net
 					this.moduleID = value;
 				}
 			}
-        
-			private WindowCollection window = null;
 
-			/// <summary>
-			/// Standard menu attribute consisting of a reference to a menu object, a menu id or a menu config blob.
-			/// </summary>
-			public WindowCollection Window
-			{
-				get
-				{
-					if (this.window == null)
-					{
-						this.window = new WindowCollection();
-					}
-			
-					return this.window;
-				}
-			}
-			        
-			private MenuItem launcher = null;
+			private string windowID = "";
 
 			/// <summary>
 			/// 
 			/// </summary>
-			public MenuItem Launcher
-			{
+			[DefaultValue("")]
+			public virtual string WindowID 
+			{ 
 				get
 				{
-					if (this.launcher == null)
-					{
-						this.launcher = new MenuItem();
-					}
-			
-					return this.launcher;
+					return this.windowID;
+				}
+				set
+				{
+					this.windowID = value;
 				}
 			}
-			
+
 			private bool autoRun = false;
 
 			/// <summary>
@@ -150,24 +129,6 @@ namespace Ext.Net
 				set
 				{
 					this.autoRun = value;
-				}
-			}
-
-			private string autoRunHandler = "";
-
-			/// <summary>
-			/// 
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string AutoRunHandler 
-			{ 
-				get
-				{
-					return this.autoRunHandler;
-				}
-				set
-				{
-					this.autoRunHandler = value;
 				}
 			}
 

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,9 +33,6 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class CellSelectionModel
     {
         /// <summary>
@@ -77,57 +74,33 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
- 			/// <summary>
-			/// Turns on/off keyboard navigation within the grid. Defaults to true.
-			/// </summary>
-            public virtual CellSelectionModel.Builder EnableKeyNav(bool enableKeyNav)
-            {
-                this.ToComponent().EnableKeyNav = enableKeyNav;
-                return this as CellSelectionModel.Builder;
-            }
+ 			// /// <summary>
+			// /// Client-side JavaScript Event Handlers
+			// /// </summary>
+            // public virtual TBuilder Listeners(CellSelectionModelListeners listeners)
+            // {
+            //    this.ToComponent().Listeners = listeners;
+            //    return this as TBuilder;
+            // }
              
- 			/// <summary>
-			/// Set this configuration to true to prevent wrapping around of selection as a user navigates to the first or last column. Defaults to false.
-			/// </summary>
-            public virtual CellSelectionModel.Builder PreventWrap(bool preventWrap)
-            {
-                this.ToComponent().PreventWrap = preventWrap;
-                return this as CellSelectionModel.Builder;
-            }
+ 			// /// <summary>
+			// /// Server-side Ajax Event Handlers
+			// /// </summary>
+            // public virtual TBuilder DirectEvents(CellSelectionModelDirectEvents directEvents)
+            // {
+            //    this.ToComponent().DirectEvents = directEvents;
+            //    return this as TBuilder;
+            // }
              
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CellSelectionModel.Builder</returns>
-            public virtual CellSelectionModel.Builder Listeners(Action<CellSelectionModelListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as CellSelectionModel.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CellSelectionModel.Builder</returns>
-            public virtual CellSelectionModel.Builder DirectEvents(Action<CellSelectionModelDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as CellSelectionModel.Builder;
-            }
-			 
- 			/// <summary>
-			/// Selected cell
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CellSelectionModel.Builder</returns>
-            public virtual CellSelectionModel.Builder SelectedCell(Action<SelectedCell> action)
-            {
-                action(this.ToComponent().SelectedCell);
-                return this as CellSelectionModel.Builder;
-            }
-			
+ 			// /// <summary>
+			// /// Selected cell
+			// /// </summary>
+            // public virtual TBuilder SelectedCell(SelectedCell selectedCell)
+            // {
+            //    this.ToComponent().SelectedCell = selectedCell;
+            //    return this as TBuilder;
+            // }
+            
 
 			/*  Methods
 				-----------------------------------------------------------------------------------------------*/
@@ -138,6 +111,33 @@ namespace Ext.Net
             public virtual CellSelectionModel.Builder Clear()
             {
                 this.ToComponent().Clear();
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Clears all selections.
+			/// </summary>
+            public virtual CellSelectionModel.Builder ClearSelections()
+            {
+                this.ToComponent().ClearSelections();
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Clears all selections.
+			/// </summary>
+            public virtual CellSelectionModel.Builder ClearSelections(bool notify)
+            {
+                this.ToComponent().ClearSelections(notify);
+                return this;
+            }
+            
+ 			/// <summary>
+			/// Selects a range of rows. All rows in between startRow and endRow are also selected.
+			/// </summary>
+            public virtual CellSelectionModel.Builder Select(int rowIndex, int collIndex)
+            {
+                this.ToComponent().Select(rowIndex, collIndex);
                 return this;
             }
             

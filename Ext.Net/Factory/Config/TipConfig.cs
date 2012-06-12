@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,25 +33,58 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
     public abstract partial class Tip
     {
         /// <summary>
         /// 
         /// </summary>
-        new public abstract partial class Config : AbstractPanel.Config 
+        new public abstract partial class Config : PanelBase.Config 
         { 
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
-			private bool constrainPosition = true;
+			private bool autoHeight = true;
 
 			/// <summary>
-			/// If true, then the tooltip will be automatically constrained to stay within the browser viewport. Defaults to: true
+			/// True to use height:'auto', false to use fixed height (defaults to true).
 			/// </summary>
 			[DefaultValue(true)]
+			public override bool AutoHeight 
+			{ 
+				get
+				{
+					return this.autoHeight;
+				}
+				set
+				{
+					this.autoHeight = value;
+				}
+			}
+
+			private bool closable = false;
+
+			/// <summary>
+			/// True to render a close tool button into the tooltip header (defaults to false).
+			/// </summary>
+			[DefaultValue(false)]
+			public override bool Closable 
+			{ 
+				get
+				{
+					return this.closable;
+				}
+				set
+				{
+					this.closable = value;
+				}
+			}
+
+			private bool constrainPosition = false;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue(false)]
 			public virtual bool ConstrainPosition 
 			{ 
 				get
@@ -67,7 +100,7 @@ namespace Ext.Net
 			private string defaultAlign = "";
 
 			/// <summary>
-			/// Experimental. The default Ext.Element.alignTo anchor position value for this tip relative to its element of origin. Defaults to: \"tl-bl?\"
+			/// Experimental. The default Ext.Element.alignTo anchor position value for this tip relative to its element of origin (defaults to 'tl-bl?').
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string DefaultAlign 
@@ -79,6 +112,42 @@ namespace Ext.Net
 				set
 				{
 					this.defaultAlign = value;
+				}
+			}
+
+			private Unit maxWidth = Unit.Pixel(300);
+
+			/// <summary>
+			/// The maximum width of the tip in pixels (defaults to 300). The maximum supported value is 500.
+			/// </summary>
+			[DefaultValue(typeof(Unit), "300")]
+			public override Unit MaxWidth 
+			{ 
+				get
+				{
+					return this.maxWidth;
+				}
+				set
+				{
+					this.maxWidth = value;
+				}
+			}
+
+			private Unit minWidth = Unit.Pixel(40);
+
+			/// <summary>
+			/// The minimum width of the tip in pixels (defaults to 40).
+			/// </summary>
+			[DefaultValue(typeof(Unit), "40")]
+			public override Unit MinWidth 
+			{ 
+				get
+				{
+					return this.minWidth;
+				}
+				set
+				{
+					this.minWidth = value;
 				}
 			}
 

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -39,7 +39,7 @@ namespace Ext.Net
 		/// 
 		/// </summary>
 		[Description("")]
-        public virtual string Serialize()
+        public virtual string ToJsonString()
         {
             if (this.Args.Count == 0)
             {
@@ -49,31 +49,50 @@ namespace Ext.Net
             return "{{{0},{1}}}".FormatWith(new ClientConfig().Serialize(this).Chop(), JSON.Serialize(this.Args).Chop());
         }
 
+        string scope = "this";
+
         /// <summary>
         /// The scope in which to execute the handler function. The handler function's 'this' context.
         /// </summary>
         [ConfigOption(JsonMode.Raw)]
-        [DefaultValue(null)]
+        [DefaultValue("this")]
         [NotifyParentProperty(true)]
         [Description("The scope in which to execute the handler function. The handler function's 'this' context.")]
         public virtual string Scope
         {
-            get;
-            set;
+            get
+            {
+                return this.scope;
+            }
+            set
+            {
+                this.scope = value;
+            }
         }
+
+        string _delegate = "";
 
         /// <summary>
         /// A simple selector to filter the target or look for a descendant of the target.
         /// </summary>
         [ConfigOption]
-        [DefaultValue(null)]
+        [DefaultValue("")]
         [NotifyParentProperty(true)]
         [Description("A simple selector to filter the target or look for a descendant of the target.")]
         public virtual string Delegate
         {
-            get;
-            set;
+            get
+            {
+                return this._delegate;
+            }
+            set
+            {
+                this._delegate = value;
+            }
         }
+
+
+        bool stopEvent = false;
 
         /// <summary>
         /// True to stop the event. That is stop propagation, and prevent the default action.
@@ -84,9 +103,17 @@ namespace Ext.Net
         [Description("True to stop the event. That is stop propagation, and prevent the default action.")]
         public virtual bool StopEvent
         {
-            get;
-            set;
+            get
+            {
+                return this.stopEvent;
+            }
+            set
+            {
+                this.stopEvent = value;
+            }
         }
+
+        bool preventDefault = false;
 
         /// <summary>
         /// True to prevent the default action.
@@ -97,9 +124,17 @@ namespace Ext.Net
         [Description("True to prevent the default action.")]
         public virtual bool PreventDefault
         {
-            get;
-            set;
+            get
+            {
+                return this.preventDefault;
+            }
+            set
+            {
+                this.preventDefault = value;
+            }
         }
+
+        bool stopPropagation = false;
 
         /// <summary>
         /// True to prevent event propagation.
@@ -110,9 +145,17 @@ namespace Ext.Net
         [Description("True to prevent event propagation.")]
         public virtual bool StopPropagation
         {
-            get;
-            set;
+            get
+            {
+                return this.stopPropagation;
+            }
+            set
+            {
+                this.stopPropagation = value;
+            }
         }
+
+        bool normalized = false;
 
         /// <summary>
         /// False to pass a browser event to the handler function instead of an Ext.EventObject.
@@ -123,9 +166,17 @@ namespace Ext.Net
         [Description("False to pass a browser event to the handler function instead of an Ext.EventObject.")]
         public virtual bool Normalized
         {
-            get;
-            set;
+            get
+            {
+                return this.normalized;
+            }
+            set
+            {
+                this.normalized = value;
+            }
         }
+
+        int delay = 0;
 
         /// <summary>
         /// The number of milliseconds to delay the invocation of the handler after the event fires.
@@ -136,9 +187,17 @@ namespace Ext.Net
         [Description("The number of milliseconds to delay the invocation of the handler after the event fires.")]
         public virtual int Delay
         {
-            get;
-            set;
+            get
+            {
+                return this.delay;
+            }
+            set
+            {
+                this.delay = value;
+            }
         }
+
+        bool single = false;
 
         /// <summary>
         /// True to add a handler to handle just the next firing of the event, and then remove itself.
@@ -149,9 +208,17 @@ namespace Ext.Net
         [Description("True to add a handler to handle just the next firing of the event, and then remove itself.")]
         public virtual bool Single
         {
-            get;
-            set;
+            get
+            {
+                return this.single;
+            }
+            set
+            {
+                this.single = value;
+            }
         }
+
+        int buffer = 0;
 
         /// <summary>
         /// Causes the handler to be scheduled to run in an Ext.util.DelayedTask delayed by the specified number of milliseconds. If the event fires again within that time, the original handler is not invoked, but the new handler is scheduled in its place.
@@ -162,8 +229,14 @@ namespace Ext.Net
         [Description("Causes the handler to be scheduled to run in an Ext.util.DelayedTask delayed by the specified number of milliseconds. If the event fires again within that time, the original handler is not invoked, but the new handler is scheduled in its place.")]
         public virtual int Buffer
         {
-            get; 
-            set;
+            get
+            {
+                return this.buffer;
+            }
+            set
+            {
+                this.buffer = value;
+            }
         }
 
         Dictionary<string, object> args = new Dictionary<string, object>();
@@ -185,11 +258,7 @@ namespace Ext.Net
             }
         }
 
-        ///<summary>
-        ///</summary>
-        public HandlerConfig()
-        {
-        }
+        private Observable target = null;
 
         /// <summary>
         /// Only call the handler if the event was fired on the target Observable, not if the event was bubbled up from a child Observable.
@@ -199,35 +268,14 @@ namespace Ext.Net
         [Description("Only call the handler if the event was fired on the target Observable, not if the event was bubbled up from a child Observable.")]
         public virtual Observable Target
         {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Only call the handler if the event was fired on the target Observable, not if the event was bubbled up from a child Observable.
-        /// </summary>
-        [ConfigOption]
-        [DefaultValue(null)]
-        [NotifyParentProperty(true)]
-        [Description("Only call the handler if the event was fired on the target Observable, not if the event was bubbled up from a child Observable.")]
-        public virtual string TargetID
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// This option is only valid for listeners bound to Components. The name of a AbstractComponent property which references an element to add a listener to.
-        /// This option is useful during AbstractComponent construction to add DOM event listeners to elements of Components which will exist only after the AbstractComponent is rendered.
-        /// </summary>
-        [ConfigOption]
-        [DefaultValue(null)]
-        [NotifyParentProperty(true)]
-        [Description("his option is only valid for listeners bound to Components. The name of a AbstractComponent property which references an element to add a listener to.")]
-        public virtual string Element
-        {
-            get;
-            set;
+            get
+            {
+                return this.target;
+            }
+            set
+            {
+                this.target = value;
+            }
         }
 
 		/// <summary>
@@ -240,8 +288,7 @@ namespace Ext.Net
         {
             get
             {
-                var result = this.Target != null ? this.Target.ClientID : this.TargetID;
-                return result ?? "";
+                return this.target != null ? this.Target.ClientID : "";
             }
         }
     }

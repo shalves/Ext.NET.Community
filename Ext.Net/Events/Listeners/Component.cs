@@ -15,18 +15,22 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using System.Web.UI;
+
+using Ext.Net.Utilities;
 
 namespace Ext.Net
 {
@@ -36,7 +40,7 @@ namespace Ext.Net
     [ToolboxItem(false)]
     [TypeConverter(typeof(ListenersConverter))]
     [Description("")]
-    public abstract partial class ComponentListeners : BaseItem
+    public abstract partial class ComponentListeners : StateManagedItem
     {
         private static readonly Dictionary<string, List<ListenerPropertyInfo>> propertiesCache = new Dictionary<string, List<ListenerPropertyInfo>>();
         private static readonly object syncObj = new object();
@@ -112,6 +116,90 @@ namespace Ext.Net
                 }
 
                 return this.listeners;
+            }
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public override object SaveViewState()
+        {
+            ResourceManager rm = this.ResourceManager;
+
+            if (rm != null && !rm.ManageEventsViewState)
+            {
+                return base.SaveViewState();
+            }
+
+            List<object> states = new List<object>();
+            object baseState = base.SaveViewState();
+
+            if (baseState != null)
+            {
+                states.Add(new Pair("base", baseState)); 
+            }
+
+            foreach (ListenerTriplet triplet in this.Listeners)
+            {
+                object listenerState = triplet.Listener.SaveViewState();
+
+                if (listenerState != null)
+                {
+                    states.Add(new Pair(triplet.Name, listenerState));  
+                }
+            }
+
+            return states.Count == 0 ? null : states.ToArray();
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public override void LoadViewState(object state)
+        {
+            object[] states = state as object[];
+
+            ResourceManager rm = this.ResourceManager;
+
+            if (rm != null && !rm.ManageEventsViewState)
+            {
+                base.LoadViewState(state);  
+            }
+
+            if (states != null)
+            {
+                foreach (Pair pair in states)
+                {
+                    string listenerName = (string)pair.First;
+                    object listenerState = pair.Second;
+
+                    if (listenerName == "base")
+                    {
+                        base.LoadViewState(listenerState);
+                    }
+                    else
+                    {
+                        PropertyInfo property = this.GetType().GetProperty(listenerName);
+
+                        if (property == null)
+                        {
+                            throw new InvalidOperationException("Can't find the property '{0}'".FormatWith(listenerName));
+                        }
+
+                        ComponentListener componentListener = (ComponentListener)property.GetValue(this, null);
+
+                        if (componentListener != null)
+                        {
+                            componentListener.LoadViewState(listenerState); 
+                        }
+                    }
+                }
+            }
+            else
+            {
+                base.LoadViewState(state);  
             }
         }
     }

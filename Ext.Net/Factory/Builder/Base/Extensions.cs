@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -48,9 +48,6 @@ namespace Ext.Net
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
     public partial class Extensions
     {
 		/// <summary>
@@ -71,24 +68,27 @@ namespace Ext.Net
             return Ext.Net.X.Builder;
         }
 
-        /// <new date="2010-01-04" owner="geoff" key="Control">
-        /// Added new .ToElement() Extension Method to Control which enables the easy explicit conversion
-        /// of Control objects into Ext.Net.Element objects. Once converted into an Element, effect can be run against
-        /// the Element, including .Show(), .Hide() and many other Animations. Method chaining default is "true".
-        /// </new>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="self"></param>
+        /// <returns></returns>
         public static Element ToElement(this Control self)
         {
             return self.ToElement(false);
         }
 
-        /// <new date="2010-01-30" owner="geoff" key="Control">
-        /// Added extra chaining parameter to .ToElement() Extension Method. Default is "true".
-        /// </new>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="chaining"></param>
+        /// <returns></returns>
         public static Element ToElement(this Control self, bool chaining)
         {
-            if (self is AbstractComponent)
+            if (self is Component)
             {
-                return new Element(self as AbstractComponent, chaining);
+                return new Element(self as Component, chaining);
             }
 
             Element el = Element.Fly(self);
@@ -103,9 +103,9 @@ namespace Ext.Net
 		[Description("")]
         public static void Update(this Control self)
         {
-            if (self is AbstractComponent)
+            if (self is Component)
             {
-                ((AbstractComponent)self).Render();
+                ((Component)self).Render();
                 return;
             }
 

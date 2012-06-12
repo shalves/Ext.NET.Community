@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta - Community Edition (AGPLv3 License)
+ * @version   : 1.3.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-03-07
+ * @date      : 2012-02-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,8 +25,11 @@
  ********/
 
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
+
+using Ext.Net.Utilities;
 
 namespace Ext.Net
 {
@@ -37,18 +40,25 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        [Meta]
-        [DefaultValue("triggerclick")]
         [Description("")]
-        public override string PostBackEvent
+        protected override void OnBeforeClientInit(Observable sender)
+        {
+            if (this.AutoPostBack)
+            {
+                string replace = "'".ConcatWith(this.PostBackArgument, "'");
+                this.On("triggerclick", new JFunction(this.PostBackFunction.Replace(replace, "index"), "el", "t", "index"));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        protected override string PostBackArgument
         {
             get
             {
-                return this.State.Get<string>("PostBackEvent", "triggerclick");
-            }
-            set
-            {
-                this.State.Set("PostBackEvent", value);
+                return "_index_";
             }
         }
 
@@ -127,20 +137,38 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
+        [Description("")]
+        public override void RegisterIcons()
+        {
+            base.RegisterIcons();
+
+            if (!Ext.Net.X.IsAjaxRequest || this.IsDynamic)
+            {
+                foreach (FieldTrigger trigger in this.Triggers)
+                {
+                    this.RegisterIcon(trigger.Icon);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
         [Browsable(false)]
         [DefaultValue("")]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Description("")]
-        public override string TriggerCls
+        public override string TriggerClass
         {
             get
             {
-                return base.TriggerCls;
+                return base.TriggerClass;
             }
             set
             {
-                base.TriggerCls = value;
+                base.TriggerClass = value;
             }
         }
     }
@@ -179,5 +207,5 @@ namespace Ext.Net
     /// 
     /// </summary>
     [Description("")]
-    public partial class FieldTrigerCollection : BaseItemCollection<FieldTrigger> { }
+    public partial class FieldTrigerCollection : StateManagedCollection<FieldTrigger> { }
 }
