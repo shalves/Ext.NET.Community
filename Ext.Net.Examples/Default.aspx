@@ -89,7 +89,7 @@
                 Header="false"
                 Region="North"
                 Border="false"
-                Html="<div id='header' style='height:32px;'><a style='float:right;margin-right:10px;' href='http://www.ext.net/' target='_blank'><img style='margin-top: 4px;' src='resources/images/ext_net_badge.gif'/></a><div class='api-title'>Ext.NET Examples Explorer (Version 1.3)</div></div>"
+                Html="<div id='header' style='height:32px;'><a style='float:right;margin-right:10px;' href='http://www.ext.net/' target='_blank'><img style='margin-top: 4px;' src='resources/images/ext_net_badge.gif'/></a><div id='v2-samples'><a href='http://examples.ext.net'>V2 SAMPLES &#187;</a></div><div class='api-title'>Ext.NET Examples Explorer (Version 1.4)</div></div>"
                 />
             <ext:Panel 
                 runat="server"

@@ -6,14 +6,14 @@
     protected void btnChild_Click(object sender, DirectEventArgs e)
     {
         this.Label2.Text = "Child [DirectEvent]: " + DateTime.Now.ToLongTimeString();
-       X.Msg.Alert("DirectEvent", "Child Button Clicked").Show();
+        X.Msg.Alert("DirectEvent", "Child Button Clicked").Show();
     }
 
     [DirectMethod]
     public void ButtonClickChild()
     {
         this.Label2.Text = "Child [DirectMethod]: " + DateTime.Now.ToLongTimeString();
-       X.Msg.Alert("DirectMethod", "Child Button Clicked").Show();
+        X.Msg.Alert("DirectMethod", "Child Button Clicked").Show();
     }
 </script>
 
@@ -28,7 +28,6 @@
     <ext:ResourceManager runat="server" RenderScripts="None" />
     
     <ext:Panel 
-        ID="Panel2" 
         runat="server" 
         Title="Child" 
         Width="300" 
@@ -38,12 +37,12 @@
             <ext:Label ID="Label2" runat="server" />
         </Items>
         <Buttons>
-            <ext:Button ID="btnChild" runat="server" Text="Submit [DirectEvent]">
+            <ext:Button ID="Button1" runat="server" Text="Submit [DirectEvent]">
                 <DirectEvents>
                     <Click OnEvent="btnChild_Click" Url="Child.aspx" Type="Load" />
                 </DirectEvents>
             </ext:Button>
-            <ext:Button ID="Button1" IDMode="Ignore" runat="server" Text="Submit [DirectMethod]">
+            <ext:Button ID="Button2" IDMode="Ignore" runat="server" Text="Submit [DirectMethod]">
                 <Listeners>
                     <Click Handler="Ext.net.DirectMethods.ButtonClickChild({ url: 'Child.aspx' });" />
                 </Listeners>

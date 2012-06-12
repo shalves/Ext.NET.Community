@@ -422,6 +422,22 @@ Ext.ux.data.PagingStore = Ext.extend(Ext.net.Store, {
             start = params[pn.start],
             limit = params[pn.limit];
             
+        if (this.ignoreMemoryProxy !== true && this.proxy instanceof Ext.data.PagingMemoryProxy && this.getCount() > 0) {        
+            if ((typeof start !== "number") || (typeof limit !== "number")) {
+                this.start = 0;                
+            }
+            else{
+                this.start = start;
+                this.limit = limit;
+                delete params[pn.start];
+                delete params[pn.limit];                
+            }
+            
+            this.lastParams = params;
+            
+            return true;
+        }
+            
         if ((typeof start !== "number") || (typeof limit !== "number")) {
             delete this.start;
             delete this.limit;

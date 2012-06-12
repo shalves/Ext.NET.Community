@@ -1,11 +1,51 @@
 ﻿**************************************************************************
-*                       Version 1.3.0 CHANGELOG                          *
+*                       Version 1.4.0 CHANGELOG                          *
 **************************************************************************
 
-Release Date     : 2012-02-29
-Current Version  : 1.3.0
-Previous Version : 1.2.0
+Release Date     : 2012-05-24
+Current Version  : 1.4.0
+Previous Version : 1.3.0
 
+FIX	
+	[r3845]	AutoLoad doesn't always parse url correctly
+	[r3847]	MVC Demo: fixed the "Report a Defect" tab.
+	[r3853]	Json date converters don't support nullable datetime
+	[r3854]	Fixed defect where .GetIconClassName does not properly convert string .ToLower if tr-TR culture is set on Thread. Passed "CultureInfo.InvariantCulture" parameter into .ToLower Method call.
+	[r3855]	ScriptBuilder doesn't check PathEmbeddedDebug on null
+	[r3856]	Incorrect deserialization of DateTime? (if value is null)
+	[r3865]	ComboBox: added the ListEmptyText property.
+	[r3867]	Now TreeEditor is destroyed when TreePanel is destroyed.
+	[r3869]	Dynamic controls don't register own resources
+	[r3878]	Url can be incorrectly resolved for dynamic controls
+	[r3881]	Reverted the changes of the revision #3821 since it might cause a "stack overflow" JavaScript error.
+	[r3886]	CtorDateTimeJsonConverter ignores nullable datetime
+	[r3894]	Fixed the HyperLink example: corrected the ImageUrl value.
+	[r3895]	Now DirectEventHandlerJsonConverter can apply a function name with a dot.
+	[r3914]	CurrentLocale property of ResourceManager should return exact locale is defined in Locale property
+	[r3921]	HtmlEditor: added the DefaultFont property.
+	[r3922]	Now Panel FormGroup option doesn't transform title to be upper-case by default.
+	[r3926]	Reverted back the changes of the revision #3812 since it breaks the functionality in another aspect:
+	[r3931]	Fixed the layout of the CustomerDetails page.
+	[r3933]	Calendar shows some events incorrectly
+	[r3934]	PagingStore should not reread data from MemoryProxy
+	[r3938]	BaseParams is rendered incorrectly if control is dynamic
+	[r3941]	UserControl direct method proxy can be incorrect if user control in ASP.NET repeater
+	[r3943]	AutoDataBind="true" of GridPanel (or its parent control) caused its Store to be reloaded during an AJAX request (DirectEvent/DirectMethod).
+	[r3955]	CommandColumn destroys shared menus during view refresh
+	[r3964]	NetServiceTreeLoader: corrected calling a callback. Now it is called with a proper scope.
+	[r3976]	Fixed the Panel AutoLoad Merge Mode example.
+	[r3995]	CommandMenu EnableScrolling: changed the default value to false according to the default value of the JavaScript Menu class.
+	[r3997]	HttpProxy Url is not resolved within a partial view.
+	[r3998]	Renamed mistyped "ValidatioEventOwner" to "ValidationEventOwner".
+	[r4003]	TreePanel CheckedNodes must be updated just after rendering.
+	[r4019]	X.GetCmp controls don't respect script sequence
+	[r4024]	Chrome 19 breaks autoexpand column
+	[r4032]	Date record field renders milliseconds if RenderMilliseconds is true only (works with JsonReader only)
+
+
+**************************************************************************
+*                       Version 1.3.0 CHANGELOG                          *
+**************************************************************************
 
 1. [NEW] [#3840] Added new /Examples/Events/DirectEvents/Async sample. Demonstrates running multiple DirectEvents and returning values asynchronously. 
 

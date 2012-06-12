@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.3.0 - Ext.NET Pro License
+ * @version   : 1.4.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-02-21
+ * @date      : 2012-05-24
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -148,12 +148,13 @@ namespace Ext.Net
                 Control parent = null;// this.Control.ParentComponentNotLayout;
                 this.Control.TopDynamicControl = true;
                 this.Control.ForceIdRendering = true;
+                ResourceManager newMgr = new ResourceManager();
 
                 if (selfRendering && this.Control.Page == null)
                 {
                     pageHolder = new SelfRenderingPage();
 
-                    ResourceManager newMgr = new ResourceManager();
+                    newMgr = new ResourceManager();
                     newMgr.RenderScripts = ResourceLocationType.None;
                     newMgr.RenderStyles = ResourceLocationType.None;
                     newMgr.IDMode = IDMode.Client;
@@ -165,13 +166,15 @@ namespace Ext.Net
                 else if (selfRendering && this.Control.Page is ISelfRenderingPage)
                 {
                     pageHolder = this.Control.Page;
-                    ResourceManager newMgr = ControlUtils.FindControl<ResourceManager>(pageHolder);
+                    newMgr = ControlUtils.FindControl<ResourceManager>(pageHolder);
 
                     if (newMgr != null)
                     {
                         newMgr.IsDynamic = true;
                     }
                 }
+
+                this.ResourceManager = Ext.Net.ResourceManager.GetInstance() ?? newMgr;
 
                 StringBuilder sb = new StringBuilder();
 

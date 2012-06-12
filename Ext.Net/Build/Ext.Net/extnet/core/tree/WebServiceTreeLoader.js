@@ -3,7 +3,7 @@
 
 Ext.NetServiceTreeLoader = Ext.extend(Ext.tree.TreeLoader, {
     // private override
-    processResponse : function (response, node, callback) {
+    processResponse : function (response, node, callback, scope) {
         var json,
             root;
         
@@ -35,9 +35,7 @@ Ext.NetServiceTreeLoader = Ext.extend(Ext.tree.TreeLoader, {
             
             node.endUpdate();
             
-            if (typeof callback === "function") {
-                callback(this, node);
-            }
+            this.runCallback(callback, scope || node, [node]);
         } catch (e) {
             this.handleFailure(response);
         }

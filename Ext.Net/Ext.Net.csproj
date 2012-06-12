@@ -36,22 +36,6 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Ext.Net.xml</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ext.Net.Utilities, Version=1.3.0.39155, Culture=neutral, PublicKeyToken=2c34ac34702a3c23, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -106,7 +90,7 @@
     <Compile Include="Enums\DropPoint.cs" />
     <Compile Include="Enums\RenderMode.cs" />
     <Compile Include="Enums\TreePanelMode.cs" />
-    <Compile Include="Enums\ValidatioEventOwner.cs" />
+    <Compile Include="Enums\ValidationEventOwner.cs" />
     <Compile Include="Enums\VisibilityMode.cs" />
     <Compile Include="Events\DirectEvents\ClickRepeater.cs" />
     <Compile Include="Events\DirectEvents\CheckboxGroup.cs" />
@@ -2797,9 +2781,10 @@
     <Content Include="Build\Ext.Net\Licenses\SilkCompanionIcon.txt" />
     <Content Include="Build\Ext.Net\ux\extensions\calendar\build.bat" />
     <Content Include="Build\Ext.Net\ux\extensions\calendar\calendar-all.jsb" />
-    <None Include="Build\NuGet\Ext.NET.1.2.0.nupkg" />
-    <None Include="Build\NuGet\Ext.NET.1.3.0.nupkg" />
-    <None Include="Build\NuGet\Web.config.transform" />
+    <None Include="Build\NuGet\Ext.NET.1.4.0.nupkg" />
+    <None Include="Build\NuGet\Web.config.transform">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Ext.Net.snk" />
   </ItemGroup>
@@ -6363,7 +6348,6 @@
     <Folder Include="Build\Ext.Net\extjs\src\ext-core\examples\tabs\images\" />
     <Folder Include="Build\Ext.Net\extjs\src\ext-core\test\yui_2.6.0\yui\build\logger\assets\skins\sam\" />
     <Folder Include="Build\Ext.Net\extjs\src\ext-core\test\yui_2.6.0\yui\build\yuitest\assets\skins\sam\" />
-    <Folder Include="Build\ReferenceAssemblies\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

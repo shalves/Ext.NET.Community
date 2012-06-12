@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.3.0 - Ext.NET Pro License
+ * @version   : 1.4.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-02-21
+ * @date      : 2012-05-24
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -54,7 +54,7 @@ namespace Ext.Net
                 
                 list.Add("items", new ConfigOption("items", new SerializationOptions("items", JsonMode.AlwaysArray), null, this.Items ));
                 list.Add("shared", new ConfigOption("shared", null, false, this.Shared ));
-                list.Add("enableScrolling", new ConfigOption("enableScrolling", null, true, this.EnableScrolling ));
+                list.Add("enableScrolling", new ConfigOption("enableScrolling", null, false, this.EnableScrolling ));
                 list.Add("minWidth", new ConfigOption("minWidth", new SerializationOptions(JsonMode.Raw), 120, this.MinWidth ));
                 list.Add("maxHeight", new ConfigOption("maxHeight", new SerializationOptions(JsonMode.Raw), 0, this.MaxHeight ));
                 list.Add("scrollIncrement", new ConfigOption("scrollIncrement", new SerializationOptions(JsonMode.Raw), 24, this.ScrollIncrement ));

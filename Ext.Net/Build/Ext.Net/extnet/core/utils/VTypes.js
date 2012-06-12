@@ -4,28 +4,30 @@ Ext.apply(Ext.form.VTypes, {
     daterange : function (val, field) {
         var date = field.parseDate(val);
  
-        if (field.startDateField && (!date  || (!field.dateRangeMax || (date.getTime() !== field.dateRangeMax.getTime())))) {
-            var start = Ext.getCmp(field.startDateField);
+        if (date) {
+            if (field.startDateField && (!field.dateRangeMax || (date.getTime() !== field.dateRangeMax.getTime()))) {
+                var start = Ext.getCmp(field.startDateField);
  
-            if (start) {
-                start.setMaxValue(date);
-                field.dateRangeMax = date;
-                start.validate();
-            }
-        } else if (field.endDateField && (!date || (!field.dateRangeMin || (date.getTime() !== field.dateRangeMin.getTime())))) {
-            var end = Ext.getCmp(field.endDateField);
+                if (start) {
+                    start.setMaxValue(date);
+                    field.dateRangeMax = date;
+                    start.validate();
+                }
+            } else if (field.endDateField && (!field.dateRangeMin || (date.getTime() !== field.dateRangeMin.getTime()))) {
+                var end = Ext.getCmp(field.endDateField);
  
-            if (end) {
-                end.setMinValue(date);
-                field.dateRangeMin = date;
-                end.validate();
+                if (end) {
+                    end.setMinValue(date);
+                    field.dateRangeMin = date;
+                    end.validate();
+                }
             }
         }
  
         /*
-            * Always return true since we're only using this vtype to set the
-            * min/max allowed values (these are tested for after the vtype test)
-            */
+        * Always return true since we're only using this vtype to set the
+        * min/max allowed values (these are tested for after the vtype test)
+        */
         return true;
     },
 

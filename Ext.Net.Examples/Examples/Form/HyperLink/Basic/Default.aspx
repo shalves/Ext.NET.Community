@@ -50,7 +50,7 @@
         runat="server" 
         Target="_blank"
         NavigateUrl="http://www.ext.net"
-        ImageUrl="http://ext.net/images/logo.gif" 
+        ImageUrl="http://speed.ext.net/identity/extnet-poweredby-small.jpg" 
         />
 </body>
 </html>

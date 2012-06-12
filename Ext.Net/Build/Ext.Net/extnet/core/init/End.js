@@ -69,6 +69,7 @@
 
     // http://forums.ext.net/showthread.php?12628
     buf.push(".x-tab-strip-text{text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}");
+    buf.push(".x-form-group .x-form-group-header-text{text-transform:none;}");
 
     Ext.net.ResourceMgr.registerCssClass("Ext.Net.CSS", buf.join(""));
 

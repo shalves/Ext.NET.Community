@@ -102,6 +102,10 @@
         .txtCustomers-list td, .txtCustomers-list th {
             padding : 3px;
         }
+        
+        .ext-ie .x-fieldset-header-text {
+            position: static !important;
+        }
     </style>
 </head>
 <body>
@@ -303,7 +307,7 @@
                                             </ext:FieldSet>
                                             <ext:Container runat="server" Layout="hbox">
                                                 <Items>
-                                                    <ext:Container runat="server" Flex="1">
+                                                    <ext:Container runat="server" Flex="1" Layout="FormLayout">
                                                         <Items>
                                                             <ext:FieldSet 
                                                                 runat="server" 

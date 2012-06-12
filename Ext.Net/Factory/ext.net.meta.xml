@@ -6836,6 +6836,17 @@
             <Attribute Type="Description" RawValue="CSS class to apply to the dropdown list element (defaults to '')." />
           </Attributes>
         </ConfigOption>
+        <ConfigOption Name="ListEmptyText" Type="string" DefaultValue="&quot;&quot;">
+          <Summary><![CDATA[The empty text to display in the data view if no items are found. (defaults to '').]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" />
+            <Attribute Type="Category" RawValue="&quot;8. ComboBox&quot;" />
+            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
+            <Attribute Type="Localizable" RawValue="true" />
+            <Attribute Type="Description" RawValue="The empty text to display in the data view if no items are found. (defaults to '')." />
+          </Attributes>
+        </ConfigOption>
         <ConfigOption Name="ListWidth" Type="Unit" DefaultValue="typeof(Unit), &quot;&quot;">
           <Summary><![CDATA[The width in pixels of the dropdown list (defaults to the width of the ComboBox field).]]></Summary>
           <Attributes>
@@ -7609,13 +7620,13 @@
             <Attribute Type="Description" />
           </Attributes>
         </ConfigOption>
-        <ConfigOption Name="EnableScrolling" Type="bool" DefaultValue="true">
+        <ConfigOption Name="EnableScrolling" Type="bool" DefaultValue="false">
           <Summary><![CDATA[Whenever a menu gets so long that the items won't fit the viewable area, it provides the user with an easy UI to scroll the menu.]]></Summary>
           <Attributes>
             <Attribute Type="Meta" />
             <Attribute Type="ConfigOption" />
             <Attribute Type="Category" RawValue="&quot;2. CommandMenu&quot;" />
-            <Attribute Type="DefaultValue" RawValue="true" />
+            <Attribute Type="DefaultValue" RawValue="false" />
             <Attribute Type="NotifyParentProperty" RawValue="true" />
             <Attribute Type="Description" RawValue="Whenever a menu gets so long that the items won't fit the viewable area, it provides the user with an easy UI to scroll the menu." />
           </Attributes>
@@ -21783,6 +21794,16 @@
             <Attribute Type="Description" RawValue="The default text for the create link prompt." />
           </Attributes>
         </ConfigOption>
+        <ConfigOption Name="DefaultFont" Type="string" DefaultValue="&quot;&quot;">
+          <Summary><![CDATA[The default font family (defaults to 'tahoma').]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" />
+            <Attribute Type="Category" RawValue="&quot;6. HtmlEditor&quot;" />
+            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
+            <Attribute Type="Description" RawValue="The default font family (defaults to 'tahoma')." />
+          </Attributes>
+        </ConfigOption>
         <ConfigOption Name="DefaultLinkValue" Type="string" DefaultValue="&quot;http://&quot;">
           <Summary><![CDATA[The default value for the create link prompt (defaults to http://).]]></Summary>
           <Attributes>
@@ -31518,10 +31539,10 @@
             <Attribute Type="Description" RawValue="Name of the event that triggers the validation" />
           </Attributes>
         </ConfigOption>
-        <ConfigOption Name="EventOwner" Type="ValidatioEventOwner" DefaultValue="ValidatioEventOwner.Element">
+        <ConfigOption Name="EventOwner" Type="ValidationEventOwner" DefaultValue="ValidationEventOwner.Element">
           <Attributes>
             <Attribute Type="ConfigOption" RawValue="JsonMode.ToLower" />
-            <Attribute Type="DefaultValue" RawValue="ValidatioEventOwner.Element" />
+            <Attribute Type="DefaultValue" RawValue="ValidationEventOwner.Element" />
             <Attribute Type="NotifyParentProperty" RawValue="true" />
             <Attribute Type="Description" />
           </Attributes>

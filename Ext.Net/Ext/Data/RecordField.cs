@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.3.0 - Ext.NET Pro License
+ * @version   : 1.4.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-02-21
+ * @date      : 2012-05-24
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -333,6 +333,17 @@ namespace Ext.Net
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [DefaultValue(false)]
+        public virtual bool RenderMilliseconds
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// (Optional) A format String for the Date.parseDate function
         /// </summary>
         [Meta]
@@ -348,7 +359,7 @@ namespace Ext.Net
 
                 if (this.Type == RecordFieldType.Date && this.ViewState["DateFormat"] == null)
                 {
-                    temp = "yyyy-MM-ddThh:mm:ss.u";
+                    temp = this.RenderMilliseconds ? "yyyy-MM-ddTHH:mm:ss.u" : "yyyy-MM-ddTHH:mm:ss";
                 }
 
                 return temp;

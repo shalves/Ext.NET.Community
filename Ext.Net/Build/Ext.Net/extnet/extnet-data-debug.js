@@ -1,7 +1,7 @@
 /*
- * @version   : 1.3.0 - Ext.NET Pro License
+ * @version   : 1.4.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-02-21
+ * @date      : 2012-05-24
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : See license.txt and http://www.ext.net/license/. 
  * @website   : http://www.ext.net/
@@ -1873,6 +1873,22 @@ Ext.ux.data.PagingStore = Ext.extend(Ext.net.Store, {
         var pn = this.paramNames,
             start = params[pn.start],
             limit = params[pn.limit];
+            
+        if (this.ignoreMemoryProxy !== true && this.proxy instanceof Ext.data.PagingMemoryProxy && this.getCount() > 0) {        
+            if ((typeof start !== "number") || (typeof limit !== "number")) {
+                this.start = 0;                
+            }
+            else{
+                this.start = start;
+                this.limit = limit;
+                delete params[pn.start];
+                delete params[pn.limit];                
+            }
+            
+            this.lastParams = params;
+            
+            return true;
+        }
             
         if ((typeof start !== "number") || (typeof limit !== "number")) {
             delete this.start;
@@ -4502,9 +4518,23 @@ Ext.grid.CheckboxSelectionModel.prototype.initEvents = Ext.grid.CheckboxSelectio
 });
 
 // @source data/ColumnModel.js
+Ext.chromeVersion = Ext.isChrome ? parseInt(( /chrome\/(\d{2})/ ).exec(navigator.userAgent.toLowerCase())[1],10) : NaN;
 
 Ext.grid.ColumnModel.override({
     defaultSortable: true, 
+    
+    getTotalWidth : function(includeHidden) {
+		if (!this.totalWidth) {
+			var boxsizeadj = (Ext.isChrome && Ext.chromeVersion > 18 ? 2 : 0);
+			this.totalWidth = 0;
+			for (var i = 0, len = this.config.length; i < len; i++) {
+				if (includeHidden || !this.isHidden(i)) {
+					this.totalWidth += (this.getColumnWidth(i) + boxsizeadj);
+				}
+			}
+		}
+		return this.totalWidth;
+	},
     
     isMenuDisabled : function (col) {
         var column = this.config[col];
@@ -4925,6 +4955,7 @@ Ext.extend(Ext.net.CommandColumn, Ext.util.Observable, {
             if (item.menu) {
                 if (item.menu.shared) {
                     item.menu.autoDestroy = false;
+                    item.destroyMenu = false;
 
                     item.onMenuShow = Ext.emptyFn;
 
@@ -4944,6 +4975,8 @@ Ext.extend(Ext.net.CommandColumn, Ext.util.Observable, {
                     };
 
                     item.menu = Ext.ComponentMgr.create(item.menu, "menu");
+                    this.sharedMenus = this.sharedMenus || [];
+                    this.sharedMenus.push(item.menu);
                     this[initMenu](item.menu, null, true);
                 } else {
                     this.shareMenus(item.menu.items || []);
@@ -5312,6 +5345,13 @@ Ext.extend(Ext.net.CommandColumn, Ext.util.Observable, {
 
     destroy : function () {
         var view = this.grid.getView();
+        
+        Ext.each(this.sharedMenus || [], function(menu){
+            if(menu){
+                menu.destroy();
+            }
+        });
+        delete this.shareMenus;
         
         this.removeToolbars();
         view.un("refresh", this.insertToolbars, this);

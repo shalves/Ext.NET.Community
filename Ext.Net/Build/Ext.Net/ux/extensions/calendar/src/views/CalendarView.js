@@ -255,7 +255,7 @@ Ext.calendar.CalendarView = Ext.extend(Ext.BoxComponent, {
 
         this.el.unselectable();
 
-        if (this.enableDD && this.initDD) {
+        if(this.enableDD && this.readOnly !== true && this.initDD){
             this.initDD();
         }
 
@@ -345,12 +345,12 @@ Ext.calendar.CalendarView = Ext.extend(Ext.BoxComponent, {
         max = this.maxEventsPerDay ? this.maxEventsPerDay: 999;
 
         evts.each(function(evt) {
-            var M = Ext.calendar.EventMappings,
-            days = Ext.calendar.Date.diffDays(
-            Ext.calendar.Date.max(this.viewStart, evt.data[M.StartDate.name]),
-            Ext.calendar.Date.min(this.viewEnd, evt.data[M.EndDate.name])) + 1;
+            var M = Ext.calendar.EventMappings;
+            if (Ext.calendar.Date.diffDays(evt.data[M.StartDate.name], evt.data[M.EndDate.name]) > 0) {
+                var days = Ext.calendar.Date.diffDays(
+ 	            Ext.calendar.Date.max(this.viewStart, evt.data[M.StartDate.name]),
+        	    Ext.calendar.Date.min(this.viewEnd, evt.data[M.EndDate.name])) + 1;
 
-            if (days > 1 || Ext.calendar.Date.diffDays(evt.data[M.StartDate.name], evt.data[M.EndDate.name]) > 1) {
                 this.prepareEventGridSpans(evt, this.eventGrid, w, d, days);
                 this.prepareEventGridSpans(evt, this.allDayGrid, w, d, days, true);
             } else {
@@ -648,6 +648,9 @@ Ext.calendar.CalendarView = Ext.extend(Ext.BoxComponent, {
 
     // private
     onDataChanged: function(store) {
+        if (this.startDate) {
+            this.setStartDate(this.startDate, false, false);
+        }
         this.refresh();
     },
 
@@ -1048,5 +1051,15 @@ Ext.calendar.CalendarView = Ext.extend(Ext.BoxComponent, {
     // private
     renderItems: function() {
         throw 'This method must be implemented by a subclass';
+    },
+    
+    isEventSpanning : function(evt) {
+        var M = Ext.calendar.EventMappings,
+            data = evt.data || evt,
+            diff;
+            
+        diff = Ext.calendar.Date.diffDays(data[M.StartDate.name], data[M.EndDate.name]);
+        
+        return diff > 0;
     }
 });

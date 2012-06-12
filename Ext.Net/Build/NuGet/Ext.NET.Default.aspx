@@ -20,6 +20,8 @@
     <form runat="server">
         <ext:ResourceManager runat="server" />
         
+        <a href="http://www.ext.net/"><img src="http://speed.ext.net/identity/extnet-logo-small.png" /></a>
+
         <ext:Window 
             runat="server" 
             Title="Example"

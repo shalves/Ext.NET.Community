@@ -1,7 +1,7 @@
 /*
- * @version   : 1.3.0 - Ext.NET Pro License
+ * @version   : 1.4.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-02-21
+ * @date      : 2012-05-24
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : See license.txt and http://www.ext.net/license/. 
  * @website   : http://www.ext.net/
@@ -960,21 +960,23 @@ Ext.apply(Ext.form.VTypes, {
     daterange : function (val, field) {
         var date = field.parseDate(val);
  
-        if (field.startDateField && (!date  || (!field.dateRangeMax || (date.getTime() !== field.dateRangeMax.getTime())))) {
-            var start = Ext.getCmp(field.startDateField);
+        if (date) {
+            if (field.startDateField && (!field.dateRangeMax || (date.getTime() !== field.dateRangeMax.getTime()))) {
+                var start = Ext.getCmp(field.startDateField);
  
-            if (start) {
-                start.setMaxValue(date);
-                field.dateRangeMax = date;
-                start.validate();
-            }
-        } else if (field.endDateField && (!date || (!field.dateRangeMin || (date.getTime() !== field.dateRangeMin.getTime())))) {
-            var end = Ext.getCmp(field.endDateField);
+                if (start) {
+                    start.setMaxValue(date);
+                    field.dateRangeMax = date;
+                    start.validate();
+                }
+            } else if (field.endDateField && (!field.dateRangeMin || (date.getTime() !== field.dateRangeMin.getTime()))) {
+                var end = Ext.getCmp(field.endDateField);
  
-            if (end) {
-                end.setMinValue(date);
-                field.dateRangeMin = date;
-                end.validate();
+                if (end) {
+                    end.setMinValue(date);
+                    field.dateRangeMin = date;
+                    end.validate();
+                }
             }
         }
  
@@ -5379,7 +5381,7 @@ Ext.form.ComboBox.override({
             this.wrap.addClass(this.wrapFocusClass);
             this.mimicing = true;
             //Ext.getDoc().on("mousewheel", this.mimicBlur, this, { delay: 10 });
-            Ext.getDoc().on("mousedown", this.mimicBlur, this, { delay: 10 });
+            Ext.getDoc().on("mousedown", this.mimicBlur, this, { delay : 10 });
 
             if (this.monitorTab) {
                 this.el.on("keydown", this.checkTab, this);
@@ -9289,6 +9291,7 @@ Ext.extend(Ext.net.TreePanel, Ext.tree.TreePanel, {
         if (Ext.isEmpty(this.selectionSubmitConfig) || this.selectionSubmitConfig.disableAutomaticSubmit !== true) {
             this.getSelectionModelField().render(this.el.parent() || this.el);
             this.getCheckNodesField().render(this.el.parent() || this.el);
+            this.updateCheckSelection();
         }
     },
     
@@ -9934,7 +9937,7 @@ Ext.tree.TreeLoader.override({
 
 Ext.NetServiceTreeLoader = Ext.extend(Ext.tree.TreeLoader, {
     // private override
-    processResponse : function (response, node, callback) {
+    processResponse : function (response, node, callback, scope) {
         var json,
             root;
         
@@ -9966,9 +9969,7 @@ Ext.NetServiceTreeLoader = Ext.extend(Ext.tree.TreeLoader, {
             
             node.endUpdate();
             
-            if (typeof callback === "function") {
-                callback(this, node);
-            }
+            this.runCallback(callback, scope || node, [node]);
         } catch (e) {
             this.handleFailure(response);
         }
@@ -10123,10 +10124,12 @@ Ext.extend(Ext.net.TreeEditor, Ext.tree.TreeEditor, {
             this.autoEdit = false;
             this.setAutoEdit(true);
         }
+
         this.on("complete", this.updateNode, this);
         this.on("beforestartedit", this.fitToTree, this);
         this.on("startedit", this.bindScroll, this, { delay : 10 });
         this.on("specialkey", this.onSpecialKey, this);
+        tree.on("beforedestroy", function () { this.destroy(); }, this);
     },
     
     setAutoEdit : function (autoEdit) {
@@ -12111,6 +12114,7 @@ Ext.lib.Region.prototype.isIntersect = function (region) {
 
     // http://forums.ext.net/showthread.php?12628
     buf.push(".x-tab-strip-text{text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}");
+    buf.push(".x-form-group .x-form-group-header-text{text-transform:none;}");
 
     Ext.net.ResourceMgr.registerCssClass("Ext.Net.CSS", buf.join(""));
 

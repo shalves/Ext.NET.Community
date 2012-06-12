@@ -13,10 +13,12 @@ Ext.extend(Ext.net.TreeEditor, Ext.tree.TreeEditor, {
             this.autoEdit = false;
             this.setAutoEdit(true);
         }
+
         this.on("complete", this.updateNode, this);
         this.on("beforestartedit", this.fitToTree, this);
         this.on("startedit", this.bindScroll, this, { delay : 10 });
         this.on("specialkey", this.onSpecialKey, this);
+        tree.on("beforedestroy", function () { this.destroy(); }, this);
     },
     
     setAutoEdit : function (autoEdit) {

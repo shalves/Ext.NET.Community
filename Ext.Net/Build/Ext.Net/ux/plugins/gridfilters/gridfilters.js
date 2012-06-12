@@ -183,14 +183,7 @@ Ext.ux.menu.ListMenu = Ext.extend(Ext.menu.Menu, {
     },
 
     getSelected : function () {
-        var values = [];
-        Ext.each(
-            this.selected,
-            function (id) {
-                values.push(this.store.getById(id).get(this.labelField));;
-            },
-            this);
-        return values;
+        return this.selected;
     },
     
     setSelected : function (value) {
@@ -205,6 +198,9 @@ Ext.ux.menu.ListMenu = Ext.extend(Ext.menu.Menu, {
                     }
                 }
             }, this);
+        }
+        else {
+            this.on("load", this.setSelected.createDelegate(this, [value]), this, {single : true});
         }
     },
     

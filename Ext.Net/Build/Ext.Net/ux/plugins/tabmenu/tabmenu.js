@@ -1,5 +1,5 @@
 ﻿/********
- * @version   : 1.0.0 - Professional Edition (Ext.Net Professional License)
+ * @version   : 1.4.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
  * @date      : 2009-06-30
  * @copyright : Copyright (c) 2010, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.3.0 - Ext.NET Pro License
+ * @version   : 1.4.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-02-21
+ * @date      : 2012-05-24
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -104,6 +104,7 @@ namespace Ext.Net
                     rm.IDMode = IDMode.Client;
                     rm.IsDynamic = true;
                     pageHolder.Controls.Add(rm);
+                    this.ResourceManager = Ext.Net.ResourceManager.GetInstance() ?? rm;
 
                     pageHolder.Controls.Add(this.Control);
                 }
@@ -111,6 +112,7 @@ namespace Ext.Net
                 {
                     pageHolder = this.Control.Page;
                     ResourceManager newMgr = Ext.Net.Utilities.ControlUtils.FindControl<ResourceManager>(pageHolder);
+                    this.ResourceManager = Ext.Net.ResourceManager.GetInstance() ?? newMgr;
                     if (newMgr != null)
                     {
                         newMgr.IsDynamic = true;

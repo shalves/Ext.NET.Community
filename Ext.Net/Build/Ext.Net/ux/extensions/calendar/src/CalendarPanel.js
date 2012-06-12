@@ -448,6 +448,15 @@ Ext.calendar.CalendarPanel = Ext.extend(Ext.Panel, {
         }
         this.activeView = l.activeItem;
         Ext.select('.ext-dd-shim').hide();  //added by Danill to clear selection
+        if(id !== this.id+'-edit'){
+           if(id !== this.preEditView){
+                var startDate = l.activeItem.header ? l.activeItem.header.startDate : l.activeItem.startDate;
+                if(startDate){
+                    l.activeItem.setStartDate(startDate, true);
+                }
+            }
+           this.updateNavState();
+        }
         this.fireViewChange();
     },
 

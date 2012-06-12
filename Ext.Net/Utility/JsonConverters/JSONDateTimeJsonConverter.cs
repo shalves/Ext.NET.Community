@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.3.0 - Ext.NET Pro License
+ * @version   : 1.4.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-02-21
+ * @date      : 2012-05-24
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,14 @@ namespace Ext.Net
     /// </summary>
     public partial class JSONDateTimeJsonConverter : ExtJsonConverter
     {
-        private const string DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.fff";
+        private const string DateTimeFormatMs = "yyyy-MM-dd'T'HH:mm:ss.fff";
+        private const string DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss";
+
+        public virtual bool RenderMilliseconds
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Writes the JSON representation of the object.
@@ -51,13 +58,13 @@ namespace Ext.Net
         /// <param name="serializer">Serializer</param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            if (value is DateTime)
+            if (value is DateTime || value is DateTime?)
             {
-                DateTime date = (DateTime) value;
+                DateTime date = value is DateTime ? (DateTime)value : (value as DateTime?).Value;
 
                 if (date != DateTime.MinValue)
                 {
-                    writer.WriteValue(date.ToString(DateTimeFormat, CultureInfo.InvariantCulture));
+                    writer.WriteValue(date.ToString(this.RenderMilliseconds ? DateTimeFormatMs : DateTimeFormat, CultureInfo.InvariantCulture));
                 }
                 else
                 {
@@ -65,6 +72,19 @@ namespace Ext.Net
                 }
 
                 return;
+            }
+            else
+            {
+                DateTimeOffset dateTimeOffset = (DateTimeOffset)value;
+
+                if (dateTimeOffset != DateTimeOffset.MinValue)
+                {
+                    writer.WriteValue(dateTimeOffset.ToString(DateTimeFormat, CultureInfo.InvariantCulture));
+                }
+                else
+                {
+                    writer.WriteRawValue("null");
+                }
             }
 
             writer.WriteRawValue("null");
@@ -80,8 +100,15 @@ namespace Ext.Net
         /// <returns>The object value.</returns>
         public override object ReadJson(Newtonsoft.Json.JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            if (reader.TokenType == JsonToken.Null && objectType.IsAssignableFrom(typeof(DateTime?)))
+            {
+                return null;
+            }
+
             if (reader.TokenType != JsonToken.String)
+            {
                 throw new Exception("Unexpected token parsing date. Expected String, got {0}.".FormatWith(reader.TokenType));
+            }
 
             if (reader.Value.ToString().IsEmpty())
             {
@@ -101,6 +128,7 @@ namespace Ext.Net
         public override bool CanConvert(Type objectType)
         {
             return (typeof(DateTime).IsAssignableFrom(objectType)
+              || typeof(DateTime?).IsAssignableFrom(objectType)
               || typeof(DateTimeOffset).IsAssignableFrom(objectType));
         }
     }

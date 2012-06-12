@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.3.0 - Ext.NET Pro License
+ * @version   : 1.4.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-02-21
+ * @date      : 2012-05-24
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -107,6 +107,15 @@ namespace Ext.Net
             public virtual HtmlEditor.Builder CreateLinkText(string createLinkText)
             {
                 this.ToComponent().CreateLinkText = createLinkText;
+                return this as HtmlEditor.Builder;
+            }
+             
+ 			/// <summary>
+			/// The default font family (defaults to 'tahoma').
+			/// </summary>
+            public virtual HtmlEditor.Builder DefaultFont(string defaultFont)
+            {
+                this.ToComponent().DefaultFont = defaultFont;
                 return this as HtmlEditor.Builder;
             }
              

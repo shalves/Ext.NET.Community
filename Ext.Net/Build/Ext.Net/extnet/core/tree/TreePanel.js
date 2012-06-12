@@ -442,6 +442,7 @@ Ext.extend(Ext.net.TreePanel, Ext.tree.TreePanel, {
         if (Ext.isEmpty(this.selectionSubmitConfig) || this.selectionSubmitConfig.disableAutomaticSubmit !== true) {
             this.getSelectionModelField().render(this.el.parent() || this.el);
             this.getCheckNodesField().render(this.el.parent() || this.el);
+            this.updateCheckSelection();
         }
     },
     

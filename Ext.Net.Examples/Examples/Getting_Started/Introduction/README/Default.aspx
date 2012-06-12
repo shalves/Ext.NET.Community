@@ -11,14 +11,14 @@
 <body>
 <pre>
 Product      : Ext.NET Pro
-Version      : 1.3.0
-Last Updated : 2012-02-29
+Version      : 1.4.0
+Last Updated : 2012-05-24
 
 --------------------------------------------------------------------------
    CONTENTS
 --------------------------------------------------------------------------
 
-I.    Version 1.3.0 CHANGELOG
+I.    Version 1.4.0 CHANGELOG
 II.   ADD TO VISUAL STUDIO (or VISUAL WEB DEVELOPER) PROJECT INSTRUCTIONS
 III.  SAMPLE WEB.CONFIG
 IV.   &lt;extnet> WEB.CONFIG GLOBAL CONFIGURATION PROPERTIES
@@ -26,7 +26,7 @@ V.    CREDITS
 
 
 --------------------------------------------------------------------------
-   I. Version 1.3.0 CHANGELOG
+   I. Version 1.4.0 CHANGELOG
 --------------------------------------------------------------------------
 
 See CHANGELOG.txt
@@ -127,6 +127,11 @@ Visual Studio (2008 or 2010) or Visual Web Developer (2008 or 210) Express Toolb
 		&lt;httpModules>
 			&lt;add name="DirectRequestModule" type="Ext.Net.DirectRequestModule, Ext.Net" />
 		&lt;/httpModules>
+		&lt;pages>
+			&lt;controls>
+				&lt;add assembly="Ext.Net" namespace="Ext.Net" tagPrefix="ext" />
+			&lt;/controls>
+		&lt;/pages>
 	&lt;/system.web>
   
 	&lt;!-- 

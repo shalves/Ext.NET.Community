@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.3.0 - Ext.NET Pro License
+ * @version   : 1.4.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-02-21
+ * @date      : 2012-05-24
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -75,7 +75,8 @@ namespace Ext.Net
             }
         }
 
-		/// <summary>
+        private bool initBaseParams;
+        /// <summary>
 		/// 
 		/// </summary>
 		[Description("")]
@@ -83,8 +84,9 @@ namespace Ext.Net
         {
             base.OnBeforeClientInit(sender);
 
-            if (this.BaseParams.Count > 0)
+            if (this.BaseParams.Count > 0 && !this.initBaseParams)
             {
+                this.initBaseParams = true;
                 if (this.Listeners.BeforeAction.IsDefault)
                 {
                     this.Listeners.BeforeAction.Fn = this.BuildParams(this.BaseParams, null, true);

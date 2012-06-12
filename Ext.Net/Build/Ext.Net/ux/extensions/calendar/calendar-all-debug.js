@@ -1,12 +1,11 @@
 /*
- * @version   : 1.0.0 - Professional Edition (Ext.Net Professional License)
+ * @version   : 1.4.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2010-06-15
+ * @date      : 2012-05-24
  * @copyright : Copyright (c) 2006-2010, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : See license.txt and http://www.ext.net/license/. 
  * @website   : http://www.ext.net/
  */
-
 
 Ext.ns('Ext.calendar');
 
@@ -1572,7 +1571,7 @@ Ext.calendar.CalendarView = Ext.extend(Ext.BoxComponent, {
 
         this.el.unselectable();
 
-        if (this.enableDD && this.initDD) {
+        if(this.enableDD && this.readOnly !== true && this.initDD){
             this.initDD();
         }
 
@@ -1662,12 +1661,12 @@ Ext.calendar.CalendarView = Ext.extend(Ext.BoxComponent, {
         max = this.maxEventsPerDay ? this.maxEventsPerDay: 999;
 
         evts.each(function(evt) {
-            var M = Ext.calendar.EventMappings,
-            days = Ext.calendar.Date.diffDays(
-            Ext.calendar.Date.max(this.viewStart, evt.data[M.StartDate.name]),
-            Ext.calendar.Date.min(this.viewEnd, evt.data[M.EndDate.name])) + 1;
+            var M = Ext.calendar.EventMappings;
+            if (Ext.calendar.Date.diffDays(evt.data[M.StartDate.name], evt.data[M.EndDate.name]) > 0) {
+                var days = Ext.calendar.Date.diffDays(
+ 	            Ext.calendar.Date.max(this.viewStart, evt.data[M.StartDate.name]),
+        	    Ext.calendar.Date.min(this.viewEnd, evt.data[M.EndDate.name])) + 1;
 
-            if (days > 1 || Ext.calendar.Date.diffDays(evt.data[M.StartDate.name], evt.data[M.EndDate.name]) > 1) {
                 this.prepareEventGridSpans(evt, this.eventGrid, w, d, days);
                 this.prepareEventGridSpans(evt, this.allDayGrid, w, d, days, true);
             } else {
@@ -1940,6 +1939,9 @@ Ext.calendar.CalendarView = Ext.extend(Ext.BoxComponent, {
 
     // private
     onDataChanged: function(store) {
+        if (this.startDate) {
+            this.setStartDate(this.startDate, false, false);
+        }
         this.refresh();
     },
 
@@ -2299,6 +2301,16 @@ Ext.calendar.CalendarView = Ext.extend(Ext.BoxComponent, {
     // private
     renderItems: function() {
         throw 'This method must be implemented by a subclass';
+    },
+    
+    isEventSpanning : function(evt) {
+        var M = Ext.calendar.EventMappings,
+            data = evt.data || evt,
+            diff;
+            
+        diff = Ext.calendar.Date.diffDays(data[M.StartDate.name], data[M.EndDate.name]);
+        
+        return diff > 0;
     }
 });
 
@@ -3045,34 +3057,27 @@ Ext.calendar.DayBodyView = Ext.extend(Ext.calendar.CalendarView, {
     },
 
     // private
-    renderItems: function() {
-        var day = 0,
-            evts = [],
-            ev,
-            d,
-            ct,
-            item,
-            i,
-            j,
-            l,
-            overlapCols,
-            prevCol,
-            colWidth,
-            evtWidth,
-            markup,
-            target;
-        for (; day < this.dayCount; day++) {
-            ev = emptyCells = skipped = 0;
-            d = this.eventGrid[0][day];
-            ct = d ? d.length: 0;
-
-            for (; ev < ct; ev++) {
+    renderItems: function(){
+        var day = 0, evts = [];
+        for(; day < this.dayCount; day++){
+            var ev = emptyCells = skipped = 0, 
+                d = this.eventGrid[0][day],
+                ct = d ? d.length : 0, 
+                evt;
+            
+            for(; ev < ct; ev++){
                 evt = d[ev];
-                if (!evt) {
+                if(!evt){
                     continue;
                 }
-                item = evt.data || evt.event.data;
-                if (item._renderAsAllDay) {
+                var item = evt.data || evt.event.data,
+                    M = Ext.calendar.EventMappings,
+                    ad = item[M.IsAllDay.name] === true,
+                    span = this.isEventSpanning(evt.event || evt),
+                    renderAsAllDay = ad || span;
+                         
+                if(renderAsAllDay){
+                    // this event is already rendered in the header view
                     continue;
                 }
                 Ext.apply(item, {
@@ -3085,45 +3090,45 @@ Ext.calendar.DayBodyView = Ext.extend(Ext.calendar.CalendarView, {
                 });
             }
         }
-
+        
         // overlapping event pre-processing loop
-        i = j = overlapCols = prevCol = 0;
-        l = evts.length;
-        for (; i < l; i++) {
-            evt = evts[i].data;
-            evt2 = null;
-            prevCol = overlapCols;
-            for (j = 0; j < l; j++) {
-                if (i == j) {
-                    continue;
-                }
+        var i = j = 0, overlapCols = [], l = evts.length, prevDt;
+        for(; i<l; i++){
+            var evt = evts[i].data, 
+                evt2 = null, 
+                dt = evt[Ext.calendar.EventMappings.StartDate.name].getDate();
+            
+            for(j=0; j<l; j++){
+                if(i==j)continue;
                 evt2 = evts[j].data;
-                if (this.isOverlapping(evt, evt2)) {
-                    evt._overlap = evt._overlap == undefined ? 1: evt._overlap + 1;
-                    if (i < j) {
-                        if (evt._overcol === undefined) {
+                if(this.isOverlapping(evt, evt2)){
+                    evt._overlap = evt._overlap == undefined ? 1 : evt._overlap+1;
+                    if(i<j){
+                        if(evt._overcol===undefined){
                             evt._overcol = 0;
                         }
-                        evt2._overcol = evt._overcol + 1;
-                        overlapCols = Math.max(overlapCols, evt2._overcol);
+                        evt2._overcol = evt._overcol+1;
+                        overlapCols[dt] = overlapCols[dt] ? Math.max(overlapCols[dt], evt2._overcol) : evt2._overcol;
                     }
                 }
             }
         }
-
+        
         // rendering loop
-        for (i = 0; i < l; i++) {
-            evt = evts[i].data;
-            if (evt._overlap !== undefined) {
-                colWidth = 100 / (overlapCols + 1);
-                evtWidth = 100 - (colWidth * evt._overlap);
-
+        for(i=0; i<l; i++){
+            var evt = evts[i].data,
+                dt = evt[Ext.calendar.EventMappings.StartDate.name].getDate();
+                
+            if(evt._overlap !== undefined){
+                var colWidth = 100 / (overlapCols[dt]+1),
+                    evtWidth = 100 - (colWidth * evt._overlap);
+                    
                 evt._width = colWidth;
                 evt._left = colWidth * evt._overcol;
             }
-            markup = this.getEventTemplate().apply(evt);
-            target = this.id + '-day-col-' + evts[i].date.format('Ymd');
-
+            var markup = this.getEventTemplate().apply(evt),
+                target = this.id + '-day-col-' + evts[i].date.format('Ymd');
+                
             Ext.DomHelper.append(target, markup);
         }
 
@@ -4380,6 +4385,15 @@ Ext.calendar.CalendarPanel = Ext.extend(Ext.Panel, {
         }
         this.activeView = l.activeItem;
         Ext.select('.ext-dd-shim').hide();  //added by Danill to clear selection
+        if(id !== this.id+'-edit'){
+           if(id !== this.preEditView){
+                var startDate = l.activeItem.header ? l.activeItem.header.startDate : l.activeItem.startDate;
+                if(startDate){
+                    l.activeItem.setStartDate(startDate, true);
+                }
+            }
+           this.updateNavState();
+        }
         this.fireViewChange();
     },
 

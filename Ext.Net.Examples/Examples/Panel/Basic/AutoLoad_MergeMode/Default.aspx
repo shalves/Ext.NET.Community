@@ -13,7 +13,7 @@
     public void ButtonClickParent()
     {
         this.Label1.Text = "Parent [DirectMethod]: " + DateTime.Now.ToLongTimeString();
-       X.Msg.Alert("DirectMethod", "Parent Button Clicked").Show();
+        X.Msg.Alert("DirectMethod", "Parent Button Clicked").Show();
     }
 </script>
     
@@ -22,7 +22,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Ext.NET Examples</title>
+    <title>Ext.NET Examples - AutoLoad Merge Mode</title>
 </head>
 <body>
     <ext:ResourceManager runat="server" />
@@ -36,12 +36,8 @@
             Padding="6">
             <AutoLoad Url="Child.aspx" Mode="Merge" />
             <Buttons>
-                <ext:Button runat="server" Text="Submit [DirectEvent]">
-                    <DirectEvents>
-                        <Click OnEvent="" />
-                    </DirectEvents>
-                </ext:Button>
-                <ext:Button IDMode="Ignore" runat="server" Text="Submit [DirectMethod]">
+                <ext:Button runat="server" Text="Submit [DirectEvent]" OnDirectClick="btnParent_Click" />
+                <ext:Button runat="server" IDMode="Ignore" Text="Submit [DirectMethod]">
                     <Listeners>
                         <Click Handler="Ext.net.DirectMethods.ButtonClickParent();" />
                     </Listeners>

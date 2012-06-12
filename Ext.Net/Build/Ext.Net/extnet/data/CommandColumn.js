@@ -144,6 +144,7 @@ Ext.extend(Ext.net.CommandColumn, Ext.util.Observable, {
             if (item.menu) {
                 if (item.menu.shared) {
                     item.menu.autoDestroy = false;
+                    item.destroyMenu = false;
 
                     item.onMenuShow = Ext.emptyFn;
 
@@ -163,6 +164,8 @@ Ext.extend(Ext.net.CommandColumn, Ext.util.Observable, {
                     };
 
                     item.menu = Ext.ComponentMgr.create(item.menu, "menu");
+                    this.sharedMenus = this.sharedMenus || [];
+                    this.sharedMenus.push(item.menu);
                     this[initMenu](item.menu, null, true);
                 } else {
                     this.shareMenus(item.menu.items || []);
@@ -531,6 +534,13 @@ Ext.extend(Ext.net.CommandColumn, Ext.util.Observable, {
 
     destroy : function () {
         var view = this.grid.getView();
+        
+        Ext.each(this.sharedMenus || [], function(menu){
+            if(menu){
+                menu.destroy();
+            }
+        });
+        delete this.shareMenus;
         
         this.removeToolbars();
         view.un("refresh", this.insertToolbars, this);

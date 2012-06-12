@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.3.0 - Ext.NET Pro License
+ * @version   : 1.4.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-02-21
+ * @date      : 2012-05-24
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -55,6 +55,7 @@ namespace Ext.Net
                 list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
                 list.Add("directEvents", new ConfigOption("directEvents", new SerializationOptions("directEvents", JsonMode.Object), null, this.DirectEvents ));
                 list.Add("createLinkText", new ConfigOption("createLinkText", null, "", this.CreateLinkText ));
+                list.Add("defaultFont", new ConfigOption("defaultFont", null, "", this.DefaultFont ));
                 list.Add("defaultLinkValue", new ConfigOption("defaultLinkValue", null, "http://", this.DefaultLinkValue ));
                 list.Add("enableAlignments", new ConfigOption("enableAlignments", null, true, this.EnableAlignments ));
                 list.Add("enableColors", new ConfigOption("enableColors", null, true, this.EnableColors ));
