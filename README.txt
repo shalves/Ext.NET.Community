@@ -1,6 +1,6 @@
-﻿Product      : Ext.NET Community
-Version      : 2.0.0 Beta
-Last Updated : 2012-03-07
+﻿Product      : Ext.NET Pro
+Version      : 2.0.0.beta3
+Last Updated : 2012-05-28
 
 
 --------------------------------------------------------------------------
@@ -8,7 +8,7 @@ Last Updated : 2012-03-07
 --------------------------------------------------------------------------
 
 I.    ADD TO VISUAL STUDIO TOOLBOX INSTRUCTIONS
-II.   Version 2.0.0 BREAKING CHANGES
+II.   Version 2.0.0.beta3 REVISIONS + BREAKING CHANGES
 III.  SAMPLE WEB.CONFIG
 IV.   <extnet> WEB.CONFIG GLOBAL CONFIGURATION PROPERTIES
 V.    CREDITS
@@ -21,7 +21,7 @@ V.    CREDITS
 The following steps are required to manually install the controls into 
 your Visual Studio or Visual Web Developer Express Toolbox. 
 		
-	1.  Open Visual Studio (2008 or 2010) or Visual Web Developer Express (2008 or 2010).
+	1.  Open Visual Studio 2010 or Visual Web Developer Express 2010.
 
 	2.  Open an existing web site or create a new web site project.
 	
@@ -59,7 +59,7 @@ your Visual Studio or Visual Web Developer Express Toolbox.
 
 
 --------------------------------------------------------------------------
-   II. Version 2.0.0 BREAKING CHANGES
+   II. Version 2.0.0.beta3 REVISIONS + BREAKING CHANGES
 --------------------------------------------------------------------------
 
 See CHANGELOG.txt
@@ -75,7 +75,7 @@ See CHANGELOG.txt
 		<section name="extnet" type="Ext.Net.GlobalConfig" requirePermission="false" />
 	</configSections>
   
-	<extnet scriptMode="Release" /> <!-- See Property Options in README.txt -->
+	<extnet scriptMode="Release" theme="Gray" /> <!-- See Property Options below in Sec IV. -->
   
 	<!-- 
 		The following system.web section is only requited for running ASP.NET AJAX under Internet
@@ -90,6 +90,11 @@ See CHANGELOG.txt
 		<httpModules>
 			<add name="DirectRequestModule" type="Ext.Net.DirectRequestModule, Ext.Net" />
 		</httpModules>
+		<pages>
+			<controls>
+				<add assembly="Ext.Net" namespace="Ext.Net" tagPrefix="ext" />
+			</controls>
+		</pages>
 	</system.web>
   
 	<!-- 

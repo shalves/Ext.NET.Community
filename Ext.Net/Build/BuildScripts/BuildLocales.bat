@@ -1,1 +1,0 @@
-powershell .\BuildLocales.ps1

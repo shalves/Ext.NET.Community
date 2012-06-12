@@ -1,1 +1,0 @@
-﻿Ext.net.ResourceMgr.notifyScriptLoaded();
