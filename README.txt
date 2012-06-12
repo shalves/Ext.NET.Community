@@ -1,4 +1,4 @@
-﻿Product      : Ext.NET Pro
+﻿Product      : Ext.NET Community
 Version      : 2.0.0.beta3
 Last Updated : 2012-05-28
 
