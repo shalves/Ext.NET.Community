@@ -2,13 +2,13 @@
 // @source core/utils/Observable.js
 
 Ext.util.Observable.override({
-    constructor: function(config) {
+    constructor: function (config) {
         this.callParent(arguments);
 
         this.directListeners = this.directListeners || {};
         this.hasDirectListeners = this.hasDirectListeners || {};
         
-        if(Ext.net && Ext.net.MessageBus) {
+        if (Ext.net && Ext.net.MessageBus) {
             Ext.net.MessageBus.initEvents(this);
         }
     }
@@ -16,11 +16,11 @@ Ext.util.Observable.override({
 
 Ext.util.DirectObservable = {
     initDirectEvents : function () {
-        if(!this.directListeners) {
+        if (!this.directListeners) {
             this.directListeners = {};
         }
 
-        if(!this.hasDirectListeners) {
+        if (!this.hasDirectListeners) {
             this.hasDirectListeners = {};
         }
         
@@ -34,7 +34,7 @@ Ext.util.DirectObservable = {
         }
     },
     
-    fireEvent: function(eventName) {
+    fireEvent: function (eventName) {
         this.initDirectEvents();
         
         eventName = eventName.toLowerCase();
@@ -47,7 +47,7 @@ Ext.util.DirectObservable = {
         }
     },
 
-    continueFireEvent: function(eventName, args, bubbles) {
+    continueFireEvent: function (eventName, args, bubbles) {
         var target = this,
             queue, event,
             ret = true;
@@ -79,7 +79,7 @@ Ext.util.DirectObservable = {
         return ret;
     },
 
-    addListener: function(ename, fn, scope, options) {
+    addListener: function (ename, fn, scope, options) {
         var me = this,
             config,
             event;
@@ -144,7 +144,7 @@ Ext.util.DirectObservable = {
                 me.events[ename] = event = new Ext.util.Event(me, ename);
             }
 
-            if(fn) {
+            if (fn) {
                 if (typeof fn === 'string') {
                     fn = scope[fn] || me.fn;
                 }
@@ -153,7 +153,7 @@ Ext.util.DirectObservable = {
                 me.hasListeners[ename] = (me.hasListeners[ename]||0) + 1;
             }
 
-            if(options && options.broadcastOnBus) {
+            if (options && options.broadcastOnBus) {
                 var parts = options.broadcastOnBus.split(":"),
                     bus,
                     name;
@@ -162,7 +162,7 @@ Ext.util.DirectObservable = {
                     bus = Ext.net.Bus;
                     name = parts[0];
                 }
-                else{
+                else {
                     bus = Ext.net.ResourceMgr.getCmp(parts[0]);
                     name = parts[1];
                 }
@@ -175,7 +175,7 @@ Ext.util.DirectObservable = {
                         i,
                         len;
 
-                    if(options.argumentsList){
+                    if (options.argumentsList) {
                         data = {};
 
                         for (i = 0, len = options.argumentsList.length; i < len; i++) {
@@ -192,16 +192,16 @@ Ext.util.DirectObservable = {
         }
     },
 
-    addDirectListener: function(ename, fn, scope, options) {
+    addDirectListener: function (ename, fn, scope, options) {
         var me = this,
             config,
             event;
 
-        if(!this.directListeners) {
+        if (!this.directListeners) {
             this.directListeners = {};
         }
 
-        if(!this.hasDirectListeners) {
+        if (!this.hasDirectListeners) {
             this.hasDirectListeners = {};
         }
 

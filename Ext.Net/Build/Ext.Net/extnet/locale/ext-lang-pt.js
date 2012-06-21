@@ -6,7 +6,7 @@
  * Adapted to European Portuguese by Helder Batista (hbatista)
  * 31 January 2008
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -129,7 +129,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.pt.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Carregando..."
         });
@@ -147,7 +147,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.pt.form.field.HtmlEditor", {
         override: "Ext.form.field.HtmlEditor",
         createLinkText: 'Por favor, entre com o URL do link:'
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.HtmlEditor.prototype, {
             buttonTips: {
                 bold: {

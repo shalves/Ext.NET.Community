@@ -2,8 +2,8 @@
 //http://www.openajax.org/member/wiki/OpenAjax_Hub_2.0_Specification_Topic_Names
 
 Ext.define("Ext.net.MessageBus", {    
-    mixins: {
-        observable: 'Ext.util.Observable'
+    mixins : {
+        observable : 'Ext.util.Observable'
     }, 
      
     statics: { 
@@ -13,7 +13,7 @@ Ext.define("Ext.net.MessageBus", {
                     var bus = listener.bus ? Ext.net.ResourceMgr.getCmp(listener.bus) : Ext.net.Bus,
                         name = listener.name || "**";
 
-                    if(owner instanceof Ext.net.MessageBus){
+                    if (owner instanceof Ext.net.MessageBus) {
                         bus = owner;
                     }
 
@@ -25,6 +25,7 @@ Ext.define("Ext.net.MessageBus", {
 
                     bus.subscribe(name, listener);
                 });
+
                 owner.messageBusListeners = null;
             }
 
@@ -33,13 +34,14 @@ Ext.define("Ext.net.MessageBus", {
                     var bus = listener.bus ? Ext.net.ResourceMgr.getCmp(listener.bus) : Ext.net.Bus,
                         name = listener.name || "**";
 
-                    if(owner instanceof Ext.net.MessageBus){
+                    if (owner instanceof Ext.net.MessageBus) {
                         bus = owner;
                     }
 
                     if (!bus) {
                         throw new Error("Bus is not found: " + listener.bus);
                     }
+
                     listener.isDirect = true;                    
                     listener.scope = listener.scope || owner;
                     bus.subscribe(name, listener);
@@ -53,7 +55,7 @@ Ext.define("Ext.net.MessageBus", {
         var isDefault = !Ext.net.Bus;
         Ext.apply(this, config || {});
 
-        if(this.defaultBus){
+        if (this.defaultBus) {
             Ext.net.Bus = this;
         }
 
@@ -74,17 +76,16 @@ Ext.define("Ext.net.MessageBus", {
             token,
             i;
 
-        for(i = 0; i < len; i++) {
+        for (i = 0; i < len; i++) {
             token = tokens[i];
 
-            if(!tokenRe.test(token) && token !== "*" && (token !== "**" || i !== (len - 1)) ) {
+            if (!tokenRe.test(token) && token !== "*" && (token !== "**" || i !== (len - 1)) ) {
                 throw new Error('Incorrect event name: ' + name);
             }
 
-            if(token === "**") {
+            if (token === "**") {
                 tokens[i] = ".*";
-            }
-            else if(token === "*") {
+            } else if (token === "*") {
                 tokens[i] = "\\w+";
             }
         }
@@ -97,8 +98,7 @@ Ext.define("Ext.net.MessageBus", {
 
         if (Ext.isObject(fn)) {
             config = fn;
-        }
-        else {
+        } else {
             config.fn = fn;
         }
 
@@ -113,23 +113,24 @@ Ext.define("Ext.net.MessageBus", {
         this.un("message", fn, this);
     },
 
-    publish : function (name, data, target, fromParent) {
-        if(target === this){
+    publish : function (name, data, /*private*/target, /*private*/fromParent) {
+        if (target === this) {
             return;
         }
         
         this.fireEvent("message", name, data);
 
-        if(!target) {
+        if (!target) {
             target = this;
         }
         
-        if(parent !== window && fromParent !== true){
+        if (parent !== window && fromParent !== true) {
             this.publishToFrame(parent, name, data, target);            
         }
 
         var frames = window.frames,
             i;
+
         for (i = 0; i < frames.length; i++) {   
             this.publishToFrame(frames[i], name, data, target, true);            
         }  
@@ -139,14 +140,14 @@ Ext.define("Ext.net.MessageBus", {
         var bus;
 
         try {
-           if(this.defaultBus && frame.Ext && frame.Ext.net && frame.Ext.net.Bus){
+           if (this.defaultBus && frame.Ext && frame.Ext.net && frame.Ext.net.Bus) {
                bus = frame.Ext.net.Bus;        
            }
-           else if(frame.Ext && frame.Ext.net && frame.Ext.net.ResourceMgr){
+           else if (frame.Ext && frame.Ext.net && frame.Ext.net.ResourceMgr) {
                bus = frame.Ext.net.ResourceMgr.getCmp(this.nsId);
            }   
 
-           if(bus){
+           if (bus) {
                bus.publish(name, data, target, fromParent);
            }
         }

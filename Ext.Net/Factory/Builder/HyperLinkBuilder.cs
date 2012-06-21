@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Label.Builder<HyperLink, HyperLink.Builder>
+        public partial class Builder : LabelBase.Builder<HyperLink, HyperLink.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -76,6 +76,28 @@ namespace Ext.Net
             
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of HyperLink.Builder</returns>
+            public virtual HyperLink.Builder Listeners(Action<AbstractComponentListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as HyperLink.Builder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of HyperLink.Builder</returns>
+            public virtual HyperLink.Builder DirectEvents(Action<AbstractComponentDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as HyperLink.Builder;
+            }
 			 
  			/// <summary>
 			/// 

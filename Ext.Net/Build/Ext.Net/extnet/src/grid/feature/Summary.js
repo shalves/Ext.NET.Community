@@ -1,10 +1,10 @@
 ﻿Ext.grid.feature.Summary.override({            
-    generateSummaryData: function(){
+    generateSummaryData : function () {
         var oldData,
             result,
             store = this.view.store;
 
-        if(store.buffered && store.pageMap && store.pageMap.hasPage(1)){
+        if (store.buffered && store.pageMap && store.pageMap.hasPage(1)) {
             oldData = store.data;
             store.data = new Ext.util.MixedCollection(false, Ext.data.Store.recordIdFn);
             store.data.addAll(store.pageMap.getPage(1));
@@ -12,7 +12,7 @@
 
         result = this.callOverridden(arguments);
 
-        if(store.buffered && oldData){
+        if (store.buffered && oldData) {
             store.data = oldData;
         }
 
@@ -21,7 +21,7 @@
 });
 
 Ext.grid.feature.GroupingSummary.override({
-    aggregate: function(fn, scope, grouped, args) {
+    aggregate: function (fn, scope, grouped, args) {
         args = args || [];
         if (grouped && this.isGrouped()) {
             var groups = this._groupingSummaryPlugin.summaryGroups,
@@ -38,8 +38,8 @@ Ext.grid.feature.GroupingSummary.override({
             for (i = 0; i < len; ++i) {                        
                 group = groups[i];
                 pointers[group.name] = {
-                    name: group.name,
-                    children: []
+                    name     : group.name,
+                    children : []
                 };
             }
 
@@ -63,19 +63,18 @@ Ext.grid.feature.GroupingSummary.override({
         }
     },
 
-    generateSummaryData: function(){
+    generateSummaryData: function () {
         var oldData,
             oldAggregate,
             result,
             store = this.view.store;
 
-        if(store.buffered && store.pageMap && store.pageMap.hasPage(1)){
-            if(store.isGrouped()){
+        if (store.buffered && store.pageMap && store.pageMap.hasPage(1)) {
+            if (store.isGrouped()) {
                 oldAggregate = store.aggregate;
                 store.aggregate = this.aggregate;
                 store._groupingSummaryPlugin = this;
-            }
-            else{                    
+            } else {                    
                 oldData = store.data;
                 store.data = new Ext.util.MixedCollection(false, Ext.data.Store.recordIdFn);
                 store.data.addAll(store.pageMap.getPage(1));
@@ -84,11 +83,11 @@ Ext.grid.feature.GroupingSummary.override({
 
         result = this.callOverridden(arguments);
 
-        if(store.buffered && oldData){
+        if (store.buffered && oldData) {
             store.data = oldData;
         }
 
-        if(store.buffered && oldAggregate){
+        if (store.buffered && oldAggregate) {
             store.aggregate = oldAggregate;
             delete store._groupingSummaryPlugin;
         }

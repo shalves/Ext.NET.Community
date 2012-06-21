@@ -3,7 +3,7 @@
  * 05 September 2007
  * Modify by techbug / 25 February 2008
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -126,7 +126,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.ko.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "로딩중..."
         });
@@ -144,7 +144,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.ko.form.field.HtmlEditor", {
         override: "Ext.form.field.HtmlEditor",
         createLinkText: 'URL을 입력해주세요:'
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.HtmlEditor.prototype, {
             buttonTips: {
                 bold: {

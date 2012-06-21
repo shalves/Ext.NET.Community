@@ -5,6 +5,10 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
     alias  : 'plugin.selectionsubmit',
     
     init   : function (grid) {
+        if (grid.lockable) {
+            return;
+        }
+        
         this.grid = grid;
         this.headerCt = this.grid.headerCt || this.grid.normalGrid.headerCt;
         this.store = grid.store;
@@ -28,25 +32,17 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
             sm.on("select", this.updateSelection, this, { buffer: 1 });
         } else {
             sm.on("selectionchange", this.updateSelection, this, { buffer: 10 });
-            if (sm.onHeaderClick) {
-                this.grid.getView().headerCt.on('headerclick', this.onHeaderClick, this, {delay:1});
-            }
         }
         
-        this.grid.getView().on("render", function () {
-            if (this.grid.selectionSubmit && this.grid.getSelectionModel().proxyId) {
-                this.getSelectionModelField().render(this.grid.el.parent() || this.grid.el);
-            }
-            this.initSelectionData();
-        }, this);
-        
+        this.grid.getView().on("afterrender", this.renderHiddenField, this);        
         this.grid.store.on("clear", this.clearField, this);
     },
 
-    onHeaderClick : function (headerCt, header, e) {
-        if (header.isCheckerHd) {
-            this.updateSelection();   
+    renderHiddenField : function () {
+        if (this.grid.selectionSubmit && this.grid.getSelectionModel().proxyId) {
+            this.getSelectionModelField().render(this.grid.el.parent() || this.grid.el);
         }
+        this.initSelectionData();
     },
     
     clearField : function () {
@@ -65,7 +61,19 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
     destroy : function () {
         if (this.hField && this.hField.rendered) {
             this.hField.destroy();
+            this.store.un("load", this.doSelection, this, { single: true, delay : 100 });
         }
+        
+        var sm = this.grid.getSelectionModel();
+        if (sm instanceof Ext.selection.CellModel) {
+            sm.un("deselect", this.updateSelection, this, { buffer: 1 });
+            sm.un("select", this.updateSelection, this, { buffer: 1 });
+        } else {
+            sm.un("selectionchange", this.updateSelection, this, { buffer: 10 });
+        }
+
+        this.grid.getView().un("afterrender", this.renderHiddenField, this);        
+        this.grid.store.un("clear", this.clearField, this);
     },
     
     doSelection : function () {
@@ -155,15 +163,17 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
         if (selModel instanceof Ext.selection.RowModel) {
             var records = [];
 
-            if (sMemory) {
+            if (sMemory && sMemory.selectedIds && !Ext.isEmptyObj(sMemory.selectedIds)) {
                 for (var id in sMemory.selectedIds) {
-                    records.push({ RecordID: sMemory.selectedIds[id].id, RowIndex: sMemory.selectedIds[id].index });
+                    if (sMemory.selectedIds.hasOwnProperty(id)) {
+                        records.push({ RecordID: sMemory.selectedIds[id].id, RowIndex: sMemory.selectedIds[id].index });
+                    }
                 }
             } else {
                 var selectedRecords = selModel.getSelection();
 
                 for (var i = 0; i < selectedRecords.length; i++) {
-                    rowIndex = store.indexOfId(selectedRecords[i].getId());                    
+                    rowIndex = store.indexOf(selectedRecords[i]);
                     records.push({ RecordID: selectedRecords[i].getId(), RowIndex: rowIndex });
                 }
             }

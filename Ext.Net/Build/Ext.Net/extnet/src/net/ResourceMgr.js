@@ -18,13 +18,13 @@ Ext.net.ResourceMgr = function () {
                 return;
             }
 
-            if (!Ext.get("__EVENTTARGET")){
+            if (!Ext.get("__EVENTTARGET")) {
                 inputs = Ext.applyIf(inputs, {
                     "__EVENTTARGET": ""
                 });
             }
 
-            if (!Ext.get("__EVENTARGUMENT")){
+            if (!Ext.get("__EVENTARGUMENT")) {
                 inputs = Ext.applyIf(inputs, {
                     "__EVENTARGUMENT": ""
                 });
@@ -188,10 +188,10 @@ Ext.net.ResourceMgr = function () {
 
             if (Ext.isObject(obj) && (obj.destroy || obj.destroyStore)) {
                 try {
-                    if(contentOnly){
+                    if (contentOnly) {
                         obj.clearContent && obj.clearContent();
                     }
-                    else{                    
+                    else {                    
                         obj.destroyStore ?  obj.destroyStore() : obj.destroy();
                     }
                 } catch (e) { }
@@ -262,7 +262,7 @@ Ext.net.ResourceMgr = function () {
                     };
                 }         
                 
-                Ext.Function.defer(function(){
+                Ext.Function.defer(function () {
                     if (!this.inputsInit) {
                         this.initAspInputs({});
                     }    

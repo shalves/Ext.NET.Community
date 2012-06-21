@@ -9,7 +9,7 @@
  * + added Ext.Date.monthNumbers
  * + added Ext.grid.GroupingFeature
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -49,7 +49,7 @@ Ext.onReady(function() {
 
         Ext.Date.shortMonthNames = ["Ιαν", "Φεβ", "Μάρ", "Απρ", "Μάι", "Ιού", "Ιού", "Αύγ", "Σεπ", "Οκτ", "Νοέ", "Δεκ"];
 
-        Ext.Date.getShortMonthName = function(month) {
+        Ext.Date.getShortMonthName = function (month) {
             return Ext.Date.monthNames[month].substring(0, 3);
         };
 
@@ -68,7 +68,7 @@ Ext.onReady(function() {
             Dec: 11
         };
 
-        Ext.Date.getMonthNumber = function(name) {
+        Ext.Date.getMonthNumber = function (name) {
             return Ext.Date.monthNumbers[name.substring(0, 1).toUpperCase() + name.substring(1, 3).toLowerCase()];
         };
 
@@ -152,7 +152,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.el_GR.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Μεταφόρτωση δεδομένων..."
         });
@@ -170,7 +170,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.el_GR.form.field.HtmlEditor", {
         override: "Ext.form.field.HtmlEditor",
         createLinkText: 'Δώστε τη διεύθυνση (URL) για το σύνδεσμο (link):'
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.HtmlEditor.prototype, {
             buttonTips: {
                 bold: {

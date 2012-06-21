@@ -74,7 +74,7 @@ Ext.define('Ext.net.ComponentLoader', {
     addMask : function (mask) {
         if (this.target.floating) {
             if (mask.showMask) {
-                (this.target.body || this.target.el).mask(mask.maskMsg || Ext.LoadMask.prototype.msg, mask.maskCls || "x-mask-loading");
+                (this.target.body || this.target.el).mask(mask.msg || Ext.LoadMask.prototype.msg, mask.msgCls || "x-mask-loading");
             }
             return;
         }
@@ -209,10 +209,10 @@ Ext.define('Ext.net.ComponentLoader', {
                 }
             }
 
-            if(method.length > 1){
+            if (method.length > 1) {
                 method(Ext.encode(options.params), dmCfg);
             }
-            else{
+            else {
                 method(dmCfg);
             }
 
@@ -341,14 +341,10 @@ Ext.define('Ext.net.ComponentLoader', {
             this.beforeIFrameLoad(options);
         }
         
-        if (Ext.isIE6 && !this.destroyIframeOnUnload) {
+        if (!this.destroyIframeOnUnload) {
             this.destroyIframeOnUnload = true;            
-            
-            if (window.addEventListener) {
-                window.addEventListener("unload", Ext.Function.bind(this.target.destroy, this.target), false);
-            } else if (window.attachEvent) {
-                window.attachEvent("onunload", Ext.Function.bind(this.target.destroy, this.target));
-            }
+
+            Ext.EventManager.on(window, "unload", this.target.destroy, this.target);
         }        
     },
     
@@ -403,6 +399,8 @@ Ext.define('Ext.net.ComponentLoader', {
         if (options.success) {
             Ext.callback(options.success, options.scope, [this, true, null, options]);
         }
+
+        this.target.onIFrameLoad();
 
         this.fireEvent("load", this, null, options);
     }

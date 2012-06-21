@@ -7,7 +7,7 @@
  * Updated by dev.ashevchuk@gmail.com
  * 01.09.2009
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -131,7 +131,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.ukr.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Завантаження..."
         });
@@ -149,7 +149,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.ukr.form.field.HtmlEditor", {
         override: "Ext.form.field.HtmlEditor",
         createLinkText: 'Будь-ласка введіть адресу:'
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.HtmlEditor.prototype, {
             buttonTips: {
                 bold: {

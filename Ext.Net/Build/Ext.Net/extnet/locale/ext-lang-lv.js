@@ -2,7 +2,7 @@
  * Latvian Translations
  * By salix 17 April 2007
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -120,7 +120,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.lv.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Ielādē..."
         });

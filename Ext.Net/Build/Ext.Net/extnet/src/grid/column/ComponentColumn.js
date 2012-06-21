@@ -308,7 +308,7 @@
             if (this.lastComponentDiv.dom) {
                 try {
                     this.lastComponentDiv.down('.row-cmp-placeholder').removeCls("x-hide-display");
-                } catch(e) {                        
+                } catch (e) {                        
                 }
             }
 
@@ -485,7 +485,7 @@
             this.onBind(cmp, record);
         }
 
-        if(!this.view.bufferedRefreshSize){
+        if (!this.view.bufferedRefreshSize) {
             this.view.bufferedRefreshSize = Ext.Function.createBuffered(this.view.refreshSize, 10, this.view);
         }
 

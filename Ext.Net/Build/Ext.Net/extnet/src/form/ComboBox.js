@@ -218,7 +218,7 @@ Ext.form.field.ComboBox.override({
             }, this);
             
             this.setValue(values);
-            if(this.fireSelectOnLoad){
+            if (this.fireSelectOnLoad) {
                 this.fireEvent("select", this, this.valueModels);
             }            
         }

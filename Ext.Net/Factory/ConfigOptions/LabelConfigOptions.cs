@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -55,14 +55,6 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
-                list.Add("format", new ConfigOption("format", null, "", this.Format ));
-                list.Add("emptyText", new ConfigOption("emptyText", null, "", this.EmptyText ));
-                list.Add("forID", new ConfigOption("forID", new SerializationOptions("forId"), "", this.ForID ));
-                list.Add("html", new ConfigOption("html", null, "", this.Html ));
-                list.Add("textProxy", new ConfigOption("textProxy", new SerializationOptions("text"), "", this.TextProxy ));
-                list.Add("iconClsProxy", new ConfigOption("iconClsProxy", new SerializationOptions("iconCls"), "", this.IconClsProxy ));
-                list.Add("iconAlign", new ConfigOption("iconAlign", new SerializationOptions(JsonMode.ToLower), Alignment.Left, this.IconAlign ));
-                list.Add("editor", new ConfigOption("editor", new SerializationOptions("editor", typeof(SingleItemCollectionJsonConverter)), null, this.Editor ));
                 list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
                 list.Add("directEvents", new ConfigOption("directEvents", new SerializationOptions("directEvents", JsonMode.Object), null, this.DirectEvents ));
 

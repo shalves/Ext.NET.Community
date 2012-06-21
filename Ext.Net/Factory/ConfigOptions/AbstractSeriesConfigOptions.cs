@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -63,6 +63,7 @@ namespace Ext.Net
                 list.Add("showInLegend", new ConfigOption("showInLegend", null, true, this.ShowInLegend ));
                 list.Add("tips", new ConfigOption("tips", new SerializationOptions("tips", typeof(LazyControlJsonConverter)), null, this.Tips ));
                 list.Add("title", new ConfigOption("title", null, "", this.Title ));
+                list.Add("titles", new ConfigOption("titles", new SerializationOptions("title", typeof(SingleStringArrayJsonConverter)), null, this.Titles ));
                 list.Add("xField", new ConfigOption("xField", new SerializationOptions(typeof(SingleStringArrayJsonConverter)), null, this.XField ));
                 list.Add("yField", new ConfigOption("yField", new SerializationOptions(typeof(SingleStringArrayJsonConverter)), null, this.YField ));
                 list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));

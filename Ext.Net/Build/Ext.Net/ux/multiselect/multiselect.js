@@ -390,6 +390,8 @@ Ext.define('Ext.ux.form.MultiSelect', {
             rec,
             j,
             valueLen;
+
+        value = value || [];
             
         for (valueLen = value.length; i < valueLen; ++i) {
             for (j = 0; j < allLen; ++j) {

@@ -3,7 +3,7 @@
  * By Mohaqa
  * 03-10-2007, 06:23 PM
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -142,7 +142,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.fa.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "در حال بارگذاری ..."
         });
@@ -160,7 +160,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.fa.form.field.HtmlEditor", {
         override: "Ext.form.field.HtmlEditor",
         createLinkText: 'لطفا آدرس لینک را وارد کنید:'
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.HtmlEditor.prototype, {
             buttonTips: {
                 bold: {

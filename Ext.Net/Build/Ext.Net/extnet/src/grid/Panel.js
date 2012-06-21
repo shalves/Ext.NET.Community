@@ -61,6 +61,23 @@ Ext.grid.Panel.override({
         
         this.initSelectionSubmit();        
         this.callParent(arguments);
+
+        if (this.lockable) {
+            p = this.lockedGrid.getSelectionSubmit();
+            Ext.Array.remove(this.lockedGrid.plugins, p);
+
+            if (Ext.isFunction(p.destroy)) {
+                p.destroy();
+            }
+
+            if (this.selectionMemory) {
+                p = this.lockedGrid.getSelectionMemory();
+                Ext.Array.remove(this.lockedGrid.plugins, p);
+                if (Ext.isFunction(p.destroy)) {
+                    p.destroy();
+                }
+            }
+        }
     },
     
     initSelectionSubmit : function () {
@@ -113,10 +130,12 @@ Ext.grid.Panel.override({
             sIds = this.getSelectionMemory().selectedIds;
 
             for (var id in sIds) {
-                record = this.store.getById(sIds[id].id);
+                if (sIds.hasOwnProperty(id)) {
+                    record = this.store.getById(sIds[id].id);
 
-                if (!Ext.isEmpty(record)) {
-                    records.push(record);
+                    if (!Ext.isEmpty(record)) {
+                        records.push(record);
+                    }
                 }
             }
         }

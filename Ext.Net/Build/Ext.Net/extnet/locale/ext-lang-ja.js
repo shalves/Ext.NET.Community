@@ -6,7 +6,7 @@
  * update based on English Translations by Condor (8 Aug 2008)
  * By sakuro (30 Aug 2008)
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -33,7 +33,7 @@ Ext.onReady(function() {
     if (Ext.Date) {
         Ext.Date.monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
 
-        Ext.Date.getShortMonthName = function(month) {
+        Ext.Date.getShortMonthName = function (month) {
             return "" + (month + 1);
         };
 
@@ -52,14 +52,14 @@ Ext.onReady(function() {
             "12": 11
         };
 
-        Ext.Date.getMonthNumber = function(name) {
+        Ext.Date.getMonthNumber = function (name) {
             return Ext.Date.monthNumbers[name.substring(0, name.length - 1)];
             // or simply parseInt(name.substring(0, name.length - 1)) - 1
         };
 
         Ext.Date.dayNames = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
 
-        Ext.Date.getShortDayName = function(day) {
+        Ext.Date.getShortDayName = function (day) {
             return Ext.Date.dayNames[day].substring(0, 1); // just remove "曜日" suffix
         };
 
@@ -163,7 +163,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.ja.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "読み込み中..."
         });
@@ -181,7 +181,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.ja.form.field.HtmlEditor", {
         override: "Ext.form.field.HtmlEditor",
         createLinkText: 'リンクのURLを入力してください:'
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.HtmlEditor.prototype, {
             buttonTips: {
                 bold: {

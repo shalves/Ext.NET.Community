@@ -1,6 +1,6 @@
 ﻿Ext.grid.plugin.CellEditing.override({
-    getColumnField: function(columnHeader, defaultField, record) {
-        if(columnHeader instanceof Ext.ux.CheckColumn){
+    getColumnField: function (columnHeader, defaultField, record) {
+        if (columnHeader instanceof Ext.ux.CheckColumn) {
             return;
         }
 
@@ -16,7 +16,7 @@
         }
 
         if (!field || this.fieldFromEditors) {
-            if(columnHeader.editors){
+            if (columnHeader.editors) {
                 field = this.getFromEditors(record, columnHeader, columnHeader.editors, columnHeader.editorStrategy, columnHeader);
                 this.fieldFromEditors = false;
             }
@@ -32,9 +32,11 @@
             if (Ext.isString(field)) {
                 field = { xtype: field };
             }
+
             if (!field.isFormField) {
                 field = Ext.ComponentManager.create(field, this.defaultFieldXType);
             }
+            
             columnHeader.field = field;
  
             Ext.apply(field, {
@@ -51,17 +53,16 @@
         var editor,
             index;
 
-        if(editorStrategy){
+        if (editorStrategy) {
             editor = editorStrategy.call(scope, record, column, editors, this.grid);
 
-            if(Ext.isNumber(editor)) {
+            if (Ext.isNumber(editor)) {
                 index = editor;
                 editor = editors[index];
             }
 
             index = Ext.Array.indexOf(editors, editor);
-        }
-        else{
+        } else {
             editor = editors[0];
             index = 0;
         }
@@ -70,12 +71,13 @@
             if (!(editor instanceof Ext.form.field.Base)) {
                 editor = Ext.ComponentManager.create(editor, 'textfield');
             }
+
             editor = editors[index] = new Ext.grid.CellEditor({ 
                 field: editor                
             });
         }
 
-        if(editor) {
+        if (editor) {
             Ext.applyIf(editor, {
                 editorId: editor.field.getItemId(),                    
                 editingPlugin: this,
@@ -107,8 +109,7 @@
                     field: editor,
                     ownerCt: me.grid
                 });
-            }
-            else {
+            } else {
                 Ext.applyIf(editor, {
                     editorId: editorId,                    
                     ownerCt: me.grid
@@ -122,12 +123,14 @@
                 complete: me.onEditComplete,
                 canceledit: me.cancelEdit
             });
+            
             editors.add(editor);
+
             return editor;
         }
     },
 
-    initFieldAccessors: function(columns) {
+    initFieldAccessors: function (columns) {
         columns = [].concat(columns);
 
         var me   = this,
@@ -139,18 +142,18 @@
             column = columns[c];
 
             Ext.applyIf(column, {
-                getEditor: function(record, defaultField) {
+                getEditor : function (record, defaultField) {
                     return me.getColumnField(this, defaultField, record);
                 },
 
-                setEditor: function(field) {
+                setEditor : function (field) {
                     me.setColumnField(this, field);
                 }
             });
         }
     },
 
-    getEditorId : function(column) {
+    getEditorId : function (column) {
         return column.activeEditorId || column.getItemId();
     } 
 });

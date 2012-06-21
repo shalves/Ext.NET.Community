@@ -35,7 +35,7 @@ Ext.layout.component.field.Field.prototype.finishedLayout = Ext.Function.createI
     if (this.owner.labelAlign == "top") {
         this.owner.labelEl.parent("td").setStyle("width", "100%");
         
-        if(this.owner.hasVisibleLabel()){
+        if (this.owner.hasVisibleLabel()) {
             this.owner.labelEl.parent("tr").dom.style.display = "";
         }
         else {

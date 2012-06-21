@@ -1,5 +1,5 @@
 Ext.tree.ViewDropZone.override({
-    getPosition: function(e, node) {
+    getPosition: function (e, node) {
         var view = this.view,
             record = view.getRecord(node),
             y = e.getPageY(),
@@ -36,16 +36,16 @@ Ext.tree.ViewDropZone.override({
 });
 
 Ext.tree.plugin.TreeViewDragDrop.override({
-    init : function(view) {
+    init : function (view) {
         this.callParent(arguments);
 
         view.panel.ddPlugin = this;
         view.ddPlugin = this;
         view.allowLeafDrop = this.allowLeafDrop;
 
-        if(this.allowLeafDrop) {
+        if (this.allowLeafDrop) {
             view.on("drop", function (node, data, overRecord, currentPosition) {
-                if(currentPosition == "append" && overRecord.isLeaf()) {
+                if (currentPosition == "append" && overRecord.isLeaf()) {
                     overRecord.set("leaf", false);
                     overRecord.set("loaded", true);
                 }

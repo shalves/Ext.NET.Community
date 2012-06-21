@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -77,125 +77,6 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ToolTip.Builder ForceRendering(bool forceRendering)
-            {
-                this.ToComponent().ForceRendering = forceRendering;
-                return this as ToolTip.Builder;
-            }
-             
- 			/// <summary>
-			/// If specified, indicates that the tip should be anchored to a particular side of the target element or mouse pointer (\"top\", \"right\", \"bottom\", or \"left\"), with an arrow pointing back at the target or mouse pointer. If constrainPosition is enabled, this will be used as a preferred value only and may be flipped as needed.
-			/// </summary>
-            public virtual ToolTip.Builder Anchor(string anchor)
-            {
-                this.ToComponent().Anchor = anchor;
-                return this as ToolTip.Builder;
-            }
-             
- 			/// <summary>
-			/// A numeric pixel value used to offset the default position of the anchor arrow. When the anchor position is on the top or bottom of the tooltip, anchorOffset will be used as a horizontal offset. Likewise, when the anchor position is on the left or right side, anchorOffset will be used as a vertical offset. Defaults to: 0
-			/// </summary>
-            public virtual ToolTip.Builder AnchorOffset(int anchorOffset)
-            {
-                this.ToComponent().AnchorOffset = anchorOffset;
-                return this as ToolTip.Builder;
-            }
-             
- 			/// <summary>
-			/// True to anchor the tooltip to the target element, false to anchor it relative to the mouse coordinates. When anchorToTarget is true, use defaultAlign to control tooltip alignment to the target element. When anchorToTarget is false, use anchor instead to control alignment. Defaults to: true
-			/// </summary>
-            public virtual ToolTip.Builder AnchorToTarget(bool anchorToTarget)
-            {
-                this.ToComponent().AnchorToTarget = anchorToTarget;
-                return this as ToolTip.Builder;
-            }
-             
- 			/// <summary>
-			/// True to automatically hide the tooltip after the mouse exits the target element or after the dismissDelay has expired if set (defaults to true). If closable = true a close tool button will be rendered into the tooltip header.
-			/// </summary>
-            public virtual ToolTip.Builder AutoHide(bool autoHide)
-            {
-                this.ToComponent().AutoHide = autoHide;
-                return this as ToolTip.Builder;
-            }
-             
- 			/// <summary>
-			/// A DomQuery selector which allows selection of individual elements within the target element to trigger showing and hiding the ToolTip as the mouse moves within the target.
-			/// </summary>
-            public virtual ToolTip.Builder Delegate(string _delegate)
-            {
-                this.ToComponent().Delegate = _delegate;
-                return this as ToolTip.Builder;
-            }
-             
- 			/// <summary>
-			/// Delay in milliseconds before the tooltip automatically hides (defaults to 5000). To disable automatic hiding, set dismissDelay = 0.
-			/// </summary>
-            public virtual ToolTip.Builder DismissDelay(int dismissDelay)
-            {
-                this.ToComponent().DismissDelay = dismissDelay;
-                return this as ToolTip.Builder;
-            }
-             
- 			/// <summary>
-			/// Delay in milliseconds after the mouse exits the target element but before the tooltip actually hides (defaults to 200). Set to 0 for the tooltip to hide immediately.
-			/// </summary>
-            public virtual ToolTip.Builder HideDelay(int hideDelay)
-            {
-                this.ToComponent().HideDelay = hideDelay;
-                return this as ToolTip.Builder;
-            }
-             
- 			/// <summary>
-			/// An XY offset from the mouse position where the tooltip should be shown (defaults to [15,18]).
-			/// </summary>
-            public virtual ToolTip.Builder MouseOffset(int[] mouseOffset)
-            {
-                this.ToComponent().MouseOffset = mouseOffset;
-                return this as ToolTip.Builder;
-            }
-             
- 			/// <summary>
-			/// Delay in milliseconds before the tooltip displays after the mouse enters the target element (defaults to 500).
-			/// </summary>
-            public virtual ToolTip.Builder ShowDelay(int showDelay)
-            {
-                this.ToComponent().ShowDelay = showDelay;
-                return this as ToolTip.Builder;
-            }
-             
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ToolTip.Builder</returns>
-            public virtual ToolTip.Builder TargetControl(Action<Control> action)
-            {
-                action(this.ToComponent().TargetControl);
-                return this as ToolTip.Builder;
-            }
-			 
- 			/// <summary>
-			/// The target id to associate with this tooltip.
-			/// </summary>
-            public virtual ToolTip.Builder Target(string target)
-            {
-                this.ToComponent().Target = target;
-                return this as ToolTip.Builder;
-            }
-             
- 			/// <summary>
-			/// True to have the tooltip follow the mouse as it moves over the target element (defaults to false).
-			/// </summary>
-            public virtual ToolTip.Builder TrackMouse(bool trackMouse)
-            {
-                this.ToComponent().TrackMouse = trackMouse;
-                return this as ToolTip.Builder;
-            }
-             
  			/// <summary>
 			/// Client-side JavaScript Event Handlers
  			/// </summary>

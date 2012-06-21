@@ -107,7 +107,7 @@ Ext.define("Ext.net.TaskManager", {
                 if (this.onstop) {
                     this.onstop();
                 }
-                if(this._ts && this.owner.destroying){
+                if (this._ts && this.owner.destroying) {
                     Ext.net.DirectEvent.abort(this._ts);
                 }
             },

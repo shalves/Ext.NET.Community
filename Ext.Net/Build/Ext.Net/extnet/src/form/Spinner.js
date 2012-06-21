@@ -8,7 +8,7 @@ Ext.form.field.Spinner.override({
         this.triggerCell = new Ext.dom.CompositeElement(this.el.down(".x-trigger-index-0").up("td"), this.el);        
     },
 
-    getTriggerMarkup: function() {
+    getTriggerMarkup: function () {
         var me = this;
 
         return me.getTpl('triggerTpl').apply({

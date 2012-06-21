@@ -199,9 +199,9 @@
     restoreLastPlaceholder : function () {
         if (this.lastToolbarDiv) {                    
             if (this.lastToolbarDiv.dom) {
-                try{
+                try {
                     this.lastToolbarDiv.down('.row-cmd-placeholder').removeCls("x-hide-display");
-                } catch(e) { }
+                } catch (e) { }
             }
             delete this.lastToolbarDiv;
         }
@@ -220,7 +220,9 @@
                     ui             : "flat",
                     items          : this.commands,
                     enableOverflow : false,
-                    buttonAlign    : this.buttonAlign
+                    layout         : {
+                        pack : this.pack
+                    }
                 });               
         }
         
@@ -362,9 +364,11 @@
 
                 var toolbar = Ext.create("Ext.toolbar.Toolbar", {
                         items          : this.commands,
-                        ui : "flat",
+                        ui             : "flat",
                         enableOverflow : false,
-                        buttonAlign    : this.buttonAlign
+                        layout         : {
+                            pack : this.pack
+                        }
                     }),
                     div;
 
@@ -417,7 +421,7 @@
                 }, this);
             }
 
-            if(!this.view.bufferedRefreshSize){
+            if (!this.view.bufferedRefreshSize) {
                 this.view.bufferedRefreshSize = Ext.Function.createBuffered(this.view.refreshSize, 10, this.view);
             }
 
@@ -601,8 +605,8 @@
     destroy : function () {
         var view = this.grid.getView();
 
-        Ext.each(this.sharedMenus || [], function(menu){
-            if(menu){
+        Ext.each(this.sharedMenus || [], function (menu) {
+            if (menu) {
                 menu.destroy();
             }
         });

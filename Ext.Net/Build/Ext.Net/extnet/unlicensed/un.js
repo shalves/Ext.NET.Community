@@ -1,5 +1,5 @@
 ﻿Ext.onReady(function () {
-    Ext.Function.defer(function(){
+    Ext.Function.defer(function () {
         var el = Ext.DomHelper.append(document.body, {
             tag : "div",
             id  : "unlicensed",
@@ -24,7 +24,7 @@
         el.slideIn("b", { 
             listeners : {
                 afteranimate : function () {
-                    Ext.Function.defer(function(){
+                    Ext.Function.defer(function () {
                         el.slideOut("b", {
                             listeners : {
                                 afteranimate : function () {

@@ -5,7 +5,7 @@
 });
 
 Ext.draw.Surface.override({
-    onAdd: function(sprite) {
+    onAdd: function (sprite) {
         var group = sprite.group,
             draggable = sprite.draggable,
             groups, ln, i;
@@ -19,10 +19,10 @@ Ext.draw.Surface.override({
             delete sprite.group;
         }
         if (draggable) {
-            if(sprite.el){
+            if (sprite.el) {
                 sprite.initDraggable();
             }
-            else{
+            else {
                 sprite.on("render", sprite.initDraggable, sprite, {single:true});
             }
         }

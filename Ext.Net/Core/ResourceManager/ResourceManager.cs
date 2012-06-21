@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -380,7 +380,10 @@ namespace Ext.Net
                 return;
             }
 
-            //this.CheckLicense();
+#if ISPRO
+            this.CheckLicense();
+#endif
+
             this.SetIsLast();
         }
 
@@ -538,7 +541,7 @@ namespace Ext.Net
                 {
                     writer.Write(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string>{                        
                         {this.ScriptFilesContainer != null ? "ref" : "selector", this.ScriptFilesContainer != null ? "ext.net.initscriptfiles" : "headstart"},
-                        {"index", "2"}
+                        {"index", "20"}
                     }, this.scriptFilesBuilder.ToString()));
                 }
 
@@ -551,7 +554,7 @@ namespace Ext.Net
                         writer.Write(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string>{                        
                             {this.ScriptFilesContainer != null ? "ref" : "selector", this.ScriptFilesContainer != null ? "ext.net.initscriptfiles" : "headstart"},
                             {"key", key},
-                            {"index", "3"},
+                            {"index", "30"},
                             {"url", this.ResolveUrlLink("~/extnet/extnet-init-js/ext.axd?" + key)}
                         }, this.scriptBuilder.ToString()));
                     }
@@ -567,7 +570,7 @@ namespace Ext.Net
                 {
                     writer.Write(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string>{                        
                         {this.StyleContainer != null ? "ref" : "selector", this.StyleContainer != null ? "ext.net.initstyle" : "headstart"},
-                        {"index", "1"}
+                        {"index", "10"}
                     }, this.styleBuilder.ToString()));
                 }
 
@@ -862,18 +865,25 @@ namespace Ext.Net
                         }
 
                     }
-                    else if (type == ResourceLocationType.File || type == ResourceLocationType.CDN)
+                    else if (type == ResourceLocationType.File 
+#if ISPRO
+                            || type == ResourceLocationType.CDN)
+#else
+                        )
+#endif
                     {
                         if (type == ResourceLocationType.File)
                         {
                             source.Append(string.Format(ResourceManager.StyleIncludeTemplate, this.ConvertToFilePath(ResourceManager.ASSEMBLYSLUG + ".extjs.resources.css.ext-all" + themeName + ".css")));
                             source.Append(string.Format(ResourceManager.StyleIncludeTemplate, this.ConvertToFilePath(ResourceManager.ASSEMBLYSLUG + ".extnet.resources.extnet-all.css")));
                         }
+#if ISPRO                        
                         else
                         {
                             source.Append(string.Format(ResourceManager.StyleIncludeTemplate, ResourceManager.CDNPath.ConcatWith("/extjs/resources/css/ext-all" + themeName + ".css")));
                             source.Append(string.Format(ResourceManager.StyleIncludeTemplate, ResourceManager.CDNPath.ConcatWith("/extnet/resources/extnet-all.css")));
                         }                        
+#endif
 
                         foreach (KeyValuePair<string, string> item in this.ThemeIncludeInternalBag)
                         {
@@ -886,6 +896,7 @@ namespace Ext.Net
 
                             if (item.Value.StartsWith(ResourceManager.ASSEMBLYSLUG))
                             {
+#if ISPRO 
                                 if (type == ResourceLocationType.File)
                                 {
                                     name = this.ConvertToFilePath(name);
@@ -894,6 +905,9 @@ namespace Ext.Net
                                 {
                                     name = this.ConvertToCDN(name);
                                 }
+#else
+                                name = this.ConvertToFilePath(name);
+#endif
                             }
                             
                             source.Append(string.Format(ResourceManager.ThemeIncludeTemplate, name));
@@ -910,6 +924,7 @@ namespace Ext.Net
                             
                             if (item.Value.StartsWith(ResourceManager.ASSEMBLYSLUG))
                             {
+#if ISPRO
                                 if (type == ResourceLocationType.File)
                                 {
                                     name = this.ConvertToFilePath(name);
@@ -918,6 +933,9 @@ namespace Ext.Net
                                 {
                                     name = this.ConvertToCDN(name);
                                 }
+#else
+                                name = this.ConvertToFilePath(name);
+#endif
                             }
                             
                             source.Append(string.Format(ResourceManager.StyleIncludeTemplate, name));
@@ -1007,12 +1025,19 @@ namespace Ext.Net
                         }
                         break;
                     case ResourceLocationType.File:
+                        foreach (string item in items)
+                        {
+                            source.Append(string.Format(ResourceManager.ScriptIncludeTemplate, this.ConvertToFilePath(ResourceManager.ASSEMBLYSLUG + item)));
+                        }
+                        break;
+#if ISPRO
                     case ResourceLocationType.CDN:
                         foreach (string item in items)
                         {
-                            source.Append(string.Format(ResourceManager.ScriptIncludeTemplate, type == ResourceLocationType.File ? this.ConvertToFilePath(ResourceManager.ASSEMBLYSLUG + item) : this.ConvertToCDN(ResourceManager.ASSEMBLYSLUG + item)));
+                            source.Append(string.Format(ResourceManager.ScriptIncludeTemplate, this.ConvertToCDN(ResourceManager.ASSEMBLYSLUG + item)));
                         }
                         break;
+#endif
                 }
                 
                 this.RegisterLocale(source);
@@ -1530,7 +1555,13 @@ namespace Ext.Net
                 onready.AppendFormat(ResourceManager.OnTextResizeTemplate, item.Value);
             }
 
-            if (this.registeredIcons.Count > 0 && !(this.RenderStyles == ResourceLocationType.Embedded || this.RenderStyles == ResourceLocationType.CDN) && RequestManager.IsAjaxRequest)
+            bool isCDN = false;
+
+#if ISPRO
+            isCDN = this.RenderStyles == ResourceLocationType.CDN;
+#endif
+            
+            if (this.registeredIcons.Count > 0 && !(this.RenderStyles == ResourceLocationType.Embedded || isCDN) && RequestManager.IsAjaxRequest)
             {
                 onready.Insert(0, "Ext.net.ResourceMgr.registerIcon({0});".FormatWith(this.RegisteredIcons));
             }
@@ -1842,7 +1873,7 @@ namespace Ext.Net
 
             return url;
         }
-
+#if ISPRO
         private string ConvertToCDN(string resourceName)
         {
             string url = resourceName;
@@ -1854,6 +1885,7 @@ namespace Ext.Net
 
             return url;
         }
+#endif
 
 
         /*  Add to Page
@@ -2543,10 +2575,12 @@ namespace Ext.Net
                 {
                     return this.ResolveUrlLink(this.ResourcePathInternal + "/icons/" + icon.ToString().ToCharacterSeparatedFileName('_', "png"));
                 }
+#if ISPRO                
                 else if (this.RenderStyles == ResourceLocationType.CDN)
                 {
                     return this.ResolveUrlLink(ResourceManager.CDNPath + "/icons/" + icon.ToString().ToCharacterSeparatedFileName('_', "png"));
                 }
+#endif
             }
 
             return "";
@@ -2572,9 +2606,11 @@ namespace Ext.Net
                     case ResourceLocationType.File:
                         url = this.GetBlankImageFilePath();
                         break;
+#if ISPRO
                     case ResourceLocationType.CDN:
                         url = this.ResolveUrlLink(ResourceManager.CDNPath + "/" + ResourceManager.ASSEMBLYSLUG.ConcatWith(".extjs.resources.themes.images.default.s.gif").Replace(ResourceManager.ASSEMBLYSLUG + ".", "").Replace(".", "/").ReplaceLastInstanceOf("/", "."));
                         break;
+#endif
                 }
 
                 return url;
@@ -2610,12 +2646,16 @@ namespace Ext.Net
         {
             get
             {
+#if ISPRO
                 if (this.RenderStyles != ResourceLocationType.CDN)
                 {
                     return "";
                 }
 
                 return ResourceManager.CDNPath;
+#else
+                return "";
+#endif
             }
         }
 

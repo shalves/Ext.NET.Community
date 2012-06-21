@@ -6,20 +6,21 @@ Ext.override(Ext.AbstractComponent, {
     autoFocusDelay  : 10,
 
     initComponent : function () {
-        if(this.hasId()){
+        if (this.hasId()) {
             var cmp = Ext.getCmp(this.id);
-            if(cmp){
+            if (cmp) {
                 cmp.destroy();
             }
         }
         
-        if(this.contentHtml && Ext.isFunction(this.contentHtml)){
+        if (this.contentHtml && Ext.isFunction(this.contentHtml)) {
             this.contentHtml.call(window);
         }
         
-        if(this.preinitFn){
+        if (this.preinitFn) {
             this.preinitFn.call(this.preinitScope || this, this);
         }
+
         if (this.tag) {
             this.setTag(this.tag);
         }
@@ -152,15 +153,15 @@ Ext.override(Ext.AbstractComponent, {
     },
 
     replace : function (cmp) {
-        if(this.ownerCt){
+        if (this.ownerCt) {
             var index = this.ownerCt.items.indexOf(this),
                 ct = this.ownerCt;
 
             ct.remove(this, true);
             
-            if(Ext.isFunction(cmp)){
+            if (Ext.isFunction(cmp)) {
                 cmp({ mode : "item", index : index, ct : ct });
-            } else{
+            } else {
                 ct.insert(index, cmp);
             }
         } else {
@@ -169,9 +170,9 @@ Ext.override(Ext.AbstractComponent, {
 
             this.destroy();
 
-            if(Ext.isFunction(cmp)){
+            if (Ext.isFunction(cmp)) {
                 cmp({mode : "el", position : position, ct : container });
-            } else{
+            } else {
                 cmp = Ext.ComponentManager.create(cmp);
                 cmp.render(container, position);
             }            

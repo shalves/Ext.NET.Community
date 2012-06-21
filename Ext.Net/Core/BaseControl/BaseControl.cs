@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -89,7 +89,11 @@ namespace Ext.Net
         {
             get
             {
+#if ISPRO                
+                return true;
+#else
                 return false;
+#endif
             }
         }
 
@@ -99,7 +103,11 @@ namespace Ext.Net
 
         private string dynamicID;
 
-        public static string GenerateId()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static string GenerateID()
         {
             long i = 1;
 
@@ -121,7 +129,7 @@ namespace Ext.Net
             {
                 if (this.dynamicID.IsEmpty())
                 {
-                    this.dynamicID = BaseControl.GenerateId();
+                    this.dynamicID = BaseControl.GenerateID();
                 }
 
                 return this.dynamicID;

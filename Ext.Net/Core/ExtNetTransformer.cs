@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -188,7 +188,7 @@ namespace Ext.Net
             {
 
                 var placeholder = HttpContext.Current.Items["Ext.Net.InitStyle"] != null;
-                sb.AppendFormat("<#:item {0}='{1}' index='1'>", placeholder ? "ref" : "selector", placeholder ? "ext.net.initstyle" : "headstart");
+                sb.AppendFormat("<#:item {0}='{1}' index='11'>", placeholder ? "ref" : "selector", placeholder ? "ext.net.initstyle" : "headstart");
                 
                 List<ResourceItem> styles = (List<ResourceItem>)HttpContext.Current.Items[Ext.Net.ResourceManager.GLOBAL_RESOURCES];
 
@@ -220,7 +220,7 @@ namespace Ext.Net
             if (HttpContext.Current.Items[Ext.Net.ResourceManager.GLOBAL_RESOURCES] != null)            
             {
                 var placeholder = HttpContext.Current.Items["Ext.Net.InitScriptFiles"] != null;
-                sb.AppendFormat("<#:item {0}='{1}' index='2'>", placeholder ? "ref" : "selector", placeholder ? "ext.net.initscriptfiles" : "headstart");
+                sb.AppendFormat("<#:item {0}='{1}' index='21'>", placeholder ? "ref" : "selector", placeholder ? "ext.net.initscriptfiles" : "headstart");
 
                 List<ResourceItem> scripts = (List<ResourceItem>)HttpContext.Current.Items[Ext.Net.ResourceManager.GLOBAL_RESOURCES];                
 
@@ -253,6 +253,7 @@ namespace Ext.Net
                                 sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, config.ResourcePath.ConcatWith(scriptItem.PathDebug));                             
                             }
                         }
+#if ISPRO                        
                         else if (config.RenderScripts == ResourceLocationType.CDN)
                         {
                             if (config.ScriptMode == ScriptMode.Release || scriptItem.PathDebug.IsEmpty())
@@ -264,6 +265,7 @@ namespace Ext.Net
                                 sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, ResourceManager.CDNPath.ConcatWith(scriptItem.PathDebug));
                             }
                         }
+#endif
                     }
                 }
 

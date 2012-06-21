@@ -4,7 +4,7 @@
 Ext.Container.override({
     getBody : function (focus) {
         if (this.iframe) {
-            var self = this.iframe.dom.contentWindow;            
+            var self = this.getWin();            
             
             if (focus !== false) {
                 try {
@@ -27,8 +27,18 @@ Ext.Container.override({
     },
 
     clearContent : function () {
-        if (this.iframe) {
+        if (this.iframe && this.iframe.dom) {
             this.iframe.un("load", this.getLoader().afterIFrameLoad, this);
+
+            var doc = this.getDoc();
+            if (doc) {
+                Ext.EventManager.removeAll(doc);
+                for (prop in doc) {
+                    if (doc.hasOwnProperty && doc.hasOwnProperty(prop)) {
+                        delete doc[prop];
+                    }
+                }
+            }
 
             if (Ext.isIE) {
                 this.iframe.dom.src = Ext.net.StringUtils.format("java{0}", "script:false");
@@ -45,7 +55,7 @@ Ext.Container.override({
     },    
 
     beforeDestroy : Ext.Function.createInterceptor(Ext.container.Container.prototype.beforeDestroy, function () {
-        if (this.iframe) {
+        if (this.iframe && this.iframe.dom) {
             try {
                 this.clearContent();
             } catch (e) { }
@@ -104,5 +114,68 @@ Ext.Container.override({
         } else {
             btn.fireEvent("click", btn, e);
         }
+    },
+
+    onIFrameLoad: function () {
+        var me = this,
+            doc = me.getDoc(),
+            fn = me.onIFrameRelayedEvent;
+
+        if (doc) {
+            try {
+                Ext.EventManager.removeAll(doc);
+
+                Ext.EventManager.on(doc, {
+                    mousedown: fn, 
+                    mousemove: fn, 
+                    mouseup: fn,   
+                    click: fn,     
+                    dblclick: fn,  
+                    scope: me
+                });
+            } catch (e) {                
+            }
+            
+            //Ext.EventManager.on(window, 'unload', me.beforeDestroy, me);
+        }
+    },
+
+    onIFrameRelayedEvent: function (event) {
+        var iframeEl = this.iframe,
+            iframeXY = iframeEl.getXY(),
+            eventXY = event.getXY();
+
+        event.xy = [iframeXY[0] + eventXY[0], iframeXY[1] + eventXY[1]];
+
+        event.injectEvent(iframeEl);
+
+        event.xy = eventXY;
+    },
+
+    getFrameBody: function () {
+        var doc = this.getDoc();
+        return doc.body || doc.documentElement;
+    },
+
+    getDoc: function () {
+        try {
+            return this.getWin().document;
+        } catch (ex) {
+            return null;
+        }
+    },
+
+    getWin: function () {
+        var me = this,
+            name = me.id + "_IFrame",
+            win = Ext.isIE
+                ? me.iframe.dom.contentWindow
+                : window.frames[name];
+        return win;
+    },
+
+    getFrame: function () {
+        var me = this;
+        return me.iframe.dom;
     }
 });

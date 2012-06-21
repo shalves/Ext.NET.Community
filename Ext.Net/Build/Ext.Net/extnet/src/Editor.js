@@ -98,13 +98,13 @@ Ext.Editor.override({
     },
 
     startEdit : function (el, value) {
-        if(!Ext.isDefined(value)){
+        if (!Ext.isDefined(value)) {
             this.completeEdit();
             this.boundEl = Ext.get(el);
 
             if (this.useHtml) {
                 value = this.boundEl.dom.innerHTML;
-                if(this.htmlEncode){                    
+                if (this.htmlEncode) {                    
                     value = Ext.util.Format.htmlEncode(value);
                 }
             }
@@ -124,7 +124,7 @@ Ext.Editor.override({
         }
     },
 
-    completeEdit : function(remainVisible) {
+    completeEdit : function (remainVisible) {
         var me = this,
             field = me.field,
             value;
@@ -155,10 +155,10 @@ Ext.Editor.override({
             // Grab the value again, may have changed in beforecomplete
             value = me.getValue();
             if (me.updateEl && me.boundEl) {
-                if(this.htmlDecode){
+                if (this.htmlDecode) {
                     me.boundEl.update(Ext.util.Format.htmlDecode(value));
                 }
-                else{
+                else {
                     me.boundEl.update(value);
                 }
             }

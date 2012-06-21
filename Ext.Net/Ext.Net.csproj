@@ -37,7 +37,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Ext.Net.xml</DocumentationFile>
@@ -48,20 +48,19 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Ext.Net.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ext.Net.Utilities, Version=2.0.1.26920, Culture=neutral, PublicKeyToken=2c34ac34702a3c23, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Ext.Net.Utilities">
       <HintPath>..\packages\Ext.NET.Utilities.2.0.1\lib\Ext.Net.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.5\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.7\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -72,13 +71,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>c:\Program Files\Microsoft ASP.NET\ASP.NET MVC 3\Assemblies\System.Web.Mvc.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
-    <Reference Include="Transformer.NET, Version=2.0.0.3590, Culture=neutral, PublicKeyToken=e274d618e7c603a7, processorArchitecture=MSIL">
+    <Reference Include="Transformer.NET">
       <HintPath>..\packages\Transformer.NET.2.0.0\lib\Transformer.NET.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -549,6 +545,7 @@
     <Compile Include="Ext\Form\HtmlEditorButtonTip.cs" />
     <Compile Include="Ext\Form\HtmlEditorButtonTips.cs" />
     <Compile Include="Ext\Form\Labelable.cs" />
+    <Compile Include="Ext\Form\LabelBase.cs" />
     <Compile Include="Ext\Form\PickerField.cs" />
     <Compile Include="Ext\Form\SpinnerField.cs" />
     <Compile Include="Ext\Form\SpinnerFieldBase.cs" />
@@ -575,6 +572,7 @@
     <Compile Include="Ext\Layout\FitLayoutConfig.cs" />
     <Compile Include="Ext\Layout\ColumnLayoutConfig.cs" />
     <Compile Include="Ext\Layout\FormLayoutConfig.cs" />
+    <Compile Include="Ext\Layout\CheckboxGroupLayoutConfig.cs" />
     <Compile Include="Ext\MessageBus\MessageBusDirectEvents.cs" />
     <Compile Include="Ext\MessageBus\MessageBusListener.cs" />
     <Compile Include="Ext\MessageBus\MessageBusDirectEvent.cs" />
@@ -585,6 +583,7 @@
     <Compile Include="Ext\Resizer\BoxSplitter.cs" />
     <Compile Include="Ext\Selection\TreeSelectionModel.cs" />
     <Compile Include="Ext\State\IStateful.cs" />
+    <Compile Include="Ext\Tips\ToolTipBase.cs" />
     <Compile Include="Ext\Tree\TreeColumn.cs" />
     <Compile Include="Ext\Tree\Plugin\TreeViewDragDrop.cs" />
     <Compile Include="Ext\Tree\TreeView.cs" />
@@ -1042,6 +1041,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Factory\Builder\LabelableBuilder.cs" />
+    <Compile Include="Factory\Builder\LabelBaseBuilder.cs" />
     <Compile Include="Factory\Builder\LabelBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1310,6 +1310,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Factory\Builder\ToolBuilder.cs" />
+    <Compile Include="Factory\Builder\ToolTipBaseBuilder.cs" />
     <Compile Include="Factory\Builder\ToolTipBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1433,6 +1434,7 @@
     <Compile Include="Factory\ConfigOptions\ChartThemeConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\ChartTipConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\CheckboxGroupDirectEventsConfigOptions.cs" />
+    <Compile Include="Factory\ConfigOptions\CheckboxGroupLayoutConfigConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\CheckboxGroupListenersConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\CheckColumnDirectEventsConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\CheckColumnListenersConfigOptions.cs" />
@@ -1539,6 +1541,7 @@
     <Compile Include="Factory\ConfigOptions\JsonPProxyConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\JsonWriterConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\LabelableConfigOptions.cs" />
+    <Compile Include="Factory\ConfigOptions\LabelBaseConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\LayerConfigConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\LayoutConfigCollectionConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\LengthValidationConfigOptions.cs" />
@@ -1633,6 +1636,7 @@
     <Compile Include="Factory\ConfigOptions\ToolbarListenersConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\ToolDirectEventsConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\ToolListenersConfigOptions.cs" />
+    <Compile Include="Factory\ConfigOptions\ToolTipBaseConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\TransformGridConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\TranslateAttributeConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\TrayClockConfigOptions.cs" />
@@ -1961,6 +1965,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Factory\Config\LabelableConfig.cs" />
+    <Compile Include="Factory\Config\LabelBaseConfig.cs" />
     <Compile Include="Factory\Config\LabelConfig.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -2209,6 +2214,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Factory\Config\ToolConfig.cs" />
+    <Compile Include="Factory\Config\ToolTipBaseConfig.cs" />
     <Compile Include="Factory\Config\ToolTipConfig.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -3109,6 +3115,7 @@
     <Content Include="App_Readme\Transformer.NET.README.txt" />
     <Content Include="Build\Ext.Net\extjs\ext-all-dev-w-comments.js" />
     <Content Include="Build\Ext.Net\extjs\ext-all-dev.js" />
+    <Content Include="Build\Ext.Net\extjs\ext-debug-w-comments.js" />
     <Content Include="Build\Ext.Net\extjs\ext-dev.js" />
     <Content Include="Build\Ext.Net\extjs\ext-neptune-debug-w-comments.js" />
     <Content Include="Build\Ext.Net\extjs\ext-neptune-debug.js" />

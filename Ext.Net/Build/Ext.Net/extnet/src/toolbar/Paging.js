@@ -1,5 +1,14 @@
-﻿Ext.toolbar.Paging.override({
-    getStoreListeners: function() {
+﻿
+// @source core/toolbar/Paging.js
+
+Ext.toolbar.Paging.prototype.initComponent = Ext.Function.createSequence(Ext.toolbar.Paging.prototype.initComponent, function () {
+    if (this.hideRefresh) {
+        this.child("#refresh").hide();
+    }
+});
+
+Ext.toolbar.Paging.override({
+    getStoreListeners: function () {
         return {
             beforeload: this.beforeLoad,
             load: this.onLoad,
@@ -35,7 +44,6 @@
             currPage,
             pageCount,
             afterText,
-            count,
             total,
             isEmpty;
             
@@ -47,14 +55,9 @@
         currPage = pageData.currentPage;
         total = pageData.total;
         pageCount = pageData.pageCount;
-        count = me.store.getCount();
-        isEmpty = count === 0;
+        isEmpty = pageCount === 0;
         afterText = Ext.String.format(me.afterPageText, isNaN(pageCount) ? 1 : pageCount);
         
-        if (this.hideRefresh) {
-            this.child("#refresh").hide();
-        }
-
         if (total === 0) {
             currPage = 1;
             me.store.currentPage = 1;
@@ -76,6 +79,27 @@
 
         if (me.rendered) {
             me.fireEvent('change', me, pageData);
+        }
+    },
+
+    updateInfo : function () {
+        var me = this,
+            displayItem = me.child('#displayItem'),
+            pageData = me.getPageData(),
+            msg;
+
+        if (displayItem) {
+            if (pageData.pageCount === 0) {
+                msg = me.emptyMsg;
+            } else {
+                msg = Ext.String.format(
+                    me.displayMsg,
+                    pageData.fromRecord,
+                    pageData.toRecord,
+                    pageData.total
+                );
+            }
+            displayItem.setText(msg);
         }
     }
 });

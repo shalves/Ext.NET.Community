@@ -21,16 +21,17 @@ Ext.override(Ext.form.Text, {
     //private
     renderIconEl : function () {        
         this.inputEl.addCls("x-textfield-icon-input");
-
-
-        this.bodyEl.setStyle({
-            "position" : "relative",
-            "display" : "block"
-        });
-        this.icon = Ext.core.DomHelper.append(this.bodyEl, {
+        
+        this.icon = Ext.core.DomHelper.append(this.inputCell || this.bodyEl, {
             tag   : "div", 
-            style : "position:absolute"
-        }, true);    
+            style : "position:relative;margin:0px;padding:0px;border:0px;float:left;",
+            children:[{
+                tag   : "div", 
+                style : "position:absolute"
+            }]
+        }, true);            
+
+        this.icon = this.icon.first();
         
         this.icon.on("click", function (e, t) {
             this.fireEvent("iconclick", this, e, t);

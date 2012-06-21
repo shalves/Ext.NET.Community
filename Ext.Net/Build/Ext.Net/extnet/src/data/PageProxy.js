@@ -37,8 +37,8 @@ Ext.define("Ext.data.proxy.Page", {
         requestConfig.extraParams = request.params;
 
         var directFn = this.directFn || this.api[operation.action] || (operation.action != "read" ? this.api["sync"] : null);
-        if(directFn){                        
-            if(Ext.isString(directFn)){
+        if (directFn) {                        
+            if (Ext.isString(directFn)) {
                 directFn = Ext.decode(directFn);
             }            
 
@@ -55,13 +55,13 @@ Ext.define("Ext.data.proxy.Page", {
             delete requestConfig.userFailure;
             requestConfig.showFailureWarning = false;
 
-            if(directFn.length === 1) {
+            if (directFn.length === 1) {
                 directFn(requestConfig);
             }
-            else if(directFn.length === 2) {
+            else if (directFn.length === 2) {
                 directFn(operation.action || null, requestConfig);
             }
-            else if(directFn.length === 3) {
+            else if (directFn.length === 3) {
                 directFn(operation.action || null, extraParams || null, requestConfig);
             }
             else {

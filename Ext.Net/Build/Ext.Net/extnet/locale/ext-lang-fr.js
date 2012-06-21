@@ -6,7 +6,7 @@
  * updated by disizben (22 Sep 2008)
  * updated by Thylia (20 Apr 2010)
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -33,7 +33,7 @@ Ext.onReady(function() {
     if (Ext.Date) {
         Ext.Date.shortMonthNames = ["Janv", "Févr", "Mars", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc"];
 
-        Ext.Date.getShortMonthName = function(month) {
+        Ext.Date.getShortMonthName = function (month) {
             return Ext.Date.shortMonthNames[month];
         };
 
@@ -62,20 +62,20 @@ Ext.onReady(function() {
             "Déc": 11
         };
 
-        Ext.Date.getMonthNumber = function(name) {
+        Ext.Date.getMonthNumber = function (name) {
             return Ext.Date.monthNumbers[Ext.util.Format.capitalize(name)];
         };
 
         Ext.Date.dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
-        Ext.Date.getShortDayName = function(day) {
+        Ext.Date.getShortDayName = function (day) {
             return Ext.Date.dayNames[day].substring(0, 3);
         };
 
         Ext.Date.parseCodes.S.s = "(?:er)";
 
         Ext.override(Date, {
-            getSuffix: function() {
+            getSuffix: function () {
                 return (this.getDate() == 1) ? "er" : "";
             }
         });
@@ -177,7 +177,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.fr.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "En cours de chargement..."
         });
@@ -195,7 +195,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.fr.form.field.HtmlEditor", {
         override: "Ext.form.field.HtmlEditor",
         createLinkText: "Veuillez entrer l'URL pour ce lien:"
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.HtmlEditor.prototype, {
             buttonTips: {
                 bold: {
@@ -360,9 +360,9 @@ Date.monthNumbers = {
   "déc" : 11
 };
 
-Date.getMonthNumber = function(name) {
+Date.getMonthNumber = function (name) {
   var m = name.substring(0, 1).toLowerCase() + name.substring(1, 3).toLowerCase();
-  if(m == "jui"){    m = name.substring(0, 1).toLowerCase() + name.substring(1, 4).toLowerCase();  }  return Date.monthNumbers[m];};
+  if (m == "jui") {    m = name.substring(0, 1).toLowerCase() + name.substring(1, 4).toLowerCase();  }  return Date.monthNumbers[m];};
 
 Date.dayNames = [
    "dimanche",
@@ -374,6 +374,6 @@ Date.dayNames = [
    "samedi"
 ];
 
-Date.getShortDayName = function(day) {
+Date.getShortDayName = function (day) {
   return Date.dayNames[day].substring(0, 3).toLowerCase() + ".";
 };

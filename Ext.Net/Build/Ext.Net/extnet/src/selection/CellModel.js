@@ -1,5 +1,5 @@
 ﻿Ext.selection.CellModel.override({
-    deselectAll: function(suppressEvent) {
+    deselectAll: function (suppressEvent) {
         this.setCurrentPosition();
     }
 });

@@ -64,7 +64,7 @@
           <Summary><![CDATA[A special reader to read associated data]]></Summary>
           <Attributes>
             <Attribute Type="Meta" />
-            <Attribute Type="ConfigOption" RawValue="&quot;reader&gt;Primary&quot;" />
+            <Attribute Type="ConfigOption" RawValue="&quot;reader&gt;PrimaryProxy&quot;" />
             <Attribute Type="NotifyParentProperty" RawValue="true" />
             <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
             <Attribute Type="Description" RawValue="A special reader to read associated data" />
@@ -4101,6 +4101,15 @@
             <Attribute Type="Description" RawValue="The name of the property which contains a response message. This property is optional." />
           </Attributes>
         </ConfigOption>
+        <ConfigOption Name="ModelName" Type="string" DefaultValue="null">
+          <Summary><![CDATA[The Ext.data.Model associated with this reader]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" RawValue="&quot;model&quot;" />
+            <Attribute Type="DefaultValue" RawValue="null" />
+            <Attribute Type="Description" RawValue="The Ext.data.Model associated with this reader" />
+          </Attributes>
+        </ConfigOption>
       </ConfigOptions>
       <Methods />
     </Class>
@@ -4265,6 +4274,17 @@
             <Attribute Type="DirectEventUpdate" RawValue="MethodName=&quot;SetTitle&quot;" />
           </Attributes>
         </ConfigOption>
+        <ConfigOption Name="Titles" Type="string[]" DefaultValue="null">
+          <Summary><![CDATA[The human-readable name of the series.]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" RawValue="&quot;title&quot;, typeof(SingleStringArrayJsonConverter)" />
+            <Attribute Type="TypeConverter" RawValue="typeof(StringArrayConverter)" />
+            <Attribute Type="DefaultValue" RawValue="null" />
+            <Attribute Type="Description" RawValue="The human-readable name of the series." />
+            <Attribute Type="DirectEventUpdate" RawValue="MethodName = &quot;SetTitles&quot;" />
+          </Attributes>
+        </ConfigOption>
         <ConfigOption Name="XField" Type="string[]" DefaultValue="null">
           <Summary><![CDATA[The field used to access the x axis value from the items from the data source.]]></Summary>
           <Attributes>
@@ -4312,6 +4332,12 @@
           <Parameters />
         </Method>
         <Method Name="SetTitle" ParamsRaw="string title">
+          <Attributes>
+            <Attribute Type="Meta" />
+          </Attributes>
+          <Parameters />
+        </Method>
+        <Method Name="SetTitles" ParamsRaw="string[] titles">
           <Attributes>
             <Attribute Type="Meta" />
           </Attributes>
@@ -4550,6 +4576,12 @@
           <Parameters />
         </Method>
         <Method Name="Reload" ParamsRaw="object options, AbstractProxy proxy">
+          <Attributes>
+            <Attribute Type="Meta" />
+          </Attributes>
+          <Parameters />
+        </Method>
+        <Method Name="Reload" ParamsRaw="ParameterCollection parameters">
           <Attributes>
             <Attribute Type="Meta" />
           </Attributes>
@@ -10569,7 +10601,7 @@
       </ConfigOptions>
       <Methods />
     </Class>
-    <Class Name="ChartTip" Extends="ToolTip">
+    <Class Name="ChartTip" Extends="ToolTipBase">
       <Attributes>
         <Attribute Type="Meta" />
       </Attributes>
@@ -10592,6 +10624,30 @@
             <Attribute Type="DefaultValue" RawValue="false" />
             <Attribute Type="NotifyParentProperty" RawValue="true" />
             <Attribute Type="Description" RawValue="If true, then the tooltip will be automatically constrained to stay within the browser viewport. Defaults to: false" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="Listeners" Type="PanelListeners">
+          <Summary><![CDATA[Client-side JavaScript Event Handlers]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" RawValue="&quot;listeners&quot;, JsonMode.Object" />
+            <Attribute Type="Category" RawValue="&quot;2. Observable&quot;" />
+            <Attribute Type="NotifyParentProperty" RawValue="true" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="DesignerSerializationVisibility" RawValue="DesignerSerializationVisibility.Visible" />
+            <Attribute Type="Description" RawValue="Client-side JavaScript Event Handlers" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="DirectEvents" Type="PanelDirectEvents">
+          <Summary><![CDATA[Server-side Ajax Event Handlers]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="Category" RawValue="&quot;2. Observable&quot;" />
+            <Attribute Type="NotifyParentProperty" RawValue="true" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="DesignerSerializationVisibility" RawValue="DesignerSerializationVisibility.Visible" />
+            <Attribute Type="ConfigOption" RawValue="&quot;directEvents&quot;, JsonMode.Object" />
+            <Attribute Type="Description" RawValue="Server-side Ajax Event Handlers" />
           </Attributes>
         </ConfigOption>
       </ConfigOptions>
@@ -10990,6 +11046,26 @@
       </ConfigOptions>
       <Methods />
     </Class>
+    <Class Name="CheckboxGroupLayoutConfig" Extends="LayoutConfig">
+      <Attributes>
+        <Attribute Type="Description" />
+      </Attributes>
+      <ConfigOptions>
+        <ConfigOption Name="LayoutType" Modifier="Override" Access="Protected" Type="string" DefaultValue="&quot;&quot;">
+          <Attributes>
+            <Attribute Type="ConfigOption" RawValue="&quot;type&quot;" />
+            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="AutoFlex" Type="bool" DefaultValue="true">
+          <Attributes>
+            <Attribute Type="ConfigOption" />
+            <Attribute Type="DefaultValue" RawValue="true" />
+          </Attributes>
+        </ConfigOption>
+      </ConfigOptions>
+      <Methods />
+    </Class>
     <Class Name="CheckboxGroupListeners" Extends="FieldContainerListeners">
       <Attributes>
         <Attribute Type="Description" />
@@ -11056,12 +11132,12 @@
             <Attribute Type="ConfigOption" />
           </Attributes>
         </ConfigOption>
-        <ConfigOption Name="CheckOnly" Type="bool" DefaultValue="true">
+        <ConfigOption Name="CheckOnly" Type="bool" DefaultValue="false">
           <Summary><![CDATA[true if rows can only be selected by clicking on the checkbox column (defaults to false).]]></Summary>
           <Attributes>
             <Attribute Type="Meta" />
             <Attribute Type="ConfigOption" />
-            <Attribute Type="DefaultValue" RawValue="true" />
+            <Attribute Type="DefaultValue" RawValue="false" />
             <Attribute Type="Description" RawValue="true if rows can only be selected by clicking on the checkbox column (defaults to false)." />
           </Attributes>
         </ConfigOption>
@@ -12964,6 +13040,12 @@
             <Attribute Type="Description" />
           </Attributes>
         </ConfigOption>
+        <ConfigOption Name="RenderToProxy" Modifier="Override" Access="ProtectedInternal" Type="string" DefaultValue="&quot;&quot;">
+          <Attributes>
+            <Attribute Type="ConfigOption" RawValue="&quot;renderTo&quot;" />
+            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
+          </Attributes>
+        </ConfigOption>
       </ConfigOptions>
       <Methods>
         <Method Name="ClearValue">
@@ -13290,15 +13372,15 @@
             <Attribute Type="Description" />
           </Attributes>
         </ConfigOption>
-        <ConfigOption Name="ButtonAlign" Type="Alignment" DefaultValue="Alignment.Left">
-          <Summary><![CDATA[Valid values are \"left\", \"center\" and \"right\" (defaults to \"left\").]]></Summary>
+        <ConfigOption Name="Pack" Type="BoxPack" DefaultValue="BoxPack.Start">
+          <Summary><![CDATA[Valid values are \"start\", \"center\" and \"end\" (defaults to \"start\").]]></Summary>
           <Attributes>
             <Attribute Type="Meta" />
             <Attribute Type="ConfigOption" RawValue="JsonMode.ToLower" />
             <Attribute Type="Category" RawValue="&quot;3. CommandColumn&quot;" />
-            <Attribute Type="DefaultValue" RawValue="Alignment.Left" />
+            <Attribute Type="DefaultValue" RawValue="BoxPack.Start" />
             <Attribute Type="NotifyParentProperty" RawValue="true" />
-            <Attribute Type="Description" RawValue="Valid values are \&quot;left\&quot;, \&quot;center\&quot; and \&quot;right\&quot; (defaults to \&quot;left\&quot;)." />
+            <Attribute Type="Description" RawValue="Valid values are \&quot;start\&quot;, \&quot;center\&quot; and \&quot;end\&quot; (defaults to \&quot;start\&quot;)." />
           </Attributes>
         </ConfigOption>
         <ConfigOption Name="Listeners" Type="ImageCommandColumnListeners">
@@ -13631,6 +13713,7 @@
           <Summary><![CDATA[Possible values are: * 'auto' to enable automatic horizontal scrollbar (overflow-x: 'auto'). * 'scroll' to always enable horizontal scrollbar (overflow-x: 'scroll'). The default is overflow-x: 'hidden'. This should not be combined with autoScroll.]]></Summary>
           <Attributes>
             <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" RawValue="JsonMode.ToLower" />
             <Attribute Type="Category" RawValue="&quot;3. Component&quot;" />
             <Attribute Type="DefaultValue" RawValue="Overflow.Hidden" />
             <Attribute Type="Description" RawValue="Possible values are: * 'auto' to enable automatic horizontal scrollbar (overflow-x: 'auto'). * 'scroll' to always enable horizontal scrollbar (overflow-x: 'scroll'). The default is overflow-x: 'hidden'. This should not be combined with autoScroll." />
@@ -13640,6 +13723,7 @@
           <Summary><![CDATA[Possible values are: * 'auto' to enable automatic vertical scrollbar (overflow-y: 'auto'). * 'scroll' to always enable vertical scrollbar (overflow-y: 'scroll'). The default is overflow-y: 'hidden'. This should not be combined with autoScroll.]]></Summary>
           <Attributes>
             <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" RawValue="JsonMode.ToLower" />
             <Attribute Type="Category" RawValue="&quot;3. Component&quot;" />
             <Attribute Type="DefaultValue" RawValue="Overflow.Hidden" />
             <Attribute Type="Description" RawValue="Possible values are: * 'auto' to enable automatic vertical scrollbar (overflow-y: 'auto'). * 'scroll' to always enable vertical scrollbar (overflow-y: 'scroll'). The default is overflow-y: 'hidden'. This should not be combined with autoScroll." />
@@ -18194,7 +18278,7 @@
       </ConfigOptions>
       <Methods />
     </Class>
-    <Class Name="DDTarget" Abstract="true" Extends="DragDrop">
+    <Class Name="DDTarget" Extends="DragDrop">
       <Attributes>
         <Attribute Type="Meta" />
       </Attributes>
@@ -19805,6 +19889,83 @@
             <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
             <Attribute Type="TypeConverter" RawValue="typeof(ExpandableObjectConverter)" />
             <Attribute Type="Description" RawValue="Event handler that fires when a drag/drop obj gets a mouseup" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="B4Drag" Type="JFunction">
+          <Summary><![CDATA[Code that executes immediately before the onDrag event]]></Summary>
+          <Attributes>
+            <Attribute Type="ConfigOption" RawValue="JsonMode.Raw" />
+            <Attribute Type="Category" RawValue="&quot;3. DragDrop&quot;" />
+            <Attribute Type="Meta" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="TypeConverter" RawValue="typeof(ExpandableObjectConverter)" />
+            <Attribute Type="Description" RawValue="Code that executes immediately before the onDrag event" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="B4DragDrop" Type="JFunction">
+          <Summary><![CDATA[Code that executes immediately before the onDragDrop event]]></Summary>
+          <Attributes>
+            <Attribute Type="ConfigOption" RawValue="JsonMode.Raw" />
+            <Attribute Type="Category" RawValue="&quot;3. DragDrop&quot;" />
+            <Attribute Type="Meta" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="TypeConverter" RawValue="typeof(ExpandableObjectConverter)" />
+            <Attribute Type="Description" RawValue="Code that executes immediately before the onDragDrop event" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="B4DragOut" Type="JFunction">
+          <Summary><![CDATA[Code that executes immediately before the onDragOut event]]></Summary>
+          <Attributes>
+            <Attribute Type="ConfigOption" RawValue="JsonMode.Raw" />
+            <Attribute Type="Category" RawValue="&quot;3. DragDrop&quot;" />
+            <Attribute Type="Meta" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="TypeConverter" RawValue="typeof(ExpandableObjectConverter)" />
+            <Attribute Type="Description" RawValue="Code that executes immediately before the onDragOut event" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="B4DragOver" Type="JFunction">
+          <Summary><![CDATA[Code that executes immediately before the onDragOver event]]></Summary>
+          <Attributes>
+            <Attribute Type="ConfigOption" RawValue="JsonMode.Raw" />
+            <Attribute Type="Category" RawValue="&quot;3. DragDrop&quot;" />
+            <Attribute Type="Meta" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="TypeConverter" RawValue="typeof(ExpandableObjectConverter)" />
+            <Attribute Type="Description" RawValue="Code that executes immediately before the onDragOver event" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="B4EndDrag" Type="JFunction">
+          <Summary><![CDATA[Code that executes immediately before the endDrag event]]></Summary>
+          <Attributes>
+            <Attribute Type="ConfigOption" RawValue="JsonMode.Raw" />
+            <Attribute Type="Category" RawValue="&quot;3. DragDrop&quot;" />
+            <Attribute Type="Meta" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="TypeConverter" RawValue="typeof(ExpandableObjectConverter)" />
+            <Attribute Type="Description" RawValue="Code that executes immediately before the endDrag event" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="B4MouseDown" Type="JFunction">
+          <Summary><![CDATA[Code executed immediately before the onMouseDown event]]></Summary>
+          <Attributes>
+            <Attribute Type="ConfigOption" RawValue="JsonMode.Raw" />
+            <Attribute Type="Category" RawValue="&quot;3. DragDrop&quot;" />
+            <Attribute Type="Meta" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="TypeConverter" RawValue="typeof(ExpandableObjectConverter)" />
+            <Attribute Type="Description" RawValue="Code executed immediately before the onMouseDown event" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="B4StartDrag" Type="JFunction">
+          <Summary><![CDATA[Code that executes immediately before the startDrag event]]></Summary>
+          <Attributes>
+            <Attribute Type="ConfigOption" RawValue="JsonMode.Raw" />
+            <Attribute Type="Category" RawValue="&quot;3. DragDrop&quot;" />
+            <Attribute Type="Meta" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="TypeConverter" RawValue="typeof(ExpandableObjectConverter)" />
+            <Attribute Type="Description" RawValue="Code that executes immediately before the startDrag event" />
           </Attributes>
         </ConfigOption>
       </ConfigOptions>
@@ -25262,7 +25423,7 @@
           <Summary><![CDATA[An Ext.data.DataReader (e.g. Ext.data.reader.Xml) to be used to read field error messages returned from 'submit' actions. This is optional as there is built-in support for processing JSON responses.]]></Summary>
           <Attributes>
             <Attribute Type="Meta" />
-            <Attribute Type="ConfigOption" RawValue="&quot;reader&gt;Reader&quot;" />
+            <Attribute Type="ConfigOption" RawValue="&quot;errorReader&gt;PrimaryProxy&quot;" />
             <Attribute Type="Category" RawValue="&quot;6. FormPanel&quot;" />
             <Attribute Type="NotifyParentProperty" RawValue="true" />
             <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
@@ -25283,7 +25444,7 @@
           <Summary><![CDATA[An Ext.data.DataReader (e.g. Ext.data.reader.Xml) to be used to read data when executing 'load' actions. This is optional as there is built-in support for processing JSON responses.]]></Summary>
           <Attributes>
             <Attribute Type="Meta" />
-            <Attribute Type="ConfigOption" RawValue="&quot;reader&gt;Reader&quot;" />
+            <Attribute Type="ConfigOption" RawValue="&quot;reader&gt;PrimaryProxy&quot;" />
             <Attribute Type="Category" RawValue="&quot;6. FormPanel&quot;" />
             <Attribute Type="NotifyParentProperty" RawValue="true" />
             <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
@@ -28975,16 +29136,44 @@
       </ConfigOptions>
       <Methods />
     </Class>
-    <Class Name="HyperLink" Extends="Label">
+    <Class Name="HyperLink" Extends="LabelBase">
       <Summary><![CDATA[Basic hyperlink field.]]></Summary>
       <Attributes>
         <Attribute Type="Meta" />
         <Attribute Type="ToolboxData" RawValue="&quot;&lt;{0}:HyperLink runat=\&quot;server\&quot; Text=\&quot;HyperLink\&quot; /&gt;&quot;" />
         <Attribute Type="ToolboxBitmap" RawValue="typeof(HyperLink), &quot;Build.ToolboxIcons.HyperLink.bmp&quot;" />
+        <Attribute Type="DefaultProperty" RawValue="&quot;Html&quot;" />
+        <Attribute Type="ParseChildren" RawValue="true, &quot;Html&quot;" />
+        <Attribute Type="PersistChildren" RawValue="false" />
+        <Attribute Type="SupportsEventValidation" />
         <Attribute Type="Designer" RawValue="typeof(EmptyDesigner)" />
         <Attribute Type="Description" RawValue="Basic hyperlink field." />
       </Attributes>
       <ConfigOptions>
+        <ConfigOption Name="Listeners" Type="AbstractComponentListeners">
+          <Summary><![CDATA[Client-side JavaScript Event Handlers]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" RawValue="&quot;listeners&quot;, JsonMode.Object" />
+            <Attribute Type="Category" RawValue="&quot;2. Observable&quot;" />
+            <Attribute Type="NotifyParentProperty" RawValue="true" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="DesignerSerializationVisibility" RawValue="DesignerSerializationVisibility.Visible" />
+            <Attribute Type="Description" RawValue="Client-side JavaScript Event Handlers" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="DirectEvents" Type="AbstractComponentDirectEvents">
+          <Summary><![CDATA[Server-side Ajax Event Handlers]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="Category" RawValue="&quot;2. Observable&quot;" />
+            <Attribute Type="NotifyParentProperty" RawValue="true" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="DesignerSerializationVisibility" RawValue="DesignerSerializationVisibility.Visible" />
+            <Attribute Type="ConfigOption" RawValue="&quot;directEvents&quot;, JsonMode.Object" />
+            <Attribute Type="Description" RawValue="Server-side Ajax Event Handlers" />
+          </Attributes>
+        </ConfigOption>
         <ConfigOption Name="ImageUrl" Type="string" DefaultValue="&quot;&quot;">
           <Attributes>
             <Attribute Type="Meta" />
@@ -30558,7 +30747,7 @@
       </ConfigOptions>
       <Methods />
     </Class>
-    <Class Name="Label" Extends="ComponentBase" Inherits="ITextControl,IIcon">
+    <Class Name="Label" Extends="LabelBase">
       <Summary><![CDATA[Produces a standalone <label /> element which can be inserted into a form and be associated with a field in that form using the forId property.]]></Summary>
       <Attributes>
         <Attribute Type="Meta" />
@@ -30571,116 +30760,6 @@
         <Attribute Type="Description" RawValue="Produces a standalone &lt;label /&gt; element which can be inserted into a form and be associated with a field in that form using the forId property." />
       </Attributes>
       <ConfigOptions>
-        <ConfigOption Name="Format" Type="string" DefaultValue="&quot;&quot;">
-          <Summary><![CDATA[The format of the string to render using the .Text property. Example 'Hello {0}'.]]></Summary>
-          <Attributes>
-            <Attribute Type="Meta" />
-            <Attribute Type="ConfigOption" />
-            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
-            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
-            <Attribute Type="Localizable" RawValue="true" />
-            <Attribute Type="Description" RawValue="The format of the string to render using the .Text property. Example 'Hello {0}'." />
-          </Attributes>
-        </ConfigOption>
-        <ConfigOption Name="EmptyText" Type="string" DefaultValue="&quot;&quot;">
-          <Summary><![CDATA[The default text to display if the Text property is empty (defaults to '').]]></Summary>
-          <Attributes>
-            <Attribute Type="Meta" />
-            <Attribute Type="ConfigOption" />
-            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
-            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
-            <Attribute Type="Localizable" RawValue="true" />
-            <Attribute Type="Description" RawValue="The default text to display if the Text property is empty (defaults to '')." />
-          </Attributes>
-        </ConfigOption>
-        <ConfigOption Name="ForID" Type="string" DefaultValue="&quot;&quot;">
-          <Summary><![CDATA[The id of the input element to which this label will be bound via the standard HTML 'for' attribute. If not specified, the attribute will not be added to the label. In most cases you will be associating the label with a Ext.form.field.Base component, so you should make sure this matches the inputId of that field.]]></Summary>
-          <Attributes>
-            <Attribute Type="Meta" />
-            <Attribute Type="ConfigOption" RawValue="&quot;forId&quot;" />
-            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
-            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
-            <Attribute Type="Description" RawValue="The id of the input element to which this label will be bound via the standard HTML 'for' attribute. If not specified, the attribute will not be added to the label. In most cases you will be associating the label with a Ext.form.field.Base component, so you should make sure this matches the inputId of that field." />
-          </Attributes>
-        </ConfigOption>
-        <ConfigOption Name="Html" Modifier="Override" Type="string" DefaultValue="&quot;&quot;">
-          <Summary><![CDATA[An HTML fragment that will be used as the label's innerHTML (defaults to ''). Note that if text is specified it will take precedence and this value will be ignored.]]></Summary>
-          <Attributes>
-            <Attribute Type="ConfigOption" />
-            <Attribute Type="DirectEventUpdate" RawValue="MethodName = &quot;SetHtml&quot;" />
-            <Attribute Type="Localizable" RawValue="true" />
-            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
-            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
-            <Attribute Type="Description" RawValue="An HTML fragment that will be used as the label's innerHTML (defaults to ''). Note that if text is specified it will take precedence and this value will be ignored." />
-          </Attributes>
-        </ConfigOption>
-        <ConfigOption Name="Text" Type="string" DefaultValue="&quot;&quot;">
-          <Summary><![CDATA[The plain text to display within the label (defaults to ''). If you need to include HTML tags within the label's innerHTML, use the html config instead.]]></Summary>
-          <Attributes>
-            <Attribute Type="Meta" />
-            <Attribute Type="DirectEventUpdate" RawValue="MethodName = &quot;SetText&quot;" />
-            <Attribute Type="Localizable" RawValue="true" />
-            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
-            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
-            <Attribute Type="Description" RawValue="The plain text to display within the label (defaults to ''). If you need to include HTML tags within the label's innerHTML, use the html config instead." />
-          </Attributes>
-        </ConfigOption>
-        <ConfigOption Name="TextProxy" Access="Protected" Type="string" DefaultValue="&quot;&quot;">
-          <Attributes>
-            <Attribute Type="ConfigOption" RawValue="&quot;text&quot;" />
-            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
-            <Attribute Type="Description" />
-          </Attributes>
-        </ConfigOption>
-        <ConfigOption Name="Icon" Type="Icon" DefaultValue="Icon.None">
-          <Summary><![CDATA[The icon to use in the label. See also, IconCls to set an icon with a custom Css class.]]></Summary>
-          <Attributes>
-            <Attribute Type="Meta" />
-            <Attribute Type="DirectEventUpdate" RawValue="MethodName = &quot;SetIconClass&quot;" />
-            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
-            <Attribute Type="DefaultValue" RawValue="Icon.None" />
-            <Attribute Type="Description" RawValue="The icon to use in the label. See also, IconCls to set an icon with a custom Css class." />
-          </Attributes>
-        </ConfigOption>
-        <ConfigOption Name="IconClsProxy" Access="Protected" Type="string" DefaultValue="&quot;&quot;">
-          <Attributes>
-            <Attribute Type="ConfigOption" RawValue="&quot;iconCls&quot;" />
-            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
-            <Attribute Type="Description" />
-          </Attributes>
-        </ConfigOption>
-        <ConfigOption Name="IconCls" Type="string" DefaultValue="&quot;&quot;">
-          <Summary><![CDATA[A css class which sets a background image to be used as the icon for this label.]]></Summary>
-          <Attributes>
-            <Attribute Type="Meta" />
-            <Attribute Type="DirectEventUpdate" RawValue="MethodName = &quot;SetIconClass&quot;" />
-            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
-            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
-            <Attribute Type="NotifyParentProperty" RawValue="true" />
-            <Attribute Type="Description" RawValue="A css class which sets a background image to be used as the icon for this label." />
-          </Attributes>
-        </ConfigOption>
-        <ConfigOption Name="IconAlign" Type="Alignment" DefaultValue="Alignment.Left">
-          <Summary><![CDATA[(optional) Set the CSS text-align property of the icon. The center is not supported. Defaults to \"Left\"]]></Summary>
-          <Attributes>
-            <Attribute Type="Meta" />
-            <Attribute Type="ConfigOption" RawValue="JsonMode.ToLower" />
-            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
-            <Attribute Type="DefaultValue" RawValue="Alignment.Left" />
-            <Attribute Type="Description" RawValue="(optional) Set the CSS text-align property of the icon. The center is not supported. Defaults to \&quot;Left\&quot;" />
-          </Attributes>
-        </ConfigOption>
-        <ConfigOption Name="Editor" Type="ItemsCollection&lt;Editor&gt;">
-          <Summary><![CDATA[Inline editor]]></Summary>
-          <Attributes>
-            <Attribute Type="Meta" />
-            <Attribute Type="ConfigOption" RawValue="&quot;editor&quot;, typeof(SingleItemCollectionJsonConverter)" />
-            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
-            <Attribute Type="NotifyParentProperty" RawValue="true" />
-            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
-            <Attribute Type="Description" RawValue="Inline editor" />
-          </Attributes>
-        </ConfigOption>
         <ConfigOption Name="Listeners" Type="AbstractComponentListeners">
           <Summary><![CDATA[Client-side JavaScript Event Handlers]]></Summary>
           <Attributes>
@@ -30970,6 +31049,126 @@
             <Attribute Type="ConfigOption" />
             <Attribute Type="DefaultValue" RawValue="false" />
             <Attribute Type="Description" RawValue="Preserve indicator icon place. Defaults to false" />
+          </Attributes>
+        </ConfigOption>
+      </ConfigOptions>
+      <Methods />
+    </Class>
+    <Class Name="LabelBase" Abstract="true" Extends="ComponentBase" Inherits="ITextControl,IIcon">
+      <Summary><![CDATA[Produces a standalone <label /> element which can be inserted into a form and be associated with a field in that form using the forId property.]]></Summary>
+      <Attributes>
+        <Attribute Type="Meta" />
+        <Attribute Type="Description" RawValue="Produces a standalone &lt;label /&gt; element which can be inserted into a form and be associated with a field in that form using the forId property." />
+      </Attributes>
+      <ConfigOptions>
+        <ConfigOption Name="Format" Type="string" DefaultValue="&quot;&quot;">
+          <Summary><![CDATA[The format of the string to render using the .Text property. Example 'Hello {0}'.]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" />
+            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
+            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
+            <Attribute Type="Localizable" RawValue="true" />
+            <Attribute Type="Description" RawValue="The format of the string to render using the .Text property. Example 'Hello {0}'." />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="EmptyText" Type="string" DefaultValue="&quot;&quot;">
+          <Summary><![CDATA[The default text to display if the Text property is empty (defaults to '').]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" />
+            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
+            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
+            <Attribute Type="Localizable" RawValue="true" />
+            <Attribute Type="Description" RawValue="The default text to display if the Text property is empty (defaults to '')." />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="ForID" Type="string" DefaultValue="&quot;&quot;">
+          <Summary><![CDATA[The id of the input element to which this label will be bound via the standard HTML 'for' attribute. If not specified, the attribute will not be added to the label. In most cases you will be associating the label with a Ext.form.field.Base component, so you should make sure this matches the inputId of that field.]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" RawValue="&quot;forId&quot;" />
+            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
+            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
+            <Attribute Type="Description" RawValue="The id of the input element to which this label will be bound via the standard HTML 'for' attribute. If not specified, the attribute will not be added to the label. In most cases you will be associating the label with a Ext.form.field.Base component, so you should make sure this matches the inputId of that field." />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="Html" Modifier="Override" Type="string" DefaultValue="&quot;&quot;">
+          <Summary><![CDATA[An HTML fragment that will be used as the label's innerHTML (defaults to ''). Note that if text is specified it will take precedence and this value will be ignored.]]></Summary>
+          <Attributes>
+            <Attribute Type="ConfigOption" />
+            <Attribute Type="DirectEventUpdate" RawValue="MethodName = &quot;SetHtml&quot;" />
+            <Attribute Type="Localizable" RawValue="true" />
+            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
+            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
+            <Attribute Type="Description" RawValue="An HTML fragment that will be used as the label's innerHTML (defaults to ''). Note that if text is specified it will take precedence and this value will be ignored." />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="Text" Type="string" DefaultValue="&quot;&quot;">
+          <Summary><![CDATA[The plain text to display within the label (defaults to ''). If you need to include HTML tags within the label's innerHTML, use the html config instead.]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="DirectEventUpdate" RawValue="MethodName = &quot;SetText&quot;" />
+            <Attribute Type="Localizable" RawValue="true" />
+            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
+            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
+            <Attribute Type="Description" RawValue="The plain text to display within the label (defaults to ''). If you need to include HTML tags within the label's innerHTML, use the html config instead." />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="TextProxy" Access="Protected" Type="string" DefaultValue="&quot;&quot;">
+          <Attributes>
+            <Attribute Type="ConfigOption" RawValue="&quot;text&quot;" />
+            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
+            <Attribute Type="Description" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="Icon" Type="Icon" DefaultValue="Icon.None">
+          <Summary><![CDATA[The icon to use in the label. See also, IconCls to set an icon with a custom Css class.]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="DirectEventUpdate" RawValue="MethodName = &quot;SetIconClass&quot;" />
+            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
+            <Attribute Type="DefaultValue" RawValue="Icon.None" />
+            <Attribute Type="Description" RawValue="The icon to use in the label. See also, IconCls to set an icon with a custom Css class." />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="IconClsProxy" Access="Protected" Type="string" DefaultValue="&quot;&quot;">
+          <Attributes>
+            <Attribute Type="ConfigOption" RawValue="&quot;iconCls&quot;" />
+            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
+            <Attribute Type="Description" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="IconCls" Type="string" DefaultValue="&quot;&quot;">
+          <Summary><![CDATA[A css class which sets a background image to be used as the icon for this label.]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="DirectEventUpdate" RawValue="MethodName = &quot;SetIconClass&quot;" />
+            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
+            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
+            <Attribute Type="NotifyParentProperty" RawValue="true" />
+            <Attribute Type="Description" RawValue="A css class which sets a background image to be used as the icon for this label." />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="IconAlign" Type="Alignment" DefaultValue="Alignment.Left">
+          <Summary><![CDATA[(optional) Set the CSS text-align property of the icon. The center is not supported. Defaults to \"Left\"]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" RawValue="JsonMode.ToLower" />
+            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
+            <Attribute Type="DefaultValue" RawValue="Alignment.Left" />
+            <Attribute Type="Description" RawValue="(optional) Set the CSS text-align property of the icon. The center is not supported. Defaults to \&quot;Left\&quot;" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="Editor" Type="ItemsCollection&lt;Editor&gt;">
+          <Summary><![CDATA[Inline editor]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" RawValue="&quot;editor&quot;, typeof(SingleItemCollectionJsonConverter)" />
+            <Attribute Type="Category" RawValue="&quot;5. Label&quot;" />
+            <Attribute Type="NotifyParentProperty" RawValue="true" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="Description" RawValue="Inline editor" />
           </Attributes>
         </ConfigOption>
       </ConfigOptions>
@@ -32639,17 +32838,22 @@
       <ConfigOptions />
       <Methods />
     </Class>
+    <Class Name="MessageBox">
+      <Attributes />
+      <ConfigOptions />
+      <Methods />
+    </Class>
+    <Class Name="MessageBox">
+      <Attributes />
+      <ConfigOptions />
+      <Methods />
+    </Class>
+    <Class Name="MessageBox">
+      <Attributes />
+      <ConfigOptions />
+      <Methods />
+    </Class>
     <Class Name="MessageBox" Extends="ScriptClass">
-      <Attributes />
-      <ConfigOptions />
-      <Methods />
-    </Class>
-    <Class Name="MessageBox">
-      <Attributes />
-      <ConfigOptions />
-      <Methods />
-    </Class>
-    <Class Name="MessageBox">
       <Attributes />
       <ConfigOptions />
       <Methods />
@@ -32658,11 +32862,6 @@
       <Attributes>
         <Attribute Type="Description" />
       </Attributes>
-      <ConfigOptions />
-      <Methods />
-    </Class>
-    <Class Name="MessageBox">
-      <Attributes />
       <ConfigOptions />
       <Methods />
     </Class>
@@ -33240,6 +33439,20 @@
             <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
             <Attribute Type="TypeConverter" RawValue="typeof(ExpandableObjectConverter)" />
             <Attribute Type="Description" RawValue="(Optional) A function which converts the value provided by the Reader into an object that will be stored in the Record." />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="NullConvert" Type="bool" DefaultValue="false">
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="Category" RawValue="&quot;Config Options&quot;" />
+            <Attribute Type="DefaultValue" RawValue="false" />
+            <Attribute Type="Description" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="NullConvertProxy" Access="Protected" Type="string" DefaultValue="null">
+          <Attributes>
+            <Attribute Type="ConfigOption" RawValue="&quot;convert&quot;, JsonMode.Raw" />
+            <Attribute Type="DefaultValue" RawValue="null" />
           </Attributes>
         </ConfigOption>
         <ConfigOption Name="RenderMilliseconds" Type="bool" DefaultValue="false">
@@ -35983,8 +36196,9 @@
             <Attribute Type="Description" RawValue="Collection of custom js config" />
           </Attributes>
         </ConfigOption>
-        <ConfigOption Name="Configs" Type="dynamic">
+        <ConfigOption Name="ConfigsProxy" Access="Protected" Type="DynamicConfigDictionary" DefaultValue="null">
           <Attributes>
+            <Attribute Type="DefaultValue" RawValue="null" />
             <Attribute Type="ConfigOption" RawValue="&quot;-&quot;, typeof(ConfigBagJsonConverter)" />
           </Attributes>
         </ConfigOption>
@@ -36276,12 +36490,12 @@
       <Attributes />
       <ConfigOptions>
         <ConfigOption Name="After" Type="string" DefaultValue="&quot;&quot;">
-          <Summary><![CDATA[After handler with params: el, extraParams. Called immediately after DirectEvent has been requested.]]></Summary>
+          <Summary><![CDATA[After handler with params: el, extraParams.]]></Summary>
           <Attributes>
             <Attribute Type="ConfigOption" RawValue="typeof(DirectEventHandlerJsonConverter)" />
             <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
             <Attribute Type="NotifyParentProperty" RawValue="true" />
-            <Attribute Type="Description" RawValue="After handler with params: el, extraParams. Called immediately after DirectEvent has been requested." />
+            <Attribute Type="Description" RawValue="After handler with params: el, extraParams." />
           </Attributes>
         </ConfigOption>
         <ConfigOption Name="Before" Type="string" DefaultValue="&quot;&quot;">
@@ -36312,12 +36526,12 @@
           </Attributes>
         </ConfigOption>
         <ConfigOption Name="Complete" Type="string" DefaultValue="&quot;&quot;">
-          <Summary><![CDATA[Failure handler with params: success, response, result, control, type, action, extraParams]]></Summary>
+          <Summary><![CDATA[Complete handler with params: success, response, result, control, type, action, extraParams]]></Summary>
           <Attributes>
             <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
             <Attribute Type="ConfigOption" RawValue="&quot;userComplete&quot;, typeof(DirectEventHandlerJsonConverter)" />
             <Attribute Type="NotifyParentProperty" RawValue="true" />
-            <Attribute Type="Description" RawValue="Failure handler with params: success, response, result, control, type, action, extraParams" />
+            <Attribute Type="Description" RawValue="Complete handler with params: success, response, result, control, type, action, extraParams" />
           </Attributes>
         </ConfigOption>
       </ConfigOptions>
@@ -38568,10 +38782,10 @@
         <Attribute Type="Description" />
       </Attributes>
       <ConfigOptions>
-        <ConfigOption Name="Primary" Type="AbstractReader">
+        <ConfigOption Name="PrimaryProxy" Type="string" DefaultValue="&quot;&quot;">
           <Attributes>
-            <Attribute Type="ConfigOption" RawValue="&quot;reader&quot;, JsonMode.ObjectAllowEmpty" />
-            <Attribute Type="Description" />
+            <Attribute Type="ConfigOption" RawValue="&quot;reader&quot;, JsonMode.Raw" />
+            <Attribute Type="DefaultValue" RawValue="&quot;&quot;" />
           </Attributes>
         </ConfigOption>
       </ConfigOptions>
@@ -40873,7 +41087,7 @@
           <Summary><![CDATA[The Ext.data.reader.Reader to use to decode the server's response. This can either be a Reader instance, a config object or just a valid Reader type name (e.g. 'json', 'xml').]]></Summary>
           <Attributes>
             <Attribute Type="Meta" />
-            <Attribute Type="ConfigOption" RawValue="&quot;reader&gt;Primary&quot;" />
+            <Attribute Type="ConfigOption" RawValue="&quot;reader&gt;PrimaryProxy&quot;" />
             <Attribute Type="NotifyParentProperty" RawValue="true" />
             <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
             <Attribute Type="Description" RawValue="The Ext.data.reader.Reader to use to decode the server's response. This can either be a Reader instance, a config object or just a valid Reader type name (e.g. 'json', 'xml')." />
@@ -49170,6 +49384,40 @@
         <Attribute Type="Description" RawValue="ToolTip is a Ext.tip.Tip implementation that handles the common case of displaying a tooltip when hovering over a certain element or elements on the page. It allows fine-grained control over the tooltip's alignment relative to the target element or mouse, and the timing of when it is automatically shown and hidden." />
       </Attributes>
       <ConfigOptions>
+        <ConfigOption Name="Listeners" Type="PanelListeners">
+          <Summary><![CDATA[Client-side JavaScript Event Handlers]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" RawValue="&quot;listeners&quot;, JsonMode.Object" />
+            <Attribute Type="Category" RawValue="&quot;2. Observable&quot;" />
+            <Attribute Type="NotifyParentProperty" RawValue="true" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="DesignerSerializationVisibility" RawValue="DesignerSerializationVisibility.Visible" />
+            <Attribute Type="Description" RawValue="Client-side JavaScript Event Handlers" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="DirectEvents" Type="PanelDirectEvents">
+          <Summary><![CDATA[Server-side Ajax Event Handlers]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="Category" RawValue="&quot;2. Observable&quot;" />
+            <Attribute Type="NotifyParentProperty" RawValue="true" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="DesignerSerializationVisibility" RawValue="DesignerSerializationVisibility.Visible" />
+            <Attribute Type="ConfigOption" RawValue="&quot;directEvents&quot;, JsonMode.Object" />
+            <Attribute Type="Description" RawValue="Server-side Ajax Event Handlers" />
+          </Attributes>
+        </ConfigOption>
+      </ConfigOptions>
+      <Methods />
+    </Class>
+    <Class Name="ToolTipBase" Abstract="true" Extends="Tip">
+      <Summary><![CDATA[ToolTip is a Ext.tip.Tip implementation that handles the common case of displaying a tooltip when hovering over a certain element or elements on the page. It allows fine-grained control over the tooltip's alignment relative to the target element or mouse, and the timing of when it is automatically shown and hidden.]]></Summary>
+      <Attributes>
+        <Attribute Type="Meta" />
+        <Attribute Type="Description" RawValue="ToolTip is a Ext.tip.Tip implementation that handles the common case of displaying a tooltip when hovering over a certain element or elements on the page. It allows fine-grained control over the tooltip's alignment relative to the target element or mouse, and the timing of when it is automatically shown and hidden." />
+      </Attributes>
+      <ConfigOptions>
         <ConfigOption Name="RenderToProxy" Modifier="Override" Access="ProtectedInternal" Type="string" DefaultValue="&quot;&quot;">
           <Attributes>
             <Attribute Type="ConfigOption" RawValue="&quot;renderTo&quot;" />
@@ -49313,30 +49561,6 @@
             <Attribute Type="DefaultValue" RawValue="false" />
             <Attribute Type="NotifyParentProperty" RawValue="true" />
             <Attribute Type="Description" RawValue="True to have the tooltip follow the mouse as it moves over the target element (defaults to false)." />
-          </Attributes>
-        </ConfigOption>
-        <ConfigOption Name="Listeners" Type="PanelListeners">
-          <Summary><![CDATA[Client-side JavaScript Event Handlers]]></Summary>
-          <Attributes>
-            <Attribute Type="Meta" />
-            <Attribute Type="ConfigOption" RawValue="&quot;listeners&quot;, JsonMode.Object" />
-            <Attribute Type="Category" RawValue="&quot;2. Observable&quot;" />
-            <Attribute Type="NotifyParentProperty" RawValue="true" />
-            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
-            <Attribute Type="DesignerSerializationVisibility" RawValue="DesignerSerializationVisibility.Visible" />
-            <Attribute Type="Description" RawValue="Client-side JavaScript Event Handlers" />
-          </Attributes>
-        </ConfigOption>
-        <ConfigOption Name="DirectEvents" Type="PanelDirectEvents">
-          <Summary><![CDATA[Server-side Ajax Event Handlers]]></Summary>
-          <Attributes>
-            <Attribute Type="Meta" />
-            <Attribute Type="Category" RawValue="&quot;2. Observable&quot;" />
-            <Attribute Type="NotifyParentProperty" RawValue="true" />
-            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
-            <Attribute Type="DesignerSerializationVisibility" RawValue="DesignerSerializationVisibility.Visible" />
-            <Attribute Type="ConfigOption" RawValue="&quot;directEvents&quot;, JsonMode.Object" />
-            <Attribute Type="Description" RawValue="Server-side Ajax Event Handlers" />
           </Attributes>
         </ConfigOption>
       </ConfigOptions>

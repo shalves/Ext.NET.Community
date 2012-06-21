@@ -7,24 +7,24 @@ Ext.form.Panel.override({
         this.addEvents("fieldchange");
     },
 
-    onFieldAdded: function(field) {
+    onFieldAdded: function (field) {
         var me = this;
         me.mon(field, 'change', me.fireFieldChange, me);
         me.callParent(arguments);
     }, 
 
-    onFieldRemoved: function(field) {
+    onFieldRemoved: function (field) {
         var me = this;
         me.mun(field, 'change', me.fireFieldChange, me);
         me.callParent(arguments);
     },
 
-    fireFieldChange: function(field, newValue, oldValue) {
+    fireFieldChange: function (field, newValue, oldValue) {
         var me = this;
         me.fireEvent('fieldchange', me, field, newValue, oldValue);
     }, 
 
-    createForm: function() {
+    createForm: function () {
         return new Ext.form.Basic(this, Ext.applyIf({listeners: {}, directEvents: {}, messageBusListeners : {}, messageBusDirectEvents : {}}, this.initialConfig));
     },
 

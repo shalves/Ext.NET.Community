@@ -27,7 +27,7 @@ Ext.form.field.File.override({
         Ext.form.field.File.superclass.setValue.call(this, v);
     },
 
-    onEnable: function(){
+    onEnable: function () {
         var me = this;
         me.callParent();
         me.fileInputEl.dom.removeAttribute("disabled");
@@ -35,7 +35,7 @@ Ext.form.field.File.override({
         me.browseButtonWrap.child('.x-btn').removeCls(["x-item-disabled", "x-btn-disabled"]);
     },
 
-    disableItems: function(){
+    disableItems: function () {
         var file = this.fileInputEl;
         if (file) {
             file.dom.disabled = true;
@@ -44,7 +44,7 @@ Ext.form.field.File.override({
         this.browseButtonWrap.child('.x-btn').addCls(["x-item-disabled", "x-btn-disabled"]);
     },
 
-    checkChange: function() {
+    checkChange: function () {
         if (!this.suspendCheckChange) {
             var me = this,
                 newVal = me.getValue(),

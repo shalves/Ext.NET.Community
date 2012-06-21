@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -897,6 +897,224 @@ namespace Ext.Net
                 }
 
                 return this.startDrag;
+            }
+        }
+
+        private JFunction b4Drag;
+
+        /// <summary>
+        /// Code that executes immediately before the onDrag event
+        /// Parameters:
+        ///     e : Object
+        /// </summary>
+        [ConfigOption(JsonMode.Raw)]
+        [Category("3. DragDrop")]
+        [Meta]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [Description("Code that executes immediately before the onDrag event")]
+        public virtual JFunction B4Drag
+        {
+            get
+            {
+                if (this.b4Drag == null)
+                {
+                    this.b4Drag = new JFunction();
+
+                    if (!this.DesignMode)
+                    {
+                        this.b4Drag.Args = new string[] { "e" };
+                    }
+                }
+
+                return this.b4Drag;
+            }
+        }
+
+        private JFunction b4DragDrop;
+
+        /// <summary>
+        /// Code that executes immediately before the onDragDrop event
+        /// Parameters:
+        ///     e : Object
+        /// </summary>
+        [ConfigOption(JsonMode.Raw)]
+        [Category("3. DragDrop")]
+        [Meta]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [Description("Code that executes immediately before the onDragDrop event")]
+        public virtual JFunction B4DragDrop
+        {
+            get
+            {
+                if (this.b4DragDrop == null)
+                {
+                    this.b4DragDrop = new JFunction();
+
+                    if (!this.DesignMode)
+                    {
+                        this.b4DragDrop.Args = new string[] { "e" };
+                    }
+                }
+
+                return this.b4DragDrop;
+            }
+        }
+
+        private JFunction b4DragOut;
+
+        /// <summary>
+        /// Code that executes immediately before the onDragOut event
+        /// Parameters:
+        ///     e : Object
+        /// </summary>
+        [ConfigOption(JsonMode.Raw)]
+        [Category("3. DragDrop")]
+        [Meta]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [Description("Code that executes immediately before the onDragOut event")]
+        public virtual JFunction B4DragOut
+        {
+            get
+            {
+                if (this.b4DragOut == null)
+                {
+                    this.b4DragOut = new JFunction();
+
+                    if (!this.DesignMode)
+                    {
+                        this.b4DragOut.Args = new string[] { "e" };
+                    }
+                }
+
+                return this.b4DragOut;
+            }
+        }
+
+        private JFunction b4DragOver;
+
+        /// <summary>
+        /// Code that executes immediately before the onDragOver event
+        /// Parameters:
+        ///     e : Object
+        /// </summary>
+        [ConfigOption(JsonMode.Raw)]
+        [Category("3. DragDrop")]
+        [Meta]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [Description("Code that executes immediately before the onDragOver event")]
+        public virtual JFunction B4DragOver
+        {
+            get
+            {
+                if (this.b4DragOver == null)
+                {
+                    this.b4DragOver = new JFunction();
+
+                    if (!this.DesignMode)
+                    {
+                        this.b4DragOver.Args = new string[] { "e" };
+                    }
+                }
+
+                return this.b4DragOver;
+            }
+        }
+
+        private JFunction b4EndDrag;
+
+        /// <summary>
+        /// Code that executes immediately before the endDrag event
+        /// Parameters:
+        ///     e : Object
+        /// </summary>
+        [ConfigOption(JsonMode.Raw)]
+        [Category("3. DragDrop")]
+        [Meta]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [Description("Code that executes immediately before the endDrag event")]
+        public virtual JFunction B4EndDrag
+        {
+            get
+            {
+                if (this.b4EndDrag == null)
+                {
+                    this.b4EndDrag = new JFunction();
+
+                    if (!this.DesignMode)
+                    {
+                        this.b4EndDrag.Args = new string[] { "e" };
+                    }
+                }
+
+                return this.b4EndDrag;
+            }
+        }
+
+        private JFunction b4MouseDown;
+
+        /// <summary>
+        /// Code executed immediately before the onMouseDown event
+        /// Parameters:
+        ///     e : Object
+        /// </summary>
+        [ConfigOption(JsonMode.Raw)]
+        [Category("3. DragDrop")]
+        [Meta]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [Description("Code executed immediately before the onMouseDown event")]
+        public virtual JFunction B4MouseDown
+        {
+            get
+            {
+                if (this.b4MouseDown == null)
+                {
+                    this.b4MouseDown = new JFunction();
+
+                    if (!this.DesignMode)
+                    {
+                        this.b4MouseDown.Args = new string[] { "e" };
+                    }
+                }
+
+                return this.b4MouseDown;
+            }
+        }
+
+        private JFunction b4StartDrag;
+
+        /// <summary>
+        /// Code that executes immediately before the startDrag event
+        /// Parameters:
+        ///     x : Object
+        ///     y : Object
+        /// </summary>
+        [ConfigOption(JsonMode.Raw)]
+        [Category("3. DragDrop")]
+        [Meta]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [Description("Code that executes immediately before the startDrag event")]
+        public virtual JFunction B4StartDrag
+        {
+            get
+            {
+                if (this.b4StartDrag == null)
+                {
+                    this.b4StartDrag = new JFunction();
+
+                    if (!this.DesignMode)
+                    {
+                        this.b4StartDrag.Args = new string[] { "e" };
+                    }
+                }
+
+                return this.b4StartDrag;
             }
         }
 

@@ -6,7 +6,7 @@
  * update by andy_ghg
  * 2009-10-22 15:00:57
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm),
         parseCodes;
@@ -158,7 +158,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.zh_CN.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "加载中..."
         });
@@ -177,7 +177,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.zh_CN.form.field.HtmlEditor", {
         override: "Ext.form.field.HtmlEditor",
         createLinkText: '添加超级链接:'
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.HtmlEditor.prototype, {
             buttonTips: {
                 bold: {

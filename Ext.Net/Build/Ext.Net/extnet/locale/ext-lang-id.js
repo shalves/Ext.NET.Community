@@ -7,7 +7,7 @@
  * 10:13 04 Desember 2007
  * Indonesian Translations
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -44,7 +44,7 @@ Ext.onReady(function() {
     if (Ext.Date) {
         Ext.Date.monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
-        Ext.Date.getShortMonthName = function(month) {
+        Ext.Date.getShortMonthName = function (month) {
             return Ext.Date.monthNames[month].substring(0, 3);
         };
 
@@ -63,13 +63,13 @@ Ext.onReady(function() {
             Des: 11
         };
 
-        Ext.Date.getMonthNumber = function(name) {
+        Ext.Date.getMonthNumber = function (name) {
             return Ext.Date.monthNumbers[name.substring(0, 1).toUpperCase() + name.substring(1, 3).toLowerCase()];
         };
 
         Ext.Date.dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
-        Ext.Date.getShortDayName = function(day) {
+        Ext.Date.getShortDayName = function (day) {
             return Ext.Date.dayNames[day].substring(0, 3);
         };
     }
@@ -159,7 +159,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.id.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Pemuatan..."
         });
@@ -177,7 +177,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.id.form.field.HtmlEditor", {
         override: "Ext.form.field.HtmlEditor",
         createLinkText: 'Silakan masukkan URL untuk tautan:'
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.HtmlEditor.prototype, {
             buttonTips: {
                 bold: {

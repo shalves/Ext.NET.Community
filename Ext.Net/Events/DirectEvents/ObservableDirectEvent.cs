@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,16 +33,14 @@ namespace Ext.Net
     /// </summary>    
     public partial class ObservableDirectEvent : BaseDirectEvent
     {
-        /// <new date="2010-01-26" owner="geoff" key="DirectEvent">
-        /// The .After handler is called immediately after the DirectEvent is fired and before the response is returned from the server.
-        /// </new>
         /// <summary>
-        /// After handler with params: el, extraParams. Called immediately after DirectEvent has been requested.
+        /// The .After handler is called immediately after the DirectEvent is fired and before the response is returned from the server.
+        /// After handler is called with params: el, extraParams.
         /// </summary>
         [ConfigOption(typeof(DirectEventHandlerJsonConverter))]
         [DefaultValue("")]
         [NotifyParentProperty(true)]
-        [Description("After handler with params: el, extraParams. Called immediately after DirectEvent has been requested.")]
+        [Description("After handler with params: el, extraParams.")]
         public virtual string After
         {
             get
@@ -113,12 +111,12 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// Failure handler with params: success, response, result, control, type, action, extraParams
+        /// Complete handler with params: success, response, result, control, type, action, extraParams
         /// </summary>
         [DefaultValue("")]
         [ConfigOption("userComplete", typeof(DirectEventHandlerJsonConverter))]
         [NotifyParentProperty(true)]
-        [Description("Failure handler with params: success, response, result, control, type, action, extraParams")]
+        [Description("Complete handler with params: success, response, result, control, type, action, extraParams")]
         public virtual string Complete
         {
             get

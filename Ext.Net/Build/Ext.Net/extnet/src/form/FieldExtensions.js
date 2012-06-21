@@ -306,11 +306,11 @@
 
         me.callParent();
         me.noteEl = Ext.get(me.id+"-note");
-        if(me.noteEl){
+        if (me.noteEl) {
             me.noteEl = me.noteEl.down(".x-field-note");
         }
         me.indicatorEl = Ext.get(me.id+"-indicator");
-        if(me.indicatorEl){
+        if (me.indicatorEl) {
             me.indicatorEl = me.indicatorEl.down(".x-field-indicator");
         }
 

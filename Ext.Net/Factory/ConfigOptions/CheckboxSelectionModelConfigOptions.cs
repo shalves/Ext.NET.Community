@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -56,7 +56,7 @@ namespace Ext.Net
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
                 list.Add("selType", new ConfigOption("selType", null, "", this.SelType ));
-                list.Add("checkOnly", new ConfigOption("checkOnly", null, true, this.CheckOnly ));
+                list.Add("checkOnly", new ConfigOption("checkOnly", null, false, this.CheckOnly ));
                 list.Add("mode", new ConfigOption("mode", new SerializationOptions(JsonMode.ToLower), SelectionMode.Multi, this.Mode ));
                 list.Add("rowSpan", new ConfigOption("rowSpan", new SerializationOptions("rowspan"), 1, this.RowSpan ));
                 list.Add("showHeaderCheckbox", new ConfigOption("showHeaderCheckbox", null, true, this.ShowHeaderCheckbox ));

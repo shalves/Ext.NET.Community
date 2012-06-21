@@ -4,7 +4,7 @@
  * 24 April 2007
  * Changed by Cariad, 29 July 2007
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -123,7 +123,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.sv_SE.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Laddar..."
         });

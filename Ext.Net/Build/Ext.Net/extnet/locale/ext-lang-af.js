@@ -5,7 +5,7 @@
  * Afrikaans Translations
  * by Thys Meintjes (20 July 2007)
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -124,7 +124,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.af.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Besig om te laai..."
         });

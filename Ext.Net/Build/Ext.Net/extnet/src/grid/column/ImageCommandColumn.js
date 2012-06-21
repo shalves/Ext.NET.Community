@@ -2,8 +2,7 @@ Ext.define('Ext.grid.column.ImageCommand', {
     extend       : 'Ext.grid.column.Column',
     alias        : 'widget.imagecommandcolumn',
     commandWidth : 18,
-    dataIndex    : "",
-    header       : "",
+    dataIndex    : "",        
     menuDisabled : true,
     sortable     : false,
     hideable     : false,
@@ -174,7 +173,7 @@ Ext.define('Ext.grid.column.ImageCommand', {
         meta.tdCls = meta.tdCls || "";
         meta.tdCls += " row-imagecommand-cell";
 
-        if(this.isHidden()){
+        if (this.isHidden()) {
             meta.tdCls += " x-hide-command";
         }
 

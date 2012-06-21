@@ -5,6 +5,10 @@ Ext.define('Ext.grid.plugin.SelectionMemory', {
     alias  : 'plugin.selectionmemory',
     
     init   : function (grid) {
+        if (grid.lockable) {
+            return;
+        }
+        
         var me = this;
         this.grid = grid;
         this.headerCt = this.grid.headerCt || this.grid.normalGrid.headerCt;
@@ -29,10 +33,21 @@ Ext.define('Ext.grid.plugin.SelectionMemory', {
         this.grid.store.on("remove", this.onStoreRemove, this);
         this.grid.getView().on("refresh", this.memoryReConfigure, this, {single:true});     
 
+        this.grid.getView()._onMaskBeforeShow = this.grid.getView().onMaskBeforeShow;
         this.grid.getView().onMaskBeforeShow = Ext.Function.createInterceptor(this.grid.getView().onMaskBeforeShow, this.onMaskBeforeShowBefore, this);
         this.grid.getView().onMaskBeforeShow = Ext.Function.createSequence(this.grid.getView().onMaskBeforeShow, this.onMaskBeforeShowAfter, this);
 
+        this.selModel._onSelectChange = this.selModel.onSelectChange;
         this.selModel.onSelectChange = Ext.Function.createSequence(this.selModel.onSelectChange, this.onSelectChange, this);
+    },
+
+    destroy : function () {
+        this.selModel.un("select", this.onMemorySelect, this);
+        this.selModel.un("deselect", this.onMemoryDeselect, this);
+        this.grid.store.un("remove", this.onStoreRemove, this);
+        this.grid.getView().un("refresh", this.memoryReConfigure, this, {single:true});             
+        this.grid.getView().onMaskBeforeShow = this.grid.getView()._onMaskBeforeShow;
+        this.selModel.onSelectChange = this.selModel._onSelectChange;
     },
     
     onMaskBeforeShowBefore : function () {
@@ -78,6 +93,10 @@ Ext.define('Ext.grid.plugin.SelectionMemory', {
     },
 
     onMemorySelectId : function (sm, index, id, column) {
+        if (!id) {
+            return;
+        }
+
         var obj = { 
             id    : id, 
             index : index 

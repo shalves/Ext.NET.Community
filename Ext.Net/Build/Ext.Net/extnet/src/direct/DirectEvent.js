@@ -354,14 +354,14 @@ Ext.net.DirectEvent = new Ext.data.Connection({
                             o.form = Ext.get(Ext.net.ResourceMgr.aspForm);
                         }
                         
-                        if (Ext.isEmpty(o.form) && o.control && o.control.alias == "widget.form"){
+                        if (Ext.isEmpty(o.form) && o.control && o.control.alias == "widget.form") {
                             this.buildForm(o, o.control);
                         }                                        
 
-                        if (Ext.isEmpty(o.form) && o.control && o.control.up){
+                        if (Ext.isEmpty(o.form) && o.control && o.control.up) {
                             var formCmp = o.control.up("form");
 
-                            if(formCmp){
+                            if (formCmp) {
                                 this.buildForm(o, formCmp);
                             }
                         }

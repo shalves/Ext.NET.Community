@@ -8,7 +8,7 @@
  * Updated to 2.2 by YargicX
  * 2008-10-05, 06:22 PM
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -45,7 +45,7 @@ Ext.onReady(function() {
     if (Ext.Date) {
         Ext.Date.monthNames = ["Ocak", "Þžubat", "Mart", "Nisan", "Mayýs", "Haziran", "Temmuz", "Aðustos", "Eylül", "Ekim", "Kasým", "Aralýk"];
 
-        Ext.Date.getShortMonthName = function(month) {
+        Ext.Date.getShortMonthName = function (month) {
             return Ext.Date.monthNames[month].substring(0, 3);
         };
 
@@ -64,7 +64,7 @@ Ext.onReady(function() {
             Dec: 11
         };
 
-        Ext.Date.getMonthNumber = function(name) {
+        Ext.Date.getMonthNumber = function (name) {
             return Ext.Date.monthNumbers[name.substring(0, 1).toUpperCase() + name.substring(1, 3).toLowerCase()];
         };
 
@@ -72,7 +72,7 @@ Ext.onReady(function() {
 
         Ext.Date.shortDayNames = ["Paz", "Pzt", "Sal", "ÇrþŸ", "Prþ", "Cum", "Cmt"];
 
-        Ext.Date.getShortDayName = function(day) {
+        Ext.Date.getShortDayName = function (day) {
             return Ext.Date.shortDayNames[day];
         };
     }
@@ -162,7 +162,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.tr.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Yükleniyor ..."
         });
@@ -178,7 +178,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.tr.form.field.HtmlEditor", {
         override: "Ext.form.field.HtmlEditor",
         createLinkText: 'Lütfen bu baðlantý için gerekli URL adresini giriniz:'
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.HtmlEditor.prototype, {
             buttonTips: {
                 bold: {

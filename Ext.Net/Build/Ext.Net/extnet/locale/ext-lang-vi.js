@@ -6,7 +6,7 @@
  * By bpmtri
  * 12-April-2007 04:06PM
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -123,7 +123,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.vn.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Đang tải..."
         });

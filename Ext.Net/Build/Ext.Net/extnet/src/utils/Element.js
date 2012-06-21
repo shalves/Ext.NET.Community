@@ -59,9 +59,9 @@ Ext.core.Element.addMethods({
     }    
 });
 
-if(!Ext.isIE && document.querySelector){
+if (!Ext.isIE && document.querySelector) {
     Ext.core.Element.prototype.getById = function (id, asDom) {
-        if(Ext.isEmpty(id)){
+        if (Ext.isEmpty(id)) {
             return null;
         }
         var dom = document.getElementById(id) ||

@@ -40,7 +40,7 @@ Ext.tree.Panel.override({
 		
 		if (this.mode === "remote") {
 		    this.mode = "local";
-		    this.on("afterrender", function(){
+		    this.on("afterrender", function () {
                 this.setMode("remote");
             }, this, {single:true});            
 		}
@@ -629,7 +629,7 @@ Ext.tree.Panel.override({
             else if (o.action === "raMove") {
 			    o.e.dropHandlers.cancelDrop();
 			}
-            else{
+            else {
                 o.node.reject();
             }
             			
@@ -642,12 +642,12 @@ Ext.tree.Panel.override({
 
 		switch (o.action) {
 		    case "raEdit":
-			    if(o.isRowEditing){
-                    if(Ext.isDefined(rParams.ra_newValues) || Ext.isDefined(rParams.value) || !o.fromEditor) {
+			    if (o.isRowEditing) {
+                    if (Ext.isDefined(rParams.ra_newValues) || Ext.isDefined(rParams.value) || !o.fromEditor) {
                         o.node.set(rParams.ra_newValues || rParams.value || o.raConfig.newValues);
                     }
                 }            
-                else if(Ext.isDefined(rParams.ra_newValue) || Ext.isDefined(rParams.value) || !o.fromEditor) {
+                else if (Ext.isDefined(rParams.ra_newValue) || Ext.isDefined(rParams.value) || !o.fromEditor) {
                     o.node.set(o.raConfig.field, rParams.ra_newValue || rParams.value || o.raConfig.newValue);
                 }
 		        break;
@@ -657,16 +657,37 @@ Ext.tree.Panel.override({
 		    case "raMove":
 			    if (o.e.currentPosition === "append") {
 			        o.e.overNode.expand();
-			    }
 
-                o.e.dropHandlers.processDrop();
+                    if (o.e.overNode.data.loaded || o.e.overNode.isLeaf()) {
+			            o.e.dropHandlers.processDrop();
+			        } else {
+			            o.e.dropHandlers.cancelDrop();
+                        
+                        var parentNode = o.node.parentNode,
+                            index = parentNode.indexOf(o.node);
+
+                        o.node.remove();
+
+                        o.e.overNode.on("load", function () {
+                            var index = this.newParent.indexOfId(this.id),
+                                node;
+                            if ( index >= 0 ) {
+                                node = this.newParent.getChildAt(index);
+                                node.fireEvent("move", node, this.oldParent, this.newParent, this.index);
+                            }
+                        }, {
+                            tree: this,
+                            oldParent: parentNode,
+                            newParent: o.e.overNode,
+                            id: o.node.getId(),
+                            index: index
+                        }, {single:true});
+			        }
+			    }                
+                else {
+                    o.e.dropHandlers.processDrop();
+                }
             
-                /*if (!o.overNode.data.loaded || o.loaded) {
-			    
-			    } else {
-			        o.dropHandlers.cancelDrop();
-                    o.node.remove();
-			    }*/
 		        break;
 		    case "raAppend":
 		    case "raInsert":
@@ -696,7 +717,7 @@ Ext.tree.Panel.override({
         else if (o.action === "raMove") {
 			o.e.dropHandlers.cancelDrop();
 		}
-        else{
+        else {
             o.node.reject();
         }
 		
@@ -769,7 +790,7 @@ Ext.tree.Panel.override({
     editNode : function (node, field, value, e) {
 		field = field || "text";
         if (this.mode === "local" || Ext.Array.indexOf(this.localActions, "edit") !== -1) {
-		    if(!e){
+		    if (!e) {
                node.set(field, value);
             }
 		    return;
@@ -785,7 +806,7 @@ Ext.tree.Panel.override({
 	            oldValue : this.convertText(e ? e.originalValue : node.get(field))
 	        };
 
-            if(e && e.newValues){
+            if (e && e.newValues) {
                 dc.raConfig.newValues = e.newValues;
                 dc.raConfig.oldValues = e.originalValues;
                 dc.raConfig.isRow = true;
@@ -847,7 +868,7 @@ Ext.tree.Panel.override({
             };
 
             var ids = [];
-            Ext.each(data.records, function(r){
+            Ext.each(data.records, function (r) {
                 ids.push(r.getId());
             });
 

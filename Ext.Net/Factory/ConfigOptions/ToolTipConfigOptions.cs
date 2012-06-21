@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -55,17 +55,6 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
-                list.Add("renderToProxy", new ConfigOption("renderToProxy", new SerializationOptions("renderTo"), "", this.RenderToProxy ));
-                list.Add("anchorOffset", new ConfigOption("anchorOffset", null, 0, this.AnchorOffset ));
-                list.Add("anchorToTarget", new ConfigOption("anchorToTarget", null, true, this.AnchorToTarget ));
-                list.Add("autoHide", new ConfigOption("autoHide", null, true, this.AutoHide ));
-                list.Add("delegate", new ConfigOption("delegate", null, "", this.Delegate ));
-                list.Add("dismissDelay", new ConfigOption("dismissDelay", null, 5000, this.DismissDelay ));
-                list.Add("hideDelay", new ConfigOption("hideDelay", null, 200, this.HideDelay ));
-                list.Add("mouseOffset", new ConfigOption("mouseOffset", new SerializationOptions(typeof(IntArrayJsonConverter)), null, this.MouseOffset ));
-                list.Add("showDelay", new ConfigOption("showDelay", null, 500, this.ShowDelay ));
-                list.Add("targetProxy", new ConfigOption("targetProxy", new SerializationOptions("target", JsonMode.Raw), "", this.TargetProxy ));
-                list.Add("trackMouse", new ConfigOption("trackMouse", null, false, this.TrackMouse ));
                 list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
                 list.Add("directEvents", new ConfigOption("directEvents", new SerializationOptions("directEvents", JsonMode.Object), null, this.DirectEvents ));
 

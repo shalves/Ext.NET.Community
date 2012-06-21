@@ -4,7 +4,7 @@
  * Updated by mmar 16-November-2007
  * Encoding: utf-8
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -41,7 +41,7 @@ Ext.onReady(function() {
     if (Ext.Date) {
         Ext.Date.monthNames = ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"];
 
-        Ext.Date.getShortMonthName = function(month) {
+        Ext.Date.getShortMonthName = function (month) {
             return Ext.Date.monthNames[month].substring(0, 3);
         };
 
@@ -60,13 +60,13 @@ Ext.onReady(function() {
             Gru: 11
         };
 
-        Ext.Date.getMonthNumber = function(name) {
+        Ext.Date.getMonthNumber = function (name) {
             return Ext.Date.monthNumbers[name.substring(0, 1).toUpperCase() + name.substring(1, 3).toLowerCase()];
         };
 
         Ext.Date.dayNames = ["Niedziela", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"];
 
-        Ext.Date.getShortDayName = function(day) {
+        Ext.Date.getShortDayName = function (day) {
             switch (day) {
             case 0:
                 return 'ndz';
@@ -173,7 +173,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.pl.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Wczytuję..."
         });
@@ -191,7 +191,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.pl.form.field.HtmlEditor", {
         override: "Ext.form.field.HtmlEditor",
         createLinkText: 'Wprowadź adres URL strony:'
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.HtmlEditor.prototype, {
             buttonTips: {
                 bold: {

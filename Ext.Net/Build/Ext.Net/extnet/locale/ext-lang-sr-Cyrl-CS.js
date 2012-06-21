@@ -5,7 +5,7 @@
  * sr_RS (ex: sr_CS, sr_YU)
  * 12 May 2007
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -123,7 +123,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.sr_RS.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Учитавам..."
         });

@@ -2,7 +2,7 @@
  * Slovenian translation by Matjaž (UTF-8 encoding)
  * 25 April 2007
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -119,7 +119,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.sl.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Nalagam..."
         });

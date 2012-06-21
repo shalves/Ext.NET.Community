@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -37,15 +37,38 @@ namespace Ext.Net
     [Meta]
     [ToolboxData("<{0}:HyperLink runat=\"server\" Text=\"HyperLink\" />")]
     [ToolboxBitmap(typeof(HyperLink), "Build.ToolboxIcons.HyperLink.bmp")]
+    [DefaultProperty("Html")]
+    [ParseChildren(true, "Html")]
+    [PersistChildren(false)]
+    [SupportsEventValidation]
     [Designer(typeof(EmptyDesigner))]
     [Description("Basic hyperlink field.")]
-    public partial class HyperLink : Label
+    public partial class HyperLink : LabelBase
     {
+		/// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public HyperLink() { }
+
 		/// <summary>
 		/// 
 		/// </summary>
 		[Description("")]
-        public HyperLink() { }
+        public HyperLink(string text) 
+        {
+            this.Text = text;
+        }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public HyperLink(string format, string text)
+        {
+            this.Format = format;
+            this.Text = text;
+        }
 
         /// <summary>
 		/// 
@@ -70,6 +93,56 @@ namespace Ext.Net
             get
             {
                 return "Ext.net.HyperLink";
+            }
+        }
+
+        private AbstractComponentListeners listeners;
+
+        /// <summary>
+        /// Client-side JavaScript Event Handlers
+        /// </summary>
+        [Meta]
+        [ConfigOption("listeners", JsonMode.Object)]
+        [Category("2. Observable")]
+        [NotifyParentProperty(true)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [Description("Client-side JavaScript Event Handlers")]
+        public AbstractComponentListeners Listeners
+        {
+            get
+            {
+                if (this.listeners == null)
+                {
+                    this.listeners = new AbstractComponentListeners();
+                }
+
+                return this.listeners;
+            }
+        }
+
+        private AbstractComponentDirectEvents directEvents;
+
+        /// <summary>
+        /// Server-side Ajax Event Handlers
+        /// </summary>
+        [Meta]
+        [Category("2. Observable")]
+        [NotifyParentProperty(true)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [ConfigOption("directEvents", JsonMode.Object)]
+        [Description("Server-side Ajax Event Handlers")]
+        public AbstractComponentDirectEvents DirectEvents
+        {
+            get
+            {
+                if (this.directEvents == null)
+                {
+                    this.directEvents = new AbstractComponentDirectEvents(this);
+                }
+
+                return this.directEvents;
             }
         }
 

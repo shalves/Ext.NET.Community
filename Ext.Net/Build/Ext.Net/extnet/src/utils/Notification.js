@@ -116,7 +116,7 @@ Ext.net.Notification = function () {
                                     var window = saw[i],
                                         box = window.getBox();
 
-                                    if(box.width == 0 && box.height == 0){
+                                    if (box.width == 0 && box.height == 0) {
                                         box = window._defaultBox;
                                     }
 
@@ -177,7 +177,7 @@ Ext.net.Notification = function () {
 
                     this.toFront();
 
-                    if(this.shadow){                    
+                    if (this.shadow) {                    
                         this.el.enableShadow(true);
                         this.syncShadow();  
                     }

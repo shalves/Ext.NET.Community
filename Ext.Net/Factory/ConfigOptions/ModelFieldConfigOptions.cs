@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -63,6 +63,7 @@ namespace Ext.Net
                 list.Add("submitEmptyValue", new ConfigOption("submitEmptyValue", new SerializationOptions(JsonMode.ToLower), EmptyValue.None, this.SubmitEmptyValue ));
                 list.Add("customSortType", new ConfigOption("customSortType", new SerializationOptions("sortType", JsonMode.Raw), null, this.CustomSortType ));
                 list.Add("convert", new ConfigOption("convert", new SerializationOptions(JsonMode.Raw), null, this.Convert ));
+                list.Add("nullConvertProxy", new ConfigOption("nullConvertProxy", new SerializationOptions("convert", JsonMode.Raw), null, this.NullConvertProxy ));
                 list.Add("dateFormat", new ConfigOption("dateFormat", new SerializationOptions(typeof(NetToPHPDateFormatStringJsonConverter)), "", this.DateFormat ));
                 list.Add("defaultValue", new ConfigOption("defaultValue", new SerializationOptions(JsonMode.Raw), "", this.DefaultValue ));
                 list.Add("persist", new ConfigOption("persist", null, true, this.Persist ));

@@ -82,17 +82,17 @@ Ext.define("Ext.net.MenuPanel", {
 
     setSelection : function (menu, item, e) {
         if (this.saveSelection) {
-            this.clearSelection();
-
-            if (arguments.length == 1) {
+            if (arguments.length === 1) {
                 item = menu;
             }
 
-            this.selectedIndex = this.menu.items.indexOf(item);
-            this.getSelIndexField().setValue(this.selectedIndex);
-
-            item.activate();
-        }        
+            if (item) {
+                this.clearSelection();
+                this.selectedIndex = this.menu.items.indexOf(item);
+                this.getSelIndexField().setValue(this.selectedIndex);
+                item.activate();
+            }
+        }
     },
     
     clearSelection : function () {

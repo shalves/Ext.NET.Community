@@ -7,7 +7,7 @@
  * by Amon <amon@theba.hu> (27 Apr 2008)
  * encoding fixed by Vili (17 Feb 2009)
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -44,7 +44,7 @@ Ext.onReady(function() {
     if (Ext.Date) {
         Ext.Date.monthNames = ["Január", "Február", "Március", "Április", "Május", "Június", "Július", "Augusztus", "Szeptember", "Október", "November", "December"];
 
-        Ext.Date.getShortMonthName = function(month) {
+        Ext.Date.getShortMonthName = function (month) {
             return Ext.Date.monthNames[month].substring(0, 3);
         };
 
@@ -63,13 +63,13 @@ Ext.onReady(function() {
             'Dec': 11
         };
 
-        Ext.Date.getMonthNumber = function(name) {
+        Ext.Date.getMonthNumber = function (name) {
             return Ext.Date.monthNumbers[name.substring(0, 1).toUpperCase() + name.substring(1, 3).toLowerCase()];
         };
 
         Ext.Date.dayNames = ["Vasárnap", "Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat"];
 
-        Ext.Date.getShortDayName = function(day) {
+        Ext.Date.getShortDayName = function (day) {
             return Ext.Date.dayNames[day].substring(0, 3);
         };
     }
@@ -159,7 +159,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.hu.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Betöltés..."
         });
@@ -177,7 +177,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.hu.form.field.HtmlEditor", {
         override: "Ext.form.field.HtmlEditor",
         createLinkText: 'Add meg a webcímet:'
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.HtmlEditor.prototype, {
             buttonTips: {
                 bold: {

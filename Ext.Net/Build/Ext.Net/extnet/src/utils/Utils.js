@@ -162,9 +162,9 @@ Ext.net.renderTo = function (container, items) {
 Ext.net._renderTo = function (cfg, cmp) {
     if (cfg.mode == "item") {
         cfg.ct.insert(cfg.index, cmp);
-    } else if(cfg.mode == "el"){
+    } else if (cfg.mode == "el") {
         if (Ext.isArray(cmp)) {
-            Ext.each(function(c){
+            Ext.each(function (c) {
                 Ext.net._renderTo(cfg, c);
             });
         }
@@ -185,7 +185,7 @@ Ext.net.append = function (elTo, html, callback, wait) {
         fn;
 
    fn = function () {
-		if(wait) {
+		if (wait) {
             if (!document.getElementById(id)) {
 			    return false;
 		    }
@@ -253,7 +253,7 @@ Ext.net.append = function (elTo, html, callback, wait) {
                 }
             }
         }
-        if(wait) {
+        if (wait) {
             el = DOC.getElementById(id);
         
             if (el) {
@@ -263,7 +263,7 @@ Ext.net.append = function (elTo, html, callback, wait) {
         Ext.callback(callback, me); 
     };
 
-    if(wait) {
+    if (wait) {
         html += '<span id="' + id + '"></span>';
         interval = setInterval(fn, 20);
     }
@@ -271,7 +271,7 @@ Ext.net.append = function (elTo, html, callback, wait) {
     createdEl = Ext.DomHelper.append(elTo, html.replace(/(?:<script.*?>)((\n|\r|.)*?)(?:<\/script>)/ig, "")
                                                    .replace(/(?:<style.*?>)((\n|\r|.)*?)(?:<\/style>)/ig, "")
                                                    .replace(/(?:<link([^>]*)?\/>)/ig, ""), true);
-    if(!wait) {
+    if (!wait) {
         fn();
     }
 

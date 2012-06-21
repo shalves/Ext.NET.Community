@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -33,16 +33,51 @@ using System.Web.UI.WebControls;
 
 namespace Ext.Net
 {
-	/// <summary>
-	/// 
-	/// </summary>
-    public abstract partial class DDTarget
+    /// <summary>
+    /// 
+    /// </summary>
+    public partial class DDTarget
     {
+		/*  Ctor
+			-----------------------------------------------------------------------------------------------*/
+
         /// <summary>
         /// 
         /// </summary>
-        new public abstract partial class Config : DragDrop.Config 
+        public DDTarget(Config config)
+        {
+            this.Apply(config);
+        }
+
+
+		/*  Implicit DDTarget.Config Conversion to DDTarget
+			-----------------------------------------------------------------------------------------------*/
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static implicit operator DDTarget(DDTarget.Config config)
+        {
+            return new DDTarget(config);
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        new public partial class Config : DragDrop.Config 
         { 
+			/*  Implicit DDTarget.Config Conversion to DDTarget.Builder
+				-----------------------------------------------------------------------------------------------*/
+        
+            /// <summary>
+			/// 
+			/// </summary>
+			public static implicit operator DDTarget.Builder(DDTarget.Config config)
+			{
+				return new DDTarget.Builder(config);
+			}
+			
+			
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,6 +25,7 @@
  ********/
 
 using System.ComponentModel;
+using System.Web.UI;
 
 namespace Ext.Net
 {
@@ -300,6 +301,25 @@ namespace Ext.Net
             set
             {
                 this.State.Set("MessageProperty", value);
+            }
+        }
+
+        /// <summary>
+        /// The Ext.data.Model associated with this reader
+        /// </summary>
+        [Meta]
+        [ConfigOption("model")]
+        [DefaultValue(null)]
+        [Description("The Ext.data.Model associated with this reader")]
+        public virtual string ModelName
+        {
+            get
+            {
+                return this.State.Get<string>("ModelName", null);
+            }
+            set
+            {
+                this.State.Set("ModelName", value);
             }
         }
     }

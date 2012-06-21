@@ -185,7 +185,7 @@ Ext.form.field.Trigger.getIcon = function (icon) {
 
             var sepName = Ext.net.ResourceMgr.toCharacterSeparatedFileName(icon, "-"),                
                 template = "/{0}extnet/resources/images/triggerfield/{1}-gif/ext.axd",
-                appName = Ext.isEmpty(this.appName, false) ? "" : (this.appName + "/"),
+                appName = Ext.isEmpty(Ext.net.ResourceMgr.appName, false) ? "" : (Ext.net.ResourceMgr.appName + "/"),
                 url,
                 url1 = "",
                 css = ".x-trigger-cell .{0}{background-image:url({1});cursor:pointer;}";
@@ -213,7 +213,7 @@ Ext.form.field.Trigger.getIcon = function (icon) {
 };
 
 Ext.layout.component.field.Trigger.override({
-   updateEditState: function() {
+   updateEditState: function () {
         var me = this,
             owner = me.owner,
             inputEl = owner.inputEl,

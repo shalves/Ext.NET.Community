@@ -1,26 +1,26 @@
 /*
- * @version   : 2.0.0.beta3 - Ext.NET Pro License
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
- * @license   : See license.txt and http://www.ext.net/license/. 
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
  * @website   : http://www.ext.net/
  */
 
 Ext.ns("Ext.net", "Ext.ux", "Ext.ux.plugins", "Ext.ux.layout");
-Ext.net.Version = "2.0.0.beta3";
+Ext.net.Version = "2.0.0.rc1";
 
 
 // @source core/utils/Observable.js
 
 Ext.util.Observable.override({
-    constructor: function(config) {
+    constructor: function (config) {
         this.callParent(arguments);
 
         this.directListeners = this.directListeners || {};
         this.hasDirectListeners = this.hasDirectListeners || {};
         
-        if(Ext.net && Ext.net.MessageBus) {
+        if (Ext.net && Ext.net.MessageBus) {
             Ext.net.MessageBus.initEvents(this);
         }
     }
@@ -28,11 +28,11 @@ Ext.util.Observable.override({
 
 Ext.util.DirectObservable = {
     initDirectEvents : function () {
-        if(!this.directListeners) {
+        if (!this.directListeners) {
             this.directListeners = {};
         }
 
-        if(!this.hasDirectListeners) {
+        if (!this.hasDirectListeners) {
             this.hasDirectListeners = {};
         }
         
@@ -46,7 +46,7 @@ Ext.util.DirectObservable = {
         }
     },
     
-    fireEvent: function(eventName) {
+    fireEvent: function (eventName) {
         this.initDirectEvents();
         
         eventName = eventName.toLowerCase();
@@ -59,7 +59,7 @@ Ext.util.DirectObservable = {
         }
     },
 
-    continueFireEvent: function(eventName, args, bubbles) {
+    continueFireEvent: function (eventName, args, bubbles) {
         var target = this,
             queue, event,
             ret = true;
@@ -91,7 +91,7 @@ Ext.util.DirectObservable = {
         return ret;
     },
 
-    addListener: function(ename, fn, scope, options) {
+    addListener: function (ename, fn, scope, options) {
         var me = this,
             config,
             event;
@@ -156,7 +156,7 @@ Ext.util.DirectObservable = {
                 me.events[ename] = event = new Ext.util.Event(me, ename);
             }
 
-            if(fn) {
+            if (fn) {
                 if (typeof fn === 'string') {
                     fn = scope[fn] || me.fn;
                 }
@@ -165,7 +165,7 @@ Ext.util.DirectObservable = {
                 me.hasListeners[ename] = (me.hasListeners[ename]||0) + 1;
             }
 
-            if(options && options.broadcastOnBus) {
+            if (options && options.broadcastOnBus) {
                 var parts = options.broadcastOnBus.split(":"),
                     bus,
                     name;
@@ -174,7 +174,7 @@ Ext.util.DirectObservable = {
                     bus = Ext.net.Bus;
                     name = parts[0];
                 }
-                else{
+                else {
                     bus = Ext.net.ResourceMgr.getCmp(parts[0]);
                     name = parts[1];
                 }
@@ -187,7 +187,7 @@ Ext.util.DirectObservable = {
                         i,
                         len;
 
-                    if(options.argumentsList){
+                    if (options.argumentsList) {
                         data = {};
 
                         for (i = 0, len = options.argumentsList.length; i < len; i++) {
@@ -204,16 +204,16 @@ Ext.util.DirectObservable = {
         }
     },
 
-    addDirectListener: function(ename, fn, scope, options) {
+    addDirectListener: function (ename, fn, scope, options) {
         var me = this,
             config,
             event;
 
-        if(!this.directListeners) {
+        if (!this.directListeners) {
             this.directListeners = {};
         }
 
-        if(!this.hasDirectListeners) {
+        if (!this.hasDirectListeners) {
             this.hasDirectListeners = {};
         }
 
@@ -692,14 +692,14 @@ Ext.net.DirectEvent = new Ext.data.Connection({
                             o.form = Ext.get(Ext.net.ResourceMgr.aspForm);
                         }
                         
-                        if (Ext.isEmpty(o.form) && o.control && o.control.alias == "widget.form"){
+                        if (Ext.isEmpty(o.form) && o.control && o.control.alias == "widget.form") {
                             this.buildForm(o, o.control);
                         }                                        
 
-                        if (Ext.isEmpty(o.form) && o.control && o.control.up){
+                        if (Ext.isEmpty(o.form) && o.control && o.control.up) {
                             var formCmp = o.control.up("form");
 
-                            if(formCmp){
+                            if (formCmp) {
                                 this.buildForm(o, formCmp);
                             }
                         }
@@ -1149,7 +1149,7 @@ Ext.net.DirectMethod = {
 
 Ext.net.ComponentManager = {
     registerId : function (cmp) {
-        if(cmp.initDirectEvents){
+        if (cmp.initDirectEvents) {
             cmp.initDirectEvents();
         }
 
@@ -1244,20 +1244,21 @@ Ext.override(Ext.AbstractComponent, {
     autoFocusDelay  : 10,
 
     initComponent : function () {
-        if(this.hasId()){
+        if (this.hasId()) {
             var cmp = Ext.getCmp(this.id);
-            if(cmp){
+            if (cmp) {
                 cmp.destroy();
             }
         }
         
-        if(this.contentHtml && Ext.isFunction(this.contentHtml)){
+        if (this.contentHtml && Ext.isFunction(this.contentHtml)) {
             this.contentHtml.call(window);
         }
         
-        if(this.preinitFn){
+        if (this.preinitFn) {
             this.preinitFn.call(this.preinitScope || this, this);
         }
+
         if (this.tag) {
             this.setTag(this.tag);
         }
@@ -1390,15 +1391,15 @@ Ext.override(Ext.AbstractComponent, {
     },
 
     replace : function (cmp) {
-        if(this.ownerCt){
+        if (this.ownerCt) {
             var index = this.ownerCt.items.indexOf(this),
                 ct = this.ownerCt;
 
             ct.remove(this, true);
             
-            if(Ext.isFunction(cmp)){
+            if (Ext.isFunction(cmp)) {
                 cmp({ mode : "item", index : index, ct : ct });
-            } else{
+            } else {
                 ct.insert(index, cmp);
             }
         } else {
@@ -1407,9 +1408,9 @@ Ext.override(Ext.AbstractComponent, {
 
             this.destroy();
 
-            if(Ext.isFunction(cmp)){
+            if (Ext.isFunction(cmp)) {
                 cmp({mode : "el", position : position, ct : container });
-            } else{
+            } else {
                 cmp = Ext.ComponentManager.create(cmp);
                 cmp.render(container, position);
             }            
@@ -1470,8 +1471,9 @@ Ext.Component.prototype.initComponent = Ext.Function.createSequence(Ext.Componen
 });
 
 Ext.Component.prototype.afterRender = Ext.Function.createSequence(Ext.Component.prototype.afterRender, function () {
-    if (this.tooltips) {        
+    if (this.tooltips) {
         var tooltips = [];
+
         Ext.each(this.tooltips, function (tooltip) {
             if (!tooltip.target) {
                 tooltip.target = this.el;
@@ -1559,7 +1561,7 @@ Ext.define('Ext.net.ComponentLoader', {
     addMask : function (mask) {
         if (this.target.floating) {
             if (mask.showMask) {
-                (this.target.body || this.target.el).mask(mask.maskMsg || Ext.LoadMask.prototype.msg, mask.maskCls || "x-mask-loading");
+                (this.target.body || this.target.el).mask(mask.msg || Ext.LoadMask.prototype.msg, mask.msgCls || "x-mask-loading");
             }
             return;
         }
@@ -1694,10 +1696,10 @@ Ext.define('Ext.net.ComponentLoader', {
                 }
             }
 
-            if(method.length > 1){
+            if (method.length > 1) {
                 method(Ext.encode(options.params), dmCfg);
             }
-            else{
+            else {
                 method(dmCfg);
             }
 
@@ -1826,14 +1828,10 @@ Ext.define('Ext.net.ComponentLoader', {
             this.beforeIFrameLoad(options);
         }
         
-        if (Ext.isIE6 && !this.destroyIframeOnUnload) {
+        if (!this.destroyIframeOnUnload) {
             this.destroyIframeOnUnload = true;            
-            
-            if (window.addEventListener) {
-                window.addEventListener("unload", Ext.Function.bind(this.target.destroy, this.target), false);
-            } else if (window.attachEvent) {
-                window.attachEvent("onunload", Ext.Function.bind(this.target.destroy, this.target));
-            }
+
+            Ext.EventManager.on(window, "unload", this.target.destroy, this.target);
         }        
     },
     
@@ -1889,6 +1887,8 @@ Ext.define('Ext.net.ComponentLoader', {
             Ext.callback(options.success, options.scope, [this, true, null, options]);
         }
 
+        this.target.onIFrameLoad();
+
         this.fireEvent("load", this, null, options);
     }
 });
@@ -1906,7 +1906,7 @@ Ext.container.AbstractContainer.prototype.initComponent = Ext.Function.createSeq
 Ext.Container.override({
     getBody : function (focus) {
         if (this.iframe) {
-            var self = this.iframe.dom.contentWindow;            
+            var self = this.getWin();            
             
             if (focus !== false) {
                 try {
@@ -1929,8 +1929,18 @@ Ext.Container.override({
     },
 
     clearContent : function () {
-        if (this.iframe) {
+        if (this.iframe && this.iframe.dom) {
             this.iframe.un("load", this.getLoader().afterIFrameLoad, this);
+
+            var doc = this.getDoc();
+            if (doc) {
+                Ext.EventManager.removeAll(doc);
+                for (prop in doc) {
+                    if (doc.hasOwnProperty && doc.hasOwnProperty(prop)) {
+                        delete doc[prop];
+                    }
+                }
+            }
 
             if (Ext.isIE) {
                 this.iframe.dom.src = Ext.net.StringUtils.format("java{0}", "script:false");
@@ -1947,7 +1957,7 @@ Ext.Container.override({
     },    
 
     beforeDestroy : Ext.Function.createInterceptor(Ext.container.Container.prototype.beforeDestroy, function () {
-        if (this.iframe) {
+        if (this.iframe && this.iframe.dom) {
             try {
                 this.clearContent();
             } catch (e) { }
@@ -2006,6 +2016,69 @@ Ext.Container.override({
         } else {
             btn.fireEvent("click", btn, e);
         }
+    },
+
+    onIFrameLoad: function () {
+        var me = this,
+            doc = me.getDoc(),
+            fn = me.onIFrameRelayedEvent;
+
+        if (doc) {
+            try {
+                Ext.EventManager.removeAll(doc);
+
+                Ext.EventManager.on(doc, {
+                    mousedown: fn, 
+                    mousemove: fn, 
+                    mouseup: fn,   
+                    click: fn,     
+                    dblclick: fn,  
+                    scope: me
+                });
+            } catch (e) {                
+            }
+            
+            //Ext.EventManager.on(window, 'unload', me.beforeDestroy, me);
+        }
+    },
+
+    onIFrameRelayedEvent: function (event) {
+        var iframeEl = this.iframe,
+            iframeXY = iframeEl.getXY(),
+            eventXY = event.getXY();
+
+        event.xy = [iframeXY[0] + eventXY[0], iframeXY[1] + eventXY[1]];
+
+        event.injectEvent(iframeEl);
+
+        event.xy = eventXY;
+    },
+
+    getFrameBody: function () {
+        var doc = this.getDoc();
+        return doc.body || doc.documentElement;
+    },
+
+    getDoc: function () {
+        try {
+            return this.getWin().document;
+        } catch (ex) {
+            return null;
+        }
+    },
+
+    getWin: function () {
+        var me = this,
+            name = me.id + "_IFrame",
+            win = Ext.isIE
+                ? me.iframe.dom.contentWindow
+                : window.frames[name];
+        return win;
+    },
+
+    getFrame: function () {
+        var me = this;
+        return me.iframe.dom;
     }
 });
 
@@ -2284,7 +2357,7 @@ Ext.tab.Bar.override({
         Ext.suspendLayouts();
 
         if (tabPanel && card) {
-            if(!tabPanel.closeTab(card)){
+            if (!tabPanel.closeTab(card)) {
                 Ext.resumeLayouts(true);
                 return false;
             }
@@ -2431,15 +2504,15 @@ Ext.tab.Panel.override({
         }
     },
 
-    setLastTabAsActive : function() {
+    setLastTabAsActive : function () {
         this.setActiveTab(this.items.getCount() - 1);
     },
 
-    setPreviousTabAsActive : function() {
+    setPreviousTabAsActive : function () {
         this.setActiveTab(Math.max(0,this.items.indexOf(this.getActiveTab()) - 1));
     },
 
-    setNextTabAsActive : function() {
+    setNextTabAsActive : function () {
         this.setActiveTab(Math.min(this.items.getCount() - 1,this.items.indexOf(this.getActiveTab()) + 1));
     }
 });
@@ -3419,10 +3492,13 @@ Ext.form.field.Base.override({
     }),
 
     afterRender : function () {
-        return Ext.form.field.Base.superclass.afterRender.call(this, arguments);
+        Ext.form.field.Base.superclass.afterRender.call(this, arguments);
 
-        if (this.inputEl) {
-            this.inputEl.selectable();
+        
+
+        if (this.initErrors) {
+            this.markInvalid(this.initErrors);
+            delete this.initErrors;
         }
     },
 
@@ -3669,9 +3745,9 @@ Ext.form.field.Base.override({
             if (this.validationId) {
                 this.validationId.abortedByEvent = true;
 
-                try{
+                try {
                     Ext.net.DirectEvent.abort(this.validationId);
-                } catch(e) { }
+                } catch (e) { }
             }
 
             this.validationId = Ext.net.DirectEvent.request(dc);
@@ -4095,11 +4171,11 @@ Ext.net.FieldNote = {
 
         me.callParent();
         me.noteEl = Ext.get(me.id+"-note");
-        if(me.noteEl){
+        if (me.noteEl) {
             me.noteEl = me.noteEl.down(".x-field-note");
         }
         me.indicatorEl = Ext.get(me.id+"-indicator");
-        if(me.indicatorEl){
+        if (me.indicatorEl) {
             me.indicatorEl = me.indicatorEl.down(".x-field-indicator");
         }
 
@@ -4208,16 +4284,17 @@ Ext.override(Ext.form.Text, {
     //private
     renderIconEl : function () {        
         this.inputEl.addCls("x-textfield-icon-input");
-
-
-        this.bodyEl.setStyle({
-            "position" : "relative",
-            "display" : "block"
-        });
-        this.icon = Ext.core.DomHelper.append(this.bodyEl, {
+        
+        this.icon = Ext.core.DomHelper.append(this.inputCell || this.bodyEl, {
             tag   : "div", 
-            style : "position:absolute"
-        }, true);    
+            style : "position:relative;margin:0px;padding:0px;border:0px;float:left;",
+            children:[{
+                tag   : "div", 
+                style : "position:absolute"
+            }]
+        }, true);            
+
+        this.icon = this.icon.first();
         
         this.icon.on("click", function (e, t) {
             this.fireEvent("iconclick", this, e, t);
@@ -4546,7 +4623,7 @@ Ext.form.field.Trigger.getIcon = function (icon) {
 
             var sepName = Ext.net.ResourceMgr.toCharacterSeparatedFileName(icon, "-"),                
                 template = "/{0}extnet/resources/images/triggerfield/{1}-gif/ext.axd",
-                appName = Ext.isEmpty(this.appName, false) ? "" : (this.appName + "/"),
+                appName = Ext.isEmpty(Ext.net.ResourceMgr.appName, false) ? "" : (Ext.net.ResourceMgr.appName + "/"),
                 url,
                 url1 = "",
                 css = ".x-trigger-cell .{0}{background-image:url({1});cursor:pointer;}";
@@ -4574,7 +4651,7 @@ Ext.form.field.Trigger.getIcon = function (icon) {
 };
 
 Ext.layout.component.field.Trigger.override({
-   updateEditState: function() {
+   updateEditState: function () {
         var me = this,
             owner = me.owner,
             inputEl = owner.inputEl,
@@ -4611,7 +4688,7 @@ Ext.form.field.Spinner.override({
         this.triggerCell = new Ext.dom.CompositeElement(this.el.down(".x-trigger-index-0").up("td"), this.el);        
     },
 
-    getTriggerMarkup: function() {
+    getTriggerMarkup: function () {
         var me = this;
 
         return me.getTpl('triggerTpl').apply({
@@ -4862,7 +4939,7 @@ Ext.form.field.ComboBox.override({
             }, this);
             
             this.setValue(values);
-            if(this.fireSelectOnLoad){
+            if (this.fireSelectOnLoad) {
                 this.fireEvent("select", this, this.valueModels);
             }            
         }
@@ -5029,24 +5106,24 @@ Ext.form.Panel.override({
         this.addEvents("fieldchange");
     },
 
-    onFieldAdded: function(field) {
+    onFieldAdded: function (field) {
         var me = this;
         me.mon(field, 'change', me.fireFieldChange, me);
         me.callParent(arguments);
     }, 
 
-    onFieldRemoved: function(field) {
+    onFieldRemoved: function (field) {
         var me = this;
         me.mun(field, 'change', me.fireFieldChange, me);
         me.callParent(arguments);
     },
 
-    fireFieldChange: function(field, newValue, oldValue) {
+    fireFieldChange: function (field, newValue, oldValue) {
         var me = this;
         me.fireEvent('fieldchange', me, field, newValue, oldValue);
     }, 
 
-    createForm: function() {
+    createForm: function () {
         return new Ext.form.Basic(this, Ext.applyIf({listeners: {}, directEvents: {}, messageBusListeners : {}, messageBusDirectEvents : {}}, this.initialConfig));
     },
 
@@ -5539,7 +5616,7 @@ Ext.define("Ext.layout.component.Image", {
                 this.owner.imgEl.setHeight(height - padding - border);
             }
         }   
-        else{
+        else {
             this.owner.imgEl.setHeight(height - padding - border);
         }            
     },
@@ -5555,7 +5632,7 @@ Ext.define("Ext.layout.component.Image", {
                 this.owner.imgEl.setWidth(width - padding - border);
             }
         }   
-        else{
+        else {
             this.owner.imgEl.setWidth(width - padding - border);
         }            
     }
@@ -6302,7 +6379,7 @@ Ext.form.field.File.override({
         Ext.form.field.File.superclass.setValue.call(this, v);
     },
 
-    onEnable: function(){
+    onEnable: function () {
         var me = this;
         me.callParent();
         me.fileInputEl.dom.removeAttribute("disabled");
@@ -6310,7 +6387,7 @@ Ext.form.field.File.override({
         me.browseButtonWrap.child('.x-btn').removeCls(["x-item-disabled", "x-btn-disabled"]);
     },
 
-    disableItems: function(){
+    disableItems: function () {
         var file = this.fileInputEl;
         if (file) {
             file.dom.disabled = true;
@@ -6319,7 +6396,7 @@ Ext.form.field.File.override({
         this.browseButtonWrap.child('.x-btn').addCls(["x-item-disabled", "x-btn-disabled"]);
     },
 
-    checkChange: function() {
+    checkChange: function () {
         if (!this.suspendCheckChange) {
             var me = this,
                 newVal = me.getValue(),
@@ -6473,17 +6550,17 @@ Ext.define("Ext.net.MenuPanel", {
 
     setSelection : function (menu, item, e) {
         if (this.saveSelection) {
-            this.clearSelection();
-
-            if (arguments.length == 1) {
+            if (arguments.length === 1) {
                 item = menu;
             }
 
-            this.selectedIndex = this.menu.items.indexOf(item);
-            this.getSelIndexField().setValue(this.selectedIndex);
-
-            item.activate();
-        }        
+            if (item) {
+                this.clearSelection();
+                this.selectedIndex = this.menu.items.indexOf(item);
+                this.getSelIndexField().setValue(this.selectedIndex);
+                item.activate();
+            }
+        }
     },
     
     clearSelection : function () {
@@ -6573,8 +6650,17 @@ Ext.toolbar.Toolbar.override({
         Ext.toolbar.Toolbar.superclass.onBeforeAdd.call(this,arguments);
     }
 });
+
+// @source core/toolbar/Paging.js
+
+Ext.toolbar.Paging.prototype.initComponent = Ext.Function.createSequence(Ext.toolbar.Paging.prototype.initComponent, function () {
+    if (this.hideRefresh) {
+        this.child("#refresh").hide();
+    }
+});
+
 Ext.toolbar.Paging.override({
-    getStoreListeners: function() {
+    getStoreListeners: function () {
         return {
             beforeload: this.beforeLoad,
             load: this.onLoad,
@@ -6610,7 +6696,6 @@ Ext.toolbar.Paging.override({
             currPage,
             pageCount,
             afterText,
-            count,
             total,
             isEmpty;
             
@@ -6622,14 +6707,9 @@ Ext.toolbar.Paging.override({
         currPage = pageData.currentPage;
         total = pageData.total;
         pageCount = pageData.pageCount;
-        count = me.store.getCount();
-        isEmpty = count === 0;
+        isEmpty = pageCount === 0;
         afterText = Ext.String.format(me.afterPageText, isNaN(pageCount) ? 1 : pageCount);
         
-        if (this.hideRefresh) {
-            this.child("#refresh").hide();
-        }
-
         if (total === 0) {
             currPage = 1;
             me.store.currentPage = 1;
@@ -6651,6 +6731,27 @@ Ext.toolbar.Paging.override({
 
         if (me.rendered) {
             me.fireEvent('change', me, pageData);
+        }
+    },
+
+    updateInfo : function () {
+        var me = this,
+            displayItem = me.child('#displayItem'),
+            pageData = me.getPageData(),
+            msg;
+
+        if (displayItem) {
+            if (pageData.pageCount === 0) {
+                msg = me.emptyMsg;
+            } else {
+                msg = Ext.String.format(
+                    me.displayMsg,
+                    pageData.fromRecord,
+                    pageData.toRecord,
+                    pageData.total
+                );
+            }
+            displayItem.setText(msg);
         }
     }
 });
@@ -6699,7 +6800,7 @@ Ext.layout.component.field.Field.prototype.finishedLayout = Ext.Function.createI
     if (this.owner.labelAlign == "top") {
         this.owner.labelEl.parent("td").setStyle("width", "100%");
         
-        if(this.owner.hasVisibleLabel()){
+        if (this.owner.hasVisibleLabel()) {
             this.owner.labelEl.parent("tr").dom.style.display = "";
         }
         else {
@@ -6768,7 +6869,7 @@ Ext.layout.container.Column.override({
         for (i = 0; i < len; ++i) {
             itemContext = items[i];
 
-            if(itemContext.target.flex){
+            if (itemContext.target.flex) {
                 itemContext.setHeight(ownerHeight);
             }
 
@@ -6788,7 +6889,7 @@ Ext.layout.container.Column.override({
     finishedLayout : function (ownerContext) {
         this.callParent(arguments);
 
-        if(Ext.isWebKit && this.chromeFixed !== true){
+        if (Ext.isWebKit && this.chromeFixed !== true) {
             this.chromeFixed = true;
             ownerContext.target.on("afterlayout", ownerContext.target.doLayout, ownerContext.target, {single:true});
         }
@@ -6894,13 +6995,13 @@ Ext.Editor.override({
     },
 
     startEdit : function (el, value) {
-        if(!Ext.isDefined(value)){
+        if (!Ext.isDefined(value)) {
             this.completeEdit();
             this.boundEl = Ext.get(el);
 
             if (this.useHtml) {
                 value = this.boundEl.dom.innerHTML;
-                if(this.htmlEncode){                    
+                if (this.htmlEncode) {                    
                     value = Ext.util.Format.htmlEncode(value);
                 }
             }
@@ -6920,7 +7021,7 @@ Ext.Editor.override({
         }
     },
 
-    completeEdit : function(remainVisible) {
+    completeEdit : function (remainVisible) {
         var me = this,
             field = me.field,
             value;
@@ -6951,10 +7052,10 @@ Ext.Editor.override({
             // Grab the value again, may have changed in beforecomplete
             value = me.getValue();
             if (me.updateEl && me.boundEl) {
-                if(this.htmlDecode){
+                if (this.htmlDecode) {
                     me.boundEl.update(Ext.util.Format.htmlDecode(value));
                 }
-                else{
+                else {
                     me.boundEl.update(value);
                 }
             }
@@ -7087,13 +7188,13 @@ Ext.net.ResourceMgr = function () {
                 return;
             }
 
-            if (!Ext.get("__EVENTTARGET")){
+            if (!Ext.get("__EVENTTARGET")) {
                 inputs = Ext.applyIf(inputs, {
                     "__EVENTTARGET": ""
                 });
             }
 
-            if (!Ext.get("__EVENTARGUMENT")){
+            if (!Ext.get("__EVENTARGUMENT")) {
                 inputs = Ext.applyIf(inputs, {
                     "__EVENTARGUMENT": ""
                 });
@@ -7257,10 +7358,10 @@ Ext.net.ResourceMgr = function () {
 
             if (Ext.isObject(obj) && (obj.destroy || obj.destroyStore)) {
                 try {
-                    if(contentOnly){
+                    if (contentOnly) {
                         obj.clearContent && obj.clearContent();
                     }
-                    else{                    
+                    else {                    
                         obj.destroyStore ?  obj.destroyStore() : obj.destroy();
                     }
                 } catch (e) { }
@@ -7331,7 +7432,7 @@ Ext.net.ResourceMgr = function () {
                     };
                 }         
                 
-                Ext.Function.defer(function(){
+                Ext.Function.defer(function () {
                     if (!this.inputsInit) {
                         this.initAspInputs({});
                     }    
@@ -7787,9 +7888,9 @@ Ext.net.renderTo = function (container, items) {
 Ext.net._renderTo = function (cfg, cmp) {
     if (cfg.mode == "item") {
         cfg.ct.insert(cfg.index, cmp);
-    } else if(cfg.mode == "el"){
+    } else if (cfg.mode == "el") {
         if (Ext.isArray(cmp)) {
-            Ext.each(function(c){
+            Ext.each(function (c) {
                 Ext.net._renderTo(cfg, c);
             });
         }
@@ -7810,7 +7911,7 @@ Ext.net.append = function (elTo, html, callback, wait) {
         fn;
 
    fn = function () {
-		if(wait) {
+		if (wait) {
             if (!document.getElementById(id)) {
 			    return false;
 		    }
@@ -7878,7 +7979,7 @@ Ext.net.append = function (elTo, html, callback, wait) {
                 }
             }
         }
-        if(wait) {
+        if (wait) {
             el = DOC.getElementById(id);
         
             if (el) {
@@ -7888,7 +7989,7 @@ Ext.net.append = function (elTo, html, callback, wait) {
         Ext.callback(callback, me); 
     };
 
-    if(wait) {
+    if (wait) {
         html += '<span id="' + id + '"></span>';
         interval = setInterval(fn, 20);
     }
@@ -7896,7 +7997,7 @@ Ext.net.append = function (elTo, html, callback, wait) {
     createdEl = Ext.DomHelper.append(elTo, html.replace(/(?:<script.*?>)((\n|\r|.)*?)(?:<\/script>)/ig, "")
                                                    .replace(/(?:<style.*?>)((\n|\r|.)*?)(?:<\/style>)/ig, "")
                                                    .replace(/(?:<link([^>]*)?\/>)/ig, ""), true);
-    if(!wait) {
+    if (!wait) {
         fn();
     }
 
@@ -8178,7 +8279,7 @@ Ext.net.Notification = function () {
                                     var window = saw[i],
                                         box = window.getBox();
 
-                                    if(box.width == 0 && box.height == 0){
+                                    if (box.width == 0 && box.height == 0) {
                                         box = window._defaultBox;
                                     }
 
@@ -8239,7 +8340,7 @@ Ext.net.Notification = function () {
 
                     this.toFront();
 
-                    if(this.shadow){                    
+                    if (this.shadow) {                    
                         this.el.enableShadow(true);
                         this.syncShadow();  
                     }
@@ -8516,7 +8617,7 @@ Ext.define("Ext.net.TaskManager", {
                 if (this.onstop) {
                     this.onstop();
                 }
-                if(this._ts && this.owner.destroying){
+                if (this._ts && this.owner.destroying) {
                     Ext.net.DirectEvent.abort(this._ts);
                 }
             },
@@ -8754,9 +8855,9 @@ Ext.core.Element.addMethods({
     }    
 });
 
-if(!Ext.isIE && document.querySelector){
+if (!Ext.isIE && document.querySelector) {
     Ext.core.Element.prototype.getById = function (id, asDom) {
-        if(Ext.isEmpty(id)){
+        if (Ext.isEmpty(id)) {
             return null;
         }
         var dom = document.getElementById(id) ||
@@ -8933,8 +9034,8 @@ Ext.define("Ext.data.proxy.Page", {
         requestConfig.extraParams = request.params;
 
         var directFn = this.directFn || this.api[operation.action] || (operation.action != "read" ? this.api["sync"] : null);
-        if(directFn){                        
-            if(Ext.isString(directFn)){
+        if (directFn) {                        
+            if (Ext.isString(directFn)) {
                 directFn = Ext.decode(directFn);
             }            
 
@@ -8951,13 +9052,13 @@ Ext.define("Ext.data.proxy.Page", {
             delete requestConfig.userFailure;
             requestConfig.showFailureWarning = false;
 
-            if(directFn.length === 1) {
+            if (directFn.length === 1) {
                 directFn(requestConfig);
             }
-            else if(directFn.length === 2) {
+            else if (directFn.length === 2) {
                 directFn(operation.action || null, requestConfig);
             }
-            else if(directFn.length === 3) {
+            else if (directFn.length === 3) {
                 directFn(operation.action || null, extraParams || null, requestConfig);
             }
             else {
@@ -9125,14 +9226,32 @@ Ext.define("Ext.data.proxy.PagingMemory", {
 // @source data/data/Model.js
 
 // @source data/data/Store.js
+Ext.data.StoreManager.getArrayStore = function (fieldsCount) {
+    var fields = ['field1'],
+        i;
+
+    fieldsCount = fieldsCount || 1;
+
+    for (i = 2; i <= fieldsCount; ++i) {
+        fields.push('field' + i);
+    }
+    
+    return new Ext.data.ArrayStore({
+        data        : [],
+        fields      : fields,
+        autoDestroy : true,
+        autoCreated : true,
+        expanded    : false
+    });
+};
 
 Ext.data.AbstractStore.override({
     constructor : function (config) {
         var me = this;
 
-        if(config && config.storeId){
+        if (config && config.storeId) {
             var store = Ext.data.StoreManager.lookup(config.storeId);
-            if(store){
+            if (store) {
                 store.destroyStore();
             }
         }
@@ -9448,7 +9567,7 @@ Ext.data.Store.override({
                 this.dirtyWarningText,
                 function (btn, text) {
                     if (btn == "yes") {
-                      this.originalLoad(options);
+                      this._load(options);
                     }
                 },
                 this
@@ -9615,7 +9734,8 @@ Ext.data.Store.override({
     },
     
     rejectChanges : function (actions) {
-        var i, 
+        var me = this, 
+            i, 
             len, 
             records,
             record;
@@ -9633,7 +9753,7 @@ Ext.data.Store.override({
             if (len > 0) {
                for (i = 0; i < len; i++) {
                   record = records[i];
-                  this.remove(record, true);
+                  me.remove(record, true);
                }
             }
         }
@@ -9655,11 +9775,11 @@ Ext.data.Store.override({
             len = records.length;
             
             if (records.length > 0) {
-               var autoSync = this.autoSync;
-               this.autoSync = false;
-               this.add(records);
-               this.autoSync = autoSync;
-               this.removed = [];
+               var autoSync = me.autoSync;
+               me.autoSync = false;
+               me.add(records);
+               me.autoSync = autoSync;
+               me.removed = [];
             }            
         }
     },
@@ -10221,7 +10341,7 @@ Ext.data.NodeInterface.applyFields = Ext.Function.createInterceptor(Ext.data.Nod
 });
 
 Ext.data.reader.Json.override({
-   buildExtractors : function() {
+   buildExtractors : function () {
         var me = this,
             _root;
 
@@ -10349,7 +10469,7 @@ Ext.data.writer.Json.override({
 Ext.view.AbstractView.override({
      wasFirstRefresh : false,
 
-     doFirstRefresh: function(store) {
+     doFirstRefresh: function (store) {
         var me = this;
 
         if (store && !store.loading) {
@@ -10365,24 +10485,24 @@ Ext.view.AbstractView.override({
                 me.refresh();
             }
         }
-        else{
+        else {
             me.wasFirstRefresh = true;
         }
      },
 
-     setMaskBind: function(store) {
+     setMaskBind: function (store) {
         var mask = this.loadMask;
         if (mask) {
-            if(mask.bindStore){
+            if (mask.bindStore) {
                 mask.bindStore(store);
             }
-            else{
+            else {
                 this.maskShouldBeBound = true;
             }
         }
      },
 
-     onRender: function() {
+     onRender: function () {
         var me = this,
             mask;
 
@@ -10396,7 +10516,7 @@ Ext.view.AbstractView.override({
         }
     },
 
-     onDataRefresh: function() {
+     onDataRefresh: function () {
         if (this.blockRefresh !== true && this.wasFirstRefresh) {
             this.refresh.apply(this, arguments);
         }
@@ -10629,7 +10749,7 @@ Ext.panel.Table.override({
         }
     },
 
-    beforeDestroy : function() {
+    beforeDestroy : function () {
         if (this.editors) {
             Ext.destroy(this.editors);
         }
@@ -10699,6 +10819,23 @@ Ext.grid.Panel.override({
         
         this.initSelectionSubmit();        
         this.callParent(arguments);
+
+        if (this.lockable) {
+            p = this.lockedGrid.getSelectionSubmit();
+            Ext.Array.remove(this.lockedGrid.plugins, p);
+
+            if (Ext.isFunction(p.destroy)) {
+                p.destroy();
+            }
+
+            if (this.selectionMemory) {
+                p = this.lockedGrid.getSelectionMemory();
+                Ext.Array.remove(this.lockedGrid.plugins, p);
+                if (Ext.isFunction(p.destroy)) {
+                    p.destroy();
+                }
+            }
+        }
     },
     
     initSelectionSubmit : function () {
@@ -10751,10 +10888,12 @@ Ext.grid.Panel.override({
             sIds = this.getSelectionMemory().selectedIds;
 
             for (var id in sIds) {
-                record = this.store.getById(sIds[id].id);
+                if (sIds.hasOwnProperty(id)) {
+                    record = this.store.getById(sIds[id].id);
 
-                if (!Ext.isEmpty(record)) {
-                    records.push(record);
+                    if (!Ext.isEmpty(record)) {
+                        records.push(record);
+                    }
                 }
             }
         }
@@ -10871,7 +11010,7 @@ Ext.grid.Panel.override({
     }
 });
 Ext.selection.CellModel.override({
-    deselectAll: function(suppressEvent) {
+    deselectAll: function (suppressEvent) {
         this.setCurrentPosition();
     }
 });
@@ -10996,6 +11135,10 @@ Ext.define('Ext.grid.plugin.SelectionMemory', {
     alias  : 'plugin.selectionmemory',
     
     init   : function (grid) {
+        if (grid.lockable) {
+            return;
+        }
+        
         var me = this;
         this.grid = grid;
         this.headerCt = this.grid.headerCt || this.grid.normalGrid.headerCt;
@@ -11020,10 +11163,21 @@ Ext.define('Ext.grid.plugin.SelectionMemory', {
         this.grid.store.on("remove", this.onStoreRemove, this);
         this.grid.getView().on("refresh", this.memoryReConfigure, this, {single:true});     
 
+        this.grid.getView()._onMaskBeforeShow = this.grid.getView().onMaskBeforeShow;
         this.grid.getView().onMaskBeforeShow = Ext.Function.createInterceptor(this.grid.getView().onMaskBeforeShow, this.onMaskBeforeShowBefore, this);
         this.grid.getView().onMaskBeforeShow = Ext.Function.createSequence(this.grid.getView().onMaskBeforeShow, this.onMaskBeforeShowAfter, this);
 
+        this.selModel._onSelectChange = this.selModel.onSelectChange;
         this.selModel.onSelectChange = Ext.Function.createSequence(this.selModel.onSelectChange, this.onSelectChange, this);
+    },
+
+    destroy : function () {
+        this.selModel.un("select", this.onMemorySelect, this);
+        this.selModel.un("deselect", this.onMemoryDeselect, this);
+        this.grid.store.un("remove", this.onStoreRemove, this);
+        this.grid.getView().un("refresh", this.memoryReConfigure, this, {single:true});             
+        this.grid.getView().onMaskBeforeShow = this.grid.getView()._onMaskBeforeShow;
+        this.selModel.onSelectChange = this.selModel._onSelectChange;
     },
     
     onMaskBeforeShowBefore : function () {
@@ -11069,6 +11223,10 @@ Ext.define('Ext.grid.plugin.SelectionMemory', {
     },
 
     onMemorySelectId : function (sm, index, id, column) {
+        if (!id) {
+            return;
+        }
+
         var obj = { 
             id    : id, 
             index : index 
@@ -11168,6 +11326,10 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
     alias  : 'plugin.selectionsubmit',
     
     init   : function (grid) {
+        if (grid.lockable) {
+            return;
+        }
+        
         this.grid = grid;
         this.headerCt = this.grid.headerCt || this.grid.normalGrid.headerCt;
         this.store = grid.store;
@@ -11191,25 +11353,17 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
             sm.on("select", this.updateSelection, this, { buffer: 1 });
         } else {
             sm.on("selectionchange", this.updateSelection, this, { buffer: 10 });
-            if (sm.onHeaderClick) {
-                this.grid.getView().headerCt.on('headerclick', this.onHeaderClick, this, {delay:1});
-            }
         }
         
-        this.grid.getView().on("render", function () {
-            if (this.grid.selectionSubmit && this.grid.getSelectionModel().proxyId) {
-                this.getSelectionModelField().render(this.grid.el.parent() || this.grid.el);
-            }
-            this.initSelectionData();
-        }, this);
-        
+        this.grid.getView().on("afterrender", this.renderHiddenField, this);        
         this.grid.store.on("clear", this.clearField, this);
     },
 
-    onHeaderClick : function (headerCt, header, e) {
-        if (header.isCheckerHd) {
-            this.updateSelection();   
+    renderHiddenField : function () {
+        if (this.grid.selectionSubmit && this.grid.getSelectionModel().proxyId) {
+            this.getSelectionModelField().render(this.grid.el.parent() || this.grid.el);
         }
+        this.initSelectionData();
     },
     
     clearField : function () {
@@ -11228,7 +11382,19 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
     destroy : function () {
         if (this.hField && this.hField.rendered) {
             this.hField.destroy();
+            this.store.un("load", this.doSelection, this, { single: true, delay : 100 });
         }
+        
+        var sm = this.grid.getSelectionModel();
+        if (sm instanceof Ext.selection.CellModel) {
+            sm.un("deselect", this.updateSelection, this, { buffer: 1 });
+            sm.un("select", this.updateSelection, this, { buffer: 1 });
+        } else {
+            sm.un("selectionchange", this.updateSelection, this, { buffer: 10 });
+        }
+
+        this.grid.getView().un("afterrender", this.renderHiddenField, this);        
+        this.grid.store.un("clear", this.clearField, this);
     },
     
     doSelection : function () {
@@ -11318,15 +11484,17 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
         if (selModel instanceof Ext.selection.RowModel) {
             var records = [];
 
-            if (sMemory) {
+            if (sMemory && sMemory.selectedIds && !Ext.isEmptyObj(sMemory.selectedIds)) {
                 for (var id in sMemory.selectedIds) {
-                    records.push({ RecordID: sMemory.selectedIds[id].id, RowIndex: sMemory.selectedIds[id].index });
+                    if (sMemory.selectedIds.hasOwnProperty(id)) {
+                        records.push({ RecordID: sMemory.selectedIds[id].id, RowIndex: sMemory.selectedIds[id].index });
+                    }
                 }
             } else {
                 var selectedRecords = selModel.getSelection();
 
                 for (var i = 0; i < selectedRecords.length; i++) {
-                    rowIndex = store.indexOfId(selectedRecords[i].getId());                    
+                    rowIndex = store.indexOf(selectedRecords[i]);
                     records.push({ RecordID: selectedRecords[i].getId(), RowIndex: rowIndex });
                 }
             }
@@ -11470,7 +11638,7 @@ Ext.grid.column.Column.override({
         return this.callParent(arguments);
     },
 
-    setPadding: function(headerHeight) {
+    setPadding: function (headerHeight) {
         var me = this,
             lineHeight = parseInt(me.textEl.getStyle('line-height'), 10),
             textHeight = me.textEl.dom.offsetHeight,
@@ -11492,7 +11660,7 @@ Ext.grid.column.Column.override({
 
         // Vertically center the header text in potentially vertically stretched header
         if (textHeight) {
-            if(lineHeight) {
+            if (lineHeight) {
                 textHeight = Math.ceil(textHeight / lineHeight) * lineHeight;
             }
             titleEl.setStyle({
@@ -11628,7 +11796,7 @@ Ext.grid.column.Column.override({
             meta.tdCls = meta.tdCls || "";
             meta.tdCls += " cell-imagecommand-cell";
 
-            if(me.isHidden()){
+            if (me.isHidden()) {
                 meta.tdCls += " x-hide-command";
             }
 
@@ -11673,7 +11841,7 @@ Ext.grid.column.Column.override({
         this.fireEvent("command", this, cmd, this.grid.store.getAt(recordIndex), recordIndex, cellIndex);
     },
 
-    beforeDestroy : function() {
+    beforeDestroy : function () {
         if (this.editors) {
             Ext.destroy(this.editors);
         }
@@ -11684,8 +11852,7 @@ Ext.define('Ext.grid.column.ImageCommand', {
     extend       : 'Ext.grid.column.Column',
     alias        : 'widget.imagecommandcolumn',
     commandWidth : 18,
-    dataIndex    : "",
-    header       : "",
+    dataIndex    : "",        
     menuDisabled : true,
     sortable     : false,
     hideable     : false,
@@ -11856,7 +12023,7 @@ Ext.define('Ext.grid.column.ImageCommand', {
         meta.tdCls = meta.tdCls || "";
         meta.tdCls += " row-imagecommand-cell";
 
-        if(this.isHidden()){
+        if (this.isHidden()) {
             meta.tdCls += " x-hide-command";
         }
 
@@ -12132,9 +12299,9 @@ Ext.define("Ext.grid.column.CommandColumn", {
     restoreLastPlaceholder : function () {
         if (this.lastToolbarDiv) {                    
             if (this.lastToolbarDiv.dom) {
-                try{
+                try {
                     this.lastToolbarDiv.down('.row-cmd-placeholder').removeCls("x-hide-display");
-                } catch(e) { }
+                } catch (e) { }
             }
             delete this.lastToolbarDiv;
         }
@@ -12153,7 +12320,9 @@ Ext.define("Ext.grid.column.CommandColumn", {
                     ui             : "flat",
                     items          : this.commands,
                     enableOverflow : false,
-                    buttonAlign    : this.buttonAlign
+                    layout         : {
+                        pack : this.pack
+                    }
                 });               
         }
         
@@ -12295,9 +12464,11 @@ Ext.define("Ext.grid.column.CommandColumn", {
 
                 var toolbar = Ext.create("Ext.toolbar.Toolbar", {
                         items          : this.commands,
-                        ui : "flat",
+                        ui             : "flat",
                         enableOverflow : false,
-                        buttonAlign    : this.buttonAlign
+                        layout         : {
+                            pack : this.pack
+                        }
                     }),
                     div;
 
@@ -12350,7 +12521,7 @@ Ext.define("Ext.grid.column.CommandColumn", {
                 }, this);
             }
 
-            if(!this.view.bufferedRefreshSize){
+            if (!this.view.bufferedRefreshSize) {
                 this.view.bufferedRefreshSize = Ext.Function.createBuffered(this.view.refreshSize, 10, this.view);
             }
 
@@ -12534,8 +12705,8 @@ Ext.define("Ext.grid.column.CommandColumn", {
     destroy : function () {
         var view = this.grid.getView();
 
-        Ext.each(this.sharedMenus || [], function(menu){
-            if(menu){
+        Ext.each(this.sharedMenus || [], function (menu) {
+            if (menu) {
                 menu.destroy();
             }
         });
@@ -12862,7 +13033,7 @@ Ext.define("Ext.grid.column.ComponentColumn", {
             if (this.lastComponentDiv.dom) {
                 try {
                     this.lastComponentDiv.down('.row-cmp-placeholder').removeCls("x-hide-display");
-                } catch(e) {                        
+                } catch (e) {                        
                 }
             }
 
@@ -13039,7 +13210,7 @@ Ext.define("Ext.grid.column.ComponentColumn", {
             this.onBind(cmp, record);
         }
 
-        if(!this.view.bufferedRefreshSize){
+        if (!this.view.bufferedRefreshSize) {
             this.view.bufferedRefreshSize = Ext.Function.createBuffered(this.view.refreshSize, 10, this.view);
         }
 
@@ -13331,37 +13502,41 @@ Ext.define('Ext.ux.CheckColumn', {
 
     
     processEvent : function (type, view, cell, recordIndex, cellIndex, e) {
-        if (this.editable && (type == 'mousedown' || (type == 'keydown' && (e.getKey() == e.ENTER || e.getKey() == e.SPACE)))) {
+        var me = this,
+            key = type === 'keydown' && e.getKey(),
+            mousedown = type == 'mousedown';
+
+        if (me.editable && (mousedown || (key == e.ENTER || key == e.SPACE))) {
             var store = view.panel.store,
-                record = store.getAt(recordIndex),
-                dataIndex = this.dataIndex,
+                record = store.getAt ? store.getAt(recordIndex) : view.getRecord(view.getNode(recordIndex)),
+                dataIndex = me.dataIndex,
                 checked = !record.get(dataIndex),
                 eventTarget = view.panel.editingPlugin || view.panel;
-
+ 
             var ev = {
                 grid   : view.panel,
                 record : record,
                 field  : dataIndex,
-                value  : record.get(this.dataIndex),
+                value  : record.get(me.dataIndex),
                 row    : view.getNode(recordIndex),
-                column : this,
+                column : me,
                 rowIdx : recordIndex,
                 colIdx : cellIndex,
                 cancel : false
             };
-
+ 
             if (eventTarget.fireEvent("beforeedit", eventTarget, ev) === false || ev.cancel === true) {
                 return;
-            }  
-
+            }
+ 
             ev.originalValue = ev.value;
             ev.value = checked;
-            
+ 
             if (eventTarget.fireEvent("validateedit", eventTarget, ev) === false || ev.cancel === true) {
                 return;
-            } 
-                
-            if (this.singleSelect) {
+            }
+ 
+            if (me.singleSelect) {
                 store.suspendEvents();
                 store.each(function (record, i) {
                     var value = (i == recordIndex);
@@ -13375,27 +13550,26 @@ Ext.define('Ext.ux.CheckColumn', {
             } else {
                 record.set(dataIndex, checked);
             }
-
-            this.fireEvent('checkchange', this, recordIndex, record, checked);
+ 
+            me.fireEvent('checkchange', me, recordIndex, record, checked);
             eventTarget.fireEvent('edit', eventTarget, ev);
-
+                     
             if (mousedown) {
                 e.stopEvent();
             }
-
+ 
             // Selection will not proceed after this because of the DOM update caused by the record modification
             // Invoke the SelectionModel unless configured not to do so
             if (!me.stopSelection) {
                 view.selModel.selectByPosition({
-                    row: recordIndex,
-                    column: cellIndex
+                    row    : recordIndex,
+                    column : cellIndex
                 });
             }
-
             // cancel selection.
             return false;
         } else {
-            return this.callParent(arguments);
+            return me.callParent(arguments);
         }
     },
 
@@ -13427,8 +13601,8 @@ Ext.grid.plugin.HeaderResizer.override({
     })
 });
 Ext.grid.plugin.CellEditing.override({
-    getColumnField: function(columnHeader, defaultField, record) {
-        if(columnHeader instanceof Ext.ux.CheckColumn){
+    getColumnField: function (columnHeader, defaultField, record) {
+        if (columnHeader instanceof Ext.ux.CheckColumn) {
             return;
         }
 
@@ -13444,7 +13618,7 @@ Ext.grid.plugin.CellEditing.override({
         }
 
         if (!field || this.fieldFromEditors) {
-            if(columnHeader.editors){
+            if (columnHeader.editors) {
                 field = this.getFromEditors(record, columnHeader, columnHeader.editors, columnHeader.editorStrategy, columnHeader);
                 this.fieldFromEditors = false;
             }
@@ -13460,9 +13634,11 @@ Ext.grid.plugin.CellEditing.override({
             if (Ext.isString(field)) {
                 field = { xtype: field };
             }
+
             if (!field.isFormField) {
                 field = Ext.ComponentManager.create(field, this.defaultFieldXType);
             }
+            
             columnHeader.field = field;
  
             Ext.apply(field, {
@@ -13479,17 +13655,16 @@ Ext.grid.plugin.CellEditing.override({
         var editor,
             index;
 
-        if(editorStrategy){
+        if (editorStrategy) {
             editor = editorStrategy.call(scope, record, column, editors, this.grid);
 
-            if(Ext.isNumber(editor)) {
+            if (Ext.isNumber(editor)) {
                 index = editor;
                 editor = editors[index];
             }
 
             index = Ext.Array.indexOf(editors, editor);
-        }
-        else{
+        } else {
             editor = editors[0];
             index = 0;
         }
@@ -13498,12 +13673,13 @@ Ext.grid.plugin.CellEditing.override({
             if (!(editor instanceof Ext.form.field.Base)) {
                 editor = Ext.ComponentManager.create(editor, 'textfield');
             }
+
             editor = editors[index] = new Ext.grid.CellEditor({ 
                 field: editor                
             });
         }
 
-        if(editor) {
+        if (editor) {
             Ext.applyIf(editor, {
                 editorId: editor.field.getItemId(),                    
                 editingPlugin: this,
@@ -13535,8 +13711,7 @@ Ext.grid.plugin.CellEditing.override({
                     field: editor,
                     ownerCt: me.grid
                 });
-            }
-            else {
+            } else {
                 Ext.applyIf(editor, {
                     editorId: editorId,                    
                     ownerCt: me.grid
@@ -13550,12 +13725,14 @@ Ext.grid.plugin.CellEditing.override({
                 complete: me.onEditComplete,
                 canceledit: me.cancelEdit
             });
+            
             editors.add(editor);
+
             return editor;
         }
     },
 
-    initFieldAccessors: function(columns) {
+    initFieldAccessors: function (columns) {
         columns = [].concat(columns);
 
         var me   = this,
@@ -13567,18 +13744,18 @@ Ext.grid.plugin.CellEditing.override({
             column = columns[c];
 
             Ext.applyIf(column, {
-                getEditor: function(record, defaultField) {
+                getEditor : function (record, defaultField) {
                     return me.getColumnField(this, defaultField, record);
                 },
 
-                setEditor: function(field) {
+                setEditor : function (field) {
                     me.setColumnField(this, field);
                 }
             });
         }
     },
 
-    getEditorId : function(column) {
+    getEditorId : function (column) {
         return column.activeEditorId || column.getItemId();
     } 
 });
@@ -13588,13 +13765,14 @@ Ext.grid.plugin.RowEditing.override({
     errorsText    : 'Errors',
     dirtyText     : 'You need to commit or cancel your changes', 
 
-    getEditor: function() {
+    getEditor: function () {
         var me = this;
 
         if (!me.editor) {
             me.editor = me.initEditor();
             me.editor.on("render", me.setHandlers, me, {single:true});
         }
+
         return me.editor;
     },
 
@@ -14002,12 +14180,12 @@ Ext.define('Ext.ux.RowExpander', {
 });
 
 Ext.grid.feature.Summary.override({            
-    generateSummaryData: function(){
+    generateSummaryData : function () {
         var oldData,
             result,
             store = this.view.store;
 
-        if(store.buffered && store.pageMap && store.pageMap.hasPage(1)){
+        if (store.buffered && store.pageMap && store.pageMap.hasPage(1)) {
             oldData = store.data;
             store.data = new Ext.util.MixedCollection(false, Ext.data.Store.recordIdFn);
             store.data.addAll(store.pageMap.getPage(1));
@@ -14015,7 +14193,7 @@ Ext.grid.feature.Summary.override({
 
         result = this.callOverridden(arguments);
 
-        if(store.buffered && oldData){
+        if (store.buffered && oldData) {
             store.data = oldData;
         }
 
@@ -14024,7 +14202,7 @@ Ext.grid.feature.Summary.override({
 });
 
 Ext.grid.feature.GroupingSummary.override({
-    aggregate: function(fn, scope, grouped, args) {
+    aggregate: function (fn, scope, grouped, args) {
         args = args || [];
         if (grouped && this.isGrouped()) {
             var groups = this._groupingSummaryPlugin.summaryGroups,
@@ -14041,8 +14219,8 @@ Ext.grid.feature.GroupingSummary.override({
             for (i = 0; i < len; ++i) {                        
                 group = groups[i];
                 pointers[group.name] = {
-                    name: group.name,
-                    children: []
+                    name     : group.name,
+                    children : []
                 };
             }
 
@@ -14066,19 +14244,18 @@ Ext.grid.feature.GroupingSummary.override({
         }
     },
 
-    generateSummaryData: function(){
+    generateSummaryData: function () {
         var oldData,
             oldAggregate,
             result,
             store = this.view.store;
 
-        if(store.buffered && store.pageMap && store.pageMap.hasPage(1)){
-            if(store.isGrouped()){
+        if (store.buffered && store.pageMap && store.pageMap.hasPage(1)) {
+            if (store.isGrouped()) {
                 oldAggregate = store.aggregate;
                 store.aggregate = this.aggregate;
                 store._groupingSummaryPlugin = this;
-            }
-            else{                    
+            } else {                    
                 oldData = store.data;
                 store.data = new Ext.util.MixedCollection(false, Ext.data.Store.recordIdFn);
                 store.data.addAll(store.pageMap.getPage(1));
@@ -14087,11 +14264,11 @@ Ext.grid.feature.GroupingSummary.override({
 
         result = this.callOverridden(arguments);
 
-        if(store.buffered && oldData){
+        if (store.buffered && oldData) {
             store.data = oldData;
         }
 
-        if(store.buffered && oldAggregate){
+        if (store.buffered && oldAggregate) {
             store.aggregate = oldAggregate;
             delete store._groupingSummaryPlugin;
         }
@@ -14199,7 +14376,7 @@ Ext.tree.Panel.override({
 		
 		if (this.mode === "remote") {
 		    this.mode = "local";
-		    this.on("afterrender", function(){
+		    this.on("afterrender", function () {
                 this.setMode("remote");
             }, this, {single:true});            
 		}
@@ -14788,7 +14965,7 @@ Ext.tree.Panel.override({
             else if (o.action === "raMove") {
 			    o.e.dropHandlers.cancelDrop();
 			}
-            else{
+            else {
                 o.node.reject();
             }
             			
@@ -14801,12 +14978,12 @@ Ext.tree.Panel.override({
 
 		switch (o.action) {
 		    case "raEdit":
-			    if(o.isRowEditing){
-                    if(Ext.isDefined(rParams.ra_newValues) || Ext.isDefined(rParams.value) || !o.fromEditor) {
+			    if (o.isRowEditing) {
+                    if (Ext.isDefined(rParams.ra_newValues) || Ext.isDefined(rParams.value) || !o.fromEditor) {
                         o.node.set(rParams.ra_newValues || rParams.value || o.raConfig.newValues);
                     }
                 }            
-                else if(Ext.isDefined(rParams.ra_newValue) || Ext.isDefined(rParams.value) || !o.fromEditor) {
+                else if (Ext.isDefined(rParams.ra_newValue) || Ext.isDefined(rParams.value) || !o.fromEditor) {
                     o.node.set(o.raConfig.field, rParams.ra_newValue || rParams.value || o.raConfig.newValue);
                 }
 		        break;
@@ -14816,11 +14993,37 @@ Ext.tree.Panel.override({
 		    case "raMove":
 			    if (o.e.currentPosition === "append") {
 			        o.e.overNode.expand();
-			    }
 
-                o.e.dropHandlers.processDrop();
+                    if (o.e.overNode.data.loaded || o.e.overNode.isLeaf()) {
+			            o.e.dropHandlers.processDrop();
+			        } else {
+			            o.e.dropHandlers.cancelDrop();
+                        
+                        var parentNode = o.node.parentNode,
+                            index = parentNode.indexOf(o.node);
+
+                        o.node.remove();
+
+                        o.e.overNode.on("load", function () {
+                            var index = this.newParent.indexOfId(this.id),
+                                node;
+                            if ( index >= 0 ) {
+                                node = this.newParent.getChildAt(index);
+                                node.fireEvent("move", node, this.oldParent, this.newParent, this.index);
+                            }
+                        }, {
+                            tree: this,
+                            oldParent: parentNode,
+                            newParent: o.e.overNode,
+                            id: o.node.getId(),
+                            index: index
+                        }, {single:true});
+			        }
+			    }                
+                else {
+                    o.e.dropHandlers.processDrop();
+                }
             
-                
 		        break;
 		    case "raAppend":
 		    case "raInsert":
@@ -14850,7 +15053,7 @@ Ext.tree.Panel.override({
         else if (o.action === "raMove") {
 			o.e.dropHandlers.cancelDrop();
 		}
-        else{
+        else {
             o.node.reject();
         }
 		
@@ -14923,7 +15126,7 @@ Ext.tree.Panel.override({
     editNode : function (node, field, value, e) {
 		field = field || "text";
         if (this.mode === "local" || Ext.Array.indexOf(this.localActions, "edit") !== -1) {
-		    if(!e){
+		    if (!e) {
                node.set(field, value);
             }
 		    return;
@@ -14939,7 +15142,7 @@ Ext.tree.Panel.override({
 	            oldValue : this.convertText(e ? e.originalValue : node.get(field))
 	        };
 
-            if(e && e.newValues){
+            if (e && e.newValues) {
                 dc.raConfig.newValues = e.newValues;
                 dc.raConfig.oldValues = e.originalValues;
                 dc.raConfig.isRow = true;
@@ -15001,7 +15204,7 @@ Ext.tree.Panel.override({
             };
 
             var ids = [];
-            Ext.each(data.records, function(r){
+            Ext.each(data.records, function (r) {
                 ids.push(r.getId());
             });
 
@@ -15130,7 +15333,7 @@ Ext.tree.Column.override({
     })
 });
 Ext.tree.ViewDropZone.override({
-    getPosition: function(e, node) {
+    getPosition: function (e, node) {
         var view = this.view,
             record = view.getRecord(node),
             y = e.getPageY(),
@@ -15167,16 +15370,16 @@ Ext.tree.ViewDropZone.override({
 });
 
 Ext.tree.plugin.TreeViewDragDrop.override({
-    init : function(view) {
+    init : function (view) {
         this.callParent(arguments);
 
         view.panel.ddPlugin = this;
         view.ddPlugin = this;
         view.allowLeafDrop = this.allowLeafDrop;
 
-        if(this.allowLeafDrop) {
+        if (this.allowLeafDrop) {
             view.on("drop", function (node, data, overRecord, currentPosition) {
-                if(currentPosition == "append" && overRecord.isLeaf()) {
+                if (currentPosition == "append" && overRecord.isLeaf()) {
                     overRecord.set("leaf", false);
                     overRecord.set("loaded", true);
                 }
@@ -15191,7 +15394,7 @@ Ext.draw.Component.override({
 });
 
 Ext.draw.Surface.override({
-    onAdd: function(sprite) {
+    onAdd: function (sprite) {
         var group = sprite.group,
             draggable = sprite.draggable,
             groups, ln, i;
@@ -15205,10 +15408,10 @@ Ext.draw.Surface.override({
             delete sprite.group;
         }
         if (draggable) {
-            if(sprite.el){
+            if (sprite.el) {
                 sprite.initDraggable();
             }
-            else{
+            else {
                 sprite.on("render", sprite.initDraggable, sprite, {single:true});
             }
         }
@@ -15228,7 +15431,7 @@ Ext.chart.LegendItem.override({
         this.callParent(arguments);
 
         if (me.legend.refreshOnItemToggle) {
-             me.on('mousedown', function() {
+             me.on('mousedown', function () {
                 me.legend.chart.refresh();
             }, me);
         }
@@ -15236,10 +15439,10 @@ Ext.chart.LegendItem.override({
 });
 
 Ext.resizer.Splitter.override({
-    getCollapseTarget: function() {
+    getCollapseTarget: function () {
         var me = this;
 
-        if(me.collapseTarget != "prev" && me.collapseTarget != "next" && Ext.isString(me.collapseTarget)){
+        if (me.collapseTarget != "prev" && me.collapseTarget != "next" && Ext.isString(me.collapseTarget)) {
            var cmp = Ext.net.ResourceMgr.getCmp(me.collapseTarget);
            if (cmp) {
                me.collapseTarget = cmp;
@@ -15253,8 +15456,8 @@ Ext.resizer.Splitter.override({
 //http://www.openajax.org/member/wiki/OpenAjax_Hub_2.0_Specification_Topic_Names
 
 Ext.define("Ext.net.MessageBus", {    
-    mixins: {
-        observable: 'Ext.util.Observable'
+    mixins : {
+        observable : 'Ext.util.Observable'
     }, 
      
     statics: { 
@@ -15264,7 +15467,7 @@ Ext.define("Ext.net.MessageBus", {
                     var bus = listener.bus ? Ext.net.ResourceMgr.getCmp(listener.bus) : Ext.net.Bus,
                         name = listener.name || "**";
 
-                    if(owner instanceof Ext.net.MessageBus){
+                    if (owner instanceof Ext.net.MessageBus) {
                         bus = owner;
                     }
 
@@ -15276,6 +15479,7 @@ Ext.define("Ext.net.MessageBus", {
 
                     bus.subscribe(name, listener);
                 });
+
                 owner.messageBusListeners = null;
             }
 
@@ -15284,13 +15488,14 @@ Ext.define("Ext.net.MessageBus", {
                     var bus = listener.bus ? Ext.net.ResourceMgr.getCmp(listener.bus) : Ext.net.Bus,
                         name = listener.name || "**";
 
-                    if(owner instanceof Ext.net.MessageBus){
+                    if (owner instanceof Ext.net.MessageBus) {
                         bus = owner;
                     }
 
                     if (!bus) {
                         throw new Error("Bus is not found: " + listener.bus);
                     }
+
                     listener.isDirect = true;                    
                     listener.scope = listener.scope || owner;
                     bus.subscribe(name, listener);
@@ -15304,7 +15509,7 @@ Ext.define("Ext.net.MessageBus", {
         var isDefault = !Ext.net.Bus;
         Ext.apply(this, config || {});
 
-        if(this.defaultBus){
+        if (this.defaultBus) {
             Ext.net.Bus = this;
         }
 
@@ -15325,17 +15530,16 @@ Ext.define("Ext.net.MessageBus", {
             token,
             i;
 
-        for(i = 0; i < len; i++) {
+        for (i = 0; i < len; i++) {
             token = tokens[i];
 
-            if(!tokenRe.test(token) && token !== "*" && (token !== "**" || i !== (len - 1)) ) {
+            if (!tokenRe.test(token) && token !== "*" && (token !== "**" || i !== (len - 1)) ) {
                 throw new Error('Incorrect event name: ' + name);
             }
 
-            if(token === "**") {
+            if (token === "**") {
                 tokens[i] = ".*";
-            }
-            else if(token === "*") {
+            } else if (token === "*") {
                 tokens[i] = "\\w+";
             }
         }
@@ -15348,8 +15552,7 @@ Ext.define("Ext.net.MessageBus", {
 
         if (Ext.isObject(fn)) {
             config = fn;
-        }
-        else {
+        } else {
             config.fn = fn;
         }
 
@@ -15365,22 +15568,23 @@ Ext.define("Ext.net.MessageBus", {
     },
 
     publish : function (name, data, target, fromParent) {
-        if(target === this){
+        if (target === this) {
             return;
         }
         
         this.fireEvent("message", name, data);
 
-        if(!target) {
+        if (!target) {
             target = this;
         }
         
-        if(parent !== window && fromParent !== true){
+        if (parent !== window && fromParent !== true) {
             this.publishToFrame(parent, name, data, target);            
         }
 
         var frames = window.frames,
             i;
+
         for (i = 0; i < frames.length; i++) {   
             this.publishToFrame(frames[i], name, data, target, true);            
         }  
@@ -15390,14 +15594,14 @@ Ext.define("Ext.net.MessageBus", {
         var bus;
 
         try {
-           if(this.defaultBus && frame.Ext && frame.Ext.net && frame.Ext.net.Bus){
+           if (this.defaultBus && frame.Ext && frame.Ext.net && frame.Ext.net.Bus) {
                bus = frame.Ext.net.Bus;        
            }
-           else if(frame.Ext && frame.Ext.net && frame.Ext.net.ResourceMgr){
+           else if (frame.Ext && frame.Ext.net && frame.Ext.net.ResourceMgr) {
                bus = frame.Ext.net.ResourceMgr.getCmp(this.nsId);
            }   
 
-           if(bus){
+           if (bus) {
                bus.publish(name, data, target, fromParent);
            }
         }

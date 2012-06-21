@@ -1,12 +1,30 @@
 ﻿// @source data/data/Store.js
+Ext.data.StoreManager.getArrayStore = function (fieldsCount) {
+    var fields = ['field1'],
+        i;
+
+    fieldsCount = fieldsCount || 1;
+
+    for (i = 2; i <= fieldsCount; ++i) {
+        fields.push('field' + i);
+    }
+    
+    return new Ext.data.ArrayStore({
+        data        : [],
+        fields      : fields,
+        autoDestroy : true,
+        autoCreated : true,
+        expanded    : false
+    });
+};
 
 Ext.data.AbstractStore.override({
     constructor : function (config) {
         var me = this;
 
-        if(config && config.storeId){
+        if (config && config.storeId) {
             var store = Ext.data.StoreManager.lookup(config.storeId);
-            if(store){
+            if (store) {
                 store.destroyStore();
             }
         }
@@ -322,7 +340,7 @@ Ext.data.Store.override({
                 this.dirtyWarningText,
                 function (btn, text) {
                     if (btn == "yes") {
-                      this.originalLoad(options);
+                      this._load(options);
                     }
                 },
                 this
@@ -489,7 +507,8 @@ Ext.data.Store.override({
     },
     
     rejectChanges : function (actions) {
-        var i, 
+        var me = this, 
+            i, 
             len, 
             records,
             record;
@@ -507,7 +526,7 @@ Ext.data.Store.override({
             if (len > 0) {
                for (i = 0; i < len; i++) {
                   record = records[i];
-                  this.remove(record, true);
+                  me.remove(record, true);
                }
             }
         }
@@ -529,11 +548,11 @@ Ext.data.Store.override({
             len = records.length;
             
             if (records.length > 0) {
-               var autoSync = this.autoSync;
-               this.autoSync = false;
-               this.add(records);
-               this.autoSync = autoSync;
-               this.removed = [];
+               var autoSync = me.autoSync;
+               me.autoSync = false;
+               me.add(records);
+               me.autoSync = autoSync;
+               me.removed = [];
             }            
         }
     },

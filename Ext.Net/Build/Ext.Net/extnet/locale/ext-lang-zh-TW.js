@@ -4,7 +4,7 @@
  * By hata1234
  * 09 April 2007
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm),
         parseCodes;
@@ -148,7 +148,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.zh_TW.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "讀取中 ..."
         });

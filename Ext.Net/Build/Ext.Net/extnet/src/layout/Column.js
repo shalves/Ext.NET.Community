@@ -29,7 +29,7 @@
         for (i = 0; i < len; ++i) {
             itemContext = items[i];
 
-            if(itemContext.target.flex){
+            if (itemContext.target.flex) {
                 itemContext.setHeight(ownerHeight);
             }
 
@@ -49,7 +49,7 @@
     finishedLayout : function (ownerContext) {
         this.callParent(arguments);
 
-        if(Ext.isWebKit && this.chromeFixed !== true){
+        if (Ext.isWebKit && this.chromeFixed !== true) {
             this.chromeFixed = true;
             ownerContext.target.on("afterlayout", ownerContext.target.doLayout, ownerContext.target, {single:true});
         }

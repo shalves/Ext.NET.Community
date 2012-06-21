@@ -3,7 +3,7 @@
  * By PetarD petar.dimitrijevic@vorteksed.com.mk (utf8 encoding)
  * 23 April 2007
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -120,7 +120,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.mk.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "Вчитувам..."
         });

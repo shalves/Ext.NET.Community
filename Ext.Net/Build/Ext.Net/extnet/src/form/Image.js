@@ -17,7 +17,7 @@ Ext.define("Ext.layout.component.Image", {
                 this.owner.imgEl.setHeight(height - padding - border);
             }
         }   
-        else{
+        else {
             this.owner.imgEl.setHeight(height - padding - border);
         }            
     },
@@ -33,7 +33,7 @@ Ext.define("Ext.layout.component.Image", {
                 this.owner.imgEl.setWidth(width - padding - border);
             }
         }   
-        else{
+        else {
             this.owner.imgEl.setWidth(width - padding - border);
         }            
     }

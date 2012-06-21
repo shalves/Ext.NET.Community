@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -252,6 +252,27 @@ namespace Ext.Net
         }
 
         /// <summary>
+        /// The human-readable name of the series.
+        /// </summary>
+        [Meta]
+        [ConfigOption("title", typeof(SingleStringArrayJsonConverter))]
+        [TypeConverter(typeof(StringArrayConverter))]
+        [DefaultValue(null)]
+        [Description("The human-readable name of the series.")]
+        [DirectEventUpdate(MethodName = "SetTitles")]
+        public virtual string[] Titles
+        {
+            get
+            {
+                return this.State.Get<string[]>("Titles", null);
+            }
+            set
+            {
+                this.State.Set("Titles", value);
+            }
+        }
+
+        /// <summary>
         /// The field used to access the x axis value from the items from the data source.
         /// </summary>
         [Meta]
@@ -374,6 +395,24 @@ namespace Ext.Net
         public virtual void SetTitle(string title)
         {
             this.CallTemplate("setTitle", title);
+        }
+
+        /// <summary>
+        /// Changes values of the titles for the series.
+        /// </summary>
+        /// <param name="title">The new titles for the series</param>
+        [Meta]
+        public virtual void SetTitles(string[] titles)
+        {
+            if(titles == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < titles.Length; i++)
+            {
+                this.SetTitle(i, titles[i]);
+            }
         }
 
         /// <summary>

@@ -89,7 +89,7 @@ Ext.grid.column.Column.override({
         return this.callParent(arguments);
     },
 
-    setPadding: function(headerHeight) {
+    setPadding: function (headerHeight) {
         var me = this,
             lineHeight = parseInt(me.textEl.getStyle('line-height'), 10),
             textHeight = me.textEl.dom.offsetHeight,
@@ -111,7 +111,7 @@ Ext.grid.column.Column.override({
 
         // Vertically center the header text in potentially vertically stretched header
         if (textHeight) {
-            if(lineHeight) {
+            if (lineHeight) {
                 textHeight = Math.ceil(textHeight / lineHeight) * lineHeight;
             }
             titleEl.setStyle({
@@ -247,7 +247,7 @@ Ext.grid.column.Column.override({
             meta.tdCls = meta.tdCls || "";
             meta.tdCls += " cell-imagecommand-cell";
 
-            if(me.isHidden()){
+            if (me.isHidden()) {
                 meta.tdCls += " x-hide-command";
             }
 
@@ -292,7 +292,7 @@ Ext.grid.column.Column.override({
         this.fireEvent("command", this, cmd, this.grid.store.getAt(recordIndex), recordIndex, cellIndex);
     },
 
-    beforeDestroy : function() {
+    beforeDestroy : function () {
         if (this.editors) {
             Ext.destroy(this.editors);
         }

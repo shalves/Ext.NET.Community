@@ -12,10 +12,15 @@ Ext.form.field.Base.override({
     }),
 
     afterRender : function () {
-        return Ext.form.field.Base.superclass.afterRender.call(this, arguments);
+        Ext.form.field.Base.superclass.afterRender.call(this, arguments);
 
-        if (this.inputEl) {
+        /*if (this.inputEl) {
             this.inputEl.selectable();
+        }*/
+
+        if (this.initErrors) {
+            this.markInvalid(this.initErrors);
+            delete this.initErrors;
         }
     },
 
@@ -262,9 +267,9 @@ Ext.form.field.Base.override({
             if (this.validationId) {
                 this.validationId.abortedByEvent = true;
 
-                try{
+                try {
                     Ext.net.DirectEvent.abort(this.validationId);
-                } catch(e) { }
+                } catch (e) { }
             }
 
             this.validationId = Ext.net.DirectEvent.request(dc);

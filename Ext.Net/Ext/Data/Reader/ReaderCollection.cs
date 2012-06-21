@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -37,7 +37,6 @@ namespace Ext.Net
 		/// <summary>
 		/// 
 		/// </summary>
-        [ConfigOption("reader", JsonMode.ObjectAllowEmpty)]
 		[Description("")]
         public AbstractReader Primary
         {
@@ -49,6 +48,41 @@ namespace Ext.Net
                 }
 
                 return null;
+            }
+        }
+
+        private LazyMode lazyMode = LazyMode.Config;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DefaultValue(LazyMode.Config)]        
+        public virtual LazyMode LazyMode
+        {
+            get
+            {
+                return this.lazyMode;
+            }
+            set
+            {
+                this.lazyMode = value;
+            }
+        }
+
+        [ConfigOption("reader", JsonMode.Raw)]
+        [DefaultValue("")]
+        public virtual string PrimaryProxy
+        {
+            get
+            {
+                if(this.Primary == null)
+                {
+                    return "";
+                }
+
+                var config = new ClientConfig().Serialize(this.Primary, true);
+
+                return this.LazyMode == Ext.Net.LazyMode.Instance ? string.Format("Ext.create({0}, {1})", JSON.Serialize(this.Primary.InstanceOf), config) : config;
             }
         }
     }

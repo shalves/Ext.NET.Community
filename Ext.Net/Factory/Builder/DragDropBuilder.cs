@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -334,6 +334,83 @@ namespace Ext.Net
             public virtual TBuilder StartDrag(Action<JFunction> action)
             {
                 action(this.ToComponent().StartDrag);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Code that executes immediately before the onDrag event
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder B4Drag(Action<JFunction> action)
+            {
+                action(this.ToComponent().B4Drag);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Code that executes immediately before the onDragDrop event
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder B4DragDrop(Action<JFunction> action)
+            {
+                action(this.ToComponent().B4DragDrop);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Code that executes immediately before the onDragOut event
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder B4DragOut(Action<JFunction> action)
+            {
+                action(this.ToComponent().B4DragOut);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Code that executes immediately before the onDragOver event
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder B4DragOver(Action<JFunction> action)
+            {
+                action(this.ToComponent().B4DragOver);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Code that executes immediately before the endDrag event
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder B4EndDrag(Action<JFunction> action)
+            {
+                action(this.ToComponent().B4EndDrag);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Code executed immediately before the onMouseDown event
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder B4MouseDown(Action<JFunction> action)
+            {
+                action(this.ToComponent().B4MouseDown);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Code that executes immediately before the startDrag event
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder B4StartDrag(Action<JFunction> action)
+            {
+                action(this.ToComponent().B4StartDrag);
                 return this as TBuilder;
             }
 			

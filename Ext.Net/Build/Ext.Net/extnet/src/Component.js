@@ -52,8 +52,9 @@ Ext.Component.prototype.initComponent = Ext.Function.createSequence(Ext.Componen
 });
 
 Ext.Component.prototype.afterRender = Ext.Function.createSequence(Ext.Component.prototype.afterRender, function () {
-    if (this.tooltips) {        
+    if (this.tooltips) {
         var tooltips = [];
+
         Ext.each(this.tooltips, function (tooltip) {
             if (!tooltip.target) {
                 tooltip.target = this.el;

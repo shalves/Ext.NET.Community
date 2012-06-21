@@ -125,15 +125,15 @@ Ext.tab.Panel.override({
         }
     },
 
-    setLastTabAsActive : function() {
+    setLastTabAsActive : function () {
         this.setActiveTab(this.items.getCount() - 1);
     },
 
-    setPreviousTabAsActive : function() {
+    setPreviousTabAsActive : function () {
         this.setActiveTab(Math.max(0,this.items.indexOf(this.getActiveTab()) - 1));
     },
 
-    setNextTabAsActive : function() {
+    setNextTabAsActive : function () {
         this.setActiveTab(Math.min(this.items.getCount() - 1,this.items.indexOf(this.getActiveTab()) + 1));
     }
 });

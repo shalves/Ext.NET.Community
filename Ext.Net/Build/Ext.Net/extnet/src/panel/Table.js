@@ -22,7 +22,7 @@ Ext.panel.Table.override({
         }
     },
 
-    beforeDestroy : function() {
+    beforeDestroy : function () {
         if (this.editors) {
             Ext.destroy(this.editors);
         }

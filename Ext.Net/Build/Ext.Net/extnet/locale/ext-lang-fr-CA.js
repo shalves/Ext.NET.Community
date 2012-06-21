@@ -4,7 +4,7 @@
  * By BernardChhun
  * 04-08-2007, 03:07 AM
  */
-Ext.onReady(function() {
+Ext.onReady(function () {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
@@ -41,7 +41,7 @@ Ext.onReady(function() {
     if (Ext.Date) {
         Ext.Date.shortMonthNames = ["Janv", "Févr", "Mars", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc"];
 
-        Ext.Date.getShortMonthName = function(month) {
+        Ext.Date.getShortMonthName = function (month) {
             return Ext.Date.shortMonthNames[month];
         };
 
@@ -70,13 +70,13 @@ Ext.onReady(function() {
             "Déc": 11
         };
 
-        Ext.Date.getMonthNumber = function(name) {
+        Ext.Date.getMonthNumber = function (name) {
             return Ext.Date.monthNumbers[Ext.util.Format.capitalize(name)];
         };
 
         Ext.Date.dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
-        Ext.Date.getShortDayName = function(day) {
+        Ext.Date.getShortDayName = function (day) {
             return Ext.Date.dayNames[day].substring(0, 3);
         };
     }
@@ -157,7 +157,7 @@ Ext.onReady(function() {
     Ext.define("Ext.locale.fr_CA.form.field.ComboBox", {
         override: "Ext.form.field.ComboBox",
         valueNotFoundText: undefined
-    }, function() {
+    }, function () {
         Ext.apply(Ext.form.field.ComboBox.prototype.defaultListConfig, {
             loadingText: "En cours de chargement..."
         });
@@ -234,9 +234,9 @@ Ext.Date.monthNumbers = {
   "déc" : 11
 };
 
-Ext.Date.getMonthNumber = function(name) {
+Ext.Date.getMonthNumber = function (name) {
   var m = name.substring(0, 1).toLowerCase() + name.substring(1, 3).toLowerCase();
-  if(m == "jui"){    m = name.substring(0, 1).toLowerCase() + name.substring(1, 4).toLowerCase();  }  return Ext.Date.monthNumbers[m];
+  if (m == "jui") {    m = name.substring(0, 1).toLowerCase() + name.substring(1, 4).toLowerCase();  }  return Ext.Date.monthNumbers[m];
 };
 
 Ext.Date.dayNames = [
@@ -249,7 +249,7 @@ Ext.Date.dayNames = [
    "samedi"
 ];
 
-Ext.Date.getShortDayName = function(day) {
+Ext.Date.getShortDayName = function (day) {
   return Ext.Date.dayNames[day].substring(0, 3).toLowerCase() + ".";
 };
 

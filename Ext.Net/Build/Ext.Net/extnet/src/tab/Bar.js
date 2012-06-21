@@ -18,7 +18,7 @@ Ext.tab.Bar.override({
         Ext.suspendLayouts();
 
         if (tabPanel && card) {
-            if(!tabPanel.closeTab(card)){
+            if (!tabPanel.closeTab(card)) {
                 Ext.resumeLayouts(true);
                 return false;
             }

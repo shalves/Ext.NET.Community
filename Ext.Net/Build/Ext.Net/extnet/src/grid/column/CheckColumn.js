@@ -52,37 +52,41 @@ Ext.define('Ext.ux.CheckColumn', {
      * Process and refire events routed from the GridView's processEvent method.
      */
     processEvent : function (type, view, cell, recordIndex, cellIndex, e) {
-        if (this.editable && (type == 'mousedown' || (type == 'keydown' && (e.getKey() == e.ENTER || e.getKey() == e.SPACE)))) {
+        var me = this,
+            key = type === 'keydown' && e.getKey(),
+            mousedown = type == 'mousedown';
+
+        if (me.editable && (mousedown || (key == e.ENTER || key == e.SPACE))) {
             var store = view.panel.store,
-                record = store.getAt(recordIndex),
-                dataIndex = this.dataIndex,
+                record = store.getAt ? store.getAt(recordIndex) : view.getRecord(view.getNode(recordIndex)),
+                dataIndex = me.dataIndex,
                 checked = !record.get(dataIndex),
                 eventTarget = view.panel.editingPlugin || view.panel;
-
+ 
             var ev = {
                 grid   : view.panel,
                 record : record,
                 field  : dataIndex,
-                value  : record.get(this.dataIndex),
+                value  : record.get(me.dataIndex),
                 row    : view.getNode(recordIndex),
-                column : this,
+                column : me,
                 rowIdx : recordIndex,
                 colIdx : cellIndex,
                 cancel : false
             };
-
+ 
             if (eventTarget.fireEvent("beforeedit", eventTarget, ev) === false || ev.cancel === true) {
                 return;
-            }  
-
+            }
+ 
             ev.originalValue = ev.value;
             ev.value = checked;
-            
+ 
             if (eventTarget.fireEvent("validateedit", eventTarget, ev) === false || ev.cancel === true) {
                 return;
-            } 
-                
-            if (this.singleSelect) {
+            }
+ 
+            if (me.singleSelect) {
                 store.suspendEvents();
                 store.each(function (record, i) {
                     var value = (i == recordIndex);
@@ -96,27 +100,26 @@ Ext.define('Ext.ux.CheckColumn', {
             } else {
                 record.set(dataIndex, checked);
             }
-
-            this.fireEvent('checkchange', this, recordIndex, record, checked);
+ 
+            me.fireEvent('checkchange', me, recordIndex, record, checked);
             eventTarget.fireEvent('edit', eventTarget, ev);
-
+                     
             if (mousedown) {
                 e.stopEvent();
             }
-
+ 
             // Selection will not proceed after this because of the DOM update caused by the record modification
             // Invoke the SelectionModel unless configured not to do so
             if (!me.stopSelection) {
                 view.selModel.selectByPosition({
-                    row: recordIndex,
-                    column: cellIndex
+                    row    : recordIndex,
+                    column : cellIndex
                 });
             }
-
             // cancel selection.
             return false;
         } else {
-            return this.callParent(arguments);
+            return me.callParent(arguments);
         }
     },
 

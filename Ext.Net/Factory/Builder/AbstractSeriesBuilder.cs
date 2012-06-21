@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -132,6 +132,15 @@ namespace Ext.Net
             }
              
  			/// <summary>
+			/// The human-readable name of the series.
+			/// </summary>
+            public virtual TBuilder Titles(string[] titles)
+            {
+                this.ToComponent().Titles = titles;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
 			/// The field used to access the x axis value from the items from the data source.
 			/// </summary>
             public virtual TBuilder XField(string[] xField)
@@ -188,6 +197,15 @@ namespace Ext.Net
             public virtual TBuilder SetTitle(string title)
             {
                 this.ToComponent().SetTitle(title);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder SetTitles(string[] titles)
+            {
+                this.ToComponent().SetTitles(titles);
                 return this as TBuilder;
             }
             

@@ -2,7 +2,7 @@
 Ext.view.AbstractView.override({
      wasFirstRefresh : false,
 
-     doFirstRefresh: function(store) {
+     doFirstRefresh: function (store) {
         var me = this;
 
         if (store && !store.loading) {
@@ -18,24 +18,24 @@ Ext.view.AbstractView.override({
                 me.refresh();
             }
         }
-        else{
+        else {
             me.wasFirstRefresh = true;
         }
      },
 
-     setMaskBind: function(store) {
+     setMaskBind: function (store) {
         var mask = this.loadMask;
         if (mask) {
-            if(mask.bindStore){
+            if (mask.bindStore) {
                 mask.bindStore(store);
             }
-            else{
+            else {
                 this.maskShouldBeBound = true;
             }
         }
      },
 
-     onRender: function() {
+     onRender: function () {
         var me = this,
             mask;
 
@@ -49,7 +49,7 @@ Ext.view.AbstractView.override({
         }
     },
 
-     onDataRefresh: function() {
+     onDataRefresh: function () {
         if (this.blockRefresh !== true && this.wasFirstRefresh) {
             this.refresh.apply(this, arguments);
         }

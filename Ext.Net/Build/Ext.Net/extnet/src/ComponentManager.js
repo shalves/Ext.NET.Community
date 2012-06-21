@@ -3,7 +3,7 @@
 
 Ext.net.ComponentManager = {
     registerId : function (cmp) {
-        if(cmp.initDirectEvents){
+        if (cmp.initDirectEvents) {
             cmp.initDirectEvents();
         }
 

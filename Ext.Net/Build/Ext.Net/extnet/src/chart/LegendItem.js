@@ -5,7 +5,7 @@
         this.callParent(arguments);
 
         if (me.legend.refreshOnItemToggle) {
-             me.on('mousedown', function() {
+             me.on('mousedown', function () {
                 me.legend.chart.refresh();
             }, me);
         }

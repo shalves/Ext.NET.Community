@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.beta3 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-28
+ * @date      : 2012-06-19
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -82,6 +82,13 @@ namespace Ext.Net
                 list.Add("onMouseDown", new ConfigOption("onMouseDown", new SerializationOptions(JsonMode.Raw), null, this.OnMouseDown ));
                 list.Add("onMouseUp", new ConfigOption("onMouseUp", new SerializationOptions(JsonMode.Raw), null, this.OnMouseUp ));
                 list.Add("startDrag", new ConfigOption("startDrag", new SerializationOptions(JsonMode.Raw), null, this.StartDrag ));
+                list.Add("b4Drag", new ConfigOption("b4Drag", new SerializationOptions(JsonMode.Raw), null, this.B4Drag ));
+                list.Add("b4DragDrop", new ConfigOption("b4DragDrop", new SerializationOptions(JsonMode.Raw), null, this.B4DragDrop ));
+                list.Add("b4DragOut", new ConfigOption("b4DragOut", new SerializationOptions(JsonMode.Raw), null, this.B4DragOut ));
+                list.Add("b4DragOver", new ConfigOption("b4DragOver", new SerializationOptions(JsonMode.Raw), null, this.B4DragOver ));
+                list.Add("b4EndDrag", new ConfigOption("b4EndDrag", new SerializationOptions(JsonMode.Raw), null, this.B4EndDrag ));
+                list.Add("b4MouseDown", new ConfigOption("b4MouseDown", new SerializationOptions(JsonMode.Raw), null, this.B4MouseDown ));
+                list.Add("b4StartDrag", new ConfigOption("b4StartDrag", new SerializationOptions(JsonMode.Raw), null, this.B4StartDrag ));
 
                 return list;
             }

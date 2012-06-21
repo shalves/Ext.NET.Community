@@ -1,5 +1,5 @@
 ﻿Ext.data.reader.Json.override({
-   buildExtractors : function() {
+   buildExtractors : function () {
         var me = this,
             _root;
 
