@@ -3,5 +3,4 @@ Ext.Net/bin/
 bin/
 obj/
 *.suo
-*.dll
 *.user
