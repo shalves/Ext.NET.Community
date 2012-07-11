@@ -57,8 +57,14 @@ Ext.define('Ext.calendar.form.field.CalendarCombo', {
             "display" : "block"
         });
         
-        this.icon = Ext.core.DomHelper.append(this.wrap, {
-            tag: 'div', cls: 'ext-cal-picker-icon ext-cal-picker-mainicon'
+        this.icon = Ext.core.DomHelper.append(this.bodyEl, {
+            tag: 'div',            
+            style : "position:relative;margin:0px;padding:0px;border:0px;float:left;",
+            children:[{
+                tag   : "div", 
+				style: "margin-top:-21px;",
+                cls: 'ext-cal-picker-icon ext-cal-picker-mainicon'                
+            }]
         });
     },
     

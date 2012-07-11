@@ -96,7 +96,7 @@
             grid.Title = "MultiLevel grid";
             grid.Width = 600;
             grid.Height = 600;
-            grid.ResizableConfig = new Resizable { Handles = ResizeHandle.South };
+            grid.ResizableConfig = new Resizer { Handles = ResizeHandle.South };
             grid.AutoHeight = false;            
             this.Form.Controls.Add(grid);            
         }

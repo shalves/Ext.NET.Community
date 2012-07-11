@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project path="" name="Ext.Net" author="Ext.NET, Inc." version="2.0.0.rc1" copyright="@version   : 2.0.0.rc1 - Ext.NET Pro License&#xD;&#xA;@author    : Ext.NET, Inc. http://www.ext.net/&#xD;&#xA;@date      : 2012-06-19&#xD;&#xA;@copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.&#xD;&#xA;@license   : See license.txt and http://www.ext.net/license/. &#xD;&#xA;@website   : http://www.ext.net/" output="$project" source="False" source-dir="$output\source" minify="False" min-dir="$output" doc="False" doc-dir="$output\docs" master="true" master-file="$output\yui-ext.js" zip="true" zip-file="$output\yuo-ext.$version.zip">
+<project path="" name="Ext.Net" author="Ext.NET, Inc." version="2.0.0.rc2" copyright="@version   : 2.0.0.rc2 - Ext.NET Pro License&#xD;&#xA;@author    : Ext.NET, Inc. http://www.ext.net/&#xD;&#xA;@date      : 2012-07-10&#xD;&#xA;@copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.&#xD;&#xA;@license   : See license.txt and http://www.ext.net/license/. &#xD;&#xA;@website   : http://www.ext.net/" output="$project" source="False" source-dir="$output\source" minify="False" min-dir="$output" doc="False" doc-dir="$output\docs" master="true" master-file="$output\yui-ext.js" zip="true" zip-file="$output\yuo-ext.$version.zip">
   <directory name="css" />
-  <file name="css\Start.css" path="" />
+  <file name="css\init\Start.css" path="init" />
   <file name="css\commands\commandcolumn.css" path="commands" />
   <file name="css\commands\imagecommandcolumn.css" path="commands" />
   <file name="css\commands\cellcommand.css" path="commands" />
@@ -11,8 +11,8 @@
   <file name="css\multicombo\multicombo.css" path="multicombo" />
   <file name="css\label\label.css" path="label" />
   <file name="css\field\field.css" path="field" />
-  <target name="Ext.Net" file="$output\extnet-all.css" debug="True" shorthand="False" shorthand-list="YAHOO.util.Dom.setStyle&#xD;&#xA;YAHOO.util.Dom.getStyle&#xD;&#xA;YAHOO.util.Dom.getRegion&#xD;&#xA;YAHOO.util.Dom.getViewportHeight&#xD;&#xA;YAHOO.util.Dom.getViewportWidth&#xD;&#xA;YAHOO.util.Dom.get&#xD;&#xA;YAHOO.util.Dom.getXY&#xD;&#xA;YAHOO.util.Dom.setXY&#xD;&#xA;YAHOO.util.CustomEvent&#xD;&#xA;YAHOO.util.Event.addListener&#xD;&#xA;YAHOO.util.Event.getEvent&#xD;&#xA;YAHOO.util.Event.getTarget&#xD;&#xA;YAHOO.util.Event.preventDefault&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Event.stopPropagation&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Anim&#xD;&#xA;YAHOO.util.Motion&#xD;&#xA;YAHOO.util.Connect.asyncRequest&#xD;&#xA;YAHOO.util.Connect.setForm&#xD;&#xA;YAHOO.util.Dom&#xD;&#xA;YAHOO.util.Event">
-    <include name="css\Start.css" />
+  <target name="Ext.Net" file="$output\css\extnet-all.css" debug="True" shorthand="False" shorthand-list="YAHOO.util.Dom.setStyle&#xD;&#xA;YAHOO.util.Dom.getStyle&#xD;&#xA;YAHOO.util.Dom.getRegion&#xD;&#xA;YAHOO.util.Dom.getViewportHeight&#xD;&#xA;YAHOO.util.Dom.getViewportWidth&#xD;&#xA;YAHOO.util.Dom.get&#xD;&#xA;YAHOO.util.Dom.getXY&#xD;&#xA;YAHOO.util.Dom.setXY&#xD;&#xA;YAHOO.util.CustomEvent&#xD;&#xA;YAHOO.util.Event.addListener&#xD;&#xA;YAHOO.util.Event.getEvent&#xD;&#xA;YAHOO.util.Event.getTarget&#xD;&#xA;YAHOO.util.Event.preventDefault&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Event.stopPropagation&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Anim&#xD;&#xA;YAHOO.util.Motion&#xD;&#xA;YAHOO.util.Connect.asyncRequest&#xD;&#xA;YAHOO.util.Connect.setForm&#xD;&#xA;YAHOO.util.Dom&#xD;&#xA;YAHOO.util.Event">
+    <include name="css\init\Start.css" />
     <include name="css\commands\commandcolumn.css" />
     <include name="css\commands\imagecommandcolumn.css" />
     <include name="css\commands\cellcommand.css" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Web;
+using System.Web.Configuration;
 
 using Ext.Net.Utilities;
 
@@ -22,7 +23,9 @@ namespace Ext.Net.Examples
 
             HttpResponse response = HttpContext.Current.Response;
 
-            if (!RequestManager.IsAjaxRequest && HttpContext.Current.Request.Url.Host != "localhost")
+            var localLog = Convert.ToBoolean(WebConfigurationManager.AppSettings["LocalLogging"]);
+
+            if (!RequestManager.IsAjaxRequest && (localLog || HttpContext.Current.Request.Url.Host != "localhost"))
             {
                 object marker = HttpContext.Current.Items[ResourceManager.FilterMarker];
                 string url = HttpContext.Current.Request.FilePath;                

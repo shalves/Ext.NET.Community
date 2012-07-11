@@ -29,9 +29,13 @@ Ext.tree.Panel.override({
 
         this.callParent(arguments);
 
-        if (Ext.isEmpty(this.selectionSubmitConfig) || this.selectionSubmitConfig.disableAutomaticSubmit !== true) {
+        if ((Ext.isEmpty(this.selectionSubmitConfig) || this.selectionSubmitConfig.disableAutomaticSubmit !== true) && this.hasId()) {
            this.getSelectionModel().on("selectionchange", this.updateSelection, this);
            this.on("checkchange", this.updateCheckSelection, this);
+           this.on("load", this.updateCheckSelection, this);
+           this.on("itemappend", this.updateCheckSelection, this);
+           this.on("iteminsert", this.updateCheckSelection, this);
+           this.on("afterrender", this.updateCheckSelection, this, {single:true});
         }
 
         if (this.noLeafIcon) {

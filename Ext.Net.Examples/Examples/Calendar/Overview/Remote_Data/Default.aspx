@@ -109,11 +109,16 @@
                                             <ext:JsonReader Root="d" />
                                         </Reader>
                                     </ext:AjaxProxy>
-                                </Proxy>        
+                                </Proxy>
                                 <Mappings>
                                     <ext:ModelField Name="StartDate" Type="Date" DateFormat="M$" /> 
                                     <ext:ModelField Name="EndDate" Type="Date" DateFormat="M$" />
-                                </Mappings>                        
+                                </Mappings>
+                                <Listeners>
+                                    <BeforeSync Handler="Ext.Msg.alert('Sync', 'The EventStore initiates a sync request after that action. The EventStore synchronization is not implemented in that example.'); 
+                                                         this.commitChanges();
+                                                         return false;" />
+                                </Listeners>
                             </EventStore>
                             <MonthView 
                                 runat="server" 
@@ -126,10 +131,12 @@
                                 <EventClick  Fn="CompanyX.record.show" Scope="CompanyX" />
                                 <DayClick    Fn="CompanyX.dayClick" Scope="CompanyX" />
                                 <RangeSelect Fn="CompanyX.rangeSelect" Scope="CompanyX" />
-
                                 <EventMove   Fn="CompanyX.record.move" Scope="CompanyX" />
                                 <EventResize Fn="CompanyX.record.resize" Scope="CompanyX" />
-                                <EventDelete Fn="CompanyX.record.remove" />
+
+                                <EventAdd    Fn="CompanyX.record.addFromEventDetailsForm" Scope="CompanyX" />
+                                <EventUpdate Fn="CompanyX.record.updateFromEventDetailsForm" Scope="CompanyX" />
+                                <EventDelete Fn="CompanyX.record.removeFromEventDetailsForm" Scope="CompanyX" />
                             </Listeners>                          
                         </ext:CalendarPanel>
                     </Items>

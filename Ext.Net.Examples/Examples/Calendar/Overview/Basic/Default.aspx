@@ -7,6 +7,10 @@
     {
         this.CalendarPanel1.EventStore = new EventStore { ID = "EventStore1" };
         this.CalendarPanel1.EventStore.SubmitData += EventStore_SubmitData;
+        this.CalendarPanel1.EventStore.Listeners.BeforeSync.Handler = 
+            @"Ext.Msg.alert('Sync', 'The EventStore initiates a sync request after that action. The EventStore synchronization is not implemented in that example.');
+              this.commitChanges();
+              return false;";
     }
 
     void EventStore_SubmitData(object sender, StoreSubmitDataEventArgs e)
@@ -150,16 +154,19 @@
                                 <EventClick  Fn="CompanyX.record.show" Scope="CompanyX" />
                                 <DayClick    Fn="CompanyX.dayClick" Scope="CompanyX" />
                                 <RangeSelect Fn="CompanyX.rangeSelect" Scope="CompanyX" />
-
                                 <EventMove   Fn="CompanyX.record.move" Scope="CompanyX" />
                                 <EventResize Fn="CompanyX.record.resize" Scope="CompanyX" />
+
+                                <EventAdd    Fn="CompanyX.record.addFromEventDetailsForm" Scope="CompanyX" />
+                                <EventUpdate Fn="CompanyX.record.updateFromEventDetailsForm" Scope="CompanyX" />
+                                <EventDelete Fn="CompanyX.record.removeFromEventDetailsForm" Scope="CompanyX" />
                             </Listeners>
                         </ext:CalendarPanel>
                     </Items>
                 </ext:Panel>
             </Items>
         </ext:Viewport>
-        
+
         <ext:EventWindow 
             ID="EventEditWindow1" 
             runat="server"

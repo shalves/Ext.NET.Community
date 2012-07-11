@@ -1,11 +1,11 @@
 /*
-* @version   : 2.0.0.rc1 - Ext.NET Pro License
-* @author    : Ext.NET, Inc. http://www.ext.net/
-* @date      : 2012-06-19
-* @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
-* @license   : See license.txt and http://www.ext.net/license/. 
-* @website   : http://www.ext.net/
-*/
+ * @version   : 2.0.0.rc2 - Community Edition (AGPLv3 License)
+ * @author    : Ext.NET, Inc. http://www.ext.net/
+ * @date      : 2012-07-10
+ * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
+ * @website   : http://www.ext.net/
+ */
 
 
 Ext.define('Ext.calendar.util.Date',{singleton:true,equalDates:function(dt1,dt2){return dt1.getFullYear()==dt2.getFullYear()&&dt1.getMonth()==dt2.getMonth()&&dt1.getDate()==dt2.getDate();},diffDays:function(start,end){var day=1000*60*60*24,clear=Ext.Date.clearTime,diff=clear(end,true).getTime()-clear(start,true).getTime();return Math.ceil(diff/day);},copyTime:function(fromDt,toDt){var dt=Ext.Date.clone(toDt);dt.setHours(fromDt.getHours(),fromDt.getMinutes(),fromDt.getSeconds(),fromDt.getMilliseconds());return dt;},compare:function(dt1,dt2,precise){if(precise!==true){dt1=Ext.Date.clone(dt1);dt1.setMilliseconds(0);dt2=Ext.Date.clone(dt2);dt2.setMilliseconds(0);}
@@ -105,7 +105,7 @@ if(data.type=='eventresize'){rec=this.view.getEventRecordFromEl(data.ddel);this.
 if(data.type=='caldrag'){Ext.destroy(this.dragStartMarker);delete this.dragStartMarker;delete this.dragCreateDt;this.view.onCalendarEndDrag(this.dragStartDate,this.dragEndDate,Ext.bind(this.onCalendarDragComplete,this));return true;}}
 this.onCalendarDragComplete();return false;}});
 
-Ext.define('Ext.calendar.form.field.CalendarCombo',{extend:'Ext.form.field.ComboBox',alias:'widget.calendarpicker',fieldLabel:'Calendar',triggerAction:'all',queryMode:'local',forceSelection:true,selectOnFocus:true,defaultCls:'ext-color-default',initComponent:function(){this.valueField=Ext.calendar.data.CalendarMappings.CalendarId.name;this.displayField=Ext.calendar.data.CalendarMappings.Title.name;this.listConfig=Ext.apply(this.listConfig||{},{getInnerTpl:this.getListItemTpl});this.callParent(arguments);},getListItemTpl:function(displayField){return'<div class="x-combo-list-item ext-color-{'+Ext.calendar.data.CalendarMappings.CalendarId.name+'}"><div class="ext-cal-picker-icon">&#160;</div>{'+displayField+'}</div>';},afterRender:function(){this.callParent(arguments);this.wrap=this.el.down('.x-form-item-body');this.wrap.addCls('ext-calendar-picker');this.bodyEl.setStyle({"position":"relative","display":"block"});this.icon=Ext.core.DomHelper.append(this.wrap,{tag:'div',cls:'ext-cal-picker-icon ext-cal-picker-mainicon'});},getStyleClass:function(value){var val=value;if(!Ext.isEmpty(val)){if(Ext.isArray(val)){val=val[0];}
+Ext.define('Ext.calendar.form.field.CalendarCombo',{extend:'Ext.form.field.ComboBox',alias:'widget.calendarpicker',fieldLabel:'Calendar',triggerAction:'all',queryMode:'local',forceSelection:true,selectOnFocus:true,defaultCls:'ext-color-default',initComponent:function(){this.valueField=Ext.calendar.data.CalendarMappings.CalendarId.name;this.displayField=Ext.calendar.data.CalendarMappings.Title.name;this.listConfig=Ext.apply(this.listConfig||{},{getInnerTpl:this.getListItemTpl});this.callParent(arguments);},getListItemTpl:function(displayField){return'<div class="x-combo-list-item ext-color-{'+Ext.calendar.data.CalendarMappings.CalendarId.name+'}"><div class="ext-cal-picker-icon">&#160;</div>{'+displayField+'}</div>';},afterRender:function(){this.callParent(arguments);this.wrap=this.el.down('.x-form-item-body');this.wrap.addCls('ext-calendar-picker');this.bodyEl.setStyle({"position":"relative","display":"block"});this.icon=Ext.core.DomHelper.append(this.bodyEl,{tag:'div',style:"position:relative;margin:0px;padding:0px;border:0px;float:left;",children:[{tag:"div",style:"margin-top:-21px;",cls:'ext-cal-picker-icon ext-cal-picker-mainicon'}]});},getStyleClass:function(value){var val=value;if(!Ext.isEmpty(val)){if(Ext.isArray(val)){val=val[0];}
 return'ext-color-'+(val.data?val.data[Ext.calendar.data.CalendarMappings.CalendarId.name]:val);}
 return'';},setValue:function(value){if(!value&&this.store.getCount()>0){value=this.store.getAt(0).data[Ext.calendar.data.CalendarMappings.CalendarId.name];}
 if(this.wrap&&value){var currentClass=this.getStyleClass(this.getValue()),newClass=this.getStyleClass(value);this.wrap.replaceCls(currentClass,newClass);}

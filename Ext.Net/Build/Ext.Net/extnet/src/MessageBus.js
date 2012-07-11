@@ -114,23 +114,24 @@ Ext.define("Ext.net.MessageBus", {
     },
 
     publish : function (name, data, /*private*/target, /*private*/fromParent) {
-        if (target === this) {
+        //!!! do not replace == by ===
+        if(target == this){
             return;
         }
         
         this.fireEvent("message", name, data);
 
-        if (!target) {
+        if(!target) {
             target = this;
         }
         
-        if (parent !== window && fromParent !== true) {
+        //!!! do not replace != by !===
+        if(parent != window && fromParent !== true){
             this.publishToFrame(parent, name, data, target);            
         }
 
         var frames = window.frames,
             i;
-
         for (i = 0; i < frames.length; i++) {   
             this.publishToFrame(frames[i], name, data, target, true);            
         }  

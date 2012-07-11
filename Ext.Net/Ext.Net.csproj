@@ -37,7 +37,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ISPRO</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Ext.Net.xml</DocumentationFile>
@@ -45,14 +45,15 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Ext.Net.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ext.Net.Utilities">
@@ -3232,15 +3233,25 @@
     <EmbeddedResource Include="Build\Ext.Net\extjs\resources\themes\images\neptune\tree\icons-white.png" />
     <EmbeddedResource Include="Build\Ext.Net\extjs\resources\themes\images\neptune\tree\icons.png" />
     <Content Include="Build\Ext.Net\extjs\pkgs\tail.js" />
+    <Content Include="Build\Ext.Net\extnet\resources\css\commands\cellcommand-embedded.css" />
+    <Content Include="Build\Ext.Net\extnet\resources\css\commands\commandcolumn-embedded.css" />
+    <Content Include="Build\Ext.Net\extnet\resources\css\commands\commands-embedded.css" />
+    <Content Include="Build\Ext.Net\extnet\resources\css\commands\imagecommandcolumn-embedded.css" />
+    <Content Include="Build\Ext.Net\extnet\resources\css\field\field-embedded.css" />
+    <Content Include="Build\Ext.Net\extnet\resources\css\grid\checkheader-embedded.css" />
     <Content Include="Build\Ext.Net\extnet\resources\css\grid\checkheader.css" />
+    <Content Include="Build\Ext.Net\extnet\resources\css\grid\componentcolumn-embedded.css" />
     <Content Include="Build\Ext.Net\extnet\resources\css\grid\componentcolumn.css" />
     <Content Include="Build\Ext.Net\extnet\resources\css\field\field.css" />
+    <Content Include="Build\Ext.Net\extnet\resources\css\init\Start-embedded.css" />
     <Content Include="Build\Ext.Net\extnet\resources\css\label\label.css" />
+    <Content Include="Build\Ext.Net\extnet\resources\css\multicombo\multicombo-embedded.css" />
     <Content Include="Build\Ext.Net\extnet\resources\css\multicombo\multicombo.css" />
     <EmbeddedResource Include="Build\Ext.Net\extnet\resources\images\loading.gif" />
     <EmbeddedResource Include="Build\Ext.Net\extnet\resources\images\grid\checked.gif" />
     <EmbeddedResource Include="Build\Ext.Net\extnet\resources\images\grid\unchecked.gif" />
-    <Content Include="Build\Ext.Net\extnet\resources\css\Start.css" />
+    <Content Include="Build\Ext.Net\extnet\resources\css\init\Start.css" />
+    <Content Include="Build\Ext.Net\extnet\resources\css\tree\tree-embedded.css" />
     <Content Include="Build\Ext.Net\extnet\src\chart\LegendItem.js" />
     <Content Include="Build\Ext.Net\extnet\src\data\reader\Json.js" />
     <Content Include="Build\Ext.Net\extnet\src\data\Store.js" />
@@ -3346,6 +3357,8 @@
     <None Include="Build\Ext.Net\ux\calendar\build.bat" />
     <None Include="Build\Ext.Net\ux\calendar\calendar-all.jsb" />
     <None Include="Build\Ext.Net\ux\extnet-ux.jsb" />
+    <None Include="Build\NuGet\Ext.NET.2.0.0-rc1.nupkg" />
+    <None Include="Build\NuGet\Web.config.transform" />
     <None Include="Build\Templates\Ext.NET.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -6630,9 +6643,9 @@
     <EmbeddedResource Include="Build\Ext.Net\icons\zoom.png" />
     <EmbeddedResource Include="Build\Ext.Net\icons\zoom_in.png" />
     <EmbeddedResource Include="Build\Ext.Net\icons\zoom_out.png" />
-    <EmbeddedResource Include="Build\Ext.Net\extnet\resources\extnet-all-embedded.css" />
+    <EmbeddedResource Include="Build\Ext.Net\extnet\resources\css\extnet-all-embedded.css" />
     <Content Include="Build\Ext.Net\extnet\resources\css\commands\commandcolumn.css" />
-    <EmbeddedResource Include="Build\Ext.Net\extnet\resources\extnet-all.css" />
+    <EmbeddedResource Include="Build\Ext.Net\extnet\resources\css\extnet-all.css" />
     <Content Include="Build\Ext.Net\extnet\resources\css\commands\cellcommand.css" />
     <Content Include="Build\Ext.Net\extnet\resources\css\commands\imagecommandcolumn.css" />
     <Content Include="Build\Ext.Net\extnet\resources\css\tree\tree.css" />
@@ -6986,6 +6999,10 @@
     <EmbeddedResource Include="Build\ToolboxIcons\XTemplate.bmp" />
     <EmbeddedResource Include="Build\ToolboxIcons\TabStrip.bmp" />
     <EmbeddedResource Include="Build\ToolboxIcons\CalendarPanel.bmp" />
+    <Content Include="Build\NuGet\Ext.NET.CHANGELOG.txt" />
+    <Content Include="Build\NuGet\Ext.NET.Default.aspx" />
+    <Content Include="Build\NuGet\Ext.NET.LICENSE.txt" />
+    <Content Include="Build\NuGet\Ext.NET.README.txt" />
     <Content Include="Build\Templates\Build_Events.txt" />
     <Content Include="Build\Templates\Copyright-AGPL.txt" />
     <Content Include="Build\Templates\Copyright-XPL.txt" />

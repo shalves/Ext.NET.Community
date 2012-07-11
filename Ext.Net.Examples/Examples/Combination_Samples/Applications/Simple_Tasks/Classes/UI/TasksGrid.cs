@@ -144,7 +144,7 @@ namespace Ext.Net.Examples.SimpleTasks
                        {
                            ID = "mnuTaskGrid_DeleteTask",
                            Text = "Delete",
-                           IconCls = "icon-category-delete"
+                           Icon = Icon.Delete
                        }
                    }
             };

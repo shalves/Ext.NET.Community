@@ -83,7 +83,7 @@
 				<Content>
 					<div id="titlebar">
 						<div id="left">
-							<div class="minor">Ext.NET</div>							<div class="title">Examples Explorer <span class="title-sub">(Version 2.0 RC1)</span></div>
+							<div class="minor">Ext.NET</div>							<div class="title">Examples Explorer <span class="title-sub">(Version 2.0 RC2)</span></div>
 							<div class="badge">built with Ext.NET</div>
 						</div>
 						<div id="right"><a href="http://www.ext.net/"></a></div>

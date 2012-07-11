@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc2 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-06-19
+ * @date      : 2012-07-10
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -53,49 +53,49 @@ namespace Ext.Net
         /// 
         /// </summary>
         [Description("")]
-        public const string ScriptBlockTemplate = "    <script type=\"text/javascript\">\r    //<![CDATA[\r        {0}\r    //]]>\r    </script>\r";
+        public const string ScriptBlockTemplate = "    <script type=\"text/javascript\">\n    //<![CDATA[\n        {0}\n    //]]>\n    </script>\n";
 
         /// <summary>
         /// 
         /// </summary>
         [Description("")]
-        public const string SimpleScriptBlockTemplate = "<script type=\"text/javascript\">{0}</script>\r";
+        public const string SimpleScriptBlockTemplate = "\n    <script type=\"text/javascript\">{0}</script>";
 
         /// <summary>
         /// 
         /// </summary>
         [Description("")]
-        public const string ScriptIncludeTemplate = "    <script type=\"text/javascript\" src=\"{0}\"></script>\r";
+        public const string ScriptIncludeTemplate = "\n    <script type=\"text/javascript\" src=\"{0}\"></script>";
 
         /// <summary>
         /// 
         /// </summary>
         [Description("")]
-        public const string StyleBlockTemplate = "    <style type=\"text/css\">\n{0}    </style>\r";
+        public const string StyleBlockTemplate = "\n    <style type=\"text/css\">\n{0}\n    </style>";
 
         /// <summary>
         /// 
         /// </summary>
         [Description("")]
-        public const string StyleBlockItemTemplate = "        {0}\r";
+        public const string StyleBlockItemTemplate = "\n        {0}";
 
         /// <summary>
         /// 
         /// </summary>
         [Description("")]
-        public const string StyleIncludeTemplate = "\r    <link type=\"text/css\" rel=\"stylesheet\" href=\"{0}\" />\r";
+        public const string StyleIncludeTemplate = "\n    <link type=\"text/css\" rel=\"stylesheet\" href=\"{0}\" />";
 
         /// <summary>
         /// 
         /// </summary>
         [Description("")]
-        public const string ThemeIncludeTemplate = "    <link type=\"text/css\" rel=\"stylesheet\" href=\"{0}\" id=\"ext-theme\" />\r";
+        public const string ThemeIncludeTemplate = "\n    <link type=\"text/css\" rel=\"stylesheet\" href=\"{0}\" id=\"ext-theme\" />";
 
         /// <summary>
         /// 
         /// </summary>
         [Description("")]
-        public const string CommentTemplate = "\r    <!-- {0} -->";
+        public const string CommentTemplate = "\n    <!-- {0} -->";
 
         /// <summary>
         /// 

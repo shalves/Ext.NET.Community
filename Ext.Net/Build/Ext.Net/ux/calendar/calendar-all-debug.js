@@ -1,11 +1,11 @@
 /*
-* @version   : 2.0.0.rc1 - Ext.NET Pro License
-* @author    : Ext.NET, Inc. http://www.ext.net/
-* @date      : 2012-06-19
-* @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
-* @license   : See license.txt and http://www.ext.net/license/. 
-* @website   : http://www.ext.net/
-*/
+ * @version   : 2.0.0.rc2 - Community Edition (AGPLv3 License)
+ * @author    : Ext.NET, Inc. http://www.ext.net/
+ * @date      : 2012-07-10
+ * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
+ * @website   : http://www.ext.net/
+ */
 
 Ext.define('Ext.calendar.util.Date', {
     
@@ -1140,8 +1140,14 @@ Ext.define('Ext.calendar.form.field.CalendarCombo', {
             "display" : "block"
         });
         
-        this.icon = Ext.core.DomHelper.append(this.wrap, {
-            tag: 'div', cls: 'ext-cal-picker-icon ext-cal-picker-mainicon'
+        this.icon = Ext.core.DomHelper.append(this.bodyEl, {
+            tag: 'div',            
+            style : "position:relative;margin:0px;padding:0px;border:0px;float:left;",
+            children:[{
+                tag   : "div", 
+				style: "margin-top:-21px;",
+                cls: 'ext-cal-picker-icon ext-cal-picker-mainicon'                
+            }]
         });
     },
     

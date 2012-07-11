@@ -1,6 +1,6 @@
-﻿Product      : Ext.NET Community
-Version      : 2.0.0.rc1
-Last Updated : 2012-06-19
+﻿Product      : Ext.NET Community Edition (AGPLv3 License)
+Version      : 2.0.0.rc2
+Last Updated : 2012-07-10
 
 
 --------------------------------------------------------------------------
@@ -8,7 +8,7 @@ Last Updated : 2012-06-19
 --------------------------------------------------------------------------
 
 I.    ADD TO VISUAL STUDIO TOOLBOX INSTRUCTIONS
-II.   Version 2.0.0.rc1 REVISIONS + BREAKING CHANGES
+II.   Version 2.0.0.rc2 REVISIONS + BREAKING CHANGES
 III.  SAMPLE WEB.CONFIG
 IV.   <extnet> WEB.CONFIG GLOBAL CONFIGURATION PROPERTIES
 V.    CREDITS
@@ -59,7 +59,7 @@ your Visual Studio or Visual Web Developer Express Toolbox.
 
 
 --------------------------------------------------------------------------
-   II. Version 2.0.0.rc1 REVISIONS + BREAKING CHANGES
+   II. Version 2.0.0.rc2 REVISIONS + BREAKING CHANGES
 --------------------------------------------------------------------------
 
 See CHANGELOG.txt

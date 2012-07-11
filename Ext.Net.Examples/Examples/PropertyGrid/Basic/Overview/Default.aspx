@@ -57,7 +57,7 @@
                    Listeners = 
                    {
                       TriggerClick = {
-                          Handler = PropertyGrid1.ClientID + ".editingPlugin.stopEditing(); Ext.Msg.alert('Trigger click', tag + ' trigger click');"   
+                          Handler = PropertyGrid1.ClientID + ".editingPlugin.completeEdit(); Ext.Msg.alert('Trigger click', tag + ' trigger click');"   
                       }    
                    }
                 }
@@ -78,7 +78,9 @@
 <html>
 <head runat="server">
     <title>PropertyGrid with Button DirectEvent - Ext.NET Examples</title>
+
     <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+
     <style type="text/css">
         .data th {
         	font-weight : bold;
@@ -130,14 +132,16 @@
                     </Editor>
                 </ext:PropertyGridParameter>
                 <ext:PropertyGridParameter Name="trigger" Value="TriggerField" DisplayName="Trigger Field">
-                    <Renderer Handler="metadata.tdCls = 'blue-label'; return value;" />
+                    <Renderer Handler="metadata.tdCls = 'blue-label'; 
+                                       return value;" />
                     <Editor>
                         <ext:TriggerField runat="server">
                             <Triggers>
                                 <ext:FieldTrigger Icon="SimpleEllipsis" Tag="ellipsis" />
                             </Triggers>
                             <Listeners>
-                                <TriggerClick Handler="#{PropertyGrid1}.editingPlugins.stopEditing(); Ext.Msg.alert('Trigger click', tag + ' trigger click');" />
+                                <TriggerClick Handler="#{PropertyGrid1}.editingPlugin.completeEdit(); 
+                                                       Ext.Msg.alert('Trigger click', tag + ' trigger click');" />
                             </Listeners>
                         </ext:TriggerField>
                     </Editor>

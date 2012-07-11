@@ -1,15 +1,14 @@
 /*
- * @version   : 2.0.0.rc1 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0.rc2 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-06-19
+ * @date      : 2012-07-10
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
  * @website   : http://www.ext.net/
  */
 
 Ext.ns("Ext.net", "Ext.ux", "Ext.ux.plugins", "Ext.ux.layout");
-Ext.net.Version = "2.0.0.rc1";
-
+Ext.net.Version = "2.0.0.rc2";
 
 // @source core/utils/Observable.js
 
@@ -3956,8 +3955,11 @@ Ext.net.FieldNote = {
         this.setIndicatorTip("", true);
 
         if (preventLayout !== true) {
+            this.needIndicatorRelayout = false;
             this.doComponentLayout();
-        }  
+        } else {
+            this.needIndicatorRelayout = true;
+        }
     },
     
     setIndicator : function (t, encode, preventLayout) {
@@ -3970,9 +3972,12 @@ Ext.net.FieldNote = {
                 if (this.autoFitIndicator) {
                     this.indicatorEl.setStyle("width", "");
                 }
-
+                
+                this.needIndicatorRelayout = false;
                 this.doComponentLayout();
-            } 
+            } else {
+                this.needIndicatorRelayout = true;
+            }
         }
     },
     
@@ -3980,9 +3985,13 @@ Ext.net.FieldNote = {
         if (this.indicatorEl) {
             this.indicatorEl.removeCls(this.indicatorCls);
             this.indicatorEl.addCls(cls);
+
             if (preventLayout !== true) {
+                this.needIndicatorRelayout = false;
                 this.doComponentLayout();
-            } 
+            } else {
+                this.needIndicatorRelayout = true;
+            }
         }
         
         this.indicatorCls = cls;
@@ -3997,8 +4006,11 @@ Ext.net.FieldNote = {
             this.indicatorEl.addCls(cls);
 
             if (preventLayout !== true) {
+                this.needIndicatorRelayout = false;
                 this.doComponentLayout();
-            } 
+            } else {
+                this.needIndicatorRelayout = true;
+            }
         }
         
         this.indicatorIconCls = cls;
@@ -4013,7 +4025,7 @@ Ext.net.FieldNote = {
     },
     
     showIndicator : function (preventLayout) {
-        if (this.indicatorEl && this.indicatorHidden !== false) {
+        if (this.indicatorEl && (this.indicatorHidden !== false || this.needIndicatorRelayout)) {
             this.indicatorEl.parent("td").setDisplayed(true);
             this.indicatorHidden = false;         
         
@@ -4032,8 +4044,11 @@ Ext.net.FieldNote = {
             this.indicatorHidden = true;
             this.errorSideHide = false;
 
-            if (preventLayout !== true) {                
-                this.doComponentLayout();                
+            if (preventLayout !== true) {
+                this.needIndicatorRelayout = false;
+                this.doComponentLayout();
+            } else {
+                this.needIndicatorRelayout = true;
             }                        
         }    
     },
@@ -5197,36 +5212,36 @@ Ext.form.field.Hidden.override({
 // @source core/form/HtmlEditor.js
 
 Ext.form.field.HtmlEditor.override({
-    escapeValue : true,
+    escapeValue: true,
 
-    initComponent : function () {
+    initComponent: function () {
         this.callParent(arguments);
         if (this.initialConfig && this.initialConfig.buttonTips) {
-            this.buttonTips = Ext.Object.merge(Ext.clone(Ext.form.field.HtmlEditor.prototype.buttonTips), this.buttonTips);   
+            this.buttonTips = Ext.Object.merge(Ext.clone(Ext.form.field.HtmlEditor.prototype.buttonTips), this.buttonTips);
         }
-       
+
         if (!this.name) {
             this.name = this.id || this.inputId || Ext.id();
         }
     },
 
-    getSubTplData : function () {
+    getSubTplData: function () {
         var cssPrefix = Ext.baseCSSPrefix;
 
         return {
-            $comp       : this,
-            cmpId       : this.id,
-            id          : this.getInputId(),
-            textareaCls : Ext.baseCSSPrefix + 'hidden',
-            value       : this.value,
-            iframeName  : Ext.id(),
-            iframeSrc   : Ext.SSL_SECURE_URL,
-            size        : 'height:100%;width:100%;',
-            name           : this.submitValue ? this.getName() : undefined
+            $comp: this,
+            cmpId: this.id,
+            id: this.getInputId(),
+            textareaCls: Ext.baseCSSPrefix + 'hidden',
+            value: this.value,
+            iframeName: Ext.id(),
+            iframeSrc: Ext.SSL_SECURE_URL,
+            size: 'height:100%;width:100%;',
+            name: this.submitValue ? this.getName() : undefined
         };
     },
-    
-    syncValue : function () {
+
+    syncValue: function () {
         var me = this,
             body, changed, html, bodyStyle, match;
         if (me.initialized) {
@@ -5241,7 +5256,7 @@ Ext.form.field.HtmlEditor.override({
             }
             html = me.cleanHtml(html);
             if (me.fireEvent('beforesync', me, html) !== false) {
-                
+
                 if (me.textareaEl.dom.value != html) {
                     this.textareaEl.dom.value = this.escapeValue ? escape(html) : html;
                     changed = true;
@@ -5259,8 +5274,8 @@ Ext.form.field.HtmlEditor.override({
             }
         }
     },
-    
-    setValue : function (value) {
+
+    setValue: function (value) {
         var me = this,
             textarea = me.textareaEl;
         me.mixins.field.setValue.call(me, value);
@@ -5273,9 +5288,9 @@ Ext.form.field.HtmlEditor.override({
         me.pushValue();
         return this;
     },
-    
 
-    getValue : function () {
+
+    getValue: function () {
         var me = this,
             value;
         if (!me.sourceEditMode) {
@@ -5283,11 +5298,11 @@ Ext.form.field.HtmlEditor.override({
         }
         value = me.rendered ? me.textareaEl.dom.value : me.value;
         me.value = value;
-        
+
         return this.escapeValue ? unescape(value) : value;
     },
 
-    toggleSourceEdit : function (sourceEditMode) {
+    toggleSourceEdit: function (sourceEditMode) {
         var me = this,
             iframe = me.iframeEl,
             textarea = me.textareaEl,
@@ -5331,9 +5346,9 @@ Ext.form.field.HtmlEditor.override({
         me.fireEvent('editmodechange', me, sourceEditMode);
         me.doComponentLayout();
     },
-    
-    pushValue : function () {
-         var me = this,
+
+    pushValue: function () {
+        var me = this,
             v;
         if (me.initialized) {
             v = (me.escapeValue ? unescape(me.textareaEl.dom.value) : me.textareaEl.dom.value) || "";
@@ -5351,21 +5366,22 @@ Ext.form.field.HtmlEditor.override({
             }
         }
     },
-     
-    onEditorEvent : function () {
+
+    onEditorEvent: function () {
         if (Ext.isIE) {
             this.currentRange = this.getDoc().selection.createRange();
         }
         this.updateToolbar();
     },
-    
-    insertAtCursor : function (text) {
+
+    insertAtCursor: function (text) {
         if (!this.activated) {
             return;
         }
-        
+
         this.win.focus();
-        if (Ext.isIE) {            
+
+        if (Ext.isIE) {
             var doc = this.getDoc(),
                 r = this.currentRange || doc.selection.createRange();
 
@@ -5379,6 +5395,89 @@ Ext.form.field.HtmlEditor.override({
             this.deferFocus();
         }
     }
+});
+
+/// TODO:   The following fixes an issue in IE only 
+///         where a bulleted list is not created properly.
+///         Need to check this fix with future releases of ExtJS. 
+Ext.form.field.HtmlEditor.override({
+    fixKeys : (function () { // load time branching for fastest keydown performance
+        if (Ext.isIE) {
+            return function (e) {
+                var me = this,
+                    k = e.getKey(),
+                    doc = me.getDoc(),
+                    readOnly = me.readOnly,
+                    range, target;
+
+                if (k === e.TAB) {
+                    e.stopEvent();
+                    if (!readOnly) {
+                        range = doc.selection.createRange();
+                        if (range) {
+                            range.collapse(true);
+                            range.pasteHTML('&#160;&#160;&#160;&#160;');
+                            me.deferFocus();
+                        }
+                    }
+                }
+//                else if (k === e.ENTER) {
+//                    if (!readOnly) {
+//                        range = doc.selection.createRange();
+//                        if (range) {
+//                            target = range.parentElement();
+
+//                            if (!target || target.tagName.toLowerCase() !== 'li') {
+//                                e.stopEvent();
+//                                range.pasteHTML('<br />');
+//                                range.collapse(false);
+//                                range.select();
+//                            }
+//                        }
+//                    }
+//                }
+            };
+        }
+
+        if (Ext.isOpera) {
+            return function (e) {
+                var me = this;
+                if (e.getKey() === e.TAB) {
+                    e.stopEvent();
+                    if (!me.readOnly) {
+                        me.win.focus();
+                        me.execCmd('InsertHTML', '&#160;&#160;&#160;&#160;');
+                        me.deferFocus();
+                    }
+                }
+            };
+        }
+
+        if (Ext.isWebKit) {
+            return function (e) {
+                var me = this,
+                    k = e.getKey(),
+                    readOnly = me.readOnly;
+
+                if (k === e.TAB) {
+                    e.stopEvent();
+                    if (!readOnly) {
+                        me.execCmd('InsertText', '\t');
+                        me.deferFocus();
+                    }
+                }
+                else if (k === e.ENTER) {
+                    e.stopEvent();
+                    if (!readOnly) {
+                        me.execCmd('InsertHtml', '<br /><br />');
+                        me.deferFocus();
+                    }
+                }
+            };
+        }
+
+        return null; // not needed, so null
+    } ())
 });
 
 // @source core/form/Label.js
@@ -6700,8 +6799,14 @@ Ext.toolbar.Paging.override({
             isEmpty;
             
         if (!me.rendered) {
+            if (!me.updateAfterRender) {
+                me.updateAfterRender = true;
+                this.on("afterrender", me.onLoad, me, {single: true});
+            }
             return;
         }
+
+        delete me.updateAfterRender;
         
         pageData = me.getPageData();
         currPage = pageData.currentPage;
@@ -14365,9 +14470,13 @@ Ext.tree.Panel.override({
 
         this.callParent(arguments);
 
-        if (Ext.isEmpty(this.selectionSubmitConfig) || this.selectionSubmitConfig.disableAutomaticSubmit !== true) {
+        if ((Ext.isEmpty(this.selectionSubmitConfig) || this.selectionSubmitConfig.disableAutomaticSubmit !== true) && this.hasId()) {
            this.getSelectionModel().on("selectionchange", this.updateSelection, this);
            this.on("checkchange", this.updateCheckSelection, this);
+           this.on("load", this.updateCheckSelection, this);
+           this.on("itemappend", this.updateCheckSelection, this);
+           this.on("iteminsert", this.updateCheckSelection, this);
+           this.on("afterrender", this.updateCheckSelection, this, {single:true});
         }
 
         if (this.noLeafIcon) {
@@ -15568,23 +15677,24 @@ Ext.define("Ext.net.MessageBus", {
     },
 
     publish : function (name, data, target, fromParent) {
-        if (target === this) {
+        //!!! do not replace == by ===
+        if(target == this){
             return;
         }
         
         this.fireEvent("message", name, data);
 
-        if (!target) {
+        if(!target) {
             target = this;
         }
         
-        if (parent !== window && fromParent !== true) {
+        //!!! do not replace != by !===
+        if(parent != window && fromParent !== true){
             this.publishToFrame(parent, name, data, target);            
         }
 
         var frames = window.frames,
             i;
-
         for (i = 0; i < frames.length; i++) {   
             this.publishToFrame(frames[i], name, data, target, true);            
         }  

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Ext.Net xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Ext.Net xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Classes>
     <Class Name="AbsoluteLayoutConfig" Extends="AnchorLayoutConfig">
       <Attributes />
@@ -44353,7 +44353,7 @@
             <Attribute Type="Description" RawValue="Indicates whether to show the 'Close Others' option. Defaults to 'true'." />
           </Attributes>
         </ConfigOption>
-        <ConfigOption Name="CloseOtherTabsText" Type="string" DefaultValue="&quot;Close Other Tabs&quot;">
+        <ConfigOption Name="CloseOthersTabsText" Type="string" DefaultValue="&quot;Close Other Tabs&quot;">
           <Summary><![CDATA[Text to display in ContextMenu for menu option to close other Tabs.]]></Summary>
           <Attributes>
             <Attribute Type="ConfigOption" />
@@ -49374,7 +49374,7 @@
       <ConfigOptions />
       <Methods />
     </Class>
-    <Class Name="ToolTip" Extends="Tip">
+    <Class Name="ToolTip" Extends="ToolTipBase">
       <Summary><![CDATA[ToolTip is a Ext.tip.Tip implementation that handles the common case of displaying a tooltip when hovering over a certain element or elements on the page. It allows fine-grained control over the tooltip's alignment relative to the target element or mouse, and the timing of when it is automatically shown and hidden.]]></Summary>
       <Attributes>
         <Attribute Type="Meta" />

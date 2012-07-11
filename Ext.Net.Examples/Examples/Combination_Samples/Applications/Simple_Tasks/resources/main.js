@@ -3,7 +3,7 @@
 //-------------------TasksTopBar
 SimpleTasks.TasksTopBar = {
     init : function (panel) {
-        this.bar = panel.getTopToolbar();
+        this.bar = panel.getDockedItems('toolbar[dock="top"]');
     }
 };
 
@@ -11,7 +11,7 @@ SimpleTasks.TasksTopBar = {
 SimpleTasks.TasksTree = {
     init : function (tree) {
         this.tree = tree;
-        this.tree.getRootNode().select.defer(100, this.tree.getRootNode());
+        Ext.defer(this.tree.getRootNode().select, 100, this.tree.getRootNode());
     },
     
     onContextMenu : function (node, e) {

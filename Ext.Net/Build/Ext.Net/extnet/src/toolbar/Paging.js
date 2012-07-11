@@ -48,8 +48,14 @@ Ext.toolbar.Paging.override({
             isEmpty;
             
         if (!me.rendered) {
+            if (!me.updateAfterRender) {
+                me.updateAfterRender = true;
+                this.on("afterrender", me.onLoad, me, {single: true});
+            }
             return;
         }
+
+        delete me.updateAfterRender;
         
         pageData = me.getPageData();
         currPage = pageData.currentPage;

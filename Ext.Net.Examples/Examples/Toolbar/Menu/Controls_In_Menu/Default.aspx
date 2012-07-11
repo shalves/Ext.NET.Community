@@ -47,12 +47,12 @@
     <ext:Menu ID="ContextMenu" runat="server">
         <Items>
             <ext:GridPanel 
-                ID="GridPanel1" 
                 runat="server" 
                 EnableHdMenu="false"
                 Border="false"
                 Width="420"
-                Height="245">
+                Height="245"
+                ForceFit="true">
                 <Store>
                     <ext:Store ID="Store1" runat="server">
                         <Model>
@@ -68,19 +68,16 @@
                         </Model>
                     </ext:Store>    
                 </Store>
-                <ColumnModel runat="server">
+                <ColumnModel runat="server" DefaultWidth="75">
 		            <Columns>
                         <ext:RowNumbererColumn runat="server" Width="25" />
-                        <ext:Column runat="server" Text="Column ¹1" Width="75" DataIndex="Col1" />
-                        <ext:Column runat="server" Text="Column ¹2" Width="75" DataIndex="Col2" />
-                        <ext:Column runat="server" Text="Column ¹3" Width="75" DataIndex="Col3" />
-                        <ext:Column runat="server" Text="Column ¹4" Width="75" DataIndex="Col4" />
-                        <ext:Column runat="server" Text="Column ¹5" Width="75" DataIndex="Col5" />
+                        <ext:Column runat="server" Text="Column ¹1" DataIndex="Col1" />
+                        <ext:Column runat="server" Text="Column ¹2" DataIndex="Col2" />
+                        <ext:Column runat="server" Text="Column ¹3" DataIndex="Col3" />
+                        <ext:Column runat="server" Text="Column ¹4" DataIndex="Col4" />
+                        <ext:Column runat="server" Text="Column ¹5" DataIndex="Col5" />
 		            </Columns>
                 </ColumnModel> 
-                <View>
-                    <ext:GridView runat="server" ForceFit="true" />
-                </View>            
                 <Listeners>                                
                     <AfterRender Handler="this.headerCt.getMenu().allowOtherMenus = true;" />
                     <CellClick Handler="cellSelect(this, record, cellIndex, #{TextField1}, #{ContextMenu});" />
@@ -153,10 +150,9 @@
             
             <ext:Button runat="server" Text="Panels" Icon="Application">
                 <Menu>
-                    <ext:Menu ID="PanelsMenu" runat="server">
+                    <ext:Menu runat="server">
                         <Items>
                             <ext:Panel 
-                                ID="AutoLoadPanel" 
                                 runat="server" 
                                 Title="Ext.NET Site (lazy loading)"   
                                 Width="300" 
@@ -188,7 +184,7 @@
                                 <Items>
                                     <ext:Panel runat="server" Title="Tab1" Icon="Tab">
                                         <Items>
-                                            <ext:Button ID="Button3" runat="server" Text="Close Menu" Icon="Door">
+                                            <ext:Button runat="server" Text="Close Menu" Icon="Door">
                                                 <Listeners>
                                                     <Click Handler="this.up('menu').hide();" />
                                                 </Listeners>
@@ -203,15 +199,27 @@
                     </ext:Menu>
                 </Menu>
             </ext:Button>
-            <%--<ext:Button runat="server" Text="Property Grid" Icon="Table">
+            <ext:Button runat="server" Text="Property Grid" Icon="Table">
                 <Menu>
-                    <ext:Menu ID="Menu2" runat="server">
+                    <ext:Menu runat="server">
+                        <Listeners>
+                            <Show Handler="this.lockedHide = true;" />
+                            <BeforeHide Handler="return !this.lockedHide;" />
+                            <AfterRender Handler="var menu = this;
+                                                  Ext.EventManager.on(window, 'mouseup', function (e) {
+                                                      var t = Ext.fly(e.getTarget());
+                                                      if (!(t.parent('#' + menu.id) || t.parent('.x-grid-editor') || t.parent('.x-layer'))) {
+                                                          menu.lockedHide = false;
+                                                          menu.hide();
+                                                      }
+                                                  });" />
+                        </Listeners>
                         <Items>
                             <ext:PropertyGrid 
-                                ID="PropertyGrid1" 
                                 runat="server" 
                                 Width="300" 
-                                Height="300">
+                                Height="300"
+                                ForceFit="true">
                                 <Source>
                                     <ext:PropertyGridParameter Name="(name)" Value="Properties Grid" />
                                     <ext:PropertyGridParameter Name="grouping" Value="false" Mode="Raw" />
@@ -219,38 +227,47 @@
                                     <ext:PropertyGridParameter Name="productionQuality" Value="false" Mode="Raw" />
                                     <ext:PropertyGridParameter Name="created" Value="10/15/2006">
                                         <Editor>
-                                            <ext:DateField ID="DateField1" runat="server" HideTrigger="true">
-                                            </ext:DateField>
+                                            <ext:DateField runat="server" Format="MM/dd/yyyy" />
                                         </Editor>
                                     </ext:PropertyGridParameter>
                                     <ext:PropertyGridParameter Name="tested" Value="false" Mode="Raw" />
                                     <ext:PropertyGridParameter Name="version" Value="0.01" />
                                     <ext:PropertyGridParameter Name="borderWidth" Value="5" Mode="Raw" />
                                 </Source>
-                                <View>
-                                    <ext:GridView runat="server" ForceFit="true" ScrollOffset="2" />
-                                </View>
                                 <Buttons>
-                                    <ext:Button runat="server" Text="Save" Icon="Disk">                    
-                                    </ext:Button>                
+                                    <ext:Button runat="server" Text="Save" Icon="Disk" />                    
                                 </Buttons>           
                             </ext:PropertyGrid>                                
                         </Items>                                                
                     </ext:Menu>
                 </Menu>
-            </ext:Button>--%>
+            </ext:Button>
             <ext:Button runat="server" Text="Layouts" Icon="Layout">
                 <Menu>
                     <ext:Menu runat="server">
                         <Items>
-                            <ext:Panel runat="server" Width="300" Height="200" Layout="BorderLayout">
+                            <ext:Panel 
+                                runat="server" 
+                                Width="300" 
+                                Height="200" 
+                                Layout="BorderLayout">
                                 <Items>
-                                    <ext:Panel runat="server" Region="West" Split="true" Collapsible="true" Title="West" Width="100" />
+                                    <ext:Panel 
+                                        runat="server" 
+                                        Region="West" 
+                                        Split="true" 
+                                        Collapsible="true" 
+                                        Title="West" 
+                                        Width="100" />
                                     <ext:Panel runat="server" Region="Center" Title="Center" />
                                 </Items>
                             </ext:Panel>
                                 
-                            <ext:Panel runat="server" Width="300" Height="200" Layout="Accordion">
+                            <ext:Panel 
+                                runat="server" 
+                                Width="300" 
+                                Height="200" 
+                                Layout="Accordion">
                                 <Items>
                                     <ext:Panel runat="server" Title="Panel1" Collapsed="false" />
                                     <ext:Panel runat="server" Title="Panel2" />

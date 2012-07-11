@@ -61,51 +61,61 @@
     },
     
     record : {    
+        addFromEventDetailsForm : function (win, rec) {
+            this.ShowMsg('Event ' + rec.data.Title + ' was added');
+        },
+
         add : function (win, rec) {
 	        win.hide();
-	        rec.data.IsNew = false;
-	        CompanyX.getStore().add(rec);
-            rec.commit();
-            //CompanyX.getStore().sync();
-            CompanyX.ShowMsg('Event ' + rec.data.Title + ' was added');
+	        this.getStore().add(rec);
+            this.getStore().sync();
+            this.ShowMsg('Event ' + rec.data.Title + ' was added');
+        },
+
+        updateFromEventDetailsForm : function (win, rec) {
+            this.ShowMsg('Event ' + rec.data.Title + ' was updated');
         },
         
         update : function (win, rec) {
 	        win.hide();
-	        rec.commit();
-            //CompanyX.getStore().sync();
-            CompanyX.ShowMsg('Event ' + rec.data.Title + ' was updated');
+            rec.commit();
+            this.getStore().sync();
+            this.ShowMsg('Event ' + rec.data.Title + ' was updated');
+        },
+
+        removeFromEventDetailsForm : function (win, rec) {
+            this.ShowMsg('Event ' + rec.data.Title + ' was deleted');
         },
         
         remove : function (win, rec) {
             this.getStore().remove(rec);
-            //CompanyX.getStore().sync();
+            this.getStore().sync();
             win.hide();
-            CompanyX.ShowMsg('Event ' + rec.data.Title + ' was deleted');
+            this.ShowMsg('Event ' + rec.data.Title + ' was deleted');
         },
         
         edit : function (win, rec) {
             win.hide();
             rec.commit();
-            CompanyX.getCalendar().showEditForm(rec);
+            this.getCalendar().showEditForm(rec);
         },
         
         resize : function (cal, rec) {
             rec.commit(); 
-            CompanyX.ShowMsg('Event '+ rec.data.Title + ' was updated');
+            this.ShowMsg('Event '+ rec.data.Title + ' was updated');
         },
         
         move : function (cal, rec) {
             rec.commit(); 
-            CompanyX.ShowMsg('Event '+ rec.data.Title + ' was moved to ' + Ext.Date.format(rec.data.StartDate, 'F jS' + (rec.data.IsAllDay ? '' : ' \\a\\t g:i a')));
+            this.ShowMsg('Event '+ rec.data.Title + ' was moved to ' + Ext.Date.format(rec.data.StartDate, 'F jS' + (rec.data.IsAllDay ? '' : ' \\a\\t g:i a')));
         },
 
         show : function (cal, rec, el) {
-            CompanyX.getWindow().show(rec, el);
+            this.getWindow().show(rec, el);
         },
         
         saveAll : function () {
-            CompanyX.getStore().submitData({
+            this.getStore().submitData({
                 mappings : false
             });
         }

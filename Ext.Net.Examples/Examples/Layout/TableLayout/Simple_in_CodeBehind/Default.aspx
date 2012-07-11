@@ -19,7 +19,6 @@
         panel2.Html = "<p>Basic panel in a table cell.</p>";
 
         Ext.Net.Panel panel3 = new Ext.Net.Panel();
-        panel3.PreventHeader = true;
         panel3.BodyStyle = "padding:15px;";
         panel3.Height = 105;
         panel3.Html = "<p>Plain panel</p>";
@@ -32,7 +31,6 @@
         panel4.Html = "<p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p>";
 
         Ext.Net.Panel panel5 = new Ext.Net.Panel();
-        panel5.PreventHeader = false;
         panel5.BodyStyle = "padding:15px;";
         panel5.Height = 100;
         panel5.Html = "Plain cell spanning two columns";

@@ -12,7 +12,7 @@
         }
     }
 
-    [DirectMethod(ShowMask = true, CustomTarget = "AddressPanel")]
+    [DirectMethod(ShowMask = true, CustomTarget = "#{AddressPanel}")]
     public object GetAddress(string action, Dictionary<string, object> extraParams)
     {
         var id = Convert.ToInt32(extraParams["id"]);
@@ -124,7 +124,7 @@
     <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
 </head>
 <body>
-    <ext:ResourceManager runat="server"  DirectEventUrl="Default.aspx"/>
+    <ext:ResourceManager runat="server" DirectEventUrl="Default.aspx"/>
     
     <h1>Simple HasOne Lazy Load Association</h1>
 

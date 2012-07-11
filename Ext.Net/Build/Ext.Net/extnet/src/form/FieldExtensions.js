@@ -91,8 +91,11 @@
         this.setIndicatorTip("", true);
 
         if (preventLayout !== true) {
+            this.needIndicatorRelayout = false;
             this.doComponentLayout();
-        }  
+        } else {
+            this.needIndicatorRelayout = true;
+        }
     },
     
     setIndicator : function (t, encode, preventLayout) {
@@ -105,9 +108,12 @@
                 if (this.autoFitIndicator) {
                     this.indicatorEl.setStyle("width", "");
                 }
-
+                
+                this.needIndicatorRelayout = false;
                 this.doComponentLayout();
-            } 
+            } else {
+                this.needIndicatorRelayout = true;
+            }
         }
     },
     
@@ -115,9 +121,13 @@
         if (this.indicatorEl) {
             this.indicatorEl.removeCls(this.indicatorCls);
             this.indicatorEl.addCls(cls);
+
             if (preventLayout !== true) {
+                this.needIndicatorRelayout = false;
                 this.doComponentLayout();
-            } 
+            } else {
+                this.needIndicatorRelayout = true;
+            }
         }
         
         this.indicatorCls = cls;
@@ -132,8 +142,11 @@
             this.indicatorEl.addCls(cls);
 
             if (preventLayout !== true) {
+                this.needIndicatorRelayout = false;
                 this.doComponentLayout();
-            } 
+            } else {
+                this.needIndicatorRelayout = true;
+            }
         }
         
         this.indicatorIconCls = cls;
@@ -148,7 +161,7 @@
     },
     
     showIndicator : function (preventLayout) {
-        if (this.indicatorEl && this.indicatorHidden !== false) {
+        if (this.indicatorEl && (this.indicatorHidden !== false || this.needIndicatorRelayout)) {
             this.indicatorEl.parent("td").setDisplayed(true);
             this.indicatorHidden = false;         
         
@@ -167,8 +180,11 @@
             this.indicatorHidden = true;
             this.errorSideHide = false;
 
-            if (preventLayout !== true) {                
-                this.doComponentLayout();                
+            if (preventLayout !== true) {
+                this.needIndicatorRelayout = false;
+                this.doComponentLayout();
+            } else {
+                this.needIndicatorRelayout = true;
             }                        
         }    
     },

@@ -1,4 +1,5 @@
 <%@ Page Language="C#" %>
+
 <%@ Register Assembly="Ext.Net" Namespace="Ext.Net" TagPrefix="ext" %>
 
 <script runat="server">
@@ -14,7 +15,7 @@
 
         config.BeforeRender += delegate(ComponentAddedEventArgs ce)
         {
-            ce.Control.ID = BaseControl.GenerateId();
+            ce.Control.ID = BaseControl.GenerateID();
             e.ExtraParamsResponse.Add(new Ext.Net.Parameter("windowId", ce.Control.ConfigID));            
         };
         

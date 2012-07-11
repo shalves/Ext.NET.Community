@@ -37,7 +37,7 @@
                                     new MenuItem
                                     {
                                         Text = "New Category",
-                                        IconCls = "icon-category-new",
+                                        Icon = Icon.New,
                                     },
                                     new MenuItem
                                     {

@@ -1,11 +1,12 @@
 /*
-* @version   : 2.0.0.rc1 - Ext.NET Pro License
-* @author    : Ext.NET, Inc. http://www.ext.net/
-* @date      : 2012-06-19
-* @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
-* @license   : See license.txt and http://www.ext.net/license/. 
-* @website   : http://www.ext.net/
-*/
+ * @version   : 2.0.0.rc2 - Community Edition (AGPLv3 License)
+ * @author    : Ext.NET, Inc. http://www.ext.net/
+ * @date      : 2012-07-10
+ * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
+ * @website   : http://www.ext.net/
+ */
+
 
 
 
@@ -1811,6 +1812,8 @@ Ext.define('Ext.ux.form.MultiSelect', {
             rec,
             j,
             valueLen;
+
+        value = value || [];
             
         for (valueLen = value.length; i < valueLen; ++i) {
             for (j = 0; j < allLen; ++j) {
@@ -2125,6 +2128,10 @@ Ext.define('Ext.net.RatingColumn', {
                 if (this.roundToTick) { 
                     value = Math.ceil(value); 
                 } 
+
+                if(value > this.maxRating){
+                    value = this.maxRating;
+                }
 
                 var ev = {
                     grid   : grid,
@@ -3037,7 +3044,7 @@ Ext.define('Ext.ux.desktop.Module', {
 
     init: Ext.emptyFn,
     
-    createWindow : function () {
+    createWindow : function (config) {
         if(!this.window){
             return;
         }
@@ -3051,6 +3058,11 @@ Ext.define('Ext.ux.desktop.Module', {
 
         if(!win){            
             wndCfg = this.window.call(window) || this._window;
+            
+            if(config){
+                wndCfg = Ext.apply(wndCfg, config);
+            }
+            
             win = desktop.createWindow(wndCfg);
             win.moduleId = this.id;
             if(win.closeAction === "hide"){
@@ -3086,7 +3098,9 @@ Ext.define('Ext.ux.desktop.Module', {
         this.launcher = launcher;
 
         if(!(this.launcher.handler || this.launcher.listeners && this.launcher.listeners.click)){
-            this.launcher.handler = this.createWindow;
+            this.launcher.handler = function() {
+                this.createWindow();
+            };
             this.launcher.scope = this;                
         }
         this.launcher.moduleId = this.id;
@@ -4403,7 +4417,7 @@ Ext.define('Ext.ux.desktop.Desktop', {
                 minimizable: true,
                 maximizable: true,
                 center: me.centerWindow,
-                afterFirstLayout : me.afterWindowFirstLayout,
+                //afterFirstLayout : me.afterWindowFirstLayout,
                 desktop: me
             });
 
@@ -4666,7 +4680,9 @@ Ext.define('Ext.ux.desktop.App', {
         Ext.each(me.modules, function (module) {
             if (module.launcher) {
                 if(!(module.launcher.handler || module.launcher.listeners && module.launcher.listeners.click)){
-                    module.launcher.handler = module.createWindow;
+                    module.launcher.handler = function() {
+                        this.createWindow();
+                    };
                     module.launcher.scope = module;
                 }
                 module.launcher.moduleId = module.id;
@@ -4750,7 +4766,9 @@ Ext.define('Ext.ux.desktop.App', {
 
          if(module.launcher){
             if(!(module.launcher.handler || module.launcher.listeners && module.launcher.listeners.click)){
-                module.launcher.handler = module.createWindow;
+                module.launcher.handler = function() {
+                    this.createWindow();
+                };
                 module.launcher.scope = module;                
             }
             module.launcher.moduleId = module.id;
@@ -5765,6 +5783,10 @@ Ext.define('Ext.app.PortalDropZone', {
 Ext.define('Ext.calendar.util.Date', {
     
     singleton: true,
+	
+	equalDates : function(dt1, dt2){
+		return dt1.getFullYear() == dt2.getFullYear() && dt1.getMonth() == dt2.getMonth() && dt1.getDate() == dt2.getDate();
+	},
     
     diffDays: function(start, end) {
         var day = 1000 * 60 * 60 * 24,
@@ -5887,7 +5909,7 @@ Ext.define('Ext.calendar.util.WeekEventRenderer', {
                 weekCount = o.weekCount < 1 ? 6: o.weekCount,
                 dayCount = o.weekCount == 1 ? o.dayCount: 7,
                 cellCfg;
-
+			dt.setHours(1);
             for (; w < weekCount; w++) {
                 if (!grid[w] || grid[w].length == 0) {
                     // no events or span cells for the entire week
@@ -6525,7 +6547,7 @@ Ext.define('Ext.calendar.dd.DropZone', {
             box,
             D = Ext.calendar.util.Date,
             cnt = D.diffDays(dt, end) + 1;
-
+		dt.setHours(1);
         Ext.each(this.shims,
             function(shim) {
                 if (shim) {
@@ -6891,8 +6913,14 @@ Ext.define('Ext.calendar.form.field.CalendarCombo', {
             "display" : "block"
         });
         
-        this.icon = Ext.core.DomHelper.append(this.wrap, {
-            tag: 'div', cls: 'ext-cal-picker-icon ext-cal-picker-mainicon'
+        this.icon = Ext.core.DomHelper.append(this.bodyEl, {
+            tag: 'div',            
+            style : "position:relative;margin:0px;padding:0px;border:0px;float:left;",
+            children:[{
+                tag   : "div", 
+				style: "margin-top:-21px;",
+                cls: 'ext-cal-picker-icon ext-cal-picker-mainicon'                
+            }]
         });
     },
     
@@ -7676,7 +7704,7 @@ Ext.define('Ext.calendar.form.EventWindow', {
     },
 
     // private
-    newId: 10000,
+    newId: -10000,
 
     // private
     initComponent: function() {
@@ -7747,7 +7775,8 @@ Ext.define('Ext.calendar.form.EventWindow', {
                 end = o[M.EndDate.name] || Ext.calendar.util.Date.add(start, {hours: 1});
 
             rec = Ext.create('Ext.calendar.data.EventModel');
-            rec.data[M.StartDate.name] = start;
+            rec.data[M.EventId.name] = this.newId--;
+			rec.data[M.StartDate.name] = start;
             rec.data[M.EndDate.name] = end;
             rec.data[M.IsAllDay.name] = !!o[M.IsAllDay.name] || start.getDate() != Ext.calendar.util.Date.add(end, {millis: 1}).getDate();
 
@@ -7892,6 +7921,7 @@ Ext.define('Ext.calendar.template.BoxLayout', {
         
         var w = 0, title = '', first = true, isToday = false, showMonth = false, prevMonth = false, nextMonth = false,
             weeks = [[]],
+			today = Ext.calendar.util.Date.today(),
             dt = Ext.Date.clone(this.viewStart),
             thisMonth = this.startDate.getMonth();
         
@@ -7901,8 +7931,8 @@ Ext.define('Ext.calendar.template.BoxLayout', {
             }
             weeks[w] = [];
             
-            for(var d = 0; d < this.dayCount; d++){
-                isToday = dt.getTime() === Ext.calendar.util.Date.today().getTime();
+            for(var d = 0; d < this.dayCount; d++){                
+				isToday = Ext.calendar.util.Date.equalDates(dt, today);
                 showMonth = first || (dt.getDate() == 1);
                 prevMonth = (dt.getMonth() < thisMonth) && this.weekCount == -1;
                 nextMonth = (dt.getMonth() > thisMonth) && this.weekCount == -1;
@@ -7938,8 +7968,9 @@ Ext.define('Ext.calendar.template.BoxLayout', {
                         (d==0 ? ' ext-cal-day-first' : '') +
                         (prevMonth ? ' ext-cal-day-prev' : '') +
                         (nextMonth ? ' ext-cal-day-next' : '')
-                });
-                dt = Ext.calendar.util.Date.add(dt, {days: 1});
+                });                
+				dt.setHours(1);
+				dt = Ext.calendar.util.Date.add(dt, {hours: 26});
                 first = false;
             }
         }
@@ -8240,7 +8271,7 @@ Ext.define('Ext.calendar.view.AbstractCalendar', {
 
         this.el.unselectable();
 
-        if (this.enableDD && this.initDD) {
+        if (this.enableDD && this.readOnly !== true && this.initDD) {
             this.initDD();
         }
 
@@ -8284,6 +8315,9 @@ Ext.define('Ext.calendar.view.AbstractCalendar', {
         row = 0,
         dt = Ext.Date.clone(this.viewStart),
         weeks = this.weekCount < 1 ? 6: this.weekCount;
+		
+		dt.setHours(1);
+		lastInMonth.setHours(1);
 
         this.eventGrid = [[]];
         this.allDayGrid = [[]];
@@ -8307,7 +8341,7 @@ Ext.define('Ext.calendar.view.AbstractCalendar', {
                 if (evtsInView.getCount() > 0) {
                     var evts = evtsInView.filterBy(function(rec) {
                         var startDt = Ext.Date.clearTime(rec.data[Ext.calendar.data.EventMappings.StartDate.name], true),
-                            startsOnDate = dt.getTime() == startDt.getTime(),
+                            startsOnDate = Ext.calendar.util.Date.equalDates(dt, rec.data[Ext.calendar.data.EventMappings.StartDate.name]);
                             spansFromPrevView = (w == 0 && d == 0 && (dt > rec.data[Ext.calendar.data.EventMappings.StartDate.name]));
                             
                         return startsOnDate || spansFromPrevView;
@@ -8367,6 +8401,7 @@ Ext.define('Ext.calendar.view.AbstractCalendar', {
         d1 = d,
         row = this.findEmptyRowIndex(w, d, allday),
         dt = Ext.Date.clone(this.viewStart);
+		dt.setHours(1);
 
         var start = {
             event: evt,
@@ -8611,7 +8646,10 @@ Ext.define('Ext.calendar.view.AbstractCalendar', {
 
     // private
     onDataChanged: function(store) {
-        this.refresh();
+        if (this.startDate) {
+            this.setStartDate(this.startDate, false, false);
+        }
+		this.refresh();
     },
 
     // private
@@ -8668,18 +8706,20 @@ Ext.define('Ext.calendar.view.AbstractCalendar', {
     
     getStartDate: function() {
         return this.startDate;
-    },
-
+    },	
+	
     
-    setStartDate: function(start, refresh) {
+    setStartDate: function(start, refresh, reload) {
         this.startDate = Ext.Date.clearTime(start);
         this.setViewBounds(start);
-        this.store.load({
-            params: {
-                start: Ext.Date.format(this.viewStart, 'm-d-Y'),
-                end: Ext.Date.format(this.viewEnd, 'm-d-Y')
-            }
-        });
+        if (reload) {			
+			this.store.load({
+				params: {
+					start: Ext.Date.format(this.viewStart, 'm-d-Y'),
+					end: Ext.Date.format(this.viewEnd, 'm-d-Y')
+				}
+			});
+		}
         if (refresh === true) {
             this.refresh();
         }
@@ -8779,9 +8819,9 @@ Ext.define('Ext.calendar.view.AbstractCalendar', {
     },
 
     
-    moveTo: function(dt, noRefresh) {
+    moveTo: function(dt, noRefresh, reload) {
         if (Ext.isDate(dt)) {
-            this.setStartDate(dt);
+            this.setStartDate(dt, undefined, reload);
             if (noRefresh !== false) {
                 this.refresh();
             }
@@ -8791,34 +8831,34 @@ Ext.define('Ext.calendar.view.AbstractCalendar', {
     },
 
     
-    moveNext: function(noRefresh) {
-        return this.moveTo(Ext.calendar.util.Date.add(this.viewEnd, {days: 1}));
+    moveNext: function(noRefresh, reload) {
+        return this.moveTo(Ext.calendar.util.Date.add(this.viewEnd, {days: 1}),noRefresh, reload);
     },
 
     
-    movePrev: function(noRefresh) {
+    movePrev: function(noRefresh, reload) {
         var days = Ext.calendar.util.Date.diffDays(this.viewStart, this.viewEnd) + 1;
-        return this.moveDays( - days, noRefresh);
+        return this.moveDays( - days, noRefresh, reload);
     },
 
     
-    moveMonths: function(value, noRefresh) {
-        return this.moveTo(Ext.calendar.util.Date.add(this.startDate, {months: value}), noRefresh);
+    moveMonths: function(value, noRefresh, reload) {
+        return this.moveTo(Ext.calendar.util.Date.add(this.startDate, {months: value}), noRefresh, reload);
     },
 
     
-    moveWeeks: function(value, noRefresh) {
-        return this.moveTo(Ext.calendar.util.Date.add(this.startDate, {days: value * 7}), noRefresh);
+    moveWeeks: function(value, noRefresh, reload) {
+        return this.moveTo(Ext.calendar.util.Date.add(this.startDate, {days: value * 7}), noRefresh, reload);
     },
 
     
-    moveDays: function(value, noRefresh) {
-        return this.moveTo(Ext.calendar.util.Date.add(this.startDate, {days: value}), noRefresh);
+    moveDays: function(value, noRefresh, reload) {
+        return this.moveTo(Ext.calendar.util.Date.add(this.startDate, {days: value}), noRefresh, reload);
     },
 
     
-    moveToday: function(noRefresh) {
-        return this.moveTo(new Date(), noRefresh);
+    moveToday: function(noRefresh, reload) {
+        return this.moveTo(new Date(), noRefresh, reload);
     },
 
     
@@ -8969,6 +9009,16 @@ Ext.define('Ext.calendar.view.AbstractCalendar', {
             this.dragZone,
             this.dropZone
         );
+    },
+	
+	isEventSpanning : function(evt) {
+        var M = Ext.calendar.data.EventMappings,
+            data = evt.data || evt,
+            diff;
+            
+        diff = Ext.calendar.util.Date.diffDays(data[M.StartDate.name], data[M.EndDate.name]);
+        
+        return diff > 0;
     }
 });
 
@@ -9391,12 +9441,12 @@ Ext.define('Ext.calendar.view.Month', {
 
     // inherited docs
     moveNext: function() {
-        return this.moveMonths(1);
+        return this.moveMonths(1, undefined, true);
     },
 
     // inherited docs
     movePrev: function() {
-        return this.moveMonths( - 1);
+        return this.moveMonths( - 1, undefined, true);
     },
 
     // private
@@ -9568,12 +9618,12 @@ Ext.define('Ext.calendar.view.DayHeader', {
 
     // private
     moveNext: function(noRefresh) {
-        return this.moveDays(this.dayCount, noRefresh);
+        return this.moveDays(this.dayCount, noRefresh, true);
     },
 
     // private
     movePrev: function(noRefresh) {
-        return this.moveDays( - this.dayCount, noRefresh);
+        return this.moveDays( - this.dayCount, noRefresh, true);
     },
 
     // private
@@ -9833,37 +9883,27 @@ Ext.define('Ext.calendar.view.DayBody', {
     },
 
     // private
-    renderItems: function() {
-        var day = 0,
-            evts = [],
-            ev,
-            d,
-            ct,
-            item,
-            i,
-            j,
-            l,
-            emptyCells, skipped,
-            evt,
-            evt2,
-            overlapCols,
-            prevCol,
-            colWidth,
-            evtWidth,
-            markup,
-            target;
-        for (; day < this.dayCount; day++) {
-            ev = emptyCells = skipped = 0;
-            d = this.eventGrid[0][day];
-            ct = d ? d.length: 0;
-
-            for (; ev < ct; ev++) {
+    renderItems: function(){
+        var day = 0, evts = [];
+        for(; day < this.dayCount; day++){
+            var ev = emptyCells = skipped = 0, 
+                d = this.eventGrid[0][day],
+                ct = d ? d.length : 0, 
+                evt;
+            
+            for(; ev < ct; ev++){
                 evt = d[ev];
-                if (!evt) {
+                if(!evt){
                     continue;
                 }
-                item = evt.data || evt.event.data;
-                if (item._renderAsAllDay) {
+                var item = evt.data || evt.event.data,
+                    M = Ext.calendar.data.EventMappings,
+                    ad = item[M.IsAllDay.name] === true,
+                    span = this.isEventSpanning(evt.event || evt),
+                    renderAsAllDay = ad || span;
+                         
+                if(renderAsAllDay){
+                    // this event is already rendered in the header view
                     continue;
                 }
                 Ext.apply(item, {
@@ -9876,48 +9916,48 @@ Ext.define('Ext.calendar.view.DayBody', {
                 });
             }
         }
-
+        
         // overlapping event pre-processing loop
-        i = j = overlapCols = prevCol = 0;
-        l = evts.length;
-        for (; i < l; i++) {
-            evt = evts[i].data;
-            evt2 = null;
-            prevCol = overlapCols;
-            for (j = 0; j < l; j++) {
-                if (i == j) {
-                    continue;
-                }
+        var i = j = 0, overlapCols = [], l = evts.length, prevDt;
+        for(; i<l; i++){
+            var evt = evts[i].data, 
+                evt2 = null, 
+                dt = evt[Ext.calendar.data.EventMappings.StartDate.name].getDate();
+            
+            for(j=0; j<l; j++){
+                if(i==j)continue;
                 evt2 = evts[j].data;
-                if (this.isOverlapping(evt, evt2)) {
-                    evt._overlap = evt._overlap == undefined ? 1: evt._overlap + 1;
-                    if (i < j) {
-                        if (evt._overcol === undefined) {
+                if(this.isOverlapping(evt, evt2)){
+                    evt._overlap = evt._overlap == undefined ? 1 : evt._overlap+1;
+                    if(i<j){
+                        if(evt._overcol===undefined){
                             evt._overcol = 0;
                         }
-                        evt2._overcol = evt._overcol + 1;
-                        overlapCols = Math.max(overlapCols, evt2._overcol);
+                        evt2._overcol = evt._overcol+1;
+                        overlapCols[dt] = overlapCols[dt] ? Math.max(overlapCols[dt], evt2._overcol) : evt2._overcol;
                     }
                 }
             }
         }
-
+        
         // rendering loop
-        for (i = 0; i < l; i++) {
-            evt = evts[i].data;
-            if (evt._overlap !== undefined) {
-                colWidth = 100 / (overlapCols + 1);
-                evtWidth = 100 - (colWidth * evt._overlap);
-
+        for(i=0; i<l; i++){
+            var evt = evts[i].data,
+                dt = evt[Ext.calendar.data.EventMappings.StartDate.name].getDate();
+                
+            if(evt._overlap !== undefined){
+                var colWidth = 100 / (overlapCols[dt]+1),
+                    evtWidth = 100 - (colWidth * evt._overlap);
+                    
                 evt._width = colWidth;
                 evt._left = colWidth * evt._overcol;
             }
-            markup = this.getEventTemplate().apply(evt);
-            target = this.id + '-day-col-' + Ext.Date.format(evts[i].date, 'Ymd');
-
+            var markup = this.getEventTemplate().apply(evt),
+                target = this.id + '-day-col-' + Ext.Date.format(evts[i].date, 'Ymd');
+                
             Ext.core.DomHelper.append(target, markup);
         }
-
+        
         this.fireEvent('eventsrendered', this);
     },
 
@@ -10039,7 +10079,7 @@ Ext.define('Ext.calendar.view.Day', {
         cfg.showTodatText = this.showTodayText;
         cfg.todayText = this.todayText;
         cfg.dayCount = this.dayCount;
-        cfg.wekkCount = 1; 
+        cfg.weekCount = 1; 
         
         var header = Ext.applyIf({
             xtype: 'dayheaderview',
@@ -10103,8 +10143,8 @@ Ext.define('Ext.calendar.view.Day', {
 
     
     setStartDate: function(dt){
-        this.header.setStartDate(dt, true);
-        this.body.setStartDate(dt, true);
+        this.header.setStartDate(dt, true, true);
+        this.body.setStartDate(dt, true, false);
     },
 
     // private
@@ -10120,31 +10160,31 @@ Ext.define('Ext.calendar.view.Day', {
     
     
     moveTo : function(dt, noRefresh){
-        this.header.moveTo(dt, noRefresh);
+        this.header.moveTo(dt, noRefresh, true);
         return this.body.moveTo(dt, noRefresh);
     },
     
     
     moveNext : function(noRefresh){
-        this.header.moveNext(noRefresh);
+        this.header.moveNext(noRefresh, true);
         return this.body.moveNext(noRefresh);
     },
     
     
     movePrev : function(noRefresh){
-        this.header.movePrev(noRefresh);
+        this.header.movePrev(noRefresh, true);
         return this.body.movePrev(noRefresh);
     },
 
     
     moveDays : function(value, noRefresh){
-        this.header.moveDays(value, noRefresh);
+        this.header.moveDays(value, noRefresh, true);
         return this.body.moveDays(value, noRefresh);
     },
     
     
     moveToday : function(noRefresh){
-        this.header.moveToday(noRefresh);
+        this.header.moveToday(noRefresh, true);
         return this.body.moveToday(noRefresh);
     }
 });
@@ -10213,6 +10253,14 @@ Ext.define('Ext.calendar.CalendarPanel', {
                 iconCls: 'x-tbar-page-prev'
             }]
         };
+		
+		if (this.eventStore) {
+			this.eventStore = Ext.data.StoreManager.lookup(this.eventStore); 
+		}
+		
+		if (this.calendarStore) {
+			this.calendarStore = Ext.data.StoreManager.lookup(this.calendarStore); 
+		}
 
         this.viewCount = 0;
 
@@ -10348,6 +10396,11 @@ Ext.define('Ext.calendar.CalendarPanel', {
             this.initEventRelay(month);
             this.add(month);
         }
+		
+		this.on("afterlayout", function(){
+			var view = this.layout.getActiveItem();
+			view.setStartDate(view.startDate || new Date(), false, true); 
+		}, this, {single:true});
 
         this.add(Ext.applyIf({
             xtype: 'eventeditform',
@@ -10474,7 +10527,7 @@ Ext.define('Ext.calendar.CalendarPanel', {
         
         if(id !== this.id+'-edit'){
            if(id !== this.preEditView){
-                l.activeItem.setStartDate(this.startDate, true);
+                l.activeItem.setStartDate(this.startDate, true, true);
             }
            this.updateNavState();
         }

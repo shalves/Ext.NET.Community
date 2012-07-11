@@ -121,13 +121,13 @@ namespace Ext.Net.Examples.SimpleTasks
                     new Button
                     {
                         ToolTip = "New Category",
-                        IconCls = "icon-category-new",
+                        Icon = Icon.New,
                         Disabled = true
                     },
                     new Button
                     {
                         ToolTip = "Delete Category",
-                        IconCls = "icon-category-delete",
+                        Icon = Icon.Delete,
                         Disabled = true
                     },
                     new ToolbarSeparator(),
@@ -164,7 +164,7 @@ namespace Ext.Net.Examples.SimpleTasks
                        new MenuItem
                        {
                            Text = "Delete",
-                           IconCls = "icon-category-delete"
+                           Icon = Icon.Delete
                        }
                    }
             };
@@ -183,7 +183,7 @@ namespace Ext.Net.Examples.SimpleTasks
                        new MenuItem
                        {
                            Text = "New Category",
-                           IconCls = "icon-category-new"
+                           Icon = Icon.New
                        },
                        new MenuItem
                        {
@@ -194,7 +194,7 @@ namespace Ext.Net.Examples.SimpleTasks
                        new MenuItem
                        {
                            Text = "Delete",
-                           IconCls = "icon-category-delete"
+                           Icon = Icon.Delete
                        }
                    }
             };
