@@ -1,11 +1,12 @@
 /*
- * @version   : 1.4.0 - Ext.NET Pro License
+ * @version   : 1.0.0 - Professional Edition (Ext.Net Professional License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-24
- * @copyright : Copyright (c) 2006-2010, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
+ * @date      : 2012-07-10
+ * @copyright : Copyright (c) 2006-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : See license.txt and http://www.ext.net/license/. 
  * @website   : http://www.ext.net/
  */
+
 
 Ext.ns('Ext.calendar');
 

@@ -236,6 +236,7 @@
     <Content Include="Examples\Events\DirectEvents\Async\Default.aspx" />
     <Content Include="Examples\Getting_Started\Introduction\CHANGELOG\Default.aspx" />
     <Content Include="Examples\Getting_Started\Introduction\README\Default.aspx" />
+    <Content Include="Examples\Getting_Started\Introduction\SVN_Log\Default.aspx" />
     <Content Include="Examples\GridPanel\Miscellaneous\XML_File_Loading_Custom\config.xml" />
     <Content Include="Examples\GridPanel\Miscellaneous\XML_File_Loading_Custom\categories.xml" />
     <Content Include="Examples\GridPanel\Miscellaneous\XML_File_Loading_Custom\Default.aspx" />
@@ -933,7 +934,9 @@
     <Content Include="Examples\Toolbar\Menu\Overview\Default.aspx" />
     <Content Include="Examples\Toolbar\StatusBar\Overview\config.xml" />
     <Content Include="Examples\Toolbar\StatusBar\Overview\Default.aspx" />
-    <Content Include="Examples\config.xml" />
+    <Content Include="Examples\config.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Examples\DataView\config.xml" />
     <Content Include="Examples\Form\ComboBox\Ajax_Linked_Combos\Cities.xml" />
     <Content Include="Examples\Form\ComboBox\Ajax_Linked_Combos\config.xml" />
@@ -1374,7 +1377,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>53474</DevelopmentServerPort>
+          <DevelopmentServerPort>58417</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost/Ext.Net.Examples</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

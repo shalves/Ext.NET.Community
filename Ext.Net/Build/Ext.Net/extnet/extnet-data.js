@@ -1,9 +1,9 @@
 /*
- * @version   : 1.4.0 - Ext.NET Pro License
+ * @version   : 1.5.0 - Ext.NET Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-24
+ * @date      : 2012-07-10
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
- * @license   : See license.txt and http://www.ext.net/license/. 
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
  * @website   : http://www.ext.net/
  */
 
@@ -346,7 +346,7 @@ Ext.grid.CheckColumn=function(config){Ext.apply(this,config);if(!this.id){this.i
 this.renderer=this.renderer.createDelegate(this);};Ext.grid.CheckColumn.prototype={init:function(grid){this.grid=grid;var view=grid.getView();if(view.mainBody){view.mainBody.on("mousedown",this.onMouseDown,this);}else{this.grid.on("render",function(){this.grid.getView().mainBody.on("mousedown",this.onMouseDown,this);},this);}},onMouseDown:function(e,t){if(this.editable&&t.className&&Ext.fly(t).hasClass("x-grid3-cc-"+this.dataIndex)){e.stopEvent();var rIndex=this.grid.getView().findRowIndex(t),dataIndex=this.dataIndex,record=this.grid.store.getAt(rIndex);var ev={grid:this.grid,record:record,field:this.dataIndex,value:record.data[this.dataIndex],row:rIndex,column:this.grid.getColumnModel().findColumnIndex(this.dataIndex),cancel:false};if(this.grid.fireEvent("beforeedit",ev)===false||ev.cancel===true){return;}
 ev.originalValue=ev.value;ev.value=!record.data[this.dataIndex];if(this.grid.fireEvent("validateedit",ev)===false||ev.cancel===true){return;}
 if(this.singleSelect){this.grid.store.each(function(record,i){var value=(i===rIndex);if(value!==record.get(dataIndex)){record.set(dataIndex,value);}});}else{record.set(this.dataIndex,!record.data[this.dataIndex]);}
-this.grid.fireEvent("afteredit",ev);}},renderer:function(v,p,record){p.css+=" x-grid3-check-col-td";return'<div class="x-grid3-check-col'+(v?"-on":"")+" x-grid3-cc-"+this.dataIndex+'">&#160;</div>';},destroy:function(){var body=this.grid?this.grid.getView().mainBody:null;if(body){body.un("mousedown",this.onMouseDown,this);}},getCellEditor:Ext.emptyFn};Ext.grid.Column.types.checkcolumn=Ext.grid.CheckColumn;
+this.grid.fireEvent("afteredit",ev);}},renderer:function(v,p,record){p.css+=" x-grid3-check-col-td";return'<div class="x-grid3-check-col'+(v?"-on":"")+" x-grid3-cc-"+this.dataIndex+'">&#160;</div>';},destroy:function(){var body=this.grid?this.grid.getView().mainBody:null;if(body){body.un("mousedown",this.onMouseDown,this);}},getCellEditor:Ext.emptyFn,processEvent:function(name,e,grid,rowIndex,colIndex){return true;}};Ext.grid.Column.types.checkcolumn=Ext.grid.CheckColumn;
 
 Ext.grid.TableGrid=function(config){config=config||{};Ext.apply(this,config);var cf=config.fields||[],ch=config.columns||[],i,h;if(config.table.isComposite){if(config.table.elements.length>0){table=Ext.get(config.table.elements[0]);}}else{table=Ext.get(config.table);}
 var ct=table.insertSibling();if(!Ext.isEmpty(config.id)){ct.id=config.id;}

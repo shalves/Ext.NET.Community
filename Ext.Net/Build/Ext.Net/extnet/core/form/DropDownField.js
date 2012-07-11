@@ -33,7 +33,7 @@ Ext.net.DropDownField = Ext.extend(Ext.net.TriggerField, {
             isSimple = true;
         }
 
-        if (this.hideTrigger) {
+        if (this.hideTrigger || this.readOnly) {
             Ext.apply(triggerCfg, { style : "display:none", hidden : true });
             this.hideTrigger = false;
         }

@@ -1,9 +1,9 @@
 /*
- * @version   : 1.4.0 - Ext.NET Pro License
+ * @version   : 1.5.0 - Ext.NET Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-24
+ * @date      : 2012-07-10
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
- * @license   : See license.txt and http://www.ext.net/license/. 
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
  * @website   : http://www.ext.net/
  */
 
@@ -503,7 +503,7 @@ this.fireEvent("editmodechange",this,this.sourceEditMode);},pushValue:function()
 if(this.fireEvent("beforepush",this,v)!==false){this.getEditorBody().innerHTML=v;if(Ext.isGecko){this.setDesignMode(false);}
 this.setDesignMode(true);this.fireEvent("push",this,v);}}},onEditorEvent:function(){if(Ext.isIE){this.currentRange=this.getDoc().selection.createRange();}
 this.updateToolbar();},insertAtCursor:function(text){if(!this.activated){return;}
-if(Ext.isIE){this.win.focus();var doc=this.getDoc(),r=this.currentRange||doc.selection.createRange();if(r){r.pasteHTML(text);this.syncValue();this.deferFocus();}}else{this.win.focus();this.execCmd("InsertHTML",text);this.deferFocus();}}});
+if(Ext.isIE){this.win.focus();var doc=this.getDoc(),r=this.currentRange||doc.selection.createRange();if(r){r.pasteHTML(text);this.syncValue();this.deferFocus();}}else{this.win.focus();this.execCmd("InsertHTML",text);this.deferFocus();}}});Ext.form.HtmlEditor.override({fixKeys:function(){if(Ext.isIE){return function(e){var k=e.getKey(),doc=this.getDoc(),r;if(k==e.TAB){e.stopEvent();r=doc.selection.createRange();if(r){r.collapse(true);r.pasteHTML('&nbsp;&nbsp;&nbsp;&nbsp;');this.deferFocus();}}};}else if(Ext.isOpera){return function(e){var k=e.getKey();if(k==e.TAB){e.stopEvent();this.win.focus();this.execCmd('InsertHTML','&nbsp;&nbsp;&nbsp;&nbsp;');this.deferFocus();}};}else if(Ext.isWebKit){return function(e){var k=e.getKey();if(k==e.TAB){e.stopEvent();this.execCmd('InsertText','\t');this.deferFocus();}else if(k==e.ENTER){e.stopEvent();this.execCmd('InsertHtml','<br /><br />');this.deferFocus();}};}}()});
 
 Ext.net.HyperLink=Ext.extend(Ext.form.Label,{cls:"",url:"#",valueElement:function(){var textEl=document.createElement("a");textEl.style.verticalAlign="middle";if(!Ext.isEmpty(this.cls,false)){textEl.className=this.cls;}
 textEl.setAttribute("href",this.url);this.textEl=Ext.get(textEl);this.textEl.setOverflow=Ext.emptyFn;if(this.disabled){textEl.setAttribute("disabled","1");textEl.removeAttribute("href");}
@@ -621,7 +621,7 @@ return errors;}});
 Ext.net.DropDownField=Ext.extend(Ext.net.TriggerField,{lazyInit:true,componentAlign:"tl-bl?",allowBlur:false,mode:"text",syncValue:Ext.emptyFn,initComponent:function(){Ext.net.DropDownField.superclass.initComponent.call(this);this.addEvents("expand","collapse");var cn=[],triggerCfg,isSimple;triggerCfg={tag:"img",src:Ext.BLANK_IMAGE_URL,cls:"x-form-trigger"};if(!Ext.isEmpty(this.triggerClass,false)){triggerCfg.cls+=" "+this.triggerClass;}
 if(Ext.net.StringUtils.startsWith(this.triggerClass||"","x-form-simple")){if(this.triggersConfig&&this.triggersConfig.length>0){triggerCfg.cls+=" shift-trigger";}
 isSimple=true;}
-if(this.hideTrigger){Ext.apply(triggerCfg,{style:"display:none",hidden:true});this.hideTrigger=false;}
+if(this.hideTrigger||this.readOnly){Ext.apply(triggerCfg,{style:"display:none",hidden:true});this.hideTrigger=false;}
 if(isSimple){this.addClass("clear-right");}
 if(this.triggersConfig){this.triggerConfig.cn.push(triggerCfg);}else{cn.push(triggerCfg);this.triggerConfig={tag:"span",cls:"x-form-twin-triggers",cn:cn};}},initTrigger:function(){Ext.net.DropDownField.superclass.initTrigger.call(this);this.triggers[this.triggers.length-1].removeListener("click",this.onCustomTriggerClick,this);this.triggers[this.triggers.length-1].on("click",this.onTriggerClick,this);},initDropDownComponent:function(){if(this.component&&!this.component.render){this.component.floating=true;this.component=new Ext.ComponentMgr.create(this.component,"panel");}
 var renderTo=this.componentRenderTo||Ext.net.ResourceMgr.getAspForm()||document.body,zindex=parseInt(Ext.fly(renderTo).getStyle("z-index"),10);if(this.ownerCt&&!zindex){this.findParentBy(function(ct){zindex=parseInt(ct.getPositionEl().getStyle("z-index"),10);return!!zindex;});}

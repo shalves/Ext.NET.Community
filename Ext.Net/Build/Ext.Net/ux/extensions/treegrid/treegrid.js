@@ -279,7 +279,7 @@ Ext.ux.tree.TreeGridNodeUI = Ext.extend(Ext.tree.TreeNodeUI, {
 
         buf.push(
             '</tr><tr class="x-tree-node-ct"><td colspan="', cols.length, '">',
-            '<table class="x-treegrid-node-ct-table" cellpadding="0" cellspacing="0" style="table-layout: fixed; display: none; width: ', t.innerCt.getWidth() ,'px;"><colgroup>'
+            '<table class="x-treegrid-node-ct-table" cellpadding="0" cellspacing="0" style="table-layout: fixed; display: none; width: ', t.innerCt.getStyle("width") ,';"><colgroup>'
         );
         for (i = 0, len = cols.length; i<len; i++) {
             buf.push('<col style="width: ', (cols[i].hidden ? 0 : cols[i].width) ,'px;" />');

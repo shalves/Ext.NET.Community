@@ -2,9 +2,6 @@
 
 <%@ Register Assembly="Ext.Net" Namespace="Ext.Net" TagPrefix="ext" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -64,9 +61,11 @@
         };
         
         this.Store1.DataBind();
-        
-        }
+    }
 </script>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -102,7 +101,11 @@
                         <ext:RecordField Name="nick" />
                     </Fields>
                 </ext:ArrayReader>
-            </Reader>            
+            </Reader>
+            <AutoLoadParams>
+                <ext:Parameter Name="start" Value="0" Mode="Raw" />
+                <ext:Parameter Name="limit" Value="10" Mode="Raw" />
+            </AutoLoadParams>
         </ext:Store>
 
         <ext:ComboBox 

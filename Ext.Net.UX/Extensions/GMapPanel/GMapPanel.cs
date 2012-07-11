@@ -16,7 +16,7 @@
  */
 
 /*
-* @version:		1.3.0
+* @version:		1.5.0
 * @author:		Ext.NET, Inc. http://www.ext.net/
 * @date:		2012-02-21
 * @copyright:	Copyright (c) 2007-2012, Ext.NET, Inc. or as noted within each 

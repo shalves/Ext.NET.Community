@@ -16,6 +16,7 @@
     <h1>Complex BorderLayout in Markup</h1>
     
     <ext:Button 
+        ID="Button1"
         runat="server" 
         Text="Show Window" 
         Icon="Application">

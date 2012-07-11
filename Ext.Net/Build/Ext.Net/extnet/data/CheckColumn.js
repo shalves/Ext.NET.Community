@@ -83,7 +83,11 @@ Ext.grid.CheckColumn.prototype = {
         }
     },
     
-    getCellEditor : Ext.emptyFn
+    getCellEditor : Ext.emptyFn,
+
+    processEvent : function (name, e, grid, rowIndex, colIndex) {
+        return true;
+    }
 };
 
 Ext.grid.Column.types.checkcolumn = Ext.grid.CheckColumn;

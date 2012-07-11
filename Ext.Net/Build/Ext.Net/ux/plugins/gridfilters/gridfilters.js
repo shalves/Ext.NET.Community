@@ -1088,6 +1088,8 @@ Ext.ux.grid.filter.StringFilter = Ext.extend(Ext.ux.grid.filter.Filter, {
     
     init : function (config) {
         Ext.ux.grid.filter.StringFilter.superclass.init.call(this, config);
+
+        delete config.listeners;
         
         Ext.applyIf(config, {
             enableKeyEvents: true,

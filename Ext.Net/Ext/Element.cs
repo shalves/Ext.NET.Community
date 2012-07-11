@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.4.0 - Ext.NET Pro License
+ * @version   : 1.5.0 - Ext.NET Pro License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-24
+ * @date      : 2012-07-10
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -3678,7 +3678,7 @@ namespace Ext.Net
         [Description("Update the innerHTML of this element, optionally searching for and processing scripts")]
         public virtual Element Update(string html, bool loadScripts, JFunction callback)
         {
-            this.Call("update", Element.ConvertToSafeJSHtml(html), loadScripts, callback);
+            this.Call("update", new JRawValue(Element.ConvertToSafeJSHtml(html)), loadScripts, callback);
             return this;
         }
 
@@ -3691,7 +3691,7 @@ namespace Ext.Net
         [Description("Update the innerHTML of this element, optionally searching for and processing scripts")]
         public virtual Element Update(string html, bool loadScripts)
         {
-            this.Call("update", Element.ConvertToSafeJSHtml(html), loadScripts);
+            this.Call("update", new JRawValue(Element.ConvertToSafeJSHtml(html)), loadScripts);
             return this;
         }
 
@@ -3703,7 +3703,7 @@ namespace Ext.Net
         [Description("Update the innerHTML of this element, optionally searching for and processing scripts")]
         public virtual Element Update(string html)
         {
-            this.Call("update", Element.ConvertToSafeJSHtml(html));
+            this.Call("update", new JRawValue(Element.ConvertToSafeJSHtml(html)));
             return this;
         }
 

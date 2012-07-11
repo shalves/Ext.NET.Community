@@ -1,9 +1,9 @@
 /*
- * @version   : 1.4.0 - Ext.NET Pro License
+ * @version   : 1.5.0 - Ext.NET Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-24
+ * @date      : 2012-07-10
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
- * @license   : See license.txt and http://www.ext.net/license/. 
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
  * @website   : http://www.ext.net/
  */
 
@@ -5895,6 +5895,65 @@ Ext.form.HtmlEditor.override({
     }
 });
 
+/// TODO:   The following fixes an issue in IE only 
+///         where a bulleted list is not created properly.
+///         Need to check this fix with future releases of ExtJS.
+Ext.form.HtmlEditor.override({
+    fixKeys : function () { // load time branching for fastest keydown performance
+        if (Ext.isIE) {
+            return function (e) {
+                var k = e.getKey(),
+                    doc = this.getDoc(),
+                        r;
+                if (k == e.TAB) {
+                    e.stopEvent();
+                    r = doc.selection.createRange();
+                    if (r) {
+                        r.collapse(true);
+                        r.pasteHTML('&nbsp;&nbsp;&nbsp;&nbsp;');
+                        this.deferFocus();
+                    }
+                } 
+//                else if (k == e.ENTER) {
+//                    r = doc.selection.createRange();
+//                    if (r) {
+//                        var target = r.parentElement();
+//                        if (!target || target.tagName.toLowerCase() != 'li') {
+//                            e.stopEvent();
+//                            r.pasteHTML('<br />');
+//                            r.collapse(false);
+//                            r.select();
+//                        }
+//                    }
+//                }
+            };
+        } else if (Ext.isOpera) {
+            return function (e) {
+                var k = e.getKey();
+                if (k == e.TAB) {
+                    e.stopEvent();
+                    this.win.focus();
+                    this.execCmd('InsertHTML', '&nbsp;&nbsp;&nbsp;&nbsp;');
+                    this.deferFocus();
+                }
+            };
+        } else if (Ext.isWebKit) {
+            return function (e) {
+                var k = e.getKey();
+                if (k == e.TAB) {
+                    e.stopEvent();
+                    this.execCmd('InsertText', '\t');
+                    this.deferFocus();
+                } else if (k == e.ENTER) {
+                    e.stopEvent();
+                    this.execCmd('InsertHtml', '<br /><br />');
+                    this.deferFocus();
+                }
+            };
+        }
+    } ()
+});
+
 // @source core/form/Hyperlink.js
 
 Ext.net.HyperLink = Ext.extend(Ext.form.Label, {
@@ -7673,7 +7732,7 @@ Ext.net.DropDownField = Ext.extend(Ext.net.TriggerField, {
             isSimple = true;
         }
 
-        if (this.hideTrigger) {
+        if (this.hideTrigger || this.readOnly) {
             Ext.apply(triggerCfg, { style : "display:none", hidden : true });
             this.hideTrigger = false;
         }

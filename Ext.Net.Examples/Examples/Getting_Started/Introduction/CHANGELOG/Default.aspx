@@ -11,6 +11,36 @@
 <body>
 <pre>
 **************************************************************************
+*                       Version 1.5.0 CHANGELOG                          *
+**************************************************************************
+
+Release Date     : 2012-07-10
+Current Version  : 1.5.0
+Previous Version : 1.4.0
+
+NEW
+	[r4090]	Added new /Getting_Started/Introduction/SVN_Log sample
+	[r4166]	Added .pdb file generation for /Release build. Now Ext.NET v1.x will be distributed with full .pdb files.
+
+FIX	
+	[r4084]	A non-editable CheckColumn should not break the SelectionModel functionality.
+	[r4133]	Fixed the paging on first expand in the Form/ComboBox/Two_Columns example.
+	[r4145]	DropDownField with ReadOnly="true" has wrong width.
+	[r4150]	Fixed the Element Update method. The HTML should be passed as a JRawValue instance.
+	[r4151]	Now the TreePanel SelectionSubmitConfig with just Encode="true" is rendered on client.
+	[r4158]	Fix in the BorderLayout/Complex_in_Markup example.
+	[r4167]	fixes an issue in IE only with the HtmlEditor where a bulleted list is not created properly.
+
+UPDATE
+	[r4085]	Source formatting to API Parser
+	[r4086]	Minor revisions to Sandbox. Added sample /App_Themes/ for testing.
+	[r4089]	Added "Version" column to SVN Log viewer
+	[r4091]	Revised Examples Explorer 'NEW' list to include new SVN_Log sample
+	[r4116]	New constructor for ItemsCollection (with SingleItemMode argument)
+
+
+
+**************************************************************************
 *                       Version 1.4.0 CHANGELOG                          *
 **************************************************************************
 
@@ -415,7 +445,7 @@ FIX
 94. [FIX] [#3753] Changed a Window .Frame default value to "true".
 	https://extnet.lighthouseapp.com/projects/50526/tickets/210
 
-95. [FIX] [#3752] TokenUtils supports "&lt;!tokens>" now
+95. [FIX] [#3752] TokenUtils supports "] !tokens>" now
 
 96. [FIX] [#3751] Now PagingStore applies paging if a data comes from a DirectEvent at the first time.
 	http://forums.ext.net/showthread.php?15947
@@ -654,14 +684,14 @@ Previous Version : 1.0.0 RC2
 	 
 	 Example
 	 
-	 &lt;ext:Window runat="server" Title="#{TextField1.Text}" />
+	 ] ext:Window runat="server" Title="#{TextField1.Text}" />
 	 
 13.  Renamed WebControl class to ExtControl. As well, renamed 
      Coolite.Ext.Web.WebControl.cs file to Ext.Net.ExtControl.cs.
 	 
-14.  Removed &lt;ext:ToolbarButton>. Please use &lt;ext:Button>.	 
+14.  Removed ] ext:ToolbarButton>. Please use ] ext:Button>.	 
 
-15.  Removed &lt;ext:ToolbarSplitButton>. Please use &lt;ext:SplitButton>.
+15.  Removed ] ext:ToolbarSplitButton>. Please use ] ext:SplitButton>.
 
 16.  Renamed AjaxMethod class to DirectMethod.
 
@@ -677,9 +707,9 @@ Previous Version : 1.0.0 RC2
 	 [DirectMethod]
 	 public void DoSomthing() { }
 	 
-18.  Renamed &lt;AjaxEvents> property to &lt;DirectEvents>.	 
+18.  Renamed ] AjaxEvents> property to ] DirectEvents>.	 
 
-19.  Removed &lt;ext:ToolbarSplitButton>. Please use &lt;ext:SplitButton>.
+19.  Removed ] ext:ToolbarSplitButton>. Please use ] ext:SplitButton>.
 
 20.  Removed Adapter class
 
@@ -695,7 +725,7 @@ Previous Version : 1.0.0 RC2
 
 26.  Renamed ElementMenuItem class to ComponentMenuItem
 
-27.  Renamed &lt;ext:Accordion> to &lt;ext:AccordionLayout>
+27.  Renamed ] ext:Accordion> to ] ext:AccordionLayout>
 	 
 28.  Removed DataReader class .ReaderID property.
 
@@ -715,31 +745,31 @@ Previous Version : 1.0.0 RC2
 35.  Renamed DataSourceProxy class to PageProxy.
 
 36.  Layout collection property is now required in markup if using a 
-     Layout Control within &lt;Content> or &lt;Items>.
+     Layout Control within ] Content> or ] Items>.
 	
-	 &lt;Items>
+	 ] Items>
 		AccordionLayout
 		ContainerLayout
 		CardLayout
 		CenterLayout
 		FitLayout
      
-     &lt;Anchors>
+     ] Anchors>
 		AbsoluteLayout
 		AnchorLayout
 		FormLayout
 	 
-	 &lt;BoxItems>
+	 ] BoxItems>
 		HBoxLayout
 		VBoxLayout
 	 
-	 &lt;Rows>
+	 ] Rows>
 		RowLayout
 	 
-	 &lt;Columns>
+	 ] Columns>
 		ColumnLayout
 	 
-	 &lt;Cells>
+	 ] Cells>
 		TableLayout
 	
 37.  Removed [XType] Attribute and replaced with XType readonly property.
@@ -785,27 +815,27 @@ Previous Version : 1.0.0 RC2
 
 41.  Renamed AjaxRequestModule to DirectRequestModule
 
-42.  Renamed &lt;ext:ScriptManager> to &lt;ext:ResourceManager>
+42.  Renamed ] ext:ScriptManager> to ] ext:ResourceManager>
 
-43.  Removed &lt;ext:ResourcePlaceHolder> and &lt;ext:StyleContainer> controls.
+43.  Removed ] ext:ResourcePlaceHolder> and ] ext:StyleContainer> controls.
 	 
-	 Please use &lt;ext:ResourcePlaceHolder> with new Mode property which can
+	 Please use ] ext:ResourcePlaceHolder> with new Mode property which can
 	 determine if .js or .css resources are rendered. The Mode property is
 	 not required and if not defined, both .js and .css resource files are
 	 rendered into the location of the ResourcePlaceHolder. 
 	 
 	 Example (New)
 	 
-	 &lt;ext:ResourcePlaceHolder runat="server" Mode="Script" />
+	 ] ext:ResourcePlaceHolder runat="server" Mode="Script" />
 
-44.  Renamed &lt;ext:ViewPort> to &lt;ext:Viewport>. Change to lowercase "p".
+44.  Renamed ] ext:ViewPort> to ] ext:Viewport>. Change to lowercase "p".
 
-45.  Renamed &lt;Body> inner property to &lt;Content>.
+45.  Renamed ] Body> inner property to ] Content>.
 
 	 Affects all ContentPanel type controls including Panel, Window, Viewport
-	 Renaming to &lt;Content> also solves &lt;Body> rendering bug in VS 2005.
+	 Renaming to ] Content> also solves ] Body> rendering bug in VS 2005.
 	 
-	 Renaming all &lt;Body> tags in a project to &lt;Content> can be easily 
+	 Renaming all ] Body> tags in a project to ] Content> can be easily 
 	 accomplished with a case-sensitive search and replace within Visual 
 	 Studio. Please search for the following (remove double quotes) and 
 	 ensure you have the "Match case" option checked.
@@ -821,7 +851,7 @@ Previous Version : 1.0.0 RC2
 
 48.  Removed .UpdateBody() Method. Please use .Update().
 
-49.  Removed &lt;ext:Window> .ShowOnLoad property.
+49.  Removed ] ext:Window> .ShowOnLoad property.
      Please use .Hidden property.
 	 
 	 Example (Old)
@@ -835,7 +865,7 @@ Previous Version : 1.0.0 RC2
 	 // Will show Window on initial Page_Load
 	 this.Window.Hidden = false; // 'false' is the default value
 	 
-50.  Renamed the &lt;ext:Window> .CenterOnLoad property to .InitCenter.
+50.  Renamed the ] ext:Window> .CenterOnLoad property to .InitCenter.
 	 Default value is unchanged as "true".
 	 
 	 Example (Old)
@@ -856,31 +886,31 @@ Previous Version : 1.0.0 RC2
 
 53.  GenericPlugin: renamed InstanceOf to InstanceName.
 
-54.  Renamed TabPanel &lt;Tabs> Collection to &lt;Items>.
+54.  Renamed TabPanel ] Tabs> Collection to ] Items>.
 
 	 Example (Old)
 	 
-	 &lt;ext:TabPanel runat="server">
-         &lt;Tabs>
-             &lt;ext:Tab runat="server" Title="Tab 1" />
+	 ] ext:TabPanel runat="server">
+         ] Tabs>
+             ] ext:Tab runat="server" Title="Tab 1" />
 	 
 	 
 	 Example (New)
 	 
-	 &lt;ext:TabPanel runat="server">
-         &lt;Items>
-             &lt;ext:Panel runat="server" Title="Tab 1" />
+	 ] ext:TabPanel runat="server">
+         ] Items>
+             ] ext:Panel runat="server" Title="Tab 1" />
              
-55.  Removed &lt;ext:Tab> Control. Now any Ext.Net.PanelBase Component can be
+55.  Removed ] ext:Tab> Control. Now any Ext.Net.PanelBase Component can be
      added to the TabPanel's .Items Collection. 
      
 56.  XTemplate: renamed Text to Html
 
 57.  XTemplate: Html property is required in markup
-     &lt;Template>
-	     &lt;Html>
+     ] Template>
+	     ] Html>
 	         ....
-	     &lt;/Html>
+	     ] /Html>
 	   
 58.  To disable a Field, the .Disabled property should be used instead of 
 	 the native ASP.NET .Enabled property. 
@@ -911,15 +941,15 @@ Previous Version : 1.0.0 RC2
       
      See more, http://forums.ext.net/showthread.php?6600	
 	 
-63.  The &lt;ext:TokenScript> component has been renamed to &lt;ext:XScript>
+63.  The ] ext:TokenScript> component has been renamed to ] ext:XScript>
 
 	 Example (Old)
 	 
-	 &lt;ext:TokenScript runat="server" />
+	 ] ext:TokenScript runat="server" />
 	 
 	 Example (New)
 	 
-	 &lt;ext:XScript runat="server" />
+	 ] ext:XScript runat="server" />
 	 
 64.  Renamed AjaxEventArgs property to DirectEventArgs
 
@@ -929,17 +959,17 @@ Previous Version : 1.0.0 RC2
 
 	 Example (Old)
 	 
-	 &lt;ext:DropDownField runat="server" Icon="Search" />
+	 ] ext:DropDownField runat="server" Icon="Search" />
 	 
 	 Example (New)
 	 
-	 &lt;ext:DropDownField runat="server" TriggerIcon="Search" />
+	 ] ext:DropDownField runat="server" TriggerIcon="Search" />
 	 
-67.  The &lt;ext:MultiField> has been replaced with the new 
-	 &lt;ext:CompositeField>.
+67.  The ] ext:MultiField> has been replaced with the new 
+	 ] ext:CompositeField>.
 	 
-	 The old inner &lt;Fields> property of &lt;ext:MultiField> should now be 
-	 configured in the &lt;Items> property of &lt;ext:CompositeField>.
+	 The old inner ] Fields> property of ] ext:MultiField> should now be 
+	 configured in the ] Items> property of ] ext:CompositeField>.
 	 
 68.  ColumnLayout: FitHeight property is true by default (it was false by 
      default for the 0.8.2)
@@ -979,18 +1009,18 @@ Previous Version : 1.0.0 RC2
      
      Example
      
-     &lt;ext:Panel runat="server" Title="Example">
-	    &lt;Listeners>
+     ] ext:Panel runat="server" Title="Example">
+	    ] Listeners>
 		    // Old
-			&lt;Hide Handler="alert(el);" />
+			] Hide Handler="alert(el);" />
 	        
 			// New
-			&lt;Hide Handler="alert(item);" />
+			] Hide Handler="alert(item);" />
 	        
 			// Recommended
-			&lt;Hide Handler="alert(this);" />
-		&lt;/Listeners>
-	 &lt;/ext:Panel>
+			] Hide Handler="alert(this);" />
+		] /Listeners>
+	 ] /ext:Panel>
 
 76.  GroupName property of Radio widget is removed. Please use Name property.
      Please note that GroupName property of RadioGroup still exists (RadioGroup's GroupName is applied to each child Radio if AutomaticGrouping is true)
@@ -1001,11 +1031,11 @@ Previous Version : 1.0.0 RC2
 
      Example (old)
 	 
-	 &lt;ext:ResourceManager runat="server" RemoveViewState="true" />
+	 ] ext:ResourceManager runat="server" RemoveViewState="true" />
 	 
 	 Example (new)
 	 
-	 &lt;ext:ResourceManager runat="server" DisableViewState="true" />
+	 ] ext:ResourceManager runat="server" DisableViewState="true" />
 	 
 79.  In prior releases, the Store .Load Listener was previously delayed by
      10 milliseconds. This delay was removed as of v1.0 RC2.
@@ -1015,7 +1045,7 @@ Previous Version : 1.0.0 RC2
 
 	 Example
 
-	 &lt;Load Handler="..." Delay="10" />
+	 ] Load Handler="..." Delay="10" />
 
       
 --------------------------------------------------------------------------

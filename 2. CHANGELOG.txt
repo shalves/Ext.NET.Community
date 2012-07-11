@@ -1,4 +1,34 @@
 ﻿**************************************************************************
+*                       Version 1.5.0 CHANGELOG                          *
+**************************************************************************
+
+Release Date     : 2012-07-10
+Current Version  : 1.5.0
+Previous Version : 1.4.0
+
+NEW
+	[r4090]	Added new /Getting_Started/Introduction/SVN_Log sample
+	[r4166]	Added .pdb file generation for /Release build. Now Ext.NET v1.x will be distributed with full .pdb files.
+
+FIX	
+	[r4084]	A non-editable CheckColumn should not break the SelectionModel functionality.
+	[r4133]	Fixed the paging on first expand in the Form/ComboBox/Two_Columns example.
+	[r4145]	DropDownField with ReadOnly="true" has wrong width.
+	[r4150]	Fixed the Element Update method. The HTML should be passed as a JRawValue instance.
+	[r4151]	Now the TreePanel SelectionSubmitConfig with just Encode="true" is rendered on client.
+	[r4158]	Fix in the BorderLayout/Complex_in_Markup example.
+	[r4167]	fixes an issue in IE only with the HtmlEditor where a bulleted list is not created properly.
+
+UPDATE
+	[r4085]	Source formatting to API Parser
+	[r4086]	Minor revisions to Sandbox. Added sample /App_Themes/ for testing.
+	[r4089]	Added "Version" column to SVN Log viewer
+	[r4091]	Revised Examples Explorer 'NEW' list to include new SVN_Log sample
+	[r4116]	New constructor for ItemsCollection (with SingleItemMode argument)
+
+
+
+**************************************************************************
 *                       Version 1.4.0 CHANGELOG                          *
 **************************************************************************
 

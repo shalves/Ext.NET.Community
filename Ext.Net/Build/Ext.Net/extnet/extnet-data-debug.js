@@ -1,9 +1,9 @@
 /*
- * @version   : 1.4.0 - Ext.NET Pro License
+ * @version   : 1.5.0 - Ext.NET Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-05-24
+ * @date      : 2012-07-10
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
- * @license   : See license.txt and http://www.ext.net/license/. 
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
  * @website   : http://www.ext.net/
  */
 
@@ -4229,7 +4229,11 @@ Ext.grid.CheckColumn.prototype = {
         }
     },
     
-    getCellEditor : Ext.emptyFn
+    getCellEditor : Ext.emptyFn,
+
+    processEvent : function (name, e, grid, rowIndex, colIndex) {
+        return true;
+    }
 };
 
 Ext.grid.Column.types.checkcolumn = Ext.grid.CheckColumn;

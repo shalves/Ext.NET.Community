@@ -183,6 +183,10 @@
       <Project>{62AAF3AF-4974-405E-B272-65697FC46E83}</Project>
       <Name>Ext.Net.MVC</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Ext.Net.UX\Ext.Net.UX.csproj">
+      <Project>{EDD0C665-5685-4177-98E6-64D952E4463B}</Project>
+      <Name>Ext.Net.UX</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Ext.Net\Ext.Net.csproj">
       <Project>{195F2E70-F5E6-4A61-AAD9-2639657C29C4}</Project>
       <Name>Ext.Net</Name>

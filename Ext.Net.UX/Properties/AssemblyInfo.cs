@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Web.UI;
 
-[assembly: AssemblyVersion("1.3.0.*")]
+[assembly: AssemblyVersion("1.5.0")]
 [assembly: TagPrefix("Ext.Net.UX", "ux")]
 
 [assembly: AssemblyTitle("Ext.Net UX")]

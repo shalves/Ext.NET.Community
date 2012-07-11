@@ -3,5 +3,6 @@ Ext.Net/bin/
 bin/
 obj/
 *.suo
-*.dll
 *.user
+*.local.*
+.DS_Store
