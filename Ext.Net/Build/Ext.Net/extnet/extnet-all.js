@@ -1,14 +1,14 @@
 /*
- * @version   : 2.0.0.rc2 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-10
+ * @date      : 2012-07-24
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
  * @website   : http://www.ext.net/
  */
 
 
-Ext.ns("Ext.net","Ext.ux","Ext.ux.plugins","Ext.ux.layout");Ext.net.Version="2.0.0.rc2";
+Ext.ns("Ext.net","Ext.ux","Ext.ux.plugins","Ext.ux.layout");Ext.net.Version="2.0.0";
 
 Ext.util.Observable.override({constructor:function(config){this.callParent(arguments);this.directListeners=this.directListeners||{};this.hasDirectListeners=this.hasDirectListeners||{};if(Ext.net&&Ext.net.MessageBus){Ext.net.MessageBus.initEvents(this);}}});Ext.util.DirectObservable={initDirectEvents:function(){if(!this.directListeners){this.directListeners={};}
 if(!this.hasDirectListeners){this.hasDirectListeners={};}
@@ -203,13 +203,16 @@ Ext.container.AbstractContainer.prototype.initComponent=Ext.Function.createSeque
 
 Ext.Container.override({getBody:function(focus){if(this.iframe){var self=this.getWin();if(focus!==false){try{self.focus();}catch(e){}}
 return self;}
-return Ext.get(this.id+"_Content")||this.body;},reload:function(disableCaching){this.getLoader().load({disableCaching:disableCaching});},load:function(config){this.getLoader().load(config);},clearContent:function(){if(this.iframe&&this.iframe.dom){this.iframe.un("load",this.getLoader().afterIFrameLoad,this);var doc=this.getDoc();if(doc){Ext.EventManager.removeAll(doc);for(prop in doc){if(doc.hasOwnProperty&&doc.hasOwnProperty(prop)){delete doc[prop];}}}
+return Ext.get(this.id+"_Content")||this.body;},reload:function(disableCaching){this.getLoader().load({disableCaching:disableCaching});},load:function(config){this.getLoader().load(config);},clearContent:function(){if(this.iframe&&this.iframe.dom){var me=this,doc=me.getDoc(),fn=me.onIFrameRelayedEvent;if(doc){try{Ext.EventManager.un(doc,{mousedown:fn,mousemove:fn,mouseup:fn,click:fn,dblclick:fn,scope:me});}catch(e){}}
+this.iframe.un("load",this.getLoader().afterIFrameLoad,this);var doc=this.getDoc();if(doc){Ext.EventManager.removeAll(doc);for(prop in doc){if(doc.hasOwnProperty&&doc.hasOwnProperty(prop)){delete doc[prop];}}}
 if(Ext.isIE){this.iframe.dom.src=Ext.net.StringUtils.format("java{0}","script:false");}
-this.removeAll(true);delete this.iframe;this.getLoader().removeMask();}else if(this.rendered){this.body.dom.innerHTML="";}},beforeDestroy:Ext.Function.createInterceptor(Ext.container.Container.prototype.beforeDestroy,function(){if(this.iframe&&this.iframe.dom){try{this.clearContent();}catch(e){}}}),onRender:Ext.Function.createSequence(Ext.container.Container.prototype.onRender,function(){this.mon(this.el,Ext.EventManager.getKeyEvent(),this.fireKey,this);}),fireKey:function(e){if(e.getKey()===e.ENTER){var btn,index,fbar=this.child("[ui='footer']"),dbtn=this.defaultButton;if(!dbtn){if(!(this instanceof Ext.form.Panel)||!fbar||!fbar.items||!(fbar.items.last()instanceof Ext.button.Button)){return;}
+this.removeAll(true);delete this.iframe;this.getLoader().removeMask();}else if(this.rendered){this.body.dom.innerHTML="";}},beforeDestroy:Ext.Function.createInterceptor(Ext.container.Container.prototype.beforeDestroy,function(){if(this.iframe&&this.iframe.dom){try{this.clearContent();}catch(e){}}}),onRender:Ext.Function.createSequence(Ext.container.Container.prototype.onRender,function(){this.mon(this.el,Ext.EventManager.getKeyEvent(),this.fireKey,this);}),fireKey:function(e){if(e.getKey()===e.ENTER){var tagRe=/textarea/i,target=e.target;contentEditable=target.contentEditable;if(tagRe.test(target.tagName)||(contentEditable===''||contentEditable==='true')){return;}
+var btn,index,fbar=this.child("[ui='footer']"),dbtn=this.defaultButton;if(!dbtn){if(!(this instanceof Ext.form.Panel)||!fbar||!fbar.items||!(fbar.items.last()instanceof Ext.button.Button)){return;}
 btn=fbar.items.last();this.clickButton(btn,e);return;}
 if(Ext.isNumeric(dbtn)){index=parseInt(dbtn,10);if(!fbar||!fbar.items||!(fbar.items.getAt(index)instanceof Ext.button.Button)){return;}
 btn=fbar.items.getAt(index);this.clickButton(btn,e);}else{btn=Ext.getCmp(dbtn);if(!btn){btn=this.down(dbtn);}
-if(btn){this.clickButton(btn,e);}}}},clickButton:function(btn,e){if(btn.onClick){e.button=0;btn.onClick(e);}else{btn.fireEvent("click",btn,e);}},onIFrameLoad:function(){var me=this,doc=me.getDoc(),fn=me.onIFrameRelayedEvent;if(doc){try{Ext.EventManager.removeAll(doc);Ext.EventManager.on(doc,{mousedown:fn,mousemove:fn,mouseup:fn,click:fn,dblclick:fn,scope:me});}catch(e){}}},onIFrameRelayedEvent:function(event){var iframeEl=this.iframe,iframeXY=iframeEl.getXY(),eventXY=event.getXY();event.xy=[iframeXY[0]+eventXY[0],iframeXY[1]+eventXY[1]];event.injectEvent(iframeEl);event.xy=eventXY;},getFrameBody:function(){var doc=this.getDoc();return doc.body||doc.documentElement;},getDoc:function(){try{return this.getWin().document;}catch(ex){return null;}},getWin:function(){var me=this,name=me.id+"_IFrame",win=Ext.isIE?me.iframe.dom.contentWindow:window.frames[name];return win;},getFrame:function(){var me=this;return me.iframe.dom;}});
+if(btn){this.clickButton(btn,e);}}}},clickButton:function(btn,e){if(btn.onClick){e.button=0;btn.onClick(e);}else{btn.fireEvent("click",btn,e);}},onIFrameLoad:function(){var me=this,doc=me.getDoc(),fn=me.onIFrameRelayedEvent;if(doc){try{Ext.EventManager.un(doc,{mousedown:fn,mousemove:fn,mouseup:fn,click:fn,dblclick:fn,scope:me});Ext.EventManager.on(doc,{mousedown:fn,mousemove:fn,mouseup:fn,click:fn,dblclick:fn,scope:me});}catch(e){}}},onIFrameRelayedEvent:function(event){if(!this.iframe){return;}
+var iframeEl=this.iframe,iframeXY=iframeEl.getXY(),eventXY=event.getXY();event.xy=[iframeXY[0]+eventXY[0],iframeXY[1]+eventXY[1]];event.injectEvent(iframeEl);event.xy=eventXY;},getFrameBody:function(){var doc=this.getDoc();return doc.body||doc.documentElement;},getDoc:function(){try{return this.getWin().document;}catch(ex){return null;}},getWin:function(){var me=this,name=me.id+"_IFrame",win=Ext.isIE?me.iframe.dom.contentWindow:window.frames[name];return win;},getFrame:function(){var me=this;return me.iframe.dom;}});
 
 Ext.panel.Panel.override({getCollapsedField:function(){if(!this.collapsedField&&this.hasId()){this.collapsedField=new Ext.form.Hidden({id:this.id+"_Collapsed",name:this.id+"_Collapsed",value:this.collapsed||false});this.on("beforedestroy",function(){if(this.rendered){this.destroy();}},this.collapsedField);if(this.hasId()){this.collapsedField.render(this.el.parent()||this.el);}}
 return this.collapsedField;},afterCollapse:Ext.Function.createSequence(Ext.panel.Panel.prototype.afterCollapse,function(){var f=this.getCollapsedField();if(f){f.el.dom.value="true";}}),afterExpand:Ext.Function.createSequence(Ext.panel.Panel.prototype.afterExpand,function(){var f=this.getCollapsedField();if(f){f.el.dom.value="false";}})});Ext.Panel.prototype.initComponent=Ext.Function.createInterceptor(Ext.Panel.prototype.initComponent,function(){if(this.tbar&&(this.tbar.xtype=="paging")&&!Ext.isDefined(this.tbar.store)&&this.store){this.tbar.store=this.store;}

@@ -237,8 +237,10 @@
     <Content Include="App_Readme\Ext.NET.Utilities.README.txt" />
     <Content Include="App_Readme\Transformer.NET.LICENSE.txt" />
     <Content Include="App_Readme\Transformer.NET.README.txt" />
+    <Content Include="BREAKING_CHANGES.txt" />
     <Content Include="CHANGELOG.txt" />
     <Content Include="Code\SerializableEntity\ReadMe.txt" />
+    <Content Include="Examples\Getting_Started\Introduction\BREAKING_CHANGES\Default.aspx" />
     <Content Include="Examples\Getting_Started\Introduction\SVN_Log\Default.aspx" />
     <Content Include="Examples\Toolbar\Menu\Horizontal_Menu\config.xml" />
     <Content Include="Examples\Toolbar\Menu\Horizontal_Menu\Default.aspx" />
@@ -1654,7 +1656,8 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="'$(Solutions.VSVersion)' == '9.0'" />
   <PropertyGroup>
     <PreBuildEvent>xcopy "$(SolutionDir)Ext.Net\Build\Ext.Net\CHANGELOG.txt" "$(ProjectDir)" /y
-xcopy "$(SolutionDir)Ext.Net\Build\Ext.Net\README.txt" "$(ProjectDir)" /y</PreBuildEvent>
+xcopy "$(SolutionDir)Ext.Net\Build\Ext.Net\README.txt" "$(ProjectDir)" /y
+xcopy "$(SolutionDir)Ext.Net\Build\Ext.Net\BREAKING_CHANGES.txt" "$(ProjectDir)" /y</PreBuildEvent>
   </PropertyGroup>
   <!--<Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />-->
 </Project>

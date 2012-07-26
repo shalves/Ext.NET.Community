@@ -1,14 +1,14 @@
 /*
- * @version   : 2.0.0.rc2 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-10
+ * @date      : 2012-07-24
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
  * @website   : http://www.ext.net/
  */
 
 Ext.ns("Ext.net", "Ext.ux", "Ext.ux.plugins", "Ext.ux.layout");
-Ext.net.Version = "2.0.0.rc2";
+Ext.net.Version = "2.0.0";
 
 // @source core/utils/Observable.js
 
@@ -1929,6 +1929,24 @@ Ext.Container.override({
 
     clearContent : function () {
         if (this.iframe && this.iframe.dom) {
+            var me = this,
+                doc = me.getDoc(),
+                fn = me.onIFrameRelayedEvent;
+
+            if (doc) {
+                try {
+                    Ext.EventManager.un(doc, {
+                        mousedown: fn, 
+                        mousemove: fn, 
+                        mouseup: fn,   
+                        click: fn,     
+                        dblclick: fn,  
+                        scope: me
+                    });
+                } catch(e) {                
+                }
+            }
+
             this.iframe.un("load", this.getLoader().afterIFrameLoad, this);
 
             var doc = this.getDoc();
@@ -1957,7 +1975,7 @@ Ext.Container.override({
 
     beforeDestroy : Ext.Function.createInterceptor(Ext.container.Container.prototype.beforeDestroy, function () {
         if (this.iframe && this.iframe.dom) {
-            try {
+            try {                
                 this.clearContent();
             } catch (e) { }
         }
@@ -1969,6 +1987,14 @@ Ext.Container.override({
 
     fireKey : function (e) {
         if (e.getKey() === e.ENTER) {
+            var tagRe = /textarea/i,
+                target = e.target;
+
+            contentEditable = target.contentEditable;            
+            if (tagRe.test(target.tagName) || (contentEditable === '' || contentEditable === 'true')) {
+                return;
+            }
+            
             var btn,
                 index,
                 fbar = this.child("[ui='footer']"),
@@ -2024,7 +2050,14 @@ Ext.Container.override({
 
         if (doc) {
             try {
-                Ext.EventManager.removeAll(doc);
+                Ext.EventManager.un(doc, {
+                    mousedown: fn, 
+                    mousemove: fn, 
+                    mouseup: fn,   
+                    click: fn,     
+                    dblclick: fn,  
+                    scope: me
+                });
 
                 Ext.EventManager.on(doc, {
                     mousedown: fn, 
@@ -2042,6 +2075,10 @@ Ext.Container.override({
     },
 
     onIFrameRelayedEvent: function (event) {
+        if (!this.iframe) {
+            return;
+        }
+
         var iframeEl = this.iframe,
             iframeXY = iframeEl.getXY(),
             eventXY = event.getXY();

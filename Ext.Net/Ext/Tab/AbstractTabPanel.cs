@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0.rc2 - Community Edition (AGPLv3 License)
+ * @version   : 2.0.0 - Community Edition (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-10
+ * @date      : 2012-07-24
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -426,7 +426,7 @@ namespace Ext.Net
         [Description("Sets the specified tab as the active tab. This method fires the beforetabchange event which can return false to cancel the tab change.")]
         public virtual void SetActiveTab(AbstractComponent item)
         {
-            this.SetActiveTab(item.ClientID);
+            this.SetActiveTab(item.ConfigID);
         }
 
         /// <summary>

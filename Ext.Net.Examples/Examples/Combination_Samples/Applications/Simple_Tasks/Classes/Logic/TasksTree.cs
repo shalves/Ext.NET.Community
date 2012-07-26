@@ -28,7 +28,7 @@ namespace Ext.Net.Examples.SimpleTasks
             this.Listeners.Render.Fn = TasksTree.SCOPE + ".init";
             this.Listeners.Render.Scope = TasksTree.SCOPE;
 
-            //this.Listeners.RemoveNode.Handler = TasksTree.SCOPE + ".tree.getRootNode().select();";
+            this.Listeners.ItemRemove.Handler = "{0}.tree.selModel.select({0}.tree.getRootNode());".FormatWith(TasksTree.SCOPE);
 
             this.Listeners.ItemContextMenu.Fn = TasksTree.SCOPE + ".onContextMenu";
             this.Listeners.ItemContextMenu.Scope = TasksTree.SCOPE;
@@ -64,18 +64,16 @@ namespace Ext.Net.Examples.SimpleTasks
             mItem.Listeners.Click.Handler = TasksTree.SCOPE + ".deleteCategory();";
             mItem.Listeners.Click.Scope = TasksTree.SCOPE;
 
-            //PageTreeLoader loader = (PageTreeLoader)this.Loader.Primary;
-           // loader.NodeLoad += TasksTree_NodeLoad;
+            this.Store.Primary.ReadData += TasksTree_NodeLoad;
 
-            //DefaultSelectionModel sm = (DefaultSelectionModel)this.SelectionModel.Primary;
-            //sm.Listeners.SelectionChange.Fn = TasksTree.SCOPE + ".selectionChange";
-            //sm.Listeners.SelectionChange.Scope = TasksTree.SCOPE;
+            TreeSelectionModel sm = (TreeSelectionModel)this.SelectionModel.Primary;
+            sm.Listeners.SelectionChange.Fn = TasksTree.SCOPE + ".selectionChange";
+            sm.Listeners.SelectionChange.Scope = TasksTree.SCOPE;
 
-            //this.Listeners.NodeDragOver.Fn = TasksTree.SCOPE + ".nodeDragOver";
-            //this.Listeners.NodeDragOver.Scope = TasksTree.SCOPE;
-            //this.Listeners.BeforeNodeDrop.Fn = TasksTree.SCOPE + ".beforeNodeDrop";
-            //this.Listeners.BeforeNodeDrop.Scope = TasksTree.SCOPE;
-
+            var view = this.View[0];
+            view.Listeners.BeforeDrop.Fn = TasksTree.SCOPE + ".beforeNodeDrop";
+            view.Listeners.BeforeDrop.Scope = TasksTree.SCOPE;
+            
             Button button = (Button)this.bBar.Items[0];
             button.Listeners.Click.Handler = TasksTree.SCOPE + ".insertCategory();";
             button.Listeners.Click.Scope = TasksTree.SCOPE;
@@ -120,12 +118,6 @@ namespace Ext.Net.Examples.SimpleTasks
                 int targetNodeId = int.Parse(e.TargetNodeID);
             
                 var ctx = this.DBContext;
-
-                if (ctx.IsListParent(targetNodeId, nodeId).Value)
-                {
-                    e.Accept = false;
-                    e.RefusalMessage = "You can't move parent node into the child node";
-                }
 
                 Category category = (from tl in ctx.Categories
                                  where tl.ID == nodeId
@@ -259,17 +251,17 @@ namespace Ext.Net.Examples.SimpleTasks
             }
         }
 
-        void TasksTree_NodeLoad(object sender, EventArgs e)
+        void TasksTree_NodeLoad(object sender, NodeLoadEventArgs e)
         {
-            //int folderID = int.Parse(e.NodeID);
+            int folderID = int.Parse(e.NodeID);
 
-            //SimpleTasksDataContext ctx = this.DBContext;
+            SimpleTasksDataContext ctx = this.DBContext;
 
-            //var query = from tl in ctx.Categories
-            //            where tl.ParentID == folderID
-            //            select tl;
+            var query = from tl in ctx.Categories
+                        where tl.ParentID == folderID
+                        select tl;
 
-            //this.ListToNode(query.ToList(), e.Nodes);
+            this.ListToNode(query.ToList(), e.Nodes);
         }
 
         private void ListToNode(IEnumerable<Category> lists, NodeCollection nodes)
@@ -280,14 +272,21 @@ namespace Ext.Net.Examples.SimpleTasks
                 node.NodeID = tasksList.ID.ToString();
                 node.Text = tasksList.Name;
                 node.Leaf = !tasksList.IsFolder;
-                node.IconCls = tasksList.IsFolder ? "icon-folder" : "icon-category";
-                //node.Editable = true;
+                node.IconCls = tasksList.IsFolder ? "icon-folder" : "icon-category";                
                 node.CustomAttributes.Add(new ConfigItem("isFolder", JSON.Serialize(tasksList.IsFolder), ParameterMode.Raw));
+                if (!tasksList.IsFolder)
+                {
+                    node.AllowDrop = false;
+                }
                 node.Expanded = tasksList.IsFolder;
 
                 if (tasksList.Categories.Count > 0)
                 {
                     this.ListToNode(tasksList.Categories, node.Children);
+                }
+                else if(!node.Leaf)
+                {
+                    node.EmptyChildren = true;
                 }
 
                 nodes.Add(node);

@@ -1,4 +1,7 @@
-﻿var makeTab = function (id, url, title) {
+﻿var SEARCH_URL = "/search/",
+    lockHistoryChange = false;
+
+var makeTab = function (id, url, title) {
     var win, 
         tab, 
         hostName, 
@@ -302,17 +305,29 @@ var beforeSourceShow = function (el) {
 };
 
 var change = function (token) {
-    if (token) {
-        loadExample(token, lookup[token] || "-" );
-    } else {
-        App.ExampleTabs.setActiveTab(0);
+    if (!lockHistoryChange) {
+        if (token) {
+            if (token.indexOf(SEARCH_URL) === 0) {
+                filterByUrl(token);
+            } else {
+                loadExample(token, lookup[token] || "-" );
+            }
+        } else {
+            App.ExampleTabs.setActiveTab(0);
+        }
     }
+    lockHistoryChange = false;
+};
+
+var getToken = function (url) {
+    var host = window.location.protocol + "//" + window.location.host + "/Examples";
+
+    return url.substr(host.length);
 };
 
 var addToken = function (el, tab) {
     if (tab.loader && tab.loader.url) {
-        var host = window.location.protocol + "//" + window.location.host + "/Examples",
-            token = tab.loader.url.substr(host.length);
+        var token = getToken(tab.loader.url);
         
         if (!Ext.isEmpty(token)) {
             Ext.History.add(token);
@@ -323,13 +338,22 @@ var addToken = function (el, tab) {
 };
 
 var keyUp = function (field, e) {
-    var tree = App.exampleTree,
-        text = field.getRawValue();
-    
     if (e.getKey() === 40) {
         return;
     }
-        
+
+    if (e.getKey() === Ext.EventObject.ESC) {
+        clearFilter(field);
+    } else {
+        changeFilterHash(field.getRawValue());            
+        filter(field);
+    }
+};
+
+var filter = function (field) {    
+    var tree = App.exampleTree,
+        text = field.getRawValue();
+    
     if (Ext.isEmpty(text, false)) {
         clearFilter(field);
     }
@@ -344,62 +368,97 @@ var keyUp = function (field, e) {
     
     field.getTrigger(0).show();
     
-    if (e.getKey() === Ext.EventObject.ESC) {
-        clearFilter(field);
-    } else {
-        var re = new RegExp(".*" + text + ".*", "i");
+    var re = new RegExp(".*" + text + ".*", "i");
         
-        tree.clearFilter(true);
+    tree.clearFilter(true);
         
-        tree.filterBy(function (node) {
-            var match = re.test(node.data.text.replace(/<span>&nbsp;<\/span>/g, "")),
-                pn = node.parentNode;
+    tree.filterBy(function (node) {
+        var match = re.test(node.data.text.replace(/<span>&nbsp;<\/span>/g, "")),
+            pn = node.parentNode;
                 
-            if (match && node.isLeaf()) {
-               pn.hasMatchNode = true;
-            }
+        if (match && node.isLeaf()) {
+            pn.hasMatchNode = true;
+        }
             
-            if (pn != null && pn.fixed) {
-                if (node.isLeaf() === false) {
-                    node.fixed = true;
-                }
-                return true;
-            }            
-                
+        if (pn != null && pn.fixed) {
             if (node.isLeaf() === false) {
-                node.fixed = match;
-                return match;
-            }            
-            
-            return (pn != null && pn.fixed) || match;
-        }, { expandNodes : false });
-
-        tree.getView().animate = false;
-        tree.getRootNode().cascadeBy(function (node) {
-            if (node.isRoot()) {
-               return;
-            }            
-            
-            if ((node.getDepth() === 1) || 
-               (node.getDepth() === 2 && node.hasMatchNode)) {
-               node.expand(false);
+                node.fixed = true;
             }
+            return true;
+        }            
+                
+        if (node.isLeaf() === false) {
+            node.fixed = match;
+            return match;
+        }            
             
-            delete node.fixed;
-            delete node.hasMatchNode;
-        }, tree);
-        tree.getView().animate = true;
+        return (pn != null && pn.fixed) || match;
+    }, { expandNodes : false });
+
+    tree.getView().animate = false;
+    tree.getRootNode().cascadeBy(function (node) {
+        if (node.isRoot()) {
+            return;
+        }            
+            
+        if ((node.getDepth() === 1) || 
+            (node.getDepth() === 2 && node.hasMatchNode)) {
+            node.expand(false);
+        }
+            
+        delete node.fixed;
+        delete node.hasMatchNode;
+    }, tree);
+    tree.getView().animate = true;
+};
+
+var filterByUrl = function (url) {
+    var field = App.TriggerField1,
+        tree = App.exampleTree;
+
+    if (!lockHistoryChange) {
+        var tree = App.exampleTree,
+            store = tree.getStore(),
+            fn = function () {
+                field.setValue(url.substr(SEARCH_URL.length));
+                filter(field);
+            };
+
+        if (store.loading) {
+            store.on("load", fn, null, { single : true });
+        } else {
+            fn();
+        }
     }
 };
 
 var clearFilter = function (field, trigger, index, e) {
     var tree = App.exampleTree;
     
-    field.setValue(""); 
+    field.setValue("");
+    changeFilterHash("");
     field.getTrigger(0).hide();
-    tree.clearFilter(true);     
+    tree.clearFilter(true);
     field.focus(false, 100);        
 };
+
+var changeFilterHash = Ext.Function.createBuffered(
+    function (text) {
+        lockHistoryChange = true;
+        if (text.length > 2) {
+            window.location.hash = SEARCH_URL + text;
+        } else {
+            var tab = App.ExampleTabs.getActiveTab(),
+                token = "";
+
+            if (tab.loader && tab.loader.url) {
+                token = getToken(tab.loader.url);
+            }
+        
+            Ext.History.add(token);
+        }
+    },
+    500);
 
 var filterSpecialKey = function (field, e) {
     if (e.getKey() == e.DOWN) {
@@ -467,8 +526,12 @@ if (window.location.href.indexOf("#") > 0) {
     
     Ext.onReady(function () {
         Ext.Function.defer(function(){
-            if (!Ext.isEmpty(directLink, false)) {
-                loadExample(directLink, "-");
+            if (directLink.indexOf(SEARCH_URL) === 0) {
+                filterByUrl(directLink);                
+            } else {
+                if (!Ext.isEmpty(directLink, false)) {
+                    loadExample(directLink, "-");
+                }
             }
         }, 100, window);        
     }, window);

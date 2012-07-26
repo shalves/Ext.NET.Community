@@ -6,19 +6,16 @@
 <html>
 <head runat="server">
     <title>Simple Tasks - Ext.NET Examples</title>    
-    <ext:ResourcePlaceHolder runat="server" Mode="ScriptFiles" />
+    
     <link href="resources/main.css" rel="stylesheet" type="text/css" />
     <script src="resources/main.js" type="text/javascript"></script>
 </head>
 <body>
     <form runat="server">
         <ext:ResourceManager 
-            runat="server" 
-            InitScriptMode="Linked"
-            DirectEventUrl="Default.aspx" 
-            
-           
-            />
+            runat="server"            
+            Namespace="" 
+            DirectEventUrl="Default.aspx" />
         
         <ext:Viewport runat="server" Layout="BorderLayout">
             <Items>
@@ -33,8 +30,12 @@
                     Margins="3 0 3 3" 
                     CMargins="3 3 3 3" 
                     MinWidth="120" 
-                    Split="true"
-                    />
+                    Split="true">
+                        <Listeners>                            
+                            <BeforeCollapse Handler="this.setTitle('');" />
+                            <BeforeExpand Handler="this.setTitle(this.initialConfig.title);" />
+                        </Listeners>
+                    </task:TasksTree>
                 <task:TasksGrid 
                     ID="TasksGrid1"
                     runat="server" 

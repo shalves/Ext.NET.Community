@@ -37,7 +37,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;ISPRO</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Ext.Net.xml</DocumentationFile>
@@ -3114,6 +3114,7 @@
     <Content Include="App_Readme\Ext.NET.Utilities.README.txt" />
     <Content Include="App_Readme\Transformer.NET.LICENSE.txt" />
     <Content Include="App_Readme\Transformer.NET.README.txt" />
+    <Content Include="Build\Ext.Net\BREAKING_CHANGES.txt" />
     <Content Include="Build\Ext.Net\extjs\ext-all-dev-w-comments.js" />
     <Content Include="Build\Ext.Net\extjs\ext-all-dev.js" />
     <Content Include="Build\Ext.Net\extjs\ext-debug-w-comments.js" />

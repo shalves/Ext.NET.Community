@@ -20,23 +20,22 @@ namespace Ext.Net.Examples.SimpleTasks
             this.IconCls = "icon-folder";
             this.EnableColumnHide = false;
             this.EnableColumnMove = false;
-            this.ForceFit = true;
-            //this.EnableDragDrop = true;
-            //this.DDGroup = "tasktree";
 
-            this.SelectionModel.Add(new RowSelectionModel
-            {
-                //MoveEditorOnEnter = false
+            this.SelectionModel.Add(new RowSelectionModel {                
             });
 
             this.View.Add(new GridView
             {
-                //MarkDirty = false,
-                //IgnoreAdd = true,
+                MarkDirty = false,
                 EmptyText = "There are no tasks to show in this category.",
                 GetRowClass = { Fn = TasksGrid.SCOPE + ".getRowClass" },
                 LoadMask = true,
-                LoadingText = "Loading Tasks..."
+                LoadingText = "Loading Tasks...",
+
+                Plugins =
+                {
+                    new GridDragDrop{ DDGroup = "tasktree" }
+                }
             });
 
             Grouping g = new Grouping();
@@ -88,13 +87,20 @@ namespace Ext.Net.Examples.SimpleTasks
                   UseArrows = true,
                   AutoScroll = true,
                   Animate = true,
-                  RootVisible = false,
+                  //RootVisible = false,
                   Cls = "tasks-tree",
                   Root =
                   {
-                      new Node{NodeID="root"}
-                  }
-                  ,
+                      new Node{NodeID="root", EmptyChildren = true}
+                  },
+
+                  Store = {
+                    new TreeStore
+                    {                
+                        ModelName = "CategoryTree"
+                    }
+                  },
+
                   SelectionModel =
                   {
                       new TreeSelectionModel()
@@ -144,7 +150,7 @@ namespace Ext.Net.Examples.SimpleTasks
                        {
                            ID = "mnuTaskGrid_DeleteTask",
                            Text = "Delete",
-                           Icon = Icon.Delete
+                           IconCls = "icon-category-delete"
                        }
                    }
             };
@@ -170,9 +176,10 @@ namespace Ext.Net.Examples.SimpleTasks
             colModel.Columns[0].HeaderItems.Add(
                 new Container
                 {
+                    ID = "icnIndicator",
+
                     AutoEl =
-                    {
-                        ID = "icnIndicator",
+                    {                        
                         Cls = "new-task-icon"
                     }
                 });
@@ -197,8 +204,7 @@ namespace Ext.Net.Examples.SimpleTasks
                 {
                     ID = "ntCategory",
                     IDMode = IDMode.Static,
-                    Disabled = true,
-                    //LazyInit = false,
+                    Disabled = true,                    
                     Editable = false,
                     Mode = DropDownMode.ValueText,
                     Component =
@@ -211,13 +217,14 @@ namespace Ext.Net.Examples.SimpleTasks
                             UseArrows = true,
                             AutoScroll = true,
                             Animate = true,
-                            RootVisible = false,
+                            //RootVisible = false,
                             Cls = "tasks-tree",
                             Root =
                             {
                                 new Node()
                                 {
-                                    Text = "root"
+                                    Text = "root",
+                                    EmptyChildren = true
                                 }
                             },
                             SelectionModel =
@@ -237,13 +244,19 @@ namespace Ext.Net.Examples.SimpleTasks
                 });
 
             colModel.Columns[4].HeaderItems.Add(
-                new Button
+                new Container
                 {
-                    Icon = Icon.Add,
-                    ToolTip = "Add new task",
-                    Handler = TasksGrid.SCOPE + ".onAddTask",
-                    Scope = TasksGrid.SCOPE
-                });
+                    Items = {
+                        new Button
+                        {
+                            Icon = Icon.Add,
+                            ToolTip = "Add new task",
+                            Handler = TasksGrid.SCOPE + ".onAddTask",
+                            Scope = TasksGrid.SCOPE
+                        }
+                    }
+                }
+            );    
         }
 
         private void BuildColumnModel()
@@ -258,8 +271,8 @@ namespace Ext.Net.Examples.SimpleTasks
                            IconCls = "icon-active",
                            CommandName = "togglestatus"
                        }
-                   },
-                   Text = "<div class='task-col-hd'></div>",
+                   },                   
+                   Cls="task-col-hd",
                    Width = 25,
                    Resizable = false,
                    MenuDisabled = true
@@ -268,7 +281,7 @@ namespace Ext.Net.Examples.SimpleTasks
             cm.Columns.Add(new Column
                {
                    Text = "Task",
-                   Width = 400,
+                   Flex = 1,
                    Sortable = true,
                    DataIndex = "Title"
                });
@@ -287,8 +300,7 @@ namespace Ext.Net.Examples.SimpleTasks
                    Text = "Due Date",
                    Width = 150,
                    Sortable = true,
-                   DataIndex = "DueDate",
-                   //GroupName = "Due"
+                   DataIndex = "DueDate"
                });
 
             cm.Columns.Add(new Column

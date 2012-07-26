@@ -39,6 +39,7 @@
     <folder name="Form\FieldContainer\Overview\" />
     <folder name="Form\NumberField\Overview\" />
     <folder name="Getting_Started\Introduction\SVN_Log\" />
+    <folder name="Getting_Started\Introduction\BREAKING_CHANGES\" />
     <folder name="GridPanel\Commands\Over_Commands\" />
     <folder name="GridPanel\ComponentColumn\Editor\" />
     <folder name="GridPanel\ComponentColumn\Overview\" />

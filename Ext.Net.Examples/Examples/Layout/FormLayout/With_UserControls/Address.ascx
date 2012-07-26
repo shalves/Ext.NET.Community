@@ -72,7 +72,11 @@
                 this.chkSame.FieldLabel = this.CheckboxMessage;
                 this.chkSame.LabelStyle = "white-space:nowrap;";
 
-                this.chkSame.Listeners.Change.Handler = "#{Panel2}.setVisible(!value);#{Panel2}.doLayout();if (!value) {#{txtStreet}.focus();}";
+                this.chkSame.Listeners.Change.Handler = @"#{Panel2}.setVisible(!newValue);
+                                                          #{Panel2}.doLayout();
+                                                          if (!newValue) {
+                                                              #{txtStreet}.focus();
+                                                          }";
 
                 this.Panel1.Items.Insert(0, this.chkSame);
 

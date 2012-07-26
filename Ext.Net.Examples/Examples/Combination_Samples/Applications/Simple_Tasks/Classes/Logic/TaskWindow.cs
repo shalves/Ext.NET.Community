@@ -73,8 +73,6 @@ namespace Ext.Net.Examples.SimpleTasks
             TreePanel tree = (TreePanel)(taskCategory.Component[0]);
             tree.Listeners.ItemClick.Fn = TasksGrid.SCOPE + ".categoryCheckChange";
 
-            this.formPanel.Listeners.Add.Handler = "component.getName = " + TaskWindow.SCOPE + ".getName;";
-
             ((Button)this.toolbar.Items[0]).Handler = new JFunction(TaskWindow.SCOPE.ConcatWith(".markTask(", this.ID, ", true);")).ToScript();
             ((Button)this.toolbar.Items[1]).Handler = new JFunction(TaskWindow.SCOPE.ConcatWith(".markTask(", this.ID, ", false);")).ToScript();
             ((Button)this.toolbar.Items[3]).Handler = new JFunction(TaskWindow.SCOPE.ConcatWith(".deleteTask(", this.ID, ");")).ToScript();

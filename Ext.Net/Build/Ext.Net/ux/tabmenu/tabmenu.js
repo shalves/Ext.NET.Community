@@ -1,11 +1,11 @@
 ﻿/*
-* @version   : 2.0.0.rc2 - Ext.NET Pro License
-* @author    : Ext.NET, Inc. http://www.ext.net/
-* @date      : 2012-07-10
-* @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
-* @license   : See license.txt and http://www.ext.net/license/. 
-* @website   : http://www.ext.net/
-*/
+ * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @author    : Ext.NET, Inc. http://www.ext.net/
+ * @date      : 2012-07-24
+ * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
+ * @website   : http://www.ext.net/
+ */
  
  Ext.net.TabMenu = Ext.extend(Object, {
     init : function (tabPanel) {

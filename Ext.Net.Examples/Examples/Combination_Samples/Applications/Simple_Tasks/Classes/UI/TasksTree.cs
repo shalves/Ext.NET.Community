@@ -21,33 +21,49 @@ namespace Ext.Net.Examples.SimpleTasks
             this.UseArrows = true;
             this.Mode = TreePanelMode.Remote;
             this.Cls = "tasks-tree";
-            //this.EnableDD = true;
-            //this.AllowLeafDrop = true;
-            //this.DDAppendOnly = true;
+
+            var view = new TreeView();
+            view.Plugins.Add(new TreeViewDragDrop { 
+                AllowLeafDrop = true,
+                AppendOnly = true,
+                DDGroup = "tasktree"
+            });
+            this.View.Add(view);
+            
             this.DirectEventConfig.Type = DirectEventType.Load;
-            //this.DDGroup = "tasktree";
 
-            /*this.Editors.Add(new TreeEditor
-             {
-                 CancelOnBlur = true,
-                 ShadowMode = ShadowMode.None,
-                 Field =
-                 {
-                     new TextField
-                     {
-                         AllowBlank = false,
-                         BlankText = "A name is required",
-                         SelectOnFocus = true
-                     }
-                 }
-             });*/
+            this.Plugins.Add(new CellEditing());
+            
+            this.Editor.Add(new TextField
+            {
+                AllowBlank = false,
+                BlankText = "A name is required",
+                SelectOnFocus = true
+            });
 
-            //this.Loader.Add(new PageTreeLoader
-            //{
-            //    PreloadChildren = true,
-            //    RequestMethod = HttpMethod.GET,
-            //    Type=DirectEventType.Load
-            //});
+            this.EditorOptions.CancelOnBlur = true;
+            this.EditorOptions.Shadow = Ext.Net.ShadowMode.None;
+
+            this.Store.Add(new TreeStore
+            {                
+                Model = {
+                    new Model{
+                        Name = "CategoryTree",                        
+                        Fields = {
+                            new ModelField("isFolder", ModelFieldType.Boolean)
+                        }
+                    }
+                },
+
+                Proxy = { 
+                    new PageProxy {
+                         RequestConfig = {
+                            Method = HttpMethod.GET,
+                            Type = DirectEventType.Load
+                         }
+                    }
+                }
+            });
 
             this.Root.Add(new Node
               {
@@ -55,15 +71,14 @@ namespace Ext.Net.Examples.SimpleTasks
                   NodeID = "1",
                   Leaf = false,
                   IconCls = "icon-folder",
-                  Expanded = true,
-                  //Editable = false,
+                  Expanded = true,                                    
                   CustomAttributes =
                   {
                       new ConfigItem("isFolder", "true", ParameterMode.Raw)
                   }
               });
 
-            //this.Sorter.FolderSort = true;
+            this.FolderSort = true;
 
             this.SelectionModel.Add(new TreeSelectionModel());
 
@@ -127,7 +142,7 @@ namespace Ext.Net.Examples.SimpleTasks
                     new Button
                     {
                         ToolTip = "Delete Category",
-                        Icon = Icon.Delete,
+                        Icon = Ext.Net.Icon.Decline,
                         Disabled = true
                     },
                     new ToolbarSeparator(),
@@ -164,7 +179,7 @@ namespace Ext.Net.Examples.SimpleTasks
                        new MenuItem
                        {
                            Text = "Delete",
-                           Icon = Icon.Delete
+                           IconCls = "icon-category-delete"
                        }
                    }
             };
@@ -183,7 +198,7 @@ namespace Ext.Net.Examples.SimpleTasks
                        new MenuItem
                        {
                            Text = "New Category",
-                           Icon = Icon.New
+                           IconCls = "icon-category-new"
                        },
                        new MenuItem
                        {
@@ -194,7 +209,7 @@ namespace Ext.Net.Examples.SimpleTasks
                        new MenuItem
                        {
                            Text = "Delete",
-                           Icon = Icon.Delete
+                           IconCls = "icon-category-delete"
                        }
                    }
             };

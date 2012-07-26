@@ -21,17 +21,17 @@ namespace Ext.Net.Examples.SimpleTasks
 
             ComponentDirectEvent rowDblClick = this.DirectEvents.ItemDblClick;
             rowDblClick.Event += RowDblClick_Event;
-            rowDblClick.Before = "return ".ConcatWith(TaskWindow.SCOPE, ".openTask(item.store.getAt(rowIndex).id);");
+            rowDblClick.Before = "return ".ConcatWith(TaskWindow.SCOPE, ".openTask(record.getId());");
             rowDblClick.Complete = TasksGrid.SCOPE + ".setIndicator(false);";
-            rowDblClick.ExtraParams.Add(new Parameter("taskId", "item.store.getAt(rowIndex).id", ParameterMode.Raw));
+            rowDblClick.ExtraParams.Add(new Parameter("taskId", "record.getId()", ParameterMode.Raw));
 
             ComponentDirectEvent command = (this.ColumnModel.Columns[0] as CommandColumn).DirectEvents.Command;
             command.Event += Command_Event;
             command.Type = DirectEventType.Load;
             command.ExtraParams.Add(new Parameter("command", "command", ParameterMode.Raw));
-            command.ExtraParams.Add(new Parameter("taskId", "record.id", ParameterMode.Raw));
+            command.ExtraParams.Add(new Parameter("taskId", "record.getId()", ParameterMode.Raw));
             command.ExtraParams.Add(new Parameter("filter", TasksGrid.SCOPE + ".getFilterValue()", ParameterMode.Raw));
-            command.ExtraParams.Add(new Parameter("categoryID", TasksGrid.SCOPE + ".getActiveNodeCategory().id", ParameterMode.Raw));
+            command.ExtraParams.Add(new Parameter("categoryID", TasksGrid.SCOPE + ".getActiveNodeCategory().getId()", ParameterMode.Raw));
             command.Before = TasksGrid.SCOPE + ".setIndicator(true);";
             command.Complete = TasksGrid.SCOPE + ".setIndicator(false);";
 
@@ -68,7 +68,7 @@ namespace Ext.Net.Examples.SimpleTasks
             click.Event += MarkClick_Event;
             click.ExtraParams.Add(new Parameter("ids", TasksGrid.SCOPE + ".getSelectedIds()", ParameterMode.Raw));
             click.ExtraParams.Add(new Parameter("filter", TasksGrid.SCOPE + ".getFilterValue()", ParameterMode.Raw));
-            click.ExtraParams.Add(new Parameter("categoryID", TasksGrid.SCOPE + ".getActiveNodeCategory().id", ParameterMode.Raw));
+            click.ExtraParams.Add(new Parameter("categoryID", TasksGrid.SCOPE + ".getActiveNodeCategory().getId()", ParameterMode.Raw));
             click.Before = TasksGrid.SCOPE + ".setIndicator(true);";
             click.Complete = TasksGrid.SCOPE + ".setIndicator(false);";
 
@@ -108,7 +108,7 @@ namespace Ext.Net.Examples.SimpleTasks
             int[] ids = JSON.Deserialize<int[]>(e.ExtraParams["ids"]);
             foreach (int id in ids)
             {
-                new TaskWindow(id).Render();
+                new TaskWindow(id).Render(this.Page.Form.ClientID, RenderMode.RenderTo);
             }
         }
 
@@ -155,7 +155,7 @@ namespace Ext.Net.Examples.SimpleTasks
                         r.Set("CompletedDate", new JRawValue(DateTimeUtils.DateNetToJs(task.CompletedDate.Value)));
                     }
                     this.Store.Primary.ResumeEvents();
-                    this.Store.Primary.FireEvent("datachanged", new JRawValue(this.Store.Primary.ClientID));
+                    this.Store.Primary.FireEvent("refresh", new JRawValue(this.Store.Primary.ClientID));
                 }
 
                 return true;
@@ -381,12 +381,12 @@ namespace Ext.Net.Examples.SimpleTasks
             var ctx = this.DBContext;
             Task task = (from t in ctx.Tasks where t.ID == taskId select t).First();
 
-            task.Title = values["Title"].ToString();
-            task.DueDate = DateTime.Parse(values["DueDate"].ToString());
-            task.CategoryID = int.Parse(values["Name"].ToString());
-            task.Description = values["Description"].ToString();
+            task.Title = values.ContainsKey("Title") ? values["Title"].ToString() : "";
+            task.DueDate = values.ContainsKey("DueDate") ?  DateTime.Parse(values["DueDate"].ToString()) : DateTime.MinValue;
+            task.CategoryID = values.ContainsKey("Name") ?  int.Parse(values["Name"].ToString()) : -1;
+            task.Description = values.ContainsKey("Description") ? values["Description"].ToString() : "";
 
-            if (values["HasReminder"] != null && bool.Parse(values["HasReminder"].ToString()) && values["Reminder"] != null)
+            if (values.ContainsKey("HasReminder") && bool.Parse(values["HasReminder"].ToString()) && values.ContainsKey("Reminder"))
             {
                 task.Reminder = DateTime.Parse(values["Reminder"].ToString());
             }
@@ -401,12 +401,12 @@ namespace Ext.Net.Examples.SimpleTasks
             
             if (!complete)
             {
-                this.AddScript("TaskWindow_{0}.taskMessage.hide();", taskId);
-                this.AddScript("TaskWindow_{0}.markComplete.show();", taskId);
-                this.AddScript("TaskWindow_{0}.markActive.hide();", taskId);
-                this.AddScript("TaskWindow_{0}.buttonsBar.doLayout();", taskId);
-                this.AddScript("TaskWindow_{0}.hasReminder.enable();", taskId);
-                this.AddScript("TaskWindow_{0}.reminder.enable();", taskId);
+                this.AddScript("TaskWindow_{0}.down('#taskMessage').hide();", taskId);
+                this.AddScript("TaskWindow_{0}.down('#markComplete').show();", taskId);
+                this.AddScript("TaskWindow_{0}.down('#markActive').hide();", taskId);
+                this.AddScript("TaskWindow_{0}.down('#buttonsBar').doLayout();", taskId);
+                this.AddScript("TaskWindow_{0}.down('#hasReminder').enable();", taskId);
+                this.AddScript("TaskWindow_{0}.down('#reminder').enable();", taskId);
             }
         }
     }

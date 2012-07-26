@@ -34,13 +34,13 @@
                    {
                        new Button
                        {
-                           ItemID ="../markComplete",
+                           ItemID ="markComplete",
                            IconCls = "icon-mark-complete",
                            Text = "Mark Complete"
                        },
                        new Button
                        {
-                           ItemID ="../markActive",
+                           ItemID ="markActive",
                            Hidden = true,
                            IconCls = "icon-mark-active",
                            Text = "Mark Active"
@@ -60,7 +60,7 @@
         private void BuildFormPanel()
         {
             this.cbxReminder = new Checkbox  {
-                ItemID ="../../../hasReminder",
+                ItemID ="hasReminder",
                 BoxLabel = "Reminder:",
                 Name = "HasReminder",
                 Checked = false
@@ -68,7 +68,7 @@
 
             this.dfReminder = new DateField
             {
-                ItemID ="../../../reminder",
+                ItemID ="reminder",
                 Disabled = true,
                 Name = "Reminder",
                 Width = 135
@@ -97,7 +97,7 @@
                   Name = "Name",
                   Editable = false,
                   Mode = DropDownMode.ValueText,
-                  ItemID ="../../../taskCategory",
+                  ItemID ="taskCategory",
                   Component =
                   {
                       new TreePanel
@@ -106,12 +106,11 @@
                           Shadow = false,
                           UseArrows = true,
                           AutoScroll = true,
-                          Animate = true,
-                          RootVisible = false,
+                          Animate = true,                          
                           Cls = "tasks-tree",
                           Root =
                           {
-                              new Node{NodeID="root"}
+                              new Node{NodeID="root", EmptyChildren = true}
                           },
                           SelectionModel =
                           {
@@ -154,7 +153,7 @@
                      new Component
                      {
                          Hidden = true,
-                         ItemID ="../taskMessage",
+                         ItemID ="taskMessage",
                          AutoEl =
                          {
                              Cls = "taskMessage"

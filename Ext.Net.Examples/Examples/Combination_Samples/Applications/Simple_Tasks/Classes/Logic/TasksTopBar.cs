@@ -45,7 +45,7 @@ namespace Ext.Net.Examples.SimpleTasks
             click.Event += MarkClick_Event;
             click.ExtraParams.Add(new Parameter("ids", TasksGrid.SCOPE + ".getSelectedIds()", ParameterMode.Raw));
             click.ExtraParams.Add(new Parameter("filter", TasksGrid.SCOPE + ".getFilterValue()", ParameterMode.Raw));
-            click.ExtraParams.Add(new Parameter("categoryID", TasksGrid.SCOPE + ".getActiveNodeCategory().id", ParameterMode.Raw));
+            click.ExtraParams.Add(new Parameter("categoryID", TasksGrid.SCOPE + ".getActiveNodeCategory().getId()", ParameterMode.Raw));
             click.Before = TasksGrid.SCOPE + ".setIndicator(true);";
             click.Complete = TasksGrid.SCOPE + ".setIndicator(false);";
 
@@ -54,7 +54,7 @@ namespace Ext.Net.Examples.SimpleTasks
             click.Event += UnMarkClick_Event;
             click.ExtraParams.Add(new Parameter("ids", TasksGrid.SCOPE + ".getSelectedIds()", ParameterMode.Raw));
             click.ExtraParams.Add(new Parameter("filter", TasksGrid.SCOPE + ".getFilterValue()", ParameterMode.Raw));
-            click.ExtraParams.Add(new Parameter("categoryID", TasksGrid.SCOPE + ".getActiveNodeCategory().id", ParameterMode.Raw));
+            click.ExtraParams.Add(new Parameter("categoryID", TasksGrid.SCOPE + ".getActiveNodeCategory().getId()", ParameterMode.Raw));
             click.Before = TasksGrid.SCOPE + ".setIndicator(true);";
             click.Complete = TasksGrid.SCOPE + ".setIndicator(false);";
 
