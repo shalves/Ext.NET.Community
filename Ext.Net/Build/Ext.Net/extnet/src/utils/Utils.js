@@ -132,7 +132,7 @@ Ext.net.replaceWith = function (config) {
     }
 };
 
-Ext.net.addTo = function (container, items) {
+Ext.net.addTo = function (container, items, clear) {
     if (Ext.isString(container)) {
         var cmp = Ext.getCmp(container);
 
@@ -141,6 +141,10 @@ Ext.net.addTo = function (container, items) {
         }
 
         container = cmp;
+    }
+
+    if (clear) {
+        container.removeAll();
     }
 
     container.add(items);
@@ -280,6 +284,36 @@ Ext.net.append = function (elTo, html, callback, wait) {
     }
     
     return createdEl;
+};
+
+Ext.net.findField = function (name, scope) {
+    if (Ext.isEmpty(name)) {
+        return;
+    }
+
+    var cmp;
+        
+    if (scope) {
+        if (!(scope.createForm && scope.getForm)) {
+            scope = scope.up("form");
+        }    
+
+        if (scope) {
+            cmp = scope.down("field[name='" + name + "']");
+
+            if (cmp && cmp.length>0) {
+                return cmp[0];
+            }
+        }
+    }
+
+    cmp = Ext.ComponentQuery.query("field[name='" + name + "']");
+    
+    if (cmp && cmp.length>0) {
+        return cmp[0];
+    }
+    
+    return Ext.getCmp(name);
 };
 
 if (typeof RegExp.escape !== "function") {

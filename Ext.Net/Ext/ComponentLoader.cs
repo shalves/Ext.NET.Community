@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -116,6 +116,7 @@ namespace Ext.Net
         /// Any additional options to be passed to the request, for example timeout or headers.
         /// </summary>
         [Meta]
+        [DefaultValue(null)]
         [ConfigOption(JsonMode.Object)]
         [Category("Config Options")]
         [NotifyParentProperty(true)]
@@ -211,6 +212,26 @@ namespace Ext.Net
             set
             {
                 this.State.Set("ReloadOnEvent", value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigOption]
+        [Meta]
+        [DefaultValue(false)]
+        [NotifyParentProperty(true)]
+        [Description("")]
+        public virtual bool RemoveD
+        {
+            get
+            {
+                return this.State.Get<bool>("RemoveD", false);
+            }
+            set
+            {
+                this.State.Set("RemoveD", value);
             }
         }
 
@@ -658,6 +679,26 @@ namespace Ext.Net
             }
         }
 
+        /// <summary>
+        /// Show warning if request fail.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue(true)]
+        [NotifyParentProperty(true)]
+        [Description("Show warning if request fail.")]
+        public bool ShowWarningOnFailure
+        {
+            get
+            {
+                return this.State.Get<bool>("ShowWarningOnFailure", true);
+            }
+            set
+            {
+                this.State.Set("ShowWarningOnFailure", value);
+            }
+        }
+
         private ComponentLoaderListeners listeners;
 
         /// <summary>
@@ -720,7 +761,7 @@ namespace Ext.Net
         /// <summary>
         /// Destroys the loader. Any active requests will be aborted.
         /// </summary>
-        public virtual void Destroy()
+        public override void Destroy()
         {
             this.Call("getLoader().destroy");
         }
@@ -753,12 +794,22 @@ namespace Ext.Net
 
         public static void Render(AbstractComponent component)
         {
-            CompressionUtils.GZipAndSend(component.ToConfig());
+            CompressionUtils.GZipAndSend(ComponentLoader.ToConfig(component, true));
+        }
+
+        public static void Render(AbstractComponent component, bool registerResources)
+        {
+            CompressionUtils.GZipAndSend(ComponentLoader.ToConfig(component, registerResources));
         }
 
         public static string ToConfig(AbstractComponent component)
         {
-            return component.ToConfig();
+            return ComponentLoader.ToConfig(new AbstractComponent[] { component }, true);
+        }
+
+        public static string ToConfig(AbstractComponent component, bool registerResources)
+        {
+            return ComponentLoader.ToConfig(new AbstractComponent[] { component }, registerResources);
         }
 
         public static void Render(IEnumerable<AbstractComponent> components)
@@ -766,9 +817,19 @@ namespace Ext.Net
             CompressionUtils.GZipAndSend(ComponentLoader.ToConfig(components));
         }
 
+        public static void Render(IEnumerable<AbstractComponent> components, bool registerResources)
+        {
+            CompressionUtils.GZipAndSend(ComponentLoader.ToConfig(components, registerResources));
+        }
+
         public static void Render(IEnumerable<AbstractComponent> components, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender)
         {
             CompressionUtils.GZipAndSend(ComponentLoader.ToConfig(components, componentPreRender));
+        }
+
+        public static void Render(IEnumerable<AbstractComponent> components, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender, bool registerResources)
+        {
+            CompressionUtils.GZipAndSend(ComponentLoader.ToConfig(components, componentPreRender, registerResources));
         }
 
         public static string ToConfig(IEnumerable<AbstractComponent> components)
@@ -776,13 +837,24 @@ namespace Ext.Net
             return ComponentLoader.ToConfig(components, null);
         }
 
+        public static string ToConfig(IEnumerable<AbstractComponent> components, bool registerResources)
+        {
+            return ComponentLoader.ToConfig(components, null, registerResources);
+        }
+
         public static string ToConfig(IEnumerable<AbstractComponent> components, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender)
+        {
+            return ComponentLoader.ToConfig(components, componentPreRender, true);
+        }
+
+        public static string ToConfig(IEnumerable<AbstractComponent> components, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender, bool registerResources)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("[");
-            var comma = false;
+            
+            bool comma = false;
 
-            foreach (var component in components)
+            foreach (AbstractComponent component in components)
             {
                 if (comma)
                 {
@@ -799,12 +871,22 @@ namespace Ext.Net
 
             sb.Append("]");
 
+            if (registerResources)
+            {
+                return ComponentLoader.AttachResources(components, sb.ToString());
+            }
+
             return sb.ToString();
-        }
+        }        
 
         public static void Render(string path)
         {
             ComponentLoader.Render(UserControlRenderer.LoadControl(path));
+        }
+
+        public static void Render(string path, bool registerResources)
+        {
+            ComponentLoader.Render(UserControlRenderer.LoadControl(path), registerResources);
         }
 
         public static void Render(string path, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender)
@@ -812,9 +894,19 @@ namespace Ext.Net
             ComponentLoader.Render(UserControlRenderer.LoadControl(path), componentPreRender);
         }
 
+        public static void Render(string path, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender, bool registerResources)
+        {
+            ComponentLoader.Render(UserControlRenderer.LoadControl(path), componentPreRender, registerResources);
+        }
+
         public static string ToConfig(string path)
         {
             return ComponentLoader.ToConfig(UserControlRenderer.LoadControl(path));
+        }
+
+        public static string ToConfig(string path, bool registerResources)
+        {
+            return ComponentLoader.ToConfig(UserControlRenderer.LoadControl(path), registerResources);
         }
 
         public static string ToConfig(string path, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender)
@@ -822,9 +914,19 @@ namespace Ext.Net
             return ComponentLoader.ToConfig(UserControlRenderer.LoadControl(path), componentPreRender);
         }
 
+        public static string ToConfig(string path, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender, bool registerResources)
+        {
+            return ComponentLoader.ToConfig(UserControlRenderer.LoadControl(path), componentPreRender, registerResources);
+        }
+
         public static void Render(string path, string userControlId)
         {
             ComponentLoader.Render(UserControlRenderer.LoadControl(path, userControlId));
+        }
+
+        public static void Render(string path, string userControlId, bool registerResources)
+        {
+            ComponentLoader.Render(UserControlRenderer.LoadControl(path, userControlId), registerResources);
         }
 
         public static void Render(string path, string userControlId, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender)
@@ -832,9 +934,19 @@ namespace Ext.Net
             ComponentLoader.Render(UserControlRenderer.LoadControl(path, userControlId), componentPreRender);
         }
 
+        public static void Render(string path, string userControlId, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender, bool registerResources)
+        {
+            ComponentLoader.Render(UserControlRenderer.LoadControl(path, userControlId), componentPreRender, registerResources);
+        }
+
         public static string ToConfig(string path, string userControlId)
         {
             return ComponentLoader.ToConfig(UserControlRenderer.LoadControl(path, userControlId));
+        }
+
+        public static string ToConfig(string path, string userControlId, bool registerResources)
+        {
+            return ComponentLoader.ToConfig(UserControlRenderer.LoadControl(path, userControlId), registerResources);
         }
 
         public static string ToConfig(string path, string userControlId, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender)
@@ -842,9 +954,9 @@ namespace Ext.Net
             return ComponentLoader.ToConfig(UserControlRenderer.LoadControl(path, userControlId), componentPreRender);
         }
 
-        public static void Render(UserControl userControl, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender)
+        public static string ToConfig(string path, string userControlId, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender, bool registerResources)
         {
-            CompressionUtils.GZipAndSend(ComponentLoader.ToConfig(userControl, componentPreRender));
+            return ComponentLoader.ToConfig(UserControlRenderer.LoadControl(path, userControlId), componentPreRender, registerResources);
         }
 
         public static void Render(UserControl userControl)
@@ -852,23 +964,48 @@ namespace Ext.Net
             ComponentLoader.Render(userControl, null);
         }
 
+        public static void Render(UserControl userControl, bool registerResources)
+        {
+            ComponentLoader.Render(userControl, null, registerResources);
+        }
+
+        public static void Render(UserControl userControl, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender)
+        {
+            ComponentLoader.Render(userControl, null, true);
+        }
+
+        public static void Render(UserControl userControl, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender, bool registerResources)
+        {
+            CompressionUtils.GZipAndSend(ComponentLoader.ToConfig(userControl, componentPreRender, registerResources));
+        }
+
         public static string ToConfig(UserControl userControl)
         {
             return ComponentLoader.ToConfig(userControl, null);
         }
 
+        public static string ToConfig(UserControl userControl, bool registerResources)
+        {
+            return ComponentLoader.ToConfig(userControl, null, registerResources);
+        }
+
         public static string ToConfig(UserControl userControl, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender)
         {
-            var cmps = new List<AbstractComponent>();
+            return ComponentLoader.ToConfig(userControl, componentPreRender, true);
+        }
 
-            if(userControl is IDynamicUserControl)
+        public static string ToConfig(UserControl userControl, Ext.Net.UserControlLoader.ComponentAddedEventHandler componentPreRender, bool registerResources)
+        {
+            List<AbstractComponent> cmps = new List<AbstractComponent>();
+
+            if (userControl is IDynamicUserControl)
             {
                 ((IDynamicUserControl)userControl).BeforeRender();
             }
 
-            foreach (var control in userControl.Controls)
+            foreach (object control in userControl.Controls)
             {
-                var cmp = control as AbstractComponent;
+                AbstractComponent cmp = control as AbstractComponent;
 
                 if (cmp != null)
                 {
@@ -888,7 +1025,138 @@ namespace Ext.Net
                 }
             }
 
-            return ComponentLoader.ToConfig(cmps, componentPreRender);
+            return ComponentLoader.ToConfig(cmps, componentPreRender, registerResources);
+        }
+
+        private static string AttachResources(IEnumerable<AbstractComponent> components, string config)
+        {
+            InsertOrderedDictionary<string, string> scripts = new InsertOrderedDictionary<string, string>();
+            InsertOrderedDictionary<string, string> styles = new InsertOrderedDictionary<string, string>();
+            List<string> ns = new List<string>();
+
+            foreach (AbstractComponent seed in components)
+            {
+                ComponentLoader.FindResources(seed, scripts, styles, ns);
+            }
+
+            if (scripts.Count == 0 && styles.Count == 0 && ns.Count == 0)
+            {
+                return config;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("{'x.res':{");
+            
+            
+            if (ns.Count > 0)
+            {
+                sb.Append("ns:");
+                sb.Append(JSON.Serialize(ns));
+            }
+
+            if (scripts.Count == 0 || styles.Count == 0)
+            {
+                if (ns.Count > 0)
+                {
+                    sb.Append(",");
+                }
+
+                sb.Append("res:[");
+
+                bool comma = false;
+                foreach (KeyValuePair<string, string> item in scripts)
+                {
+                    if (comma)
+                    {
+                        sb.Append(",");
+                    }
+
+                    comma = true;
+                    sb.Append("{url:").Append(JSON.Serialize(item.Value)).Append("}");
+                }
+
+                foreach (KeyValuePair<string, string> item in styles)
+                {
+                    if (comma)
+                    {
+                        sb.Append(",");
+                    }
+
+                    comma = true;
+                    sb.Append("{mode:\"css\",url:").Append(JSON.Serialize(item.Value)).Append("}");
+                }
+
+                sb.Append("]");
+            }
+
+            sb.Append("},config:").Append(JSON.Serialize(config));
+            sb.Append("}");
+            return sb.ToString();
+        }
+
+        private static void FindResources(Control seed, InsertOrderedDictionary<string, string> scripts, InsertOrderedDictionary<string, string> styles, List<string> ns)
+        {            
+            if (ReflectionUtils.IsTypeOf(seed, typeof(BaseControl), false))
+            {
+                BaseControl ctrl = (BaseControl)seed;
+
+                ComponentLoader.CheckNS(ctrl, ns);
+                ComponentLoader.CheckResources(ctrl, scripts, styles);
+                ctrl.EnsureChildControlsInternal();
+            }
+
+
+            foreach (Control control in seed.Controls)
+            {
+                bool isBaseControl = ReflectionUtils.IsTypeOf(control, typeof(BaseControl), false);
+
+                if (isBaseControl && !(control is UserControlLoader))
+                {
+                    BaseControl ctrl = (BaseControl)control;
+                    ComponentLoader.CheckNS(ctrl, ns);
+                    ComponentLoader.CheckResources(ctrl, scripts, styles);
+                    ctrl.EnsureChildControlsInternal();                    
+                }
+
+                if (ControlUtils.HasControls(control))
+                {
+                    ComponentLoader.FindResources(control, scripts, styles, ns);
+                }
+            }
+        }
+
+        private static void CheckNS(BaseControl ctrl, List<string> ns)
+        {
+            if (ctrl.HasOwnNamespace)
+            {
+                string _namespace = ctrl.ClientNamespace;
+
+                if (_namespace.IsNotEmpty() && !ns.Contains(_namespace))
+                {
+                    ns.Add(_namespace);
+                }
+            }
+        }
+
+        private static void CheckResources(BaseControl control, InsertOrderedDictionary<string, string> scripts, InsertOrderedDictionary<string, string> styles)
+        {            
+            foreach (ClientScriptItem item in control.GetScripts())
+            {
+                string resourcePath = GlobalConfig.Settings.ScriptMode == ScriptMode.Debug && item.PathEmbeddedDebug.IsNotEmpty() ? item.PathEmbeddedDebug : item.PathEmbedded;
+
+                if (!scripts.ContainsKey(resourcePath))
+                {
+                    scripts.Add(resourcePath, ExtNetTransformer.GetWebResourceUrl(item.Type, resourcePath));
+                }
+            }
+
+            foreach (ClientStyleItem item in control.GetStyles())
+            {
+                if (!styles.ContainsKey(item.PathEmbedded) && item.Theme.Equals(Theme.Default))
+                {
+                    styles.Add(item.PathEmbedded, ExtNetTransformer.GetWebResourceUrl(item.Type, item.PathEmbedded));
+                }
+            }
         }
     }
 }

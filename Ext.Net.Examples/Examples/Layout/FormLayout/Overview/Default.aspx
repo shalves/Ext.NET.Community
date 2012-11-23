@@ -7,7 +7,7 @@
 <html>
 <head runat="server">
     <title>FormLayouts built in markup - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -25,12 +25,12 @@
             Width="350"
             Frame="true"
             ButtonAlign="Center"
-            Layout="AnchorLayout">
+            Layout="FormLayout">
             <Items>
-                <ext:TextField runat="server" FieldLabel="First Name" AllowBlank="false" AnchorHorizontal="100%" />
-                <ext:TextField runat="server" FieldLabel="Last Name" AnchorHorizontal="100%" />
-                <ext:TextField runat="server" FieldLabel="Company" AnchorHorizontal="100%" />
-                <ext:TextField runat="server" FieldLabel="Email" Vtype="email" AnchorHorizontal="100%" />
+                <ext:TextField runat="server" FieldLabel="First Name" AllowBlank="false" />
+                <ext:TextField runat="server" FieldLabel="Last Name" />
+                <ext:TextField runat="server" FieldLabel="Company" />
+                <ext:TextField runat="server" FieldLabel="Email" Vtype="email" />
             </Items>
             <Buttons>
                 <ext:Button runat="server" Text="Save" />
@@ -52,34 +52,32 @@
                 <ext:FieldSet 
                     runat="server"
                     CheckboxToggle="true"
-                    Title="User Information"
-                    AutoHeight="true"
+                    Title="User Information"                    
                     Collapsed="true"
-                    Layout="AnchorLayout">
+                    Layout="FormLayout">
                     <Defaults>
                         <ext:Parameter Name="LabelWidth" Value="75" Mode="Raw" />
                     </Defaults>
                     <Items>
-                        <ext:TextField runat="server" FieldLabel="First Name" AllowBlank="false" AnchorHorizontal="100%" />
-                        <ext:TextField runat="server" FieldLabel="Last Name" AnchorHorizontal="100%" />
-                        <ext:TextField runat="server" FieldLabel="Company" AnchorHorizontal="100%" />
-                        <ext:TextField runat="server" FieldLabel="Email" AnchorHorizontal="100%" />
+                        <ext:TextField runat="server" FieldLabel="First Name" AllowBlank="false" />
+                        <ext:TextField runat="server" FieldLabel="Last Name" />
+                        <ext:TextField runat="server" FieldLabel="Company" />
+                        <ext:TextField runat="server" FieldLabel="Email" />
                     </Items>
                 </ext:FieldSet>
                 <ext:FieldSet
                     runat="server"
                     CheckboxToggle="true"
                     Title="Phone Number"
-                    AutoHeight="true"
-                    Layout="AnchorLayout">
+                    Layout="FormLayout">
                     <Defaults>
                         <ext:Parameter Name="LabelWidth" Value="75" Mode="Raw" />
                     </Defaults>
                     <Items>
-                        <ext:TextField runat="server" FieldLabel="Home" Text="(888) 555-1212" AnchorHorizontal="100%" />
-                        <ext:TextField runat="server" FieldLabel="Business" AnchorHorizontal="100%" />
-                        <ext:TextField runat="server" FieldLabel="Mobile" AnchorHorizontal="100%" />
-                        <ext:TextField runat="server" FieldLabel="Fax" AnchorHorizontal="100%" />
+                        <ext:TextField runat="server" FieldLabel="Home" Text="(888) 555-1212" />
+                        <ext:TextField runat="server" FieldLabel="Business" />
+                        <ext:TextField runat="server" FieldLabel="Mobile" />
+                        <ext:TextField runat="server" FieldLabel="Fax" />
                     </Items>
                 </ext:FieldSet>
             </Items>
@@ -102,23 +100,23 @@
             <Items>
                 <ext:Container runat="server" Layout="Column" Height="100">
                     <Items>
-                        <ext:Container runat="server" Layout="AnchorLayout" ColumnWidth=".5">
+                        <ext:Container runat="server" Layout="FormLayout" ColumnWidth=".5" Padding="5">
                             <Items>
-                                <ext:TextField runat="server" FieldLabel="First Name" AnchorHorizontal="95%" LabelAlign="Top" />
-                                <ext:TextField runat="server" FieldLabel="Company" AnchorHorizontal="95%" LabelAlign="Top"  />
+                                <ext:TextField runat="server" FieldLabel="First Name" LabelAlign="Top" />
+                                <ext:TextField runat="server" FieldLabel="Company" LabelAlign="Top"  />
                             </Items>
                         </ext:Container>
-                        <ext:Container runat="server" Layout="AnchorLayout" ColumnWidth=".5">
+                        <ext:Container runat="server" Layout="FormLayout" ColumnWidth=".5" Padding="5">
                             <Items>
-                                <ext:TextField runat="server" FieldLabel="Last Name" AnchorHorizontal="95%" LabelAlign="Top" />
-                                <ext:TextField runat="server" FieldLabel="Email" AnchorHorizontal="95%" LabelAlign="Top" />
+                                <ext:TextField runat="server" FieldLabel="Last Name" LabelAlign="Top" />
+                                <ext:TextField runat="server" FieldLabel="Email" LabelAlign="Top" />
                             </Items>
                         </ext:Container>
                     </Items>
                 </ext:Container>
-                <ext:Container runat="server" Layout="AnchorLayout">
+                <ext:Container runat="server" Layout="FormLayout">
                     <Items>
-                        <ext:HtmlEditor runat="server" Height="200" FieldLabel="Biography" AnchorHorizontal="98%" LabelAlign="Top" />
+                        <ext:HtmlEditor runat="server" Height="200" FieldLabel="Biography" LabelAlign="Top" />
                     </Items>
                 </ext:Container>
             </Items>
@@ -143,33 +141,31 @@
                         <ext:Panel 
                             runat="server" 
                             Title="Personal Details" 
-                            AutoHeight="true" 
                             BodyPadding="10"
-                            Layout="AnchorLayout">
+                            Layout="FormLayout">
                             <Defaults>
                                 <ext:Parameter Name="LabelWidth" Value="75" Mode="Raw" />
                             </Defaults>
                             <Items>
-                                <ext:TextField runat="server" FieldLabel="First Name" AllowBlank="false" AnchorHorizontal="100%" />
-                                <ext:TextField runat="server" FieldLabel="Last Name" AnchorHorizontal="100%" />
-                                <ext:TextField runat="server" FieldLabel="Company" AnchorHorizontal="100%" />
-                                <ext:TextField runat="server" FieldLabel="Email" AnchorHorizontal="100%" />
+                                <ext:TextField runat="server" FieldLabel="First Name" AllowBlank="false" />
+                                <ext:TextField runat="server" FieldLabel="Last Name" />
+                                <ext:TextField runat="server" FieldLabel="Company" />
+                                <ext:TextField runat="server" FieldLabel="Email" />
                             </Items>
                         </ext:Panel>
                         <ext:Panel 
                             runat="server"
                             Title="Phone Numbers"
-                            AutoHeight="true"
                             BodyPadding="10"
-                            Layout="AnchorLayout">
+                            Layout="FormLayout">
                             <Defaults>
                                 <ext:Parameter Name="LabelWidth" Value="75" Mode="Raw" />
                             </Defaults>
                             <Items>
-                                <ext:TextField runat="server" FieldLabel="Home" Text="(888) 555-1212" AnchorHorizontal="100%" />
-                                <ext:TextField runat="server" FieldLabel="Business" AnchorHorizontal="100%" />
-                                <ext:TextField runat="server" FieldLabel="Mobile" AnchorHorizontal="100%" />
-                                <ext:TextField runat="server" FieldLabel="Fax" AnchorHorizontal="100%" />
+                                <ext:TextField runat="server" FieldLabel="Home" Text="(888) 555-1212" />
+                                <ext:TextField runat="server" FieldLabel="Business" />
+                                <ext:TextField runat="server" FieldLabel="Mobile" />
+                                <ext:TextField runat="server" FieldLabel="Fax" />
                             </Items>
                         </ext:Panel>
                     </Items>
@@ -193,22 +189,23 @@
             <Items>
                 <ext:Container runat="server">
                     <Items>
-                        <ext:Container runat="server" Layout="AnchorLayout" ColumnWidth=".5">
+                        <ext:Container runat="server" Layout="FormLayout" ColumnWidth=".5">
                             <Items>
-                                <ext:TextField runat="server" FieldLabel="First Name" AnchorHorizontal="95%" LabelAlign="Top" />
-                                <ext:TextField runat="server" FieldLabel="Company" AnchorHorizontal="95%" LabelAlign="Top" />
+                                <ext:TextField runat="server" FieldLabel="First Name" LabelAlign="Top" />
+                                <ext:TextField runat="server" FieldLabel="Company" LabelAlign="Top" />
                             </Items>
                         </ext:Container>
-                        <ext:Container runat="server" Layout="AnchorLayout" ColumnWidth=".5">
+                        <ext:Container runat="server" Layout="FormLayout" ColumnWidth=".5">
                             <Items>
-                                <ext:TextField runat="server" FieldLabel="Last Name" AnchorHorizontal="95%" LabelAlign="Top" />
-                                <ext:TextField runat="server" FieldLabel="Email" AnchorHorizontal="95%" LabelAlign="Top" />
+                                <ext:TextField runat="server" FieldLabel="Last Name" LabelAlign="Top" />
+                                <ext:TextField runat="server" FieldLabel="Email" LabelAlign="Top" />
                             </Items>
                         </ext:Container>
                     </Items>
                 </ext:Container>
                 <ext:TabPanel 
                     runat="server" 
+                    MarginSpec="5px 0px 0px 0px"
                     ActiveTabIndex="0" 
                     Plain="true"
                     Height="235">
@@ -216,9 +213,8 @@
                         <ext:Panel
                             runat="server" 
                             Title="Personal Details" 
-                            AutoHeight="true" 
                             BodyPadding="10"
-                            Layout="AnchorLayout">
+                            Layout="FormLayout">
                             <Defaults>
                                 <ext:Parameter Name="LabelWidth" Value="75" Mode="Raw" />
                                 <ext:Parameter Name="LabelAlign" Value="top" Mode="Value" />
@@ -233,9 +229,8 @@
                         <ext:Panel
                             runat="server"
                             Title="Phone Numbers"
-                            AutoHeight="true" 
                             BodyPadding="10"
-                            Layout="AnchorLayout">
+                            Layout="FormLayout">
                             <Defaults>
                                 <ext:Parameter Name="LabelWidth" Value="75" Mode="Raw" />
                                 <ext:Parameter Name="LabelAlign" Value="top" Mode="Value" />
@@ -260,7 +255,7 @@
                             ID="Tab4"
                             runat="server"
                             Title="Tab 4"
-                            Layout="AnchorLayout"
+                            Layout="FormLayout"
                             BodyPadding="10" >
                              <Defaults>
                                 <ext:Parameter Name="LabelWidth" Value="75" Mode="Raw" />

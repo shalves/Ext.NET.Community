@@ -8,7 +8,7 @@
         StoreRequestParameters prms = new StoreRequestParameters(extraParams);
 
         int total;
-        var data = Ext.Net.Examples.Northwind.Employee.GetEmployeesFilter(prms.Start, prms.Limit, prms.Sort[0], out total);
+        List<Ext.Net.Examples.Northwind.Employee> data = Ext.Net.Examples.Northwind.Employee.GetEmployeesFilter(prms.Start, prms.Limit, prms.Sort[0], out total);
 
         return new { data, total };
     }    
@@ -19,9 +19,9 @@
 <html>
 <head runat="server">
     <title>GridPanel with ObjectDataSource - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <style type="text/css">
+    <style>
         .x-grid-td-fullName .x-grid-cell-inner {
             font-family : tahoma, verdana;
             display     : block;
@@ -40,7 +40,7 @@
         }
     </style>
 
-    <script type="text/javascript">
+    <script>
         var fullName = function (value, metadata, record, rowIndex, colIndex, store) {
             return "<b>" + record.data.LastName + " " + record.data.FirstName + "</b>";
         };

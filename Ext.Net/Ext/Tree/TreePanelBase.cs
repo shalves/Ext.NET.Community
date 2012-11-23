@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -48,6 +48,16 @@ namespace Ext.Net
             if (this.Fields.Count > 0 && this.Model.Count > 0)
             {
                 throw new Exception("Please do not specify Fields and Model simultaneously for TreePanel");
+            }
+
+            if (this.Fields.Count > 0 && this.Store.Count > 0)
+            {
+                throw new Exception("Please do not specify Fields and Store simultaneously for TreePanel");
+            }
+
+            if (this.Model.Count > 0 && this.Store.Count > 0)
+            {
+                throw new Exception("Please do not specify Model and Store simultaneously for TreePanel");
             }
 
             if (this.Fields.Count > 0 && this.Fields.Get("text") == null)
@@ -131,6 +141,44 @@ namespace Ext.Net
             get
             {
                 return fields ?? (fields = new ModelFieldCollection());
+            }
+        }
+
+        /// <summary>
+        /// HiddenField name which submits selected nodes
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue(null)]
+        [Description("HiddenField name which submits selected nodes")]
+        public virtual string SelectedHiddenName
+        {
+            get
+            {
+                return this.State.Get<string>("SelectedHiddenName", null);
+            }
+            set
+            {
+                this.State.Set("SelectedHiddenName", value);
+            }
+        }
+
+        /// <summary>
+        /// HiddenField name which submits checked nodes
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue(null)]
+        [Description("HiddenField name which submits checked nodes")]
+        public virtual string CheckedHiddenName
+        {
+            get
+            {
+                return this.State.Get<string>("CheckedHiddenName", null);
+            }
+            set
+            {
+                this.State.Set("CheckedHiddenName", value);
             }
         }
 
@@ -616,6 +664,46 @@ namespace Ext.Net
             }
         }
 
+        private List<SubmittedNode> selectedNodes;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public virtual List<SubmittedNode> SelectedNodes
+        {
+            get
+            {
+                return this.selectedNodes;
+            }
+            protected internal set
+            {
+                this.selectedNodes = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [ConfigOption(JsonMode.Url)]
+        [Category("Config Options")]
+        [DefaultValue("")]
+        [NotifyParentProperty(true)]
+        [Editor(typeof(System.Web.UI.Design.UrlEditor), typeof(System.Drawing.Design.UITypeEditor))]
+        [Description("The default URL to be used for requests to the server.")]
+        public virtual string SubmitUrl
+        {
+            get
+            {
+                return this.State.Get<string>("SubmitUrl", "");
+            }
+            set
+            {
+                this.State.Set("SubmitUrl", value);
+            }
+        }
+
         #region IIcon Members
 
         private void FillIcons(List<Icon> icons, Node node)
@@ -668,7 +756,7 @@ namespace Ext.Net
         /// <param name="scope">The scope of the callback function</param>
         public virtual void CollapseAll(JFunction callback, string scope)
         {
-            this.Call("collpaseAll", callback, new JRawValue(scope));
+            this.Call("collapseAll", callback, new JRawValue(scope));
         }
 
         /// <summary>
@@ -677,7 +765,7 @@ namespace Ext.Net
         /// <param name="callback">A function to execute when the collapse finishes.</param>
         public virtual void CollapseAll(JFunction callback)
         {
-            this.Call("collpaseAll", callback);
+            this.Call("collapseAll", callback);
         }
 
         /// <summary>
@@ -685,7 +773,7 @@ namespace Ext.Net
         /// </summary>
         public virtual void CollapseAll()
         {
-            this.Call("collpaseAll");
+            this.Call("collapseAll");
         }
 
         /// <summary>
@@ -860,6 +948,25 @@ namespace Ext.Net
         public virtual NodeProxy GetCheckedNodes()
         {
             return new NodeProxy(this.ClientID, "getChecked()", true);
+        }
+
+        /// <summary>
+        /// Reload a node
+        /// </summary>
+        /// <param name="id"></param>
+        public virtual void ReloadNode(string id)
+        {
+            this.GetNodeById(id).Reload();
+        }
+
+        /// <summary>
+        /// Reload a node
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="options"></param>
+        public virtual void ReloadNode(string id, object options)
+        {
+            this.GetNodeById(id).Reload(options);
         }
     }
 }

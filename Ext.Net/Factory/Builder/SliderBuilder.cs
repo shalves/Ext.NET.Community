@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,54 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : SliderBase.Builder<Slider, Slider.Builder>
+        new public abstract partial class Builder<TSlider, TBuilder> : SliderBase.Builder<TSlider, TBuilder>
+            where TSlider : Slider
+            where TBuilder : Builder<TSlider, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TSlider component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<SliderListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side DirectEventHandlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<SliderDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : Slider.Builder<Slider, Slider.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,37 +119,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Slider.Builder</returns>
-            public virtual Slider.Builder Listeners(Action<SliderListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as Slider.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEventHandlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Slider.Builder</returns>
-            public virtual Slider.Builder DirectEvents(Action<SliderDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as Slider.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -111,6 +127,14 @@ namespace Ext.Net
         public Slider.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.Slider(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -125,7 +149,11 @@ namespace Ext.Net
         /// </summary>
         public Slider.Builder Slider()
         {
-            return this.Slider(new Slider());
+#if MVC
+			return this.Slider(new Slider { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.Slider(new Slider());
+#endif			
         }
 
         /// <summary>
@@ -133,7 +161,10 @@ namespace Ext.Net
         /// </summary>
         public Slider.Builder Slider(Slider component)
         {
-            return new Slider.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new Slider.Builder(component);
         }
 
         /// <summary>
@@ -141,7 +172,11 @@ namespace Ext.Net
         /// </summary>
         public Slider.Builder Slider(Slider.Config config)
         {
-            return new Slider.Builder(new Slider(config));
+#if MVC
+			return new Slider.Builder(new Slider(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new Slider.Builder(new Slider(config));
+#endif			
         }
     }
 }

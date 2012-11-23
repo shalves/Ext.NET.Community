@@ -1,5 +1,5 @@
 ﻿Ext.grid.feature.Summary.override({            
-    generateSummaryData : function () {
+    generateSummaryData: function () {
         var oldData,
             result,
             store = this.view.store;
@@ -38,8 +38,8 @@ Ext.grid.feature.GroupingSummary.override({
             for (i = 0; i < len; ++i) {                        
                 group = groups[i];
                 pointers[group.name] = {
-                    name     : group.name,
-                    children : []
+                    name: group.name,
+                    children: []
                 };
             }
 

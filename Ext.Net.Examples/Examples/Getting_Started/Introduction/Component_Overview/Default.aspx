@@ -61,7 +61,7 @@
     
     protected void Button1_Click(object sender, DirectEventArgs e)
     {
-        var msg = "This is a sample Alert MessageBox<br /><br />Server Timestamp : " + DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+        string msg = "This is a sample Alert MessageBox<br /><br />Server Timestamp : " + DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
         X.Msg.Alert("Message", msg).Show();
     }
 </script>
@@ -71,8 +71,8 @@
 <html> 
 <head runat="server">
     <title>Ext.NET Component and Themes Overview - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <link href="overview.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <link href="overview.css" rel="stylesheet" />
 </head> 
  
 <body>
@@ -87,15 +87,15 @@
                     FieldLabel="Choose Theme" 
                     Width="250">
                     <Items>
-                        <ext:ListItem Text="Blue Theme (Default)" Value="" />
-                        <ext:ListItem Text="Gray Theme" Value="-gray" />
-                        <ext:ListItem Text="Accessibility Theme" Value="-access" />
+                        <ext:ListItem Text="Blue Theme (Default)" Value="blue" />
+                        <ext:ListItem Text="Gray Theme" Value="gray" />
+                        <ext:ListItem Text="Accessibility Theme" Value="access" />
                     </Items>
                     <SelectedItems>
                         <ext:ListItem Index="1" />
                     </SelectedItems>
                     <Listeners>
-                        <Select Handler="Ext.net.ResourceMgr.setTheme('/extjs/resources/css/ext-all' + (item.getValue() || '') + '-embedded-css/ext.axd');" />
+                        <Select Handler="Ext.net.ResourceMgr.setTheme(this.getValue());" />
                     </Listeners>
                 </ext:ComboBox>
             </div> 

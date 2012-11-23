@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>GroupTabPanel - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {
@@ -23,7 +23,7 @@
         var shortTestMarkup = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed metus nibh, sodales a, porta at, vulputate eget, dui. Pellentesque ut nisl. Maecenas tortor turpis, interdum non, sodales non, iaculis ac, lacus. Vestibulum auctor, tortor quis iaculis malesuada, libero lectus bibendum purus, sit amet tincidunt quam turpis vel lacus. In pellentesque nisl non sem. Suspendisse nunc sem, pretium eget, cursus a, fringilla vel, urna.";
     </script>
 
-    <style type="text/css">
+    <style>
         .custom {
             background-color : gray;
             border : solid 15px gray;

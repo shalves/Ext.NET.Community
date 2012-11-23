@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,146 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ComponentBase.Builder<Tool, Tool.Builder>
+        new public abstract partial class Builder<TTool, TBuilder> : ComponentBase.Builder<TTool, TBuilder>
+            where TTool : Tool
+            where TBuilder : Builder<TTool, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TTool component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The type of tool to create.
+			/// </summary>
+            public virtual TBuilder Type(ToolType type)
+            {
+                this.ToComponent().Type = type;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The custom type of tool to create.
+			/// </summary>
+            public virtual TBuilder CustomType(string customType)
+            {
+                this.ToComponent().CustomType = customType;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The raw JavaScript function to be called when this Listener fires.
+			/// </summary>
+            public virtual TBuilder Fn(string fn)
+            {
+                this.ToComponent().Fn = fn;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The function to call when clicked. Arguments passed are 'event', 'toolEl', 'owner' and 'tool'.
+			/// </summary>
+            public virtual TBuilder Handler(string handler)
+            {
+                this.ToComponent().Handler = handler;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The scope in which to call the handler.
+			/// </summary>
+            public virtual TBuilder Scope(string scope)
+            {
+                this.ToComponent().Scope = scope;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Specify as false to allow click event to propagate. Default to true.
+			/// </summary>
+            public virtual TBuilder StopEvent(bool stopEvent)
+            {
+                this.ToComponent().StopEvent = stopEvent;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A tip string.
+			/// </summary>
+            public virtual TBuilder ToolTip(string toolTip)
+            {
+                this.ToComponent().ToolTip = toolTip;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A tip string.
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder TooltipConfig(Action<QTipCfg> action)
+            {
+                action(this.ToComponent().TooltipConfig);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// The type of tooltip to use. Either 'qtip' (default) for QuickTips or 'title' for title attribute. Defaults to: \"qtip\"
+			/// </summary>
+            public virtual TBuilder ToolTipType(ToolTipType toolTipType)
+            {
+                this.ToComponent().ToolTipType = toolTipType;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<ToolListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<ToolDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder DirectClickUrl(string directClickUrl)
+            {
+                this.ToComponent().DirectClickUrl = directClickUrl;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : Tool.Builder<Tool, Tool.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,75 +211,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Specify as false to allow click event to propagate. Default to true.
-			/// </summary>
-            public virtual Tool.Builder StopEvent(bool stopEvent)
-            {
-                this.ToComponent().StopEvent = stopEvent;
-                return this as Tool.Builder;
-            }
-             
- 			/// <summary>
-			/// A tip string.
-			/// </summary>
-            public virtual Tool.Builder ToolTip(string toolTip)
-            {
-                this.ToComponent().ToolTip = toolTip;
-                return this as Tool.Builder;
-            }
-             
- 			/// <summary>
-			/// A tip string.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Tool.Builder</returns>
-            public virtual Tool.Builder TooltipConfig(Action<QTipCfg> action)
-            {
-                action(this.ToComponent().TooltipConfig);
-                return this as Tool.Builder;
-            }
-			 
- 			/// <summary>
-			/// The type of tooltip to use. Either 'qtip' (default) for QuickTips or 'title' for title attribute. Defaults to: \"qtip\"
-			/// </summary>
-            public virtual Tool.Builder ToolTipType(ToolTipType toolTipType)
-            {
-                this.ToComponent().ToolTipType = toolTipType;
-                return this as Tool.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Tool.Builder</returns>
-            public virtual Tool.Builder Listeners(Action<ToolListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as Tool.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Tool.Builder</returns>
-            public virtual Tool.Builder DirectEvents(Action<ToolDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as Tool.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -149,6 +219,14 @@ namespace Ext.Net
         public Tool.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.Tool(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -163,7 +241,11 @@ namespace Ext.Net
         /// </summary>
         public Tool.Builder Tool()
         {
-            return this.Tool(new Tool());
+#if MVC
+			return this.Tool(new Tool { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.Tool(new Tool());
+#endif			
         }
 
         /// <summary>
@@ -171,7 +253,10 @@ namespace Ext.Net
         /// </summary>
         public Tool.Builder Tool(Tool component)
         {
-            return new Tool.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new Tool.Builder(component);
         }
 
         /// <summary>
@@ -179,7 +264,11 @@ namespace Ext.Net
         /// </summary>
         public Tool.Builder Tool(Tool.Config config)
         {
-            return new Tool.Builder(new Tool(config));
+#if MVC
+			return new Tool.Builder(new Tool(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new Tool.Builder(new Tool(config));
+#endif			
         }
     }
 }

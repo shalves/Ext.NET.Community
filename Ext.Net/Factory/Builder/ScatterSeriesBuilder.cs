@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,50 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : CartesianSeries.Builder<ScatterSeries, ScatterSeries.Builder>
+        new public abstract partial class Builder<TScatterSeries, TBuilder> : CartesianSeries.Builder<TScatterSeries, TBuilder>
+            where TScatterSeries : ScatterSeries
+            where TBuilder : Builder<TScatterSeries, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TScatterSeries component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder MarkerConfig(SpriteAttributes markerConfig)
+            {
+                this.ToComponent().MarkerConfig = markerConfig;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Style(SpriteAttributes style)
+            {
+                this.ToComponent().Style = style;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ScatterSeries.Builder<ScatterSeries, ScatterSeries.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,33 +115,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ScatterSeries.Builder MarkerConfig(SpriteAttributes markerConfig)
-            {
-                this.ToComponent().MarkerConfig = markerConfig;
-                return this as ScatterSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ScatterSeries.Builder Style(SpriteAttributes style)
-            {
-                this.ToComponent().Style = style;
-                return this as ScatterSeries.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -107,6 +123,14 @@ namespace Ext.Net
         public ScatterSeries.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ScatterSeries(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -121,7 +145,11 @@ namespace Ext.Net
         /// </summary>
         public ScatterSeries.Builder ScatterSeries()
         {
-            return this.ScatterSeries(new ScatterSeries());
+#if MVC
+			return this.ScatterSeries(new ScatterSeries { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ScatterSeries(new ScatterSeries());
+#endif			
         }
 
         /// <summary>
@@ -129,7 +157,10 @@ namespace Ext.Net
         /// </summary>
         public ScatterSeries.Builder ScatterSeries(ScatterSeries component)
         {
-            return new ScatterSeries.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ScatterSeries.Builder(component);
         }
 
         /// <summary>
@@ -137,7 +168,11 @@ namespace Ext.Net
         /// </summary>
         public ScatterSeries.Builder ScatterSeries(ScatterSeries.Config config)
         {
-            return new ScatterSeries.Builder(new ScatterSeries(config));
+#if MVC
+			return new ScatterSeries.Builder(new ScatterSeries(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ScatterSeries.Builder(new ScatterSeries(config));
+#endif			
         }
     }
 }

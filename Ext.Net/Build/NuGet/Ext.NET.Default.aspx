@@ -26,8 +26,9 @@
         <a href="http://www.ext.net/"><img src="http://speed.ext.net/identity/extnet-logo-small.png" /></a>
 
         <ext:Window 
+            ID="Window1"
             runat="server" 
-            Title="Welcome to Ext.NET 2.0"
+            Title="Welcome to Ext.NET 2"
             Height="215"
             Width="350"
             BodyPadding="5"
@@ -45,6 +46,7 @@
             </Items>
             <Buttons>
                 <ext:Button 
+                    ID="Button1"
                     runat="server" 
                     Text="Submit"
                     Icon="Accept" 

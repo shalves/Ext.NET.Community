@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,59 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseItem.Builder<DataSorter, DataSorter.Builder>
+        new public abstract partial class Builder<TDataSorter, TBuilder> : BaseItem.Builder<TDataSorter, TBuilder>
+            where TDataSorter : DataSorter
+            where TBuilder : Builder<TDataSorter, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TDataSorter component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The direction to sort by. Defaults to ASC
+			/// </summary>
+            public virtual TBuilder Direction(SortDirection direction)
+            {
+                this.ToComponent().Direction = direction;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The property to sort by. Required unless sorterFn is provided
+			/// </summary>
+            public virtual TBuilder Property(string property)
+            {
+                this.ToComponent().Property = property;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Optional root property. This is mostly useful when sorting a Store, in which case we set the root to 'data' to make the filter pull the property out of the data object of each item
+			/// </summary>
+            public virtual TBuilder Root(string root)
+            {
+                this.ToComponent().Root = root;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : DataSorter.Builder<DataSorter, DataSorter.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,42 +124,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The direction to sort by. Defaults to ASC
-			/// </summary>
-            public virtual DataSorter.Builder Direction(SortDirection direction)
-            {
-                this.ToComponent().Direction = direction;
-                return this as DataSorter.Builder;
-            }
-             
- 			/// <summary>
-			/// The property to sort by. Required unless sorterFn is provided
-			/// </summary>
-            public virtual DataSorter.Builder Property(string property)
-            {
-                this.ToComponent().Property = property;
-                return this as DataSorter.Builder;
-            }
-             
- 			/// <summary>
-			/// Optional root property. This is mostly useful when sorting a Store, in which case we set the root to 'data' to make the filter pull the property out of the data object of each item
-			/// </summary>
-            public virtual DataSorter.Builder Root(string root)
-            {
-                this.ToComponent().Root = root;
-                return this as DataSorter.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -116,6 +132,14 @@ namespace Ext.Net
         public DataSorter.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.DataSorter(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -130,7 +154,11 @@ namespace Ext.Net
         /// </summary>
         public DataSorter.Builder DataSorter()
         {
-            return this.DataSorter(new DataSorter());
+#if MVC
+			return this.DataSorter(new DataSorter { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.DataSorter(new DataSorter());
+#endif			
         }
 
         /// <summary>
@@ -138,7 +166,10 @@ namespace Ext.Net
         /// </summary>
         public DataSorter.Builder DataSorter(DataSorter component)
         {
-            return new DataSorter.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new DataSorter.Builder(component);
         }
 
         /// <summary>
@@ -146,7 +177,11 @@ namespace Ext.Net
         /// </summary>
         public DataSorter.Builder DataSorter(DataSorter.Config config)
         {
-            return new DataSorter.Builder(new DataSorter(config));
+#if MVC
+			return new DataSorter.Builder(new DataSorter(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new DataSorter.Builder(new DataSorter(config));
+#endif			
         }
     }
 }

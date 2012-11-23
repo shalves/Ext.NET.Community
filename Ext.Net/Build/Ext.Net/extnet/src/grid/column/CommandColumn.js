@@ -45,7 +45,7 @@
     
     initRenderData : function () {
         var me = this;          
-        me.grid = me.up('gridpanel');   
+        me.grid = me.up('tablepanel');   
         me.grid.addCls("x-grid-componentcolumn");
         me.view = me.grid.getView();   
         var groupFeature = me.getGroupingFeature(me.grid);     
@@ -199,9 +199,9 @@
     restoreLastPlaceholder : function () {
         if (this.lastToolbarDiv) {                    
             if (this.lastToolbarDiv.dom) {
-                try {
+                try{
                     this.lastToolbarDiv.down('.row-cmd-placeholder').removeCls("x-hide-display");
-                } catch (e) { }
+                } catch(e) { }
             }
             delete this.lastToolbarDiv;
         }
@@ -253,7 +253,14 @@
 
                         if (!Ext.isEmpty(button.command, false)) {
                             button.on("click", function () {
-                                this.toolbar.column.fireEvent("command", toolbar.column, this.command, this.toolbar.record, this.toolbar.grid.store.indexOf(this.toolbar.record));
+                                var i = 0;
+                                if (this.toolbar.grid.store.indexOf) {
+                                    i = this.toolbar.grid.store.indexOf(this.toolbar.record);
+                                }
+                                else if (this.toolbar.record.parentNode) {
+                                    i = this.toolbar.record.parentNode.indexOf(this.toolbar.record);
+                                }
+                                this.toolbar.column.fireEvent("command", toolbar.column, this.command, this.toolbar.record, i);
                             }, button);
                         }
 
@@ -385,7 +392,7 @@
 
                 toolbar.render(div);
 
-                var record = this.grid.store.getAt(i);
+                var record = this.grid.store.getAt ? this.grid.store.getAt(i) : this.view.getRecord(this.view.getNode(i));
                 toolbar.record = record;
 
                 if (this.prepareToolbar && this.prepareToolbar(this.grid, toolbar, i, record) === false) {
@@ -410,7 +417,14 @@
 
                         if (!Ext.isEmpty(button.command, false)) {
                             button.on("click", function () {
-                                this.toolbar.column.fireEvent("command", toolbar.column, this.command, this.toolbar.record, this.toolbar.grid.store.indexOf(this.toolbar.record));
+                                var i = 0;
+                                if (this.toolbar.grid.store.indexOf) {
+                                    i = this.toolbar.grid.store.indexOf(this.toolbar.record);
+                                }
+                                else if (this.toolbar.record.parentNode) {
+                                    i = this.toolbar.record.parentNode.indexOf(this.toolbar.record);
+                                }
+                                this.toolbar.column.fireEvent("command", toolbar.column, this.command, this.toolbar.record, i);
                             }, button);
                         }
 
@@ -443,8 +457,17 @@
                         }
                         
                         if (pm && pm.shared && pm.ownerCt && pm.ownerCt.toolbar) {
-                            var toolbar = pm.ownerCt.toolbar;
-                            toolbar.column.fireEvent("command", toolbar.column, this.command, toolbar.record, toolbar.grid.store.indexOf(toolbar.record));
+                            var toolbar = pm.ownerCt.toolbar,
+                                i = 0;
+                            
+                            if (this.toolbar.grid.store.indexOf) {
+                                i = this.toolbar.grid.store.indexOf(this.toolbar.record);
+                            }
+                            else if (this.toolbar.record.parentNode) {
+                                i = this.toolbar.record.parentNode.indexOf(this.toolbar.record);
+                            }
+
+                            toolbar.column.fireEvent("command", toolbar.column, this.command, toolbar.record, i);
                         }
                     }, item);
 
@@ -483,8 +506,8 @@
         for (var i = 0, l = this.cache.length; i < l; i++) {
             if (this.cache[i].record && (this.cache[i].record.id == record.id)) {
                 try {
-                    this.cache[i].destroy();
-                    this.cache.remove(this.cache[i]);
+                    this.cache[i].destroy();                    
+                    Ext.Array.remove(this.cache, this.cache[i]);
                 } catch (ex) { }
 
                 break;
@@ -584,7 +607,7 @@
                         }, item);                            
                     } else {                            
                         item.on("click", function () {
-                            this.toolbar.column.fireEvent("groupcommand", toolbar.column, this.command, toolbar.grid.store.getGroup(toolbar.groupId));
+                            this.toolbar.column.fireEvent("groupcommand", toolbar.column, this.command, toolbar.grid.store.getGroups(toolbar.groupId));
                         }, item);
                     }
                 }

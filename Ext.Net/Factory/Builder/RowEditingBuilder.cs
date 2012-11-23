@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,126 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : GridEditing.Builder<RowEditing, RowEditing.Builder>
+        new public abstract partial class Builder<TRowEditing, TBuilder> : GridEditing.Builder<TRowEditing, TBuilder>
+            where TRowEditing : RowEditing
+            where TBuilder : Builder<TRowEditing, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TRowEditing component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// true to automatically cancel any pending changes when the row editor begins editing a new row. false to force the user to explicitly cancel the pending changes. Defaults to true.
+			/// </summary>
+            public virtual TBuilder AutoCancel(bool autoCancel)
+            {
+                this.ToComponent().AutoCancel = autoCancel;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The number of clicks to move the row editor to a new row while it is visible and actively editing another row. This will default to the same value as clicksToEdit.
+			/// </summary>
+            public virtual TBuilder ClicksToMoveEditor(int clicksToMoveEditor)
+            {
+                this.ToComponent().ClicksToMoveEditor = clicksToMoveEditor;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// true to show a tooltip that summarizes all validation errors present in the row editor. Set to false to prevent the tooltip from showing. Defaults to true.
+			/// </summary>
+            public virtual TBuilder ErrorSummary(bool errorSummary)
+            {
+                this.ToComponent().ErrorSummary = errorSummary;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder SaveBtnText(string saveBtnText)
+            {
+                this.ToComponent().SaveBtnText = saveBtnText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder CancelBtnText(string cancelBtnText)
+            {
+                this.ToComponent().CancelBtnText = cancelBtnText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder ErrorsText(string errorsText)
+            {
+                this.ToComponent().ErrorsText = errorsText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder DirtyText(string dirtyText)
+            {
+                this.ToComponent().DirtyText = dirtyText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A function called when the save button is clicked
+			/// </summary>
+            public virtual TBuilder SaveHandler(string saveHandler)
+            {
+                this.ToComponent().SaveHandler = saveHandler;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<RowEditingListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<RowEditingDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : RowEditing.Builder<RowEditing, RowEditing.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,109 +191,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// true to automatically cancel any pending changes when the row editor begins editing a new row. false to force the user to explicitly cancel the pending changes. Defaults to true.
-			/// </summary>
-            public virtual RowEditing.Builder AutoCancel(bool autoCancel)
-            {
-                this.ToComponent().AutoCancel = autoCancel;
-                return this as RowEditing.Builder;
-            }
-             
- 			/// <summary>
-			/// The number of clicks to move the row editor to a new row while it is visible and actively editing another row. This will default to the same value as clicksToEdit.
-			/// </summary>
-            public virtual RowEditing.Builder ClicksToMoveEditor(int clicksToMoveEditor)
-            {
-                this.ToComponent().ClicksToMoveEditor = clicksToMoveEditor;
-                return this as RowEditing.Builder;
-            }
-             
- 			/// <summary>
-			/// true to show a tooltip that summarizes all validation errors present in the row editor. Set to false to prevent the tooltip from showing. Defaults to true.
-			/// </summary>
-            public virtual RowEditing.Builder ErrorSummary(bool errorSummary)
-            {
-                this.ToComponent().ErrorSummary = errorSummary;
-                return this as RowEditing.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual RowEditing.Builder SaveBtnText(string saveBtnText)
-            {
-                this.ToComponent().SaveBtnText = saveBtnText;
-                return this as RowEditing.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual RowEditing.Builder CancelBtnText(string cancelBtnText)
-            {
-                this.ToComponent().CancelBtnText = cancelBtnText;
-                return this as RowEditing.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual RowEditing.Builder ErrorsText(string errorsText)
-            {
-                this.ToComponent().ErrorsText = errorsText;
-                return this as RowEditing.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual RowEditing.Builder DirtyText(string dirtyText)
-            {
-                this.ToComponent().DirtyText = dirtyText;
-                return this as RowEditing.Builder;
-            }
-             
- 			/// <summary>
-			/// A function called when the save button is clicked
-			/// </summary>
-            public virtual RowEditing.Builder SaveHandler(string saveHandler)
-            {
-                this.ToComponent().SaveHandler = saveHandler;
-                return this as RowEditing.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowEditing.Builder</returns>
-            public virtual RowEditing.Builder Listeners(Action<RowEditingListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as RowEditing.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowEditing.Builder</returns>
-            public virtual RowEditing.Builder DirectEvents(Action<RowEditingDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as RowEditing.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -183,6 +199,14 @@ namespace Ext.Net
         public RowEditing.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.RowEditing(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -197,7 +221,11 @@ namespace Ext.Net
         /// </summary>
         public RowEditing.Builder RowEditing()
         {
-            return this.RowEditing(new RowEditing());
+#if MVC
+			return this.RowEditing(new RowEditing { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.RowEditing(new RowEditing());
+#endif			
         }
 
         /// <summary>
@@ -205,7 +233,10 @@ namespace Ext.Net
         /// </summary>
         public RowEditing.Builder RowEditing(RowEditing component)
         {
-            return new RowEditing.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new RowEditing.Builder(component);
         }
 
         /// <summary>
@@ -213,7 +244,11 @@ namespace Ext.Net
         /// </summary>
         public RowEditing.Builder RowEditing(RowEditing.Config config)
         {
-            return new RowEditing.Builder(new RowEditing(config));
+#if MVC
+			return new RowEditing.Builder(new RowEditing(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new RowEditing.Builder(new RowEditing(config));
+#endif			
         }
     }
 }

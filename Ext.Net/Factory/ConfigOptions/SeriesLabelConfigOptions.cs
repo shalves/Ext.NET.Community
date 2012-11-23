@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -58,7 +58,7 @@ namespace Ext.Net
                 list.Add("display", new ConfigOption("display", new SerializationOptions(JsonMode.ToCamelLower), SeriesLabelDisplay.None, this.Display ));
                 list.Add("color", new ConfigOption("color", null, "", this.Color ));
                 list.Add("contrast", new ConfigOption("contrast", null, false, this.Contrast ));
-                list.Add("field", new ConfigOption("field", null, "", this.Field ));
+                list.Add("field", new ConfigOption("field", new SerializationOptions(typeof(SingleStringArrayJsonConverter)), null, this.Field ));
                 list.Add("minMargin", new ConfigOption("minMargin", null, 50, this.MinMargin ));
                 list.Add("orientation", new ConfigOption("orientation", new SerializationOptions(JsonMode.ToLower), Orientation.Horizontal, this.Orientation ));
                 list.Add("renderer", new ConfigOption("renderer", new SerializationOptions(JsonMode.Raw), null, this.Renderer ));

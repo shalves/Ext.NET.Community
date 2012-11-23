@@ -14,7 +14,7 @@
             // will be visible.            
             record = me.store.getAt(idx - 1);
             visIdx = idx - 1;
-            while(visIdx > 0 && record.data.hidden) {
+            while (visIdx > 0 && record.data.hidden) {
                 record = me.store.getAt(--visIdx);
             }
             if (record.data.hidden) {
@@ -61,7 +61,7 @@
         if (idx + 1 < me.store.getCount()) {
             record = me.store.getAt(idx + 1);
             visIdx = idx + 1;
-            while((visIdx + 1 < me.store.getCount()) && record.data.hidden) {
+            while ((visIdx + 1 < me.store.getCount()) && record.data.hidden) {
                 record = me.store.getAt(++visIdx);
             }
             if (record.data.hidden) {

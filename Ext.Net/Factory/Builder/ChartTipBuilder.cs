@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,74 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ToolTipBase.Builder<ChartTip, ChartTip.Builder>
+        new public abstract partial class Builder<TChartTip, TBuilder> : ToolTipBase.Builder<TChartTip, TBuilder>
+            where TChartTip : ChartTip
+            where TBuilder : Builder<TChartTip, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TChartTip component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Renderer(Action<JFunction> action)
+            {
+                action(this.ToComponent().Renderer);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// If true, then the tooltip will be automatically constrained to stay within the browser viewport. Defaults to: false
+			/// </summary>
+            public virtual TBuilder ConstrainPosition(bool constrainPosition)
+            {
+                this.ToComponent().ConstrainPosition = constrainPosition;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<PanelListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<PanelDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ChartTip.Builder<ChartTip, ChartTip.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,57 +139,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ChartTip.Builder</returns>
-            public virtual ChartTip.Builder Renderer(Action<JFunction> action)
-            {
-                action(this.ToComponent().Renderer);
-                return this as ChartTip.Builder;
-            }
-			 
- 			/// <summary>
-			/// If true, then the tooltip will be automatically constrained to stay within the browser viewport. Defaults to: false
-			/// </summary>
-            public virtual ChartTip.Builder ConstrainPosition(bool constrainPosition)
-            {
-                this.ToComponent().ConstrainPosition = constrainPosition;
-                return this as ChartTip.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ChartTip.Builder</returns>
-            public virtual ChartTip.Builder Listeners(Action<PanelListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as ChartTip.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ChartTip.Builder</returns>
-            public virtual ChartTip.Builder DirectEvents(Action<PanelDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as ChartTip.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -131,6 +147,14 @@ namespace Ext.Net
         public ChartTip.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ChartTip(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -145,7 +169,11 @@ namespace Ext.Net
         /// </summary>
         public ChartTip.Builder ChartTip()
         {
-            return this.ChartTip(new ChartTip());
+#if MVC
+			return this.ChartTip(new ChartTip { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ChartTip(new ChartTip());
+#endif			
         }
 
         /// <summary>
@@ -153,7 +181,10 @@ namespace Ext.Net
         /// </summary>
         public ChartTip.Builder ChartTip(ChartTip component)
         {
-            return new ChartTip.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ChartTip.Builder(component);
         }
 
         /// <summary>
@@ -161,7 +192,11 @@ namespace Ext.Net
         /// </summary>
         public ChartTip.Builder ChartTip(ChartTip.Config config)
         {
-            return new ChartTip.Builder(new ChartTip(config));
+#if MVC
+			return new ChartTip.Builder(new ChartTip(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ChartTip.Builder(new ChartTip(config));
+#endif			
         }
     }
 }

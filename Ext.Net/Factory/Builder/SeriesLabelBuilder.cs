@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,97 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : SpriteAttributes.Builder<SeriesLabel, SeriesLabel.Builder>
+        new public abstract partial class Builder<TSeriesLabel, TBuilder> : SpriteAttributes.Builder<TSeriesLabel, TBuilder>
+            where TSeriesLabel : SeriesLabel
+            where TBuilder : Builder<TSeriesLabel, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TSeriesLabel component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Specifies the presence and position of labels for each pie slice.
+			/// </summary>
+            public virtual TBuilder Display(SeriesLabelDisplay display)
+            {
+                this.ToComponent().Display = display;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The color of the label text. Default value: '#000' (black).
+			/// </summary>
+            public virtual TBuilder Color(string color)
+            {
+                this.ToComponent().Color = color;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to render the label in contrasting color with the backround. Default value: false.
+			/// </summary>
+            public virtual TBuilder Contrast(bool contrast)
+            {
+                this.ToComponent().Contrast = contrast;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The name of the field to be displayed in the label. Default value: 'name'.
+			/// </summary>
+            public virtual TBuilder Field(string[] field)
+            {
+                this.ToComponent().Field = field;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Specifies the minimum distance from a label to the origin of the visualization. This parameter is useful when using PieSeries width variable pie slice lengths. Default value: 50.
+			/// </summary>
+            public virtual TBuilder MinMargin(int minMargin)
+            {
+                this.ToComponent().MinMargin = minMargin;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Either \"horizontal\" or \"vertical\". Dafault value: \"horizontal\".
+			/// </summary>
+            public virtual TBuilder Orientation(Orientation orientation)
+            {
+                this.ToComponent().Orientation = orientation;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Optional function for formatting the label into a displayable value. Default value: function(value) { return value; }
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Renderer(Action<JFunction> action)
+            {
+                action(this.ToComponent().Renderer);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : SeriesLabel.Builder<SeriesLabel, SeriesLabel.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,80 +162,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Specifies the presence and position of labels for each pie slice.
-			/// </summary>
-            public virtual SeriesLabel.Builder Display(SeriesLabelDisplay display)
-            {
-                this.ToComponent().Display = display;
-                return this as SeriesLabel.Builder;
-            }
-             
- 			/// <summary>
-			/// The color of the label text. Default value: '#000' (black).
-			/// </summary>
-            public virtual SeriesLabel.Builder Color(string color)
-            {
-                this.ToComponent().Color = color;
-                return this as SeriesLabel.Builder;
-            }
-             
- 			/// <summary>
-			/// True to render the label in contrasting color with the backround. Default value: false.
-			/// </summary>
-            public virtual SeriesLabel.Builder Contrast(bool contrast)
-            {
-                this.ToComponent().Contrast = contrast;
-                return this as SeriesLabel.Builder;
-            }
-             
- 			/// <summary>
-			/// The name of the field to be displayed in the label. Default value: 'name'.
-			/// </summary>
-            public virtual SeriesLabel.Builder Field(string field)
-            {
-                this.ToComponent().Field = field;
-                return this as SeriesLabel.Builder;
-            }
-             
- 			/// <summary>
-			/// Specifies the minimum distance from a label to the origin of the visualization. This parameter is useful when using PieSeries width variable pie slice lengths. Default value: 50.
-			/// </summary>
-            public virtual SeriesLabel.Builder MinMargin(int minMargin)
-            {
-                this.ToComponent().MinMargin = minMargin;
-                return this as SeriesLabel.Builder;
-            }
-             
- 			/// <summary>
-			/// Either \"horizontal\" or \"vertical\". Dafault value: \"horizontal\".
-			/// </summary>
-            public virtual SeriesLabel.Builder Orientation(Orientation orientation)
-            {
-                this.ToComponent().Orientation = orientation;
-                return this as SeriesLabel.Builder;
-            }
-             
- 			/// <summary>
-			/// Optional function for formatting the label into a displayable value. Default value: function(value) { return value; }
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of SeriesLabel.Builder</returns>
-            public virtual SeriesLabel.Builder Renderer(Action<JFunction> action)
-            {
-                action(this.ToComponent().Renderer);
-                return this as SeriesLabel.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -154,6 +170,14 @@ namespace Ext.Net
         public SeriesLabel.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.SeriesLabel(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -168,7 +192,11 @@ namespace Ext.Net
         /// </summary>
         public SeriesLabel.Builder SeriesLabel()
         {
-            return this.SeriesLabel(new SeriesLabel());
+#if MVC
+			return this.SeriesLabel(new SeriesLabel { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.SeriesLabel(new SeriesLabel());
+#endif			
         }
 
         /// <summary>
@@ -176,7 +204,10 @@ namespace Ext.Net
         /// </summary>
         public SeriesLabel.Builder SeriesLabel(SeriesLabel component)
         {
-            return new SeriesLabel.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new SeriesLabel.Builder(component);
         }
 
         /// <summary>
@@ -184,7 +215,11 @@ namespace Ext.Net
         /// </summary>
         public SeriesLabel.Builder SeriesLabel(SeriesLabel.Config config)
         {
-            return new SeriesLabel.Builder(new SeriesLabel(config));
+#if MVC
+			return new SeriesLabel.Builder(new SeriesLabel(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new SeriesLabel.Builder(new SeriesLabel(config));
+#endif			
         }
     }
 }

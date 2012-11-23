@@ -24,10 +24,10 @@
         {
             return;
         }
+
+        List<Word> words = new List<Word>();
         
-        var words = new List<Word>();
-        
-        var word = "";
+        string  word = "";
 
         foreach (Match match in matches)
         {
@@ -49,12 +49,12 @@
         }
 
         // Order the List Alphabetically
-        var sortedByAlpha = words.OrderBy(item => item.Text);
+        IOrderedEnumerable<Word> sortedByAlpha = words.OrderBy(item => item.Text);
         
         // Order the List by Text Count
-        var sortedByCount = sortedByAlpha.OrderByDescending(item => item.Count);
+        IOrderedEnumerable<Word> sortedByCount = sortedByAlpha.OrderByDescending(item => item.Count);
 
-        var max = Convert.ToInt32(this.intRecordLimit.Number);
+        int max = Convert.ToInt32(this.intRecordLimit.Number);
 
         this.Store1.Data = sortedByCount.Take(max > 0 ? max : 99);
         this.Store1.DataBind();
@@ -64,7 +64,7 @@
     {
         string pattern = @"\b{0}{1}{2}{3}{4}{5}{6}\b"; // @"\b(?!and|not)(?![0-9])[a-z0-9]{3,}\b";
 
-        var exclusionWords = Regex.Matches(this.txtExclusionWords.Text.Trim(), @"\b[a-zA-Z0-9]+\b").Join("|");
+        string exclusionWords = Regex.Matches(this.txtExclusionWords.Text.Trim(), @"\b[a-zA-Z0-9]+\b").Join("|");
 
         int maxMinTotalLength = this.txtPrefixPattern.Text.Trim().Length + this.txtSuffixPattern.Text.Length;
         

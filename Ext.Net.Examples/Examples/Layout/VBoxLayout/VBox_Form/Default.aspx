@@ -8,7 +8,7 @@
         if (this.SendTo.SelectedItems.Count > 0)
         {
             StringBuilder sb = new StringBuilder();
-            foreach (var item in this.SendTo.SelectedItems)
+            foreach (Ext.Net.ListItem item in this.SendTo.SelectedItems)
             {
                 sb.Append(item.Value).Append("<br/>");
             }
@@ -27,7 +27,7 @@
 <html>
 <head runat="server">
     <title>VBox-Form - Ext.NET Examples</title>
-    <link href="../../../../resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="../../../../resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form id="form1" runat="server">

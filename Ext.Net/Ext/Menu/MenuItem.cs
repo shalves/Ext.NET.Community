@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -126,6 +126,42 @@ namespace Ext.Net
                 }
 
                 return this.directEvents;
+            }
+        }
+
+        /// <summary>
+        /// Server-side DirectEvent handler. Method signature is (object sender, DirectEventArgs e).
+        /// </summary>
+        [Description("Server-side DirectEvent handler. Method signature is (object sender, DirectEventArgs e).")]
+        public event ComponentDirectEvent.DirectEventHandler DirectClick
+        {
+            add
+            {
+                this.DirectEvents.Click.Event += value;
+                this.CheckForceId();
+            }
+            remove
+            {
+                this.DirectEvents.Click.Event -= value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [DefaultValue("")]
+        [Description("")]
+        public virtual string DirectClickUrl
+        {
+            get
+            {
+
+                return this.DirectEvents.Click.Url;
+            }
+            set
+            {
+                this.DirectEvents.Click.Url = value;
             }
         }
     }

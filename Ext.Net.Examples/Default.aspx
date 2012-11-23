@@ -4,29 +4,28 @@
 <%@ Import Namespace="System.Collections.Generic" %>
 <%@ Import Namespace="Ext.Net.Examples" %>
 
-<%@ Register Assembly="Ext.Net" Namespace="Ext.Net" TagPrefix="ext" %>
-
 <script runat="server">
-	protected void Page_Load(object sender, EventArgs e)
-	{
-		if (!X.IsAjaxRequest)
-		{
-			this.ResourceManager1.DirectEventUrl = this.Request.Url.AbsoluteUri;
-			
-			// Reset the Session Theme on Page_Load.
-			// The Theme switcher will persist the current theme only 
-			// until the main Page is refreshed.
-			this.Session["Ext.Net.Theme"] = Ext.Net.Theme.Gray;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!X.IsAjaxRequest)
+        {
+            this.ResourceManager1.DirectEventUrl = this.Request.Url.AbsoluteUri;
 
-			this.TriggerField1.Focus();
-		}
-	}
+            // Reset the Session Theme on Page_Load.
+            // The Theme switcher will persist the current theme only 
+            // until the main Page is refreshed.
+            this.Session["Ext.Net.Theme"] = Ext.Net.Theme.Gray;
+
+            this.TriggerField1.Focus();
+            this.CheckMenuItemScriptMode.Checked = Convert.ToBoolean(this.Session["Ext.Net.SourceFormatting"]);
+        }
+    }
 
     protected void GetExamplesNodes(object sender, NodeLoadEventArgs e)
 	{
 		if (e.NodeID == "Root")
 		{
-			var nodes = this.Page.Cache["ExamplesTreeNodes"] as Ext.Net.NodeCollection;
+            Ext.Net.NodeCollection nodes = this.Page.Cache["ExamplesTreeNodes"] as Ext.Net.NodeCollection;
 
 			if (nodes == null)
 			{
@@ -45,7 +44,7 @@
 
 		this.Session["Ext.Net.Theme"] = temp;
 
-		return temp == Ext.Net.Theme.Default ? "Default" : this.ResourceManager1.GetThemeUrl(temp);
+		return this.ResourceManager1.GetThemeUrl(temp);
 	}
 	
 	[DirectMethod]
@@ -53,6 +52,23 @@
 	{
 		return Math.Abs("/Examples".ConcatWith(s).ToLower().GetHashCode());
 	}
+
+    [DirectMethod]
+    public void ChangeScriptMode(bool debug)
+    {
+        if (debug)
+        {
+            this.Session["Ext.Net.ScriptMode"] = Ext.Net.ScriptMode.Debug;
+            this.Session["Ext.Net.SourceFormatting"] = true;            
+        }
+        else
+        {
+            this.Session["Ext.Net.ScriptMode"] = Ext.Net.ScriptMode.Release;
+            this.Session["Ext.Net.SourceFormatting"] = false;
+        }
+
+        Response.Redirect("");
+    }
 </script>
 
 <!DOCTYPE html>
@@ -60,8 +76,8 @@
 <html>
 <head runat="server">
 	<title>Ext.NET Examples - Open Source ASP.NET Web Controls with Sencha Ext JS</title>
-	<link rel="stylesheet" type="text/css" href="resources/css/main.css" />
-	<script type="text/javascript" src="resources/js/main.js"></script>
+	<link rel="stylesheet" href="resources/css/main.css" />
+	<script src="resources/js/main.js"></script>
 </head>
 <body>
 	<ext:ResourceManager ID="ResourceManager1" runat="server" />
@@ -71,7 +87,7 @@
 			<Change Fn="change" />
 		</Listeners>
 	</ext:History>
-	
+
 	<ext:Viewport runat="server" Layout="BorderLayout">
 		<Items>
 			<ext:Panel 
@@ -83,7 +99,8 @@
 				<Content>
 					<div id="titlebar">
 						<div id="left">
-							<div class="minor">Ext.NET</div>							<div class="title">Examples Explorer <span class="title-sub">(Version 2.0)</span></div>
+							<div class="minor">Ext.NET</div>
+							<div class="title">Examples Explorer <span class="title-sub">(Version 2.1)</span></div>
 							<div class="badge">built with Ext.NET</div>
 						</div>
 						<div id="right"><a href="http://www.ext.net/"></a></div>
@@ -113,7 +130,8 @@
 						Lines="false"
 						UseArrows="true"
 						CollapseFirst="false"
-						RootVisible="false">
+						RootVisible="false"
+                        Animate="false">
 						<TopBar>
 							<ext:Toolbar runat="server">
 								<Items>
@@ -157,7 +175,17 @@
 														</Listeners>
 													</ext:CheckMenuItem>
 
+                                                    <ext:CheckMenuItem
+                                                        ID="CheckMenuItemScriptMode"
+                                                        runat="server" 
+                                                        Text="Debug Mode">
+	                                                    <Listeners>
+		                                                    <CheckChange Handler="App.direct.ChangeScriptMode(checked);" />
+	                                                    </Listeners>
+                                                    </ext:CheckMenuItem>
+
 													<ext:MenuSeparator runat="server" />
+
 													<ext:MenuItem runat="server" Text="Theme" Icon="Paintcan">
 														<Menu>
 															<ext:Menu runat="server">
@@ -203,7 +231,6 @@
 								</Root>
 							</ext:TreeStore>
 						</Store>
-	
 						<Listeners>
 							<ItemClick Handler="onTreeItemClick(record, e);" />
 							<AfterRender Fn="onTreeAfterRender" />
@@ -215,8 +242,7 @@
 				ID="ExampleTabs" 
 				runat="server" 
 				Region="Center" 
-				Margins="0 4 4 0" 
-				EnableTabScroll="true"                
+				Margins="0 4 4 0" 				                
 				Cls="tabs"
 				MinTabWidth="115">
 				<Items>
@@ -299,7 +325,7 @@
 		</Buttons>
 	</ext:Window>
 	
-	<script type="text/javascript">
+	<script>
 		var _gaq = _gaq || [];
 		_gaq.push(['_setAccount', 'UA-19135912-3']);
 		_gaq.push(['_setDomainName', '.ext.net']);
@@ -311,6 +337,6 @@
 			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 		})();
-	</script>	
+	</script>
 </body>
 </html>

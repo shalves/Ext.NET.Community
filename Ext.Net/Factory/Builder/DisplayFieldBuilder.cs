@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,101 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Field.Builder<DisplayField, DisplayField.Builder>
+        new public abstract partial class Builder<TDisplayField, TBuilder> : Field.Builder<TDisplayField, TBuilder>
+            where TDisplayField : DisplayField
+            where TBuilder : Builder<TDisplayField, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TDisplayField component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The format of the string to render using the .Text property. Example 'Hello {0}'.
+			/// </summary>
+            public virtual TBuilder Format(string format)
+            {
+                this.ToComponent().Format = format;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The default text to display if the Text property is empty (defaults to '').
+			/// </summary>
+            public virtual TBuilder EmptyText(string emptyText)
+            {
+                this.ToComponent().EmptyText = emptyText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to escape HTML in text when rendering it.
+			/// </summary>
+            public virtual TBuilder HtmlEncode(bool htmlEncode)
+            {
+                this.ToComponent().HtmlEncode = htmlEncode;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The plain text to display within the label (defaults to ''). If you need to include HTML tags within the label's innerHTML, use the html config instead.
+			/// </summary>
+            public virtual TBuilder Text(string text)
+            {
+                this.ToComponent().Text = text;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A function to transform the raw value for display in the field. The function will receive 2 arguments, the raw value and the Ext.form.field.Display object.
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Renderer(Action<JFunction> action)
+            {
+                action(this.ToComponent().Renderer);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<FieldListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<FieldDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : DisplayField.Builder<DisplayField, DisplayField.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,55 +166,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// True to escape HTML in text when rendering it.
-			/// </summary>
-            public virtual DisplayField.Builder HtmlEncode(bool htmlEncode)
-            {
-                this.ToComponent().HtmlEncode = htmlEncode;
-                return this as DisplayField.Builder;
-            }
-             
- 			/// <summary>
-			/// The plain text to display within the label (defaults to ''). If you need to include HTML tags within the label's innerHTML, use the html config instead.
-			/// </summary>
-            public virtual DisplayField.Builder Text(string text)
-            {
-                this.ToComponent().Text = text;
-                return this as DisplayField.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DisplayField.Builder</returns>
-            public virtual DisplayField.Builder Listeners(Action<FieldListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as DisplayField.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DisplayField.Builder</returns>
-            public virtual DisplayField.Builder DirectEvents(Action<FieldDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as DisplayField.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -129,6 +174,14 @@ namespace Ext.Net
         public DisplayField.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.DisplayField(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -143,7 +196,11 @@ namespace Ext.Net
         /// </summary>
         public DisplayField.Builder DisplayField()
         {
-            return this.DisplayField(new DisplayField());
+#if MVC
+			return this.DisplayField(new DisplayField { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.DisplayField(new DisplayField());
+#endif			
         }
 
         /// <summary>
@@ -151,7 +208,10 @@ namespace Ext.Net
         /// </summary>
         public DisplayField.Builder DisplayField(DisplayField component)
         {
-            return new DisplayField.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new DisplayField.Builder(component);
         }
 
         /// <summary>
@@ -159,7 +219,11 @@ namespace Ext.Net
         /// </summary>
         public DisplayField.Builder DisplayField(DisplayField.Config config)
         {
-            return new DisplayField.Builder(new DisplayField(config));
+#if MVC
+			return new DisplayField.Builder(new DisplayField(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new DisplayField.Builder(new DisplayField(config));
+#endif			
         }
     }
 }

@@ -42,13 +42,13 @@
 <head runat="server">
     <title>Ext.Net Examples - Animated DataView</title>
 
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <link href="animated-dataview.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <link href="animated-dataview.css" rel="stylesheet" />
 
     <ext:ResourcePlaceHolder runat="server" Mode="ScriptFiles" />
 
     <ext:XScript runat="server">
-        <script type="text/javascript">
+        <script>
             var filterData = function (slider) {
                 var store = #{Store1},
                     values  = slider.getValues();

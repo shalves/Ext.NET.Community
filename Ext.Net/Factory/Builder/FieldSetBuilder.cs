@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,108 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : AbstractContainer.Builder<FieldSet, FieldSet.Builder>
+        new public abstract partial class Builder<TFieldSet, TBuilder> : AbstractContainer.Builder<TFieldSet, TBuilder>
+            where TFieldSet : FieldSet
+            where TBuilder : Builder<TFieldSet, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TFieldSet component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The name to assign to the fieldset's checkbox if checkboxToggle = true (defaults to '[fieldset id]-checkbox').
+			/// </summary>
+            public virtual TBuilder CheckboxName(string checkboxName)
+            {
+                this.ToComponent().CheckboxName = checkboxName;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Set to true to render a checkbox into the fieldset frame just in front of the legend to expand/collapse the fieldset when the checkbox is toggled. (defaults to false). This checkbox will be included in form submits using the checkboxName.
+			/// </summary>
+            public virtual TBuilder CheckboxToggle(bool checkboxToggle)
+            {
+                this.ToComponent().CheckboxToggle = checkboxToggle;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Set to true to render the fieldset as collapsed by default. If checkboxToggle is specified, the checkbox will also be unchecked by default.
+			/// </summary>
+            public virtual TBuilder Collapsed(bool collapsed)
+            {
+                this.ToComponent().Collapsed = collapsed;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Set to true to make the fieldset collapsible and have the expand/collapse toggle button automatically rendered into the legend element, false to keep the fieldset statically sized with no collapse button (defaults to false). Another option is to configure checkboxToggle. Use the collapsed config to collapse the fieldset by default.
+			/// </summary>
+            public virtual TBuilder Collapsible(bool collapsible)
+            {
+                this.ToComponent().Collapsible = collapsible;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A title to be displayed in the fieldset's legend. May contain HTML markup.
+			/// </summary>
+            public virtual TBuilder Title(string title)
+            {
+                this.ToComponent().Title = title;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Set to true will add a listener to the titleCmp property for the click event which will execute the toggle method. This option is only used when the collapsible property is set to true. Defaults to: true
+			/// </summary>
+            public virtual TBuilder ToggleOnTitleClick(bool toggleOnTitleClick)
+            {
+                this.ToComponent().ToggleOnTitleClick = toggleOnTitleClick;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<FieldSetListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<FieldSetDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : FieldSet.Builder<FieldSet, FieldSet.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,91 +173,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The name to assign to the fieldset's checkbox if checkboxToggle = true (defaults to '[fieldset id]-checkbox').
-			/// </summary>
-            public virtual FieldSet.Builder CheckboxName(string checkboxName)
-            {
-                this.ToComponent().CheckboxName = checkboxName;
-                return this as FieldSet.Builder;
-            }
-             
- 			/// <summary>
-			/// Set to true to render a checkbox into the fieldset frame just in front of the legend to expand/collapse the fieldset when the checkbox is toggled. (defaults to false). This checkbox will be included in form submits using the checkboxName.
-			/// </summary>
-            public virtual FieldSet.Builder CheckboxToggle(bool checkboxToggle)
-            {
-                this.ToComponent().CheckboxToggle = checkboxToggle;
-                return this as FieldSet.Builder;
-            }
-             
- 			/// <summary>
-			/// Set to true to render the fieldset as collapsed by default. If checkboxToggle is specified, the checkbox will also be unchecked by default.
-			/// </summary>
-            public virtual FieldSet.Builder Collapsed(bool collapsed)
-            {
-                this.ToComponent().Collapsed = collapsed;
-                return this as FieldSet.Builder;
-            }
-             
- 			/// <summary>
-			/// Set to true to make the fieldset collapsible and have the expand/collapse toggle button automatically rendered into the legend element, false to keep the fieldset statically sized with no collapse button (defaults to false). Another option is to configure checkboxToggle. Use the collapsed config to collapse the fieldset by default.
-			/// </summary>
-            public virtual FieldSet.Builder Collapsible(bool collapsible)
-            {
-                this.ToComponent().Collapsible = collapsible;
-                return this as FieldSet.Builder;
-            }
-             
- 			/// <summary>
-			/// A title to be displayed in the fieldset's legend. May contain HTML markup.
-			/// </summary>
-            public virtual FieldSet.Builder Title(string title)
-            {
-                this.ToComponent().Title = title;
-                return this as FieldSet.Builder;
-            }
-             
- 			/// <summary>
-			/// Set to true will add a listener to the titleCmp property for the click event which will execute the toggle method. This option is only used when the collapsible property is set to true. Defaults to: true
-			/// </summary>
-            public virtual FieldSet.Builder ToggleOnTitleClick(bool toggleOnTitleClick)
-            {
-                this.ToComponent().ToggleOnTitleClick = toggleOnTitleClick;
-                return this as FieldSet.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of FieldSet.Builder</returns>
-            public virtual FieldSet.Builder Listeners(Action<FieldSetListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as FieldSet.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of FieldSet.Builder</returns>
-            public virtual FieldSet.Builder DirectEvents(Action<FieldSetDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as FieldSet.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -165,6 +181,14 @@ namespace Ext.Net
         public FieldSet.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.FieldSet(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -179,7 +203,11 @@ namespace Ext.Net
         /// </summary>
         public FieldSet.Builder FieldSet()
         {
-            return this.FieldSet(new FieldSet());
+#if MVC
+			return this.FieldSet(new FieldSet { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.FieldSet(new FieldSet());
+#endif			
         }
 
         /// <summary>
@@ -187,7 +215,10 @@ namespace Ext.Net
         /// </summary>
         public FieldSet.Builder FieldSet(FieldSet component)
         {
-            return new FieldSet.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new FieldSet.Builder(component);
         }
 
         /// <summary>
@@ -195,7 +226,11 @@ namespace Ext.Net
         /// </summary>
         public FieldSet.Builder FieldSet(FieldSet.Config config)
         {
-            return new FieldSet.Builder(new FieldSet(config));
+#if MVC
+			return new FieldSet.Builder(new FieldSet(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new FieldSet.Builder(new FieldSet(config));
+#endif			
         }
     }
 }

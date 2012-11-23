@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,121 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : AbstractSelectionModel.Builder<RowSelectionModel, RowSelectionModel.Builder>
+        new public abstract partial class Builder<TRowSelectionModel, TBuilder> : AbstractSelectionModel.Builder<TRowSelectionModel, TBuilder>
+            where TRowSelectionModel : RowSelectionModel
+            where TBuilder : Builder<TRowSelectionModel, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TRowSelectionModel component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Turns on/off keyboard navigation within the grid. Defaults to true.
+			/// </summary>
+            public virtual TBuilder EnableKeyNav(bool enableKeyNav)
+            {
+                this.ToComponent().EnableKeyNav = enableKeyNav;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to ignore selections that are made when using the right mouse button if there are records that are already selected. If no records are selected, selection will continue as normal. Defaults to: false.
+			/// </summary>
+            public virtual TBuilder IgnoreRightMouseSelection(bool ignoreRightMouseSelection)
+            {
+                this.ToComponent().IgnoreRightMouseSelection = ignoreRightMouseSelection;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<RowSelectionModelListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<RowSelectionModelDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder SelectedRows(Action<SelectedRowCollection> action)
+            {
+                action(this.ToComponent().SelectedRows);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder SelectedRow(Action<SelectedRow> action)
+            {
+                action(this.ToComponent().SelectedRow);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder SelectedIndex(int selectedIndex)
+            {
+                this.ToComponent().SelectedIndex = selectedIndex;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder SelectedRecordID(string selectedRecordID)
+            {
+                this.ToComponent().SelectedRecordID = selectedRecordID;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// HiddenField name which submits selected rows
+			/// </summary>
+            public virtual TBuilder HiddenName(string hiddenName)
+            {
+                this.ToComponent().HiddenName = hiddenName;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : RowSelectionModel.Builder<RowSelectionModel, RowSelectionModel.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,95 +186,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Turns on/off keyboard navigation within the grid. Defaults to true.
-			/// </summary>
-            public virtual RowSelectionModel.Builder EnableKeyNav(bool enableKeyNav)
-            {
-                this.ToComponent().EnableKeyNav = enableKeyNav;
-                return this as RowSelectionModel.Builder;
-            }
-             
- 			/// <summary>
-			/// True to ignore selections that are made when using the right mouse button if there are records that are already selected. If no records are selected, selection will continue as normal. Defaults to: true
-			/// </summary>
-            public virtual RowSelectionModel.Builder IgnoreRightMouseSelection(bool ignoreRightMouseSelection)
-            {
-                this.ToComponent().IgnoreRightMouseSelection = ignoreRightMouseSelection;
-                return this as RowSelectionModel.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowSelectionModel.Builder</returns>
-            public virtual RowSelectionModel.Builder Listeners(Action<RowSelectionModelListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as RowSelectionModel.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowSelectionModel.Builder</returns>
-            public virtual RowSelectionModel.Builder DirectEvents(Action<RowSelectionModelDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as RowSelectionModel.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowSelectionModel.Builder</returns>
-            public virtual RowSelectionModel.Builder SelectedRows(Action<SelectedRowCollection> action)
-            {
-                action(this.ToComponent().SelectedRows);
-                return this as RowSelectionModel.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of RowSelectionModel.Builder</returns>
-            public virtual RowSelectionModel.Builder SelectedRow(Action<SelectedRow> action)
-            {
-                action(this.ToComponent().SelectedRow);
-                return this as RowSelectionModel.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual RowSelectionModel.Builder SelectedIndex(int selectedIndex)
-            {
-                this.ToComponent().SelectedIndex = selectedIndex;
-                return this as RowSelectionModel.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual RowSelectionModel.Builder SelectedRecordID(string selectedRecordID)
-            {
-                this.ToComponent().SelectedRecordID = selectedRecordID;
-                return this as RowSelectionModel.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -169,6 +194,14 @@ namespace Ext.Net
         public RowSelectionModel.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.RowSelectionModel(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -183,7 +216,11 @@ namespace Ext.Net
         /// </summary>
         public RowSelectionModel.Builder RowSelectionModel()
         {
-            return this.RowSelectionModel(new RowSelectionModel());
+#if MVC
+			return this.RowSelectionModel(new RowSelectionModel { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.RowSelectionModel(new RowSelectionModel());
+#endif			
         }
 
         /// <summary>
@@ -191,7 +228,10 @@ namespace Ext.Net
         /// </summary>
         public RowSelectionModel.Builder RowSelectionModel(RowSelectionModel component)
         {
-            return new RowSelectionModel.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new RowSelectionModel.Builder(component);
         }
 
         /// <summary>
@@ -199,7 +239,11 @@ namespace Ext.Net
         /// </summary>
         public RowSelectionModel.Builder RowSelectionModel(RowSelectionModel.Config config)
         {
-            return new RowSelectionModel.Builder(new RowSelectionModel(config));
+#if MVC
+			return new RowSelectionModel.Builder(new RowSelectionModel(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new RowSelectionModel.Builder(new RowSelectionModel(config));
+#endif			
         }
     }
 }

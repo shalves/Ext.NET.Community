@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,54 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : CalendarPanelBase.Builder<CalendarPanel, CalendarPanel.Builder>
+        new public abstract partial class Builder<TCalendarPanel, TBuilder> : CalendarPanelBase.Builder<TCalendarPanel, TBuilder>
+            where TCalendarPanel : CalendarPanel
+            where TBuilder : Builder<TCalendarPanel, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TCalendarPanel component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<CalendarPanelListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<CalendarPanelDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : CalendarPanel.Builder<CalendarPanel, CalendarPanel.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,37 +119,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CalendarPanel.Builder</returns>
-            public virtual CalendarPanel.Builder Listeners(Action<CalendarPanelListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as CalendarPanel.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CalendarPanel.Builder</returns>
-            public virtual CalendarPanel.Builder DirectEvents(Action<CalendarPanelDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as CalendarPanel.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -111,6 +127,14 @@ namespace Ext.Net
         public CalendarPanel.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.CalendarPanel(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -125,7 +149,11 @@ namespace Ext.Net
         /// </summary>
         public CalendarPanel.Builder CalendarPanel()
         {
-            return this.CalendarPanel(new CalendarPanel());
+#if MVC
+			return this.CalendarPanel(new CalendarPanel { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.CalendarPanel(new CalendarPanel());
+#endif			
         }
 
         /// <summary>
@@ -133,7 +161,10 @@ namespace Ext.Net
         /// </summary>
         public CalendarPanel.Builder CalendarPanel(CalendarPanel component)
         {
-            return new CalendarPanel.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new CalendarPanel.Builder(component);
         }
 
         /// <summary>
@@ -141,7 +172,11 @@ namespace Ext.Net
         /// </summary>
         public CalendarPanel.Builder CalendarPanel(CalendarPanel.Config config)
         {
-            return new CalendarPanel.Builder(new CalendarPanel(config));
+#if MVC
+			return new CalendarPanel.Builder(new CalendarPanel(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new CalendarPanel.Builder(new CalendarPanel(config));
+#endif			
         }
     }
 }

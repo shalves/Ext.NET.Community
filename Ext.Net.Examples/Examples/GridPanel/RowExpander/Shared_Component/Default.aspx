@@ -53,17 +53,17 @@
 <html>
 <head runat="server">
     <title>RowExpander with FormPanel Detail - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
     <ext:ResourcePlaceHolder runat="server" Mode="Script" />
 
-    <style type="text/css">
+    <style>
         .white-footer .x-toolbar-footer{
           background-color: white !important;
        }
     </style>
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {
@@ -81,39 +81,42 @@
         <ext:ResourceManager runat="server" />
         
         <h1>RowExpander Plugin with FormPanel Detail</h1>
-        
-        <ext:Store 
-            ID="Store1" 
-            runat="server" 
-            IgnoreExtraFields="false" 
-            PageSize="10">
-            <Model>
-                <ext:Model runat="server">
-                    <Fields>
-                        <ext:ModelField Name="company" />
-                        <ext:ModelField Name="price" Type="Float" />
-                        <ext:ModelField Name="change" Type="Float" />
-                        <ext:ModelField Name="pctChange" Type="Float" />
-                        <ext:ModelField Name="lastChange" Type="Date" DateFormat="M/d hh:mmtt" />
-                        <ext:ModelField Name="industry" />
-                    </Fields>
-                </ext:Model>
-            </Model>
-        </ext:Store>
-        
+
         <ext:GridPanel 
-            ID="GridPanel1" 
             runat="server" 
-            StoreID="Store1" 
             Title="Expander Rows with control" 
             Collapsible="true"
             AnimCollapse="true" 
             Icon="Table" 
             Width="600" 
             Height="350">
+            <Store>
+                <ext:Store 
+                    ID="Store1" 
+                    runat="server" 
+                    IgnoreExtraFields="false" 
+                    PageSize="10">
+                    <Model>
+                        <ext:Model runat="server">
+                            <Fields>
+                                <ext:ModelField Name="company" />
+                                <ext:ModelField Name="price" Type="Float" />
+                                <ext:ModelField Name="change" Type="Float" />
+                                <ext:ModelField Name="pctChange" Type="Float" />
+                                <ext:ModelField Name="lastChange" Type="Date" DateFormat="M/d hh:mmtt" />
+                                <ext:ModelField Name="industry" />
+                            </Fields>
+                        </ext:Model>
+                    </Model>
+                </ext:Store>
+            </Store>
             <ColumnModel runat="server">
                 <Columns>
-                    <ext:Column runat="server" Text="Company" DataIndex="company" Flex="1" />
+                    <ext:Column 
+                        runat="server" 
+                        Text="Company" 
+                        DataIndex="company" 
+                        Flex="1" />
                     <ext:Column runat="server" Text="Price" DataIndex="price">
                         <Renderer Format="UsMoney" />
                     </ext:Column>
@@ -123,20 +126,17 @@
                     <ext:Column runat="server" Text="Change" DataIndex="pctChange">
                         <Renderer Fn="pctChange" />
                     </ext:Column>
-                    <ext:DateColumn runat="server" Text="Last Updated" DataIndex="lastChange" />
+                    <ext:DateColumn 
+                        runat="server" 
+                        Text="Last Updated" 
+                        DataIndex="lastChange" 
+                        Format="yyyy/MM/dd" />
                 </Columns>
             </ColumnModel>
-            <View>
-                <ext:GridView runat="server" TrackOver="true" />
-            </View>
-            <SelectionModel>
-                <ext:RowSelectionModel runat="server" Mode="Multi" />
-            </SelectionModel>
             <Plugins>
-                <ext:RowExpander ID="RowExpander" runat="server">
+                <ext:RowExpander runat="server" SingleExpand="false">
                     <Component>
-                        <ext:FormPanel 
-                            ID="RowEditor1" 
+                        <ext:FormPanel                             
                             runat="server" 
                             BodyPadding="6" 
                             Height="180"
@@ -168,28 +168,31 @@
                                     runat="server" 
                                     Name="lastChange" 
                                     FieldLabel="Last Updated" 
+                                    Format="yyyy/MM/dd"
                                     />
                             </Items>
                             
                             <Buttons>
                                 <ext:Button runat="server" Text="Save" Icon="Disk">
                                     <Listeners>
-                                        <Click Handler="#{RowExpander}.collapseRow(#{Store1}.indexOf(#{RowEditor1}.record));
-                                                        #{RowEditor1}.getForm().updateRecord(#{RowEditor1}.record);" />
+                                        <Click Handler="var grid = this.up('grid'), form = this.up('form');
+                                                        grid.getRowExpander().collapseRow(grid.store.indexOf(form.record));
+                                                        form.getForm().updateRecord(form.record);" />
                                     </Listeners>
                                 </ext:Button>
                                 <ext:Button runat="server" Text="Cancel" Icon="Decline">
                                     <Listeners>
-                                        <Click Handler="#{RowExpander}.collapseRow(#{Store1}.indexOf(#{RowEditor1}.record));" />
+                                        <Click Handler="var grid = this.up('grid'), form = this.up('form');
+                                                        grid.getRowExpander().collapseRow(grid.store.indexOf(form.record));" />
                                     </Listeners>
                                 </ext:Button>
                             </Buttons>
+
+                            <Listeners>
+                                <AfterRender Handler="this.getForm().loadRecord(this.record);" />    
+                            </Listeners>
                         </ext:FormPanel>
                     </Component>
-                    
-                    <Listeners>
-                        <Expand Handler="#{RowEditor1}.record = record; #{RowEditor1}.getForm().loadRecord(record);" />
-                    </Listeners>
                 </ext:RowExpander>
             </Plugins>
             <BottomBar>

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -228,6 +228,11 @@ namespace Ext.Net
             {
                 this.EnsureDynamicID();
 
+                if (this.IsGeneratedID)
+                {
+                    return this.BaseClientID;
+                }
+
                 switch (this.IDMode)
                 {
                     case IDMode.Static:
@@ -273,6 +278,7 @@ namespace Ext.Net
         {
             get
             {
+                this.EnsureDynamicID();
                 return base.ClientID;
             }
         }
@@ -290,27 +296,31 @@ namespace Ext.Net
         {
             get
             {
-                if (this.IsDynamic && this.IsGeneratedID && !this.TopDynamicControl)
+                bool isGenerated = this.IsGeneratedID;
+                IDMode idMode = this.IDMode;
+
+                if (this.IsDynamic && isGenerated && !this.TopDynamicControl)
                 {
                     return "";
                 }
 
-                if (this.IDMode == IDMode.Ignore)
-                {
-                    return "";
-                }
-                
-                if (!this.IsIdRequired && ((this.IDMode == IDMode.Explicit || this.IDMode == IDMode.Client || this.IDMode == IDMode.Static) && this.IsGeneratedID))
+                if (idMode == IDMode.Ignore)
                 {
                     return "";
                 }
 
-                if (this.ConfigID == null)
+                if (!this.IsIdRequired && ((idMode == IDMode.Explicit || idMode == IDMode.Client || idMode == IDMode.Static) && isGenerated))
                 {
                     return "";
                 }
 
-                return this.ConfigID;
+                string configID = this.ConfigID;
+                if (configID == null)
+                {
+                    return "";
+                }
+
+                return configID;
             }
         }
 
@@ -348,7 +358,7 @@ namespace Ext.Net
                 {
                     BaseControl control = this.ParentWebControl;
 
-                    if (control != null)
+                    if (control != null && !control.StopIDModeInheritance)
                     {
                         mode = control.IDMode;
                     }
@@ -377,12 +387,21 @@ namespace Ext.Net
             set;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        [DefaultValue(false)]
+        public virtual bool StopLazyModeInheritance
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Options for controlling how the lazy control is instantiated in the client.
         /// </summary>
         [Category("1. XControl")]
-        [DefaultValue(LazyMode.Inherit)]
+        [DefaultValue(LazyMode.Default)]
         [NotifyParentProperty(true)]
         [Description("Options for controlling how the lazy control is instantiated in the client.")]
         public virtual LazyMode LazyMode
@@ -391,17 +410,23 @@ namespace Ext.Net
             {
                 object obj = this.State["LazyMode"];
 
-                LazyMode mode = LazyMode.Inherit;
-
-                if (obj != null)
+                if (obj == null) 
                 {
-                    mode = (LazyMode)obj;
+                    return Ext.Net.LazyMode.Default;
                 }
-                else
+
+                LazyMode mode = (LazyMode)obj;
+
+                if (mode != Ext.Net.LazyMode.Inherit)
+                {
+                    return mode;
+                }
+                
+                if (!this.StopLazyModeInheritance)
                 {
                     BaseControl control = this.ParentWebControl;
 
-                    if (control != null)
+                    if (control != null && control.StopLazyModeInheritance)
                     {
                         mode = control.LazyMode;
                     }
@@ -412,7 +437,7 @@ namespace Ext.Net
                     mode = this.ResourceManager.LazyMode;
                 }
 
-                return mode;
+                return mode == Ext.Net.LazyMode.Inherit ? Ext.Net.LazyMode.Default : mode;
             }
             set
             {
@@ -617,7 +642,7 @@ namespace Ext.Net
         {
             get
             {
-                return this.ClientID.ConcatWith("_ClientInit");
+                return this.BaseClientID.ConcatWith("_ClientInit");
             }
         }
 
@@ -658,6 +683,16 @@ namespace Ext.Net
             }
         }
 
+        public virtual IControlBuilder ToNativeBuilder()
+        {
+            return this.ToBuilder();
+        }
+
+        public virtual T ToBuilder<T>() where T : class, IControlBuilder
+        {
+            return this.ToNativeBuilder() as T;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -678,7 +713,60 @@ namespace Ext.Net
         [Description("")]
         public object Apply(IApply config)
         {
-            return ObjectUtils.Apply(this, config);
+            return BaseControl.Apply(this, config);
+        }
+
+        public BaseControl Apply(object from, bool ignoreDefaultValues)
+        {
+            return (BaseControl)BaseControl.Apply(this, from, ignoreDefaultValues);
+        }
+
+        public BaseControl Apply(object from)
+        {
+            return (BaseControl)BaseControl.Apply(this, from, true);
+        }
+
+        public static object Apply(object to, object from)
+        {
+            return BaseControl.Apply(to, from, true);
+        }
+
+        public static object Apply(object to, object from, bool ignoreDefaultValues)
+        {
+            System.Reflection.PropertyInfo toProperty;
+            
+            object fromValue = null;
+            object defaultValue = null;
+
+            foreach (PropertyInfo fromProperty in from.GetType().GetProperties())
+            {
+                if (fromProperty.CanRead)
+                {
+                    fromValue = fromProperty.GetValue(from, null);
+
+                    if (ignoreDefaultValues)
+                    {
+                        defaultValue = Ext.Net.Utilities.ReflectionUtils.GetDefaultValue(fromProperty);
+
+                        if (fromValue != null && fromValue.Equals(defaultValue))
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (fromValue != null)
+                    {
+                        toProperty = to.GetType().GetProperty(fromProperty.Name, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+
+                        if (toProperty != null && toProperty.CanWrite && toProperty != null && toProperty.PropertyType.Equals(fromProperty.PropertyType))
+                        {
+                            toProperty.SetValue(to, fromValue, null);
+                        }
+                    }
+                }
+            }
+
+            return to;
         }
     }
 }

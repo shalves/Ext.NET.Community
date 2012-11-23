@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -57,15 +57,19 @@ namespace Ext.Net
                 
                 list.Add("pType", new ConfigOption("pType", new SerializationOptions("ptype"), "", this.PType ));
                 list.Add("configIDProxy", new ConfigOption("configIDProxy", new SerializationOptions("proxyId"), null, this.ConfigIDProxy ));
+                list.Add("loader", new ConfigOption("loader", new SerializationOptions("loader", typeof(FunctionLazyControlJsonConverter)), null, this.Loader ));
                 list.Add("template", new ConfigOption("template", new SerializationOptions("rowBodyTpl", typeof(LazyControlJsonConverter)), null, this.Template ));
-                list.Add("component", new ConfigOption("component", new SerializationOptions("component", typeof(SingleItemCollectionJsonConverter)), null, this.Component ));
+                list.Add("component", new ConfigOption("component", new SerializationOptions("component", typeof(FunctionItemCollectionJsonConverter)), null, this.Component ));
                 list.Add("recreateComponent", new ConfigOption("recreateComponent", null, false, this.RecreateComponent ));
                 list.Add("doLayoutOnExpand", new ConfigOption("doLayoutOnExpand", null, true, this.DoLayoutOnExpand ));
                 list.Add("swallowBodyEvents", new ConfigOption("swallowBodyEvents", null, false, this.SwallowBodyEvents ));
                 list.Add("selectRowOnExpand", new ConfigOption("selectRowOnExpand", null, false, this.SelectRowOnExpand ));
+                list.Add("scrollOffset", new ConfigOption("scrollOffset", null, 0, this.ScrollOffset ));
                 list.Add("expandOnEnter", new ConfigOption("expandOnEnter", null, true, this.ExpandOnEnter ));
                 list.Add("expandOnDblClick", new ConfigOption("expandOnDblClick", null, true, this.ExpandOnDblClick ));
-                list.Add("singleExpand", new ConfigOption("singleExpand", null, false, this.SingleExpand ));
+                list.Add("invalidateComponentsOnRefresh", new ConfigOption("invalidateComponentsOnRefresh", null, false, this.InvalidateComponentsOnRefresh ));
+                list.Add("singleExpandProxy", new ConfigOption("singleExpandProxy", new SerializationOptions("singleExpand", JsonMode.Raw), "", this.SingleExpandProxy ));
+                list.Add("renderer", new ConfigOption("renderer", new SerializationOptions(typeof(RendererJsonConverter)), null, this.Renderer ));
                 list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
                 list.Add("directEvents", new ConfigOption("directEvents", new SerializationOptions("directEvents", JsonMode.Object), null, this.DirectEvents ));
 

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -226,7 +226,16 @@ namespace Ext.Net
         /// <returns></returns>
         public virtual string ToScript()
         {
-            return this.ToScript(true);
+            return this.ToScript(true, false);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public virtual string ToScript(bool ignoreAutoRegister)
+        {
+            return this.ToScript(true, ignoreAutoRegister);
         }
         
         /// <summary>
@@ -234,9 +243,9 @@ namespace Ext.Net
         /// </summary>
         /// <param name="clearBuffer"></param>
         /// <returns></returns>
-        public virtual string ToScript(bool clearBuffer)
+        public virtual string ToScript(bool clearBuffer, bool ignoreAutoRegister)
         {
-            if(this.AutoRegister)
+            if(this.AutoRegister && !ignoreAutoRegister)
             {
                 throw new Exception(ServiceMessages.TURN_OFF_AUTOREGISTER);
             }
@@ -551,6 +560,23 @@ namespace Ext.Net
         public virtual void IsVisible(JFunction trueFn, JFunction falseFn)
         {
             this.AddScript("if({0}.isVisible()){{{1}}}else{{{2};}}", this.NodeInstance, trueFn.ToCallScript(this.NodeInstance), falseFn.ToCallScript(this.NodeInstance));
+        }
+
+        /// <summary>
+        /// Reload the node
+        /// </summary>
+        public virtual void Reload()
+        {
+            this.Call("reload");
+        }
+
+        /// <summary>
+        /// Reload the node
+        /// </summary>
+        /// <param name="options"></param>
+        public virtual void Reload(object options)
+        {
+            this.Call("reload", options);
         }
 
         /// <summary>
@@ -1170,6 +1196,79 @@ namespace Ext.Net
         public void SetId(object id)
         {
             this.Call("setId", id);
+        }
+
+        /// <summary>
+        /// False to make this node undraggable if draggable = true
+        /// </summary>
+        /// <param name="allowDrag"></param>
+        public void SetAllowDrag(bool allowDrag)
+        {
+            this.Set("allowDrag", allowDrag);
+        }
+
+        /// <summary>
+        /// False if this node cannot have child nodes dropped on it
+        /// </summary>
+        /// <param name="allowDrop"></param>
+        public void SetAllowDrop(bool allowDrop)
+        {
+            this.Set("allowDrop", allowDrop);
+        }
+
+        public void SetChecked(bool @checked)
+        {
+            this.Set("checked", @checked);
+        }
+
+        public void SetCls(string cls)
+        {
+            this.Set("cls", cls);
+        }
+
+        public void SetHref(string href)
+        {
+            this.Set("href", href);
+        }
+
+        public void SetHrefTarget(string hrefTarget)
+        {
+            this.Set("hrefTarget", hrefTarget);
+        }
+
+        public void SetIconFile(string iconFile)
+        {
+            this.Set("icon", iconFile);
+        }
+
+        public void SetIcon(Icon icon)
+        {
+            this.Set("iconCls", "#" + icon.ToString());
+        }
+
+        public void SetIconCls(string iconCls)
+        {
+            this.Set("iconCls", iconCls);
+        }
+
+        public void SetQTip(string qtip)
+        {
+            this.Set("Qtip", qtip);
+        }
+
+        public void SetQtitle(string qtitle)
+        {
+            this.Set("qtitle", qtitle);
+        }
+
+        public void SetText(string text)
+        {
+            this.Set("text", text);
+        }
+
+        public void SetDataPath(string dataPath)
+        {
+            this.Set("dataPath", dataPath);
         }
         #endregion
     }

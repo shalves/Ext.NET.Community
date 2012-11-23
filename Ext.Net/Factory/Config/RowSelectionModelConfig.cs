@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -99,12 +99,12 @@ namespace Ext.Net
 				}
 			}
 
-			private bool ignoreRightMouseSelection = true;
+			private bool ignoreRightMouseSelection = false;
 
 			/// <summary>
-			/// True to ignore selections that are made when using the right mouse button if there are records that are already selected. If no records are selected, selection will continue as normal. Defaults to: true
+			/// True to ignore selections that are made when using the right mouse button if there are records that are already selected. If no records are selected, selection will continue as normal. Defaults to: false.
 			/// </summary>
-			[DefaultValue(true)]
+			[DefaultValue(false)]
 			public virtual bool IgnoreRightMouseSelection 
 			{ 
 				get
@@ -222,6 +222,24 @@ namespace Ext.Net
 				set
 				{
 					this.selectedRecordID = value;
+				}
+			}
+
+			private string hiddenName = null;
+
+			/// <summary>
+			/// HiddenField name which submits selected rows
+			/// </summary>
+			[DefaultValue(null)]
+			public virtual string HiddenName 
+			{ 
+				get
+				{
+					return this.hiddenName;
+				}
+				set
+				{
+					this.hiddenName = value;
 				}
 			}
 

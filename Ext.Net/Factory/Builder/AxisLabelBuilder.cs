@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,52 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : SpriteAttributes.Builder<AxisLabel, AxisLabel.Builder>
+        new public abstract partial class Builder<TAxisLabel, TBuilder> : SpriteAttributes.Builder<TAxisLabel, TBuilder>
+            where TAxisLabel : AxisLabel
+            where TBuilder : Builder<TAxisLabel, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TAxisLabel component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Renderer(Action<JFunction> action)
+            {
+                action(this.ToComponent().Renderer);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Padding(int? padding)
+            {
+                this.ToComponent().Padding = padding;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : AxisLabel.Builder<AxisLabel, AxisLabel.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,35 +117,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of AxisLabel.Builder</returns>
-            public virtual AxisLabel.Builder Renderer(Action<JFunction> action)
-            {
-                action(this.ToComponent().Renderer);
-                return this as AxisLabel.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual AxisLabel.Builder Padding(int? padding)
-            {
-                this.ToComponent().Padding = padding;
-                return this as AxisLabel.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -109,6 +125,14 @@ namespace Ext.Net
         public AxisLabel.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.AxisLabel(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -123,7 +147,11 @@ namespace Ext.Net
         /// </summary>
         public AxisLabel.Builder AxisLabel()
         {
-            return this.AxisLabel(new AxisLabel());
+#if MVC
+			return this.AxisLabel(new AxisLabel { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.AxisLabel(new AxisLabel());
+#endif			
         }
 
         /// <summary>
@@ -131,7 +159,10 @@ namespace Ext.Net
         /// </summary>
         public AxisLabel.Builder AxisLabel(AxisLabel component)
         {
-            return new AxisLabel.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new AxisLabel.Builder(component);
         }
 
         /// <summary>
@@ -139,7 +170,11 @@ namespace Ext.Net
         /// </summary>
         public AxisLabel.Builder AxisLabel(AxisLabel.Config config)
         {
-            return new AxisLabel.Builder(new AxisLabel(config));
+#if MVC
+			return new AxisLabel.Builder(new AxisLabel(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new AxisLabel.Builder(new AxisLabel(config));
+#endif			
         }
     }
 }

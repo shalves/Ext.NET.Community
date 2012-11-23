@@ -9,7 +9,7 @@
 
 <html>
 <head runat="server">
-    <title>Ext.NET Examples</title>
+    <title>Ajax Linked Combos - Ext.NET Examples</title>
 
     <script runat="server">
         protected void CitiesRefresh(object sender, StoreReadDataEventArgs e)
@@ -31,7 +31,7 @@
             this.CitiesStore.DataBind();
         }
     </script>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
 <form runat="server">
@@ -41,9 +41,7 @@
         ID="ComboBox1" 
         runat="server" 
         Editable="false" 
-        TypeAhead="true" 
         QueryMode="Local"
-        ForceSelection="true" 
         TriggerAction="All" 
         SelectOnFocus="true" 
         EmptyText="Select a country">

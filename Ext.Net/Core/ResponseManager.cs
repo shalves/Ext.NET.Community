@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -81,13 +81,6 @@ namespace Ext.Net
         [Description("")]
         public static void Redirect(string url, string msg, string msgCls)
         {
-            ResourceManager rm = ResponseManager.ResourceManager;
-
-            if (rm == null)
-            {
-                throw new InvalidOperationException("The ResourceManager could not be found during the Ext.Redirect.");
-            }
-
             if (url.IsEmpty())
             {
                 throw new ArgumentNullException("url", "The redirection url is empty");
@@ -102,7 +95,7 @@ namespace Ext.Net
                 });
             }
 
-            rm.AddScript("window.location=\"".ConcatWith(TokenUtils.IsRawToken(url) ? url : rm.ResolveClientUrl(url), "\";"));
+            Ext.Net.ResourceManager.AddInstanceScript("window.location=\"".ConcatWith(TokenUtils.IsRawToken(url) ? url : ExtNetTransformer.ResolveUrl(url), "\";"));
         }
 
         /// <summary>
@@ -113,7 +106,9 @@ namespace Ext.Net
         [Description("")]
         public static Control Get(string id)
         {
-            return ControlUtils.FindControl<Control>(ResponseManager.ResourceManager, id);
+            ResourceManager rm = ResponseManager.ResourceManager;
+            
+            return rm != null ? ControlUtils.FindControl<Control>(rm, id) : null;
         }
 
         /// <summary>
@@ -125,7 +120,9 @@ namespace Ext.Net
         [Description("")]
         public static T Get<T>(string id) where T : Control
         {
-            return ControlUtils.FindControl<T>(ResponseManager.ResourceManager, id) as T;
+            ResourceManager rm = ResponseManager.ResourceManager;
+
+            return rm != null ? ControlUtils.FindControl<T>(ResponseManager.ResourceManager, id) as T : default(T);
         }
 
         /// <summary>

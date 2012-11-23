@@ -29,6 +29,10 @@ div#styleswitcher {
     width   : auto;
 }
 
+div#header h1 {
+    width: 900px;
+}
+
 div#header h1 span {
     color        : inherit;
     font-family  : tahoma,helvetica,verdana, sans-serif;

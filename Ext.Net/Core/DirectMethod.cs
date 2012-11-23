@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -195,8 +195,10 @@ namespace Ext.Net
             }
 
             context.Items["Ext.Net.InsideDirectMethod"] = true;
-            var result = method.Invoke(target, parameters);
+            
+            object result = method.Invoke(target, parameters);
             context.Items.Remove("Ext.Net.InsideDirectMethod");
+            
             return result;
         }
 
@@ -226,15 +228,17 @@ namespace Ext.Net
         {
             sb.Append(this.Attribute.Alias.IsEmpty() ? this.Name : this.Attribute.Alias);
             sb.Append(":function(");
-            
-            foreach (ParameterInfo parameterInfo in this.Params)
+
+            ParameterInfo[] parameters = this.PrepareParams(this.Params);
+
+            foreach (ParameterInfo parameterInfo in parameters)
             {
                 sb.Append(parameterInfo.Name);
                 sb.Append(",");
             }
             sb.Append("config");
             sb.Append("){");
-            sb.Append("Ext.net.DirectMethod.request(\"");
+            sb.Append("return Ext.net.DirectMethod.request(\"");
             sb.Append(this.Name);
             sb.Append("\",Ext.applyIf(config || {}, {");
 
@@ -320,8 +324,6 @@ namespace Ext.Net
                     string script = TokenUtils.ReplaceRawToken((sm != null) ? TokenUtils.ParseTokens(this.Attribute.CustomTarget, sm) : TokenUtils.ParseAndNormalize(this.Attribute.CustomTarget));
 
                     sb.Append(",customTarget:").Append(script);
-
-                    //sb.Append(",customTarget:").Append(JSON.Serialize(this.Attribute.CustomTarget));
                 }
 
                 sb.Append("}");
@@ -363,6 +365,13 @@ namespace Ext.Net
                 sb.AppendFormat("disableCaching:{0}", this.Attribute.DisableCaching.ToString().ToLowerInvariant());
                 needComma = true;
             }
+			
+			if (!this.Attribute.Async)
+            {
+                sb.Append(needComma ? "," : "");
+                sb.Append("async:false");
+                needComma = true;
+            }
 
             if (this.Attribute.DisableCachingParam != "_dc")
             {
@@ -385,13 +394,31 @@ namespace Ext.Net
                 needComma = true;
             }
 
+            if (this.Attribute.FormID.IsNotEmpty())
+            {
+                sb.Append(needComma ? "," : "");
+                sb.AppendFormat("formId:{0}", this.Attribute.FormID);
+                needComma = true;
+            }
+
             if (this.Attribute.FailureFn.IsNotEmpty())
             {
                 sb.Append(needComma ? "," : "");
                 sb.AppendFormat("failure:{0}", this.Attribute.FailureFn);
             }
+
+            this.AppendParams(sb, needComma);
             
             sb.Append("}));}");
+        }
+
+        protected virtual void AppendParams(StringBuilder sb, bool needComma)
+        {            
+        }
+
+        protected virtual ParameterInfo[] PrepareParams(ParameterInfo[] parameters)
+        {
+            return parameters;
         }
     }
 
@@ -420,8 +447,10 @@ namespace Ext.Net
         private string alias;
         private string idAlias;
         private bool disableCaching = true;
+		private bool async = true;
         private string disableCachingParam = "_dc";
         private DirectMethodProxyIDMode idMode = DirectMethodProxyIDMode.Default;
+        private string formId;
 
         /// <summary>
         /// 
@@ -567,6 +596,22 @@ namespace Ext.Net
             get { return this.type; }
             set { this.type = value; }
         }
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("")]
+        public virtual bool Async
+        {
+            get
+            {
+                return this.async;
+            }
+            set
+            {
+                this.async = value;
+            }
+        }
 
 		/// <summary>
 		/// 
@@ -614,6 +659,22 @@ namespace Ext.Net
             set
             {
                 this.msgCls = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public virtual string FormID
+        {
+            get
+            {
+                return this.formId;
+            }
+            set
+            {
+                this.formId = value;
             }
         }
 

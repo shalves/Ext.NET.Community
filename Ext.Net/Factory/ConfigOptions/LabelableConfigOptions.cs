@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -68,6 +68,7 @@ namespace Ext.Net
                 list.Add("formItemCls", new ConfigOption("formItemCls", null, "x-form-item", this.FormItemCls ));
                 list.Add("hideEmptyLabel", new ConfigOption("hideEmptyLabel", null, true, this.HideEmptyLabel ));
                 list.Add("hideLabel", new ConfigOption("hideLabel", null, false, this.HideLabel ));
+                list.Add("inputWidth", new ConfigOption("inputWidth", null, 100, this.InputWidth ));
                 list.Add("invalidCls", new ConfigOption("invalidCls", null, "x-form-invalid", this.InvalidCls ));
                 list.Add("invalidText", new ConfigOption("invalidText", null, "", this.InvalidText ));
                 list.Add("labelAlign", new ConfigOption("labelAlign", new SerializationOptions(JsonMode.ToLower), LabelAlign.Left, this.LabelAlign ));
@@ -83,6 +84,31 @@ namespace Ext.Net
                 list.Add("readOnlyCls", new ConfigOption("readOnlyCls", null, "", this.ReadOnlyCls ));
                 list.Add("submitValue", new ConfigOption("submitValue", null, true, this.SubmitValue ));
                 list.Add("preserveIndicatorIcon", new ConfigOption("preserveIndicatorIcon", null, false, this.PreserveIndicatorIcon ));
+                list.Add("allowBlank", new ConfigOption("allowBlank", null, true, this.AllowBlank ));
+                list.Add("blankText", new ConfigOption("blankText", null, "", this.BlankText ));
+                list.Add("disableKeyFilter", new ConfigOption("disableKeyFilter", null, false, this.DisableKeyFilter ));
+                list.Add("emptyCls", new ConfigOption("emptyCls", null, "", this.EmptyCls ));
+                list.Add("emptyText", new ConfigOption("emptyText", null, "", this.EmptyText ));
+                list.Add("enableKeyEvents", new ConfigOption("enableKeyEvents", null, false, this.EnableKeyEvents ));
+                list.Add("enforceMaxLength", new ConfigOption("enforceMaxLength", null, false, this.EnforceMaxLength ));
+                list.Add("grow", new ConfigOption("grow", null, false, this.Grow ));
+                list.Add("growAppend", new ConfigOption("growAppend", null, "W", this.GrowAppend ));
+                list.Add("growMax", new ConfigOption("growMax", null, 800, this.GrowMax ));
+                list.Add("growMin", new ConfigOption("growMin", null, 30, this.GrowMin ));
+                list.Add("maskRe", new ConfigOption("maskRe", new SerializationOptions(typeof(RegexJsonConverter)), "", this.MaskRe ));
+                list.Add("maxLength", new ConfigOption("maxLength", null, -1, this.MaxLength ));
+                list.Add("maxLengthText", new ConfigOption("maxLengthText", null, "", this.MaxLengthText ));
+                list.Add("minLength", new ConfigOption("minLength", null, 0, this.MinLength ));
+                list.Add("minLengthText", new ConfigOption("minLengthText", null, "", this.MinLengthText ));
+                list.Add("regex", new ConfigOption("regex", new SerializationOptions(typeof(RegexJsonConverter)), "", this.Regex ));
+                list.Add("regexText", new ConfigOption("regexText", null, "", this.RegexText ));
+                list.Add("selectOnFocus", new ConfigOption("selectOnFocus", null, false, this.SelectOnFocus ));
+                list.Add("size", new ConfigOption("size", null, 20, this.Size ));
+                list.Add("stripCharsRe", new ConfigOption("stripCharsRe", new SerializationOptions(typeof(RegexJsonConverter)), "", this.StripCharsRe ));
+                list.Add("validator", new ConfigOption("validator", new SerializationOptions(JsonMode.Raw), null, this.Validator ));
+                list.Add("standardVtype", new ConfigOption("standardVtype", new SerializationOptions("vtype", JsonMode.ToLower), ValidationType.None, this.StandardVtype ));
+                list.Add("vtype", new ConfigOption("vtype", null, "", this.Vtype ));
+                list.Add("vtypeText", new ConfigOption("vtypeText", null, "", this.VtypeText ));
 
                 return list;
             }

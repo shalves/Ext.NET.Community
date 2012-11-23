@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -167,7 +167,6 @@ namespace Ext.Net
         /// True to make the sprite draggable.
         /// </summary>
         [Meta]
-        [ConfigOption]
         [DefaultValue(false)]
         [Description("True to make the sprite draggable.")]
         public virtual bool Draggable
@@ -179,6 +178,50 @@ namespace Ext.Net
             set
             {
                 this.State.Set("Draggable", value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [DefaultValue("")]
+        [ConfigOption("draggable", JsonMode.Raw)]
+        protected virtual string DraggableConfigProxy
+        {
+            get
+            {
+                if (this.DraggableConfig == null)
+                {
+                    return this.Draggable ? "true" : "";
+                }
+                string cfg = new ClientConfig().Serialize(this.DraggableConfig, true);
+                return cfg != Const.EmptyObject ? cfg : "";
+            }
+        }
+
+        private DragSource draggableConfig;
+
+        /// <summary>
+        /// Drag config object.
+        /// </summary>
+        [Meta]
+        [NotifyParentProperty(true)]
+        [DefaultValue(null)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("Drag config object.")]
+        public virtual DragSource DraggableConfig
+        {
+            get
+            {
+                return this.draggableConfig;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    value.EnableViewState = this.DesignMode;
+                }
+                this.draggableConfig = value;
             }
         }
 

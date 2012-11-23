@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -69,10 +69,16 @@ namespace Ext.Net
             }
         }
 
+        private List<string> nodesList;
         public List<string> Nodes
         {
             get
             {
+                if (this.nodesList != null)
+                {
+                    return this.nodesList;
+                }
+                
                 if (this.ServiceParams == null)
                 {
                     return new List<string>(0);
@@ -86,13 +92,46 @@ namespace Ext.Net
                 }
 
                 var nodes = (JArray)p.Value;
-                var list = new List<string>(nodes.Count);
+                nodesList = new List<string>(nodes.Count);
                 for (int i = 0; i < nodes.Count; i++)
 			    {
-                    list.Add(nodes[i].Value<string>());
+                    nodesList.Add(nodes[i].Value<string>());
 			    }
 
-                return list;
+                return nodesList;
+            }
+        }
+
+        private List<string> parentNodesList;
+        public List<string> ParentNodes
+        {
+            get
+            {
+                if (this.parentNodesList != null)
+                {
+                    return this.parentNodesList;
+                }
+
+                if (this.ServiceParams == null)
+                {
+                    return new List<string>(0);
+                }
+
+                JProperty p = this.ServiceParams.Property("parentIds");
+
+                if (p == null || p.Value == null)
+                {
+                    return new List<string>(0);
+                }
+
+                var nodes = (JArray)p.Value;
+                this.parentNodesList = new List<string>(nodes.Count);
+                for (int i = 0; i < nodes.Count; i++)
+                {
+                    this.parentNodesList.Add(nodes[i].Value<string>());
+                }
+
+                return this.parentNodesList;
             }
         }
 
@@ -104,7 +143,19 @@ namespace Ext.Net
         {
             get
             {
-                return this.GetValue<string>("id");
+                return this.Nodes.Count > 0 ? this.Nodes[0] : null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public virtual string ParentNodeID
+        {
+            get
+            {
+                return this.ParentNodes.Count > 0 ? this.ParentNodes[0] : null;
             }
         }
     }

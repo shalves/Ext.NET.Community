@@ -5,7 +5,7 @@
 <script runat="server">
     protected void Button1_Click(object sender, DirectEventArgs e)
     {
-        var win = new Window 
+        Window win = new Window 
         {
             ID = "Window1",
             Title = "Example",
@@ -26,7 +26,7 @@
 <html>
 <head runat="server">
     <title>Dynamically create a new Window during a DirectEvent - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">

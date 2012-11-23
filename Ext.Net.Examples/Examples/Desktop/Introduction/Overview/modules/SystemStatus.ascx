@@ -23,13 +23,13 @@
 
     private object GenerateData(string[] names)
     {
-        var data = new List<object>();
+        List<object> data = new List<object>();
         double rest = names.Length;
-        var random = new Random();
+        Random random = new Random();
         
         for (int i = 0; i < names.Length; i++)
         {
-            var consume = Math.Floor(random.NextDouble() * rest * 100) / 100 + 2;
+            double consume = Math.Floor(random.NextDouble() * rest * 100) / 100 + 2;
             rest = rest - (consume - 5);
             data.Add(new 
             { 
@@ -45,7 +45,7 @@
     {
         get
         {
-            var obj = this.Session["pass"];
+            object obj = this.Session["pass"];
             return obj != null ? (int)obj : 99;
         }
         set
@@ -56,7 +56,7 @@
 
     private double GenerateCPUValue(double factor, Random random)
     {
-        var value = factor + ((Math.Floor(random.NextDouble() * 2) % 2) > 0 ? -1 : 1) * Math.Floor(random.NextDouble() * 9);
+        double value = factor + ((Math.Floor(random.NextDouble() * 2) % 2) > 0 ? -1 : 1) * Math.Floor(random.NextDouble() * 9);
 
         if (value < 0 || value > 100)
         {
@@ -70,7 +70,7 @@
     {
         get
         {
-            var obj = this.Session["core1"];
+            object obj = this.Session["core1"];
             return obj != null ? (double)obj : 0d;
         }
         set
@@ -83,7 +83,7 @@
     {
         get
         {
-            var obj = this.Session["core2"];
+            object obj = this.Session["core2"];
             return obj != null ? (double)obj : 0d;
         }
         set
@@ -94,10 +94,10 @@
 
     private void GenerateCPULoad()
     {
-        var core1 = this.LastCore1;
-        var core2 = this.LastCore2;
-        var pass = this.Pass;
-        var random = new Random();
+        double core1 = this.LastCore1;
+        double core2 = this.LastCore2;
+        int pass = this.Pass;
+        Random random = new Random();
         
         if (X.IsAjaxRequest)
         {
@@ -116,10 +116,10 @@
         }
         else
         {
-            var data = new List<object>();
+            List<object> data = new List<object>();
             data.Add(new { Core1 = 0, Core2 = 0, Time = 0 });            
             
-            for (var i = 1; i < 100; i++) {
+            for (int i = 1; i < 100; i++) {
                 core1 = this.GenerateCPUValue(core1, random);
                 core2 = this.GenerateCPUValue(core2, random);
                 
@@ -142,7 +142,7 @@
     
     private void UpdateCharts()
     {
-        var pass = this.Pass;
+        int pass = this.Pass;
         
         if (pass % 3 == 0 || !X.IsAjaxRequest)
         {
@@ -166,7 +166,7 @@
     }
 </script>
 
-<script type="text/javascript">
+<script>
     var processRenderer = function(sprite, record, attr, index, store) {
         var lowColor = Ext.draw.Color.fromString('#b1da5a'),
             value = record.get('Memory'),

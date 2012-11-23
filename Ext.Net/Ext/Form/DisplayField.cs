@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -71,6 +71,48 @@ namespace Ext.Net
             get
             {
                 return "Ext.form.field.Display";
+            }
+        }
+
+        /// <summary>
+        /// The format of the string to render using the .Text property. Example 'Hello {0}'.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. DisplayField")]
+        [DefaultValue("")]
+        [Localizable(true)]
+        [Description("The format of the string to render using the .Text property. Example 'Hello {0}'.")]
+        public virtual string Format
+        {
+            get
+            {
+                return this.State.Get<string>("Format", "");
+            }
+            set
+            {
+                this.State.Set("Format", value);
+            }
+        }
+
+        /// <summary>
+        /// The default text to display if the Text property is empty (defaults to '').
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. DisplayField")]
+        [DefaultValue("")]
+        [Localizable(true)]
+        [Description("The default text to display if the Text property is empty (defaults to '').")]
+        public virtual string EmptyText
+        {
+            get
+            {
+                return this.State.Get<string>("EmptyText", "");
+            }
+            set
+            {
+                this.State.Set("EmptyText", value);
             }
         }
 
@@ -142,6 +184,7 @@ namespace Ext.Net
         /// <summary>   
         /// A function to transform the raw value for display in the field. The function will receive 2 arguments, the raw value and the Ext.form.field.Display object.
         /// </summary>
+        [Meta]
         [ConfigOption(JsonMode.Raw)]
         [Category("6. DisplayField")]
         [PersistenceMode(PersistenceMode.InnerProperty)]

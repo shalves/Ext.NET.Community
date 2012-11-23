@@ -16,11 +16,11 @@
     <title>Remote Data Calendar - Ext.NET Examples</title>
     
     <ext:ResourcePlaceHolder runat="server" Mode="Style" />
-    <link rel="stylesheet" type="text/css" href="../Shared/resources/css/main.css" />
+    <link rel="stylesheet" href="../Shared/resources/css/main.css" />
     
     <ext:ResourcePlaceHolder runat="server" Mode="Script" />
-    <script type="text/javascript" src="../Shared/resources/js/common.js"></script>
-    <script type="text/javascript" src="override.js"></script>
+    <script src="../Shared/resources/js/common.js"></script>
+    <script src="override.js"></script>
 </head>
 <body>
     <form runat="server">
@@ -109,7 +109,7 @@
                                             <ext:JsonReader Root="d" />
                                         </Reader>
                                     </ext:AjaxProxy>
-                                </Proxy>
+                                </Proxy>        
                                 <Mappings>
                                     <ext:ModelField Name="StartDate" Type="Date" DateFormat="M$" /> 
                                     <ext:ModelField Name="EndDate" Type="Date" DateFormat="M$" />
@@ -131,6 +131,7 @@
                                 <EventClick  Fn="CompanyX.record.show" Scope="CompanyX" />
                                 <DayClick    Fn="CompanyX.dayClick" Scope="CompanyX" />
                                 <RangeSelect Fn="CompanyX.rangeSelect" Scope="CompanyX" />
+
                                 <EventMove   Fn="CompanyX.record.move" Scope="CompanyX" />
                                 <EventResize Fn="CompanyX.record.resize" Scope="CompanyX" />
 

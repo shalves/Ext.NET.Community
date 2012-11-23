@@ -33,9 +33,9 @@
 <html>
 <head runat="server">
     <title>RatingColumn - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" /> 
+    <link href="/resources/css/examples.css" rel="stylesheet" /> 
     
-    <style type="text/css">
+    <style>
         .number-selected {
 	        background : transparent url(star_n.png) repeat-x left center;
         }

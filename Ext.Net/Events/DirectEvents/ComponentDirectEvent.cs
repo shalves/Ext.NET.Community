@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -92,17 +92,22 @@ namespace Ext.Net
 
         protected internal virtual void MarkAsDirty()
         {
+#if MVC
+            this.isDefault = this.Handler == null && this.Url.IsEmpty() && this.Action.IsEmpty() && this.Type == DirectEventType.Submit;
+#else
             this.isDefault = this.Handler == null && this.Url.IsEmpty() && this.Type == DirectEventType.Submit;
+#endif
 
-            var obs = this.Owner as Observable;
+            Observable obs = this.Owner as Observable;
+            
             if(obs != null)
             {
-                obs.ForceIdRendering = !this.isDefault && !obs.IsDynamic;
+                obs.ForceIdRendering = !this.isDefault && !obs.IsDynamic && !obs.IsMVC;
             }
 
             if (this.Parent != null && this.Parent.Parent != null)
             {
-                this.Parent.Parent.ForceIdRendering = !this.isDefault && !this.Parent.Parent.IsDynamic;
+                this.Parent.Parent.ForceIdRendering = !this.isDefault && !this.Parent.Parent.IsDynamic && !this.Parent.Parent.IsMVC;
             }
         }
 
@@ -398,19 +403,19 @@ namespace Ext.Net
         public bool IsBusEvent
         {
             get;
-            set;
+            internal set;
         }
 
         public string Name
         {
             get;
-            set;
+            internal set;
         }
 
         public string Token
         {
             get;
-            set;
+            internal set;
         }
 
         /// <summary>

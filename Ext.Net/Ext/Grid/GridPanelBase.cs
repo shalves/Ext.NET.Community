@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -55,6 +55,151 @@ namespace Ext.Net
             set
             {
                 this.State.Set("SelectionSubmit", value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue(true)]
+        [Description("")]
+        public virtual bool SelectionMemory
+        {
+            get
+            {
+                return this.State.Get<bool>("SelectionMemory", true);
+            }
+            set
+            {
+                this.State.Set("SelectionMemory", value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue(true)]
+        [Description("")]
+        public virtual bool SelectionMemoryEvents
+        {
+            get
+            {
+                return this.State.Get<bool>("SelectionMemoryEvents", true);
+            }
+            set
+            {
+                this.State.Set("SelectionMemoryEvents", value);
+            }
+        }
+
+        /// <summary>
+        /// Synchronize rowHeight between the normal and locked grid view. This is turned on by default. If your grid is guaranteed to have rows of all the same height, you should set this to false to optimize performance. 
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue(true)]
+        [Description("Synchronize rowHeight between the normal and locked grid view. This is turned on by default. If your grid is guaranteed to have rows of all the same height, you should set this to false to optimize performance. ")]
+        public virtual bool SyncRowHeight
+        {
+            get
+            {
+                return this.State.Get<bool>("SyncRowHeight", true);
+            }
+            set
+            {
+                this.State.Set("SyncRowHeight", value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue("Lock")]
+        [Description("")]
+        public virtual string LockText
+        {
+            get
+            {
+                return this.State.Get<string>("LockText", "Lock");
+            }
+            set
+            {
+                this.State.Set("LockText", value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue("Unlock")]
+        [Description("")]
+        public virtual string UnlockText
+        {
+            get
+            {
+                return this.State.Get<string>("UnlockText", "Unlock");
+            }
+            set
+            {
+                this.State.Set("UnlockText", value);
+            }
+        }
+
+        private ViewCollection<GridView> lockedViewConfig;
+
+        /// <summary>
+        /// A view configuration to be applied to the locked side of the grid. Any conflicting configurations between lockedViewConfig and viewConfig will be overwritten by the lockedViewConfig. 
+        /// </summary>
+        [Meta]
+        [ConfigOption("lockedViewConfig>View")]
+        [Category("7. GridPanel")]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("A view configuration to be applied to the locked side of the grid. Any conflicting configurations between lockedViewConfig and viewConfig will be overwritten by the lockedViewConfig.")]
+        public virtual ViewCollection<GridView> LockedView
+        {
+            get
+            {
+                if (this.lockedViewConfig == null)
+                {
+                    this.lockedViewConfig = new ViewCollection<GridView>();
+                    this.lockedViewConfig.AfterItemAdd += this.AfterItemAdd;
+                    this.lockedViewConfig.AfterItemRemove += this.AfterItemRemove;
+                }
+
+                return this.lockedViewConfig;
+            }
+        }
+
+        private ViewCollection<GridView> normalViewConfig;
+
+        /// <summary>
+        /// A view configuration to be applied to the normal/unlocked side of the grid. Any conflicting configurations between normalViewConfig and viewConfig will be overwritten by the normalViewConfig. 
+        /// </summary>
+        [Meta]
+        [ConfigOption("normalViewConfig>View")]
+        [Category("7. GridPanel")]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("A view configuration to be applied to the normal/unlocked side of the grid. Any conflicting configurations between normalViewConfig and viewConfig will be overwritten by the normalViewConfig. ")]
+        public virtual ViewCollection<GridView> NormalView
+        {
+            get
+            {
+                if (this.normalViewConfig == null)
+                {
+                    this.normalViewConfig = new ViewCollection<GridView>();
+                    this.normalViewConfig.AfterItemAdd += this.AfterItemAdd;
+                    this.normalViewConfig.AfterItemRemove += this.AfterItemRemove;
+                }
+
+                return this.normalViewConfig;
             }
         }
         

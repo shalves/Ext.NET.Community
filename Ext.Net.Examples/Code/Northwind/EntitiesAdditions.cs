@@ -33,11 +33,11 @@ namespace Ext.Net.Examples.Northwind
 
             if (sort != null)
             {
-                var param = Expression.Parameter(typeof(Employee), "e");
+                ParameterExpression param = Expression.Parameter(typeof(Employee), "e");
                 
                 if (sort.Property == "BirthDate" || sort.Property == "HireDate")
                 {
-                    var sortExpression = Expression.Lambda<Func<Employee, DateTime?>>(Expression.Property(param, sort.Property), param);
+                    Expression<Func<Employee, DateTime?>> sortExpression = Expression.Lambda<Func<Employee, DateTime?>>(Expression.Property(param, sort.Property), param);
                     if (sort.Direction == SortDirection.DESC)
                     {
                         result = result.OrderByDescending(sortExpression);
@@ -49,7 +49,7 @@ namespace Ext.Net.Examples.Northwind
                 }
                 else
                 {
-                    var sortExpression = Expression.Lambda<Func<Employee, object>>(Expression.Property(param, sort.Property), param);
+                    Expression<Func<Employee, object>> sortExpression = Expression.Lambda<Func<Employee, object>>(Expression.Property(param, sort.Property), param);
                     if (sort.Direction == SortDirection.DESC)
                     {
                         result = result.OrderByDescending(sortExpression);

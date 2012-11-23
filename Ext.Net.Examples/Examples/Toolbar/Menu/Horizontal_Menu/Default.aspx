@@ -8,9 +8,9 @@
 <head runat="server">
     <title>Horizontal Menu - Ext.NET Examples</title>
 
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
  
-    <style type="text/css">
+    <style>
         .horizontal-menu .x-menu-item-link {
             line-height: normal;
         }

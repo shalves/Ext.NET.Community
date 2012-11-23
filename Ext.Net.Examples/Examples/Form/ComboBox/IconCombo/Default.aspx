@@ -7,7 +7,7 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        var store = this.ComboBox1.GetStore();
+        Store store = this.ComboBox1.GetStore();
         
         store.DataSource = new object[]
         {
@@ -31,8 +31,8 @@
 <html>
 <head runat="server">
     <title>IconCombo - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <style>
          .icon-combo-item {
             background-repeat   : no-repeat !important;
             background-position : 3px 50% !important;

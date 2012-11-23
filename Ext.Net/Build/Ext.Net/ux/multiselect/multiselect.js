@@ -1,5 +1,5 @@
 /**
- * A control that allows selection of multiple items in a list
+ * A control that allows selection of multiple items in a list.
  */
 Ext.define('Ext.ux.form.MultiSelect', {
     
@@ -13,24 +13,26 @@ Ext.define('Ext.ux.form.MultiSelect', {
     alternateClassName: 'Ext.ux.Multiselect',
     alias: ['widget.multiselectfield', 'widget.multiselect'],
     
-    requires: ['Ext.panel.Panel', 'Ext.view.BoundList'],
+    requires: ['Ext.panel.Panel', 'Ext.view.BoundList', 'Ext.layout.container.Fit'],
     
     uses: ['Ext.view.DragZone', 'Ext.view.DropZone'],
     
+    layout: 'anchor',
+    
     /**
-     * @cfg {String} listTitle An optional title to be displayed at the top of the selection list.
+     * @cfg {String} [dragGroup=""] The ddgroup name for the MultiSelect DragZone.
      */
 
     /**
-     * @cfg {String/Array} dragGroup The ddgroup name(s) for the MultiSelect DragZone (defaults to undefined).
+     * @cfg {String} [dropGroup=""] The ddgroup name for the MultiSelect DropZone.
      */
 
     /**
-     * @cfg {String/Array} dropGroup The ddgroup name(s) for the MultiSelect DropZone (defaults to undefined).
+     * @cfg {String} [title=""] A title for the underlying panel.
      */
 
     /**
-     * @cfg {Boolean} ddReorder Whether the items in the MultiSelect list are drag/drop reorderable (defaults to false).
+     * @cfg {Boolean} [ddReorder=false] Whether the items in the MultiSelect list are drag/drop reorderable.
      */
     ddReorder: false,
 
@@ -41,63 +43,64 @@ Ext.define('Ext.ux.form.MultiSelect', {
      */
 
     /**
-     * @cfg {String} appendOnly True if the list should only allow append drops when drag/drop is enabled
-     * (use for lists which are sorted, defaults to false).
+     * @cfg {String} [appendOnly=false] `true` if the list should only allow append drops when drag/drop is enabled.
+     * This is useful for lists which are sorted.
      */
     appendOnly: false,
 
     /**
-     * @cfg {String} displayField Name of the desired display field in the dataset (defaults to 'text').
+     * @cfg {String} [displayField="text"] Name of the desired display field in the dataset.
      */
     displayField: 'text',
 
     /**
-     * @cfg {String} valueField Name of the desired value field in the dataset (defaults to the
-     * value of {@link #displayField}).
+     * @cfg {String} [valueField="text"] Name of the desired value field in the dataset.
      */
 
     /**
-     * @cfg {Boolean} allowBlank False to require at least one item in the list to be selected, true to allow no
-     * selection (defaults to true).
+     * @cfg {Boolean} [allowBlank=true] `false` to require at least one item in the list to be selected, `true` to allow no
+     * selection.
      */
     allowBlank: true,
 
     /**
-     * @cfg {Number} minSelections Minimum number of selections allowed (defaults to 0).
+     * @cfg {Number} [minSelections=0] Minimum number of selections allowed.
      */
     minSelections: 0,
 
     /**
-     * @cfg {Number} maxSelections Maximum number of selections allowed (defaults to Number.MAX_VALUE).
+     * @cfg {Number} [maxSelections=Number.MAX_VALUE] Maximum number of selections allowed.
      */
     maxSelections: Number.MAX_VALUE,
 
     /**
-     * @cfg {String} blankText Default text displayed when the control contains no items (defaults to 'This field is required')
+     * @cfg {String} [blankText="This field is required"] Default text displayed when the control contains no items.
      */
     blankText: 'This field is required',
 
     /**
-     * @cfg {String} minSelectionsText Validation message displayed when {@link #minSelections} is not met (defaults to 'Minimum {0}
-     * item(s) required').  The {0} token will be replaced by the value of {@link #minSelections}.
+     * @cfg {String} [minSelectionsText="Minimum {0}item(s) required"] 
+     * Validation message displayed when {@link #minSelections} is not met. 
+     * The {0} token will be replaced by the value of {@link #minSelections}.
      */
     minSelectionsText: 'Minimum {0} item(s) required',
-
+    
     /**
-     * @cfg {String} maxSelectionsText Validation message displayed when {@link #maxSelections} is not met (defaults to 'Maximum {0}
-     * item(s) allowed').  The {0} token will be replaced by the value of {@link #maxSelections}.
+     * @cfg {String} [maxSelectionsText="Maximum {0}item(s) allowed"] 
+     * Validation message displayed when {@link #maxSelections} is not met
+     * The {0} token will be replaced by the value of {@link #maxSelections}.
      */
-    maxSelectionsText: 'Maximum {0} item(s) allowed',
+    maxSelectionsText: 'Maximum {0} item(s) required',
 
     /**
-     * @cfg {String} delimiter The string used to delimit the selected values when {@link #getSubmitValue submitting}
-     * the field as part of a form. Defaults to ','. If you wish to have the selected values submitted as separate
-     * parameters rather than a single delimited parameter, set this to <tt>null</tt>.
+     * @cfg {String} [delimiter=","] The string used to delimit the selected values when {@link #getSubmitValue submitting}
+     * the field as part of a form. If you wish to have the selected values submitted as separate
+     * parameters rather than a single delimited parameter, set this to `null`.
      */
     delimiter: ',',
 
     /**
-     * @cfg {Ext.data.Store/Array} store The data source to which this MultiSelect is bound (defaults to <tt>undefined</tt>).
+     * @cfg {Ext.data.Store/Array} store The data source to which this MultiSelect is bound (defaults to `undefined`).
      * Acceptable values for this property are:
      * <div class="mdetail-params"><ul>
      * <li><b>any {@link Ext.data.Store Store} subclass</b></li>
@@ -184,7 +187,7 @@ Ext.define('Ext.ux.form.MultiSelect', {
         if (!Ext.isDefined(me.valueField)) {
             me.valueField = me.displayField;
         }
-        Ext.apply(me, me.setupItems());
+        me.items = me.setupItems();
         
         
         me.callParent();
@@ -194,9 +197,11 @@ Ext.define('Ext.ux.form.MultiSelect', {
     
     setupItems: function() {
         var me = this;
-        
+
         me.boundList = Ext.create('Ext.view.BoundList', Ext.apply({
+            anchor: 'none 100%',
             deferInitialRefresh: false,
+	        border: 1,            
             multiSelect: this.multiSelect,
             singleSelect: this.singleSelect,
             simpleSelect: (this.multiSelect || this.singleSelect) ? false : this.simpleSelect,
@@ -204,10 +209,21 @@ Ext.define('Ext.ux.form.MultiSelect', {
             store: me.store,
             disabled: me.disabled
         }, me.listConfig));
-        
+
         me.boundList.getSelectionModel().on('selectionchange', me.onSelectChange, me);
+        
+        // Only need to wrap the BoundList in a Panel if we have a title.
+        if (!me.title) {
+            me.boundList.border = this.border;
+            return me.boundList;
+        }
+
+        // Wrap to add a title
+        me.boundList.border = false;
         return {
-            layout: 'fit',
+	        border: this.border,
+            anchor: 'none 100%',
+            layout: 'anchor',
             title: me.title,
             tbar: me.tbar,
             items: me.boundList
@@ -339,7 +355,14 @@ Ext.define('Ext.ux.form.MultiSelect', {
             me.updateLayout();
         }
     },
-    
+
+    /**
+     * Clear any invalid styles/messages for this field.
+     *
+     * __Note:__ this method does not cause the Field's {@link #validate} or {@link #isValid} methods to return `true`
+     * if the value does not _pass_ validation. So simply clearing a field's errors will not necessarily allow
+     * submission of forms submitted with the {@link Ext.form.action.Submit#clientValidation} option set.
+     */
     clearInvalid : function() {
         // Clear the message and fire the 'valid' event
         var me = this,
@@ -365,9 +388,9 @@ Ext.define('Ext.ux.form.MultiSelect', {
     },
 
     /**
-     * Return the value(s) to be submitted for this field. The returned value depends on the {@link #delimiter}
-     * config: If it is set to a String value (like the default ',') then this will return the selected values
-     * joined by the delimiter. If it is set to <tt>null</tt> then the values will be returned as an Array.
+     * Returns the value that would be included in a standard form submit for this field.
+     *
+     * @return {String} The value to be submitted, or `null`.
      */
     getSubmitValue: function() {
         var me = this,
@@ -377,7 +400,7 @@ Ext.define('Ext.ux.form.MultiSelect', {
     },
     
     getValue: function(){
-        return this.value;
+        return this.value || [];
     },
     
     getRecordsForValue: function(value){
@@ -409,26 +432,33 @@ Ext.define('Ext.ux.form.MultiSelect', {
         var delimiter = this.delimiter,
             valueField = this.valueField,
             i = 0,
+            out,
             len,
             item;
             
-        if (delimiter && Ext.isString(value)) {
-            value = value.split(delimiter);
-        } else if (!Ext.isArray(value)) {
-            value = [value];
-        }
-        
-        for (len = value.length; i < len; ++i) {
-            item = value[i];
-            if (item && item.isModel) {
-                value[i] = item.get(valueField);
+        if (Ext.isDefined(value)) {
+            if (delimiter && Ext.isString(value)) {
+                value = value.split(delimiter);
+            } else if (!Ext.isArray(value)) {
+                value = [value];
             }
+        
+            for (len = value.length; i < len; ++i) {
+                item = value[i];
+                if (item && item.isModel) {
+                    value[i] = item.get(valueField);
+                }
+            }
+            out = Ext.Array.unique(value);
+        } else {
+            out = [];
         }
-        return Ext.Array.unique(value);
+        return out;
     },
     
     setValue: function(value){
         var me = this,
+            rs,
             selModel = me.boundList.getSelectionModel();
 
         // Store not loaded yet - we cannot set the value
@@ -445,8 +475,11 @@ Ext.define('Ext.ux.form.MultiSelect', {
         
         if (me.rendered) {
             ++me.ignoreSelectChange;
-            selModel.deselectAll();
-            selModel.select(me.getRecordsForValue(value));
+            selModel.deselectAll();            
+            rs = me.getRecordsForValue(value);
+            if(rs.length > 0){
+                selModel.select(rs);
+            }
             --me.ignoreSelectChange;
         } else {
             me.selectOnRender = true;
@@ -534,6 +567,11 @@ Ext.define('Ext.ux.form.MultiSelect', {
     setSelectedItems : function (items) {
         if(items){
             items = Ext.Array.from(items);
+
+            if(!this.rendered){
+                this.selectedItems = items;
+                return;
+            }
             
             var rec,
                 values=[];
@@ -559,7 +597,19 @@ Ext.define('Ext.ux.form.MultiSelect', {
                 }
             }, this);
 
-            this.setValue(values);
+            this.setValue(values);            
+        }
+    },
+
+    afterLayout : function () {
+        this.callParent(arguments);
+
+        if(this.labelAlign == "top")
+        {
+            Ext.suspendLayouts(); 
+            var td = this.boundList.el.parent();
+            this.boundList.el.setHeight(td.getHeight() - td.getBorderWidth("tb") - td.getPadding("tb"));
+            Ext.resumeLayouts(); 
         }
     }
 });

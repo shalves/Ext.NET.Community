@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,54 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : CellCommandColumn.Builder<Column, Column.Builder>
+        new public abstract partial class Builder<TColumn, TBuilder> : CellCommandColumn.Builder<TColumn, TBuilder>
+            where TColumn : Column
+            where TBuilder : Builder<TColumn, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TColumn component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<CellCommandColumnListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<CellCommandColumnDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : Column.Builder<Column, Column.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,37 +119,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Column.Builder</returns>
-            public virtual Column.Builder Listeners(Action<CellCommandColumnListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as Column.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Column.Builder</returns>
-            public virtual Column.Builder DirectEvents(Action<CellCommandColumnDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as Column.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -111,6 +127,14 @@ namespace Ext.Net
         public Column.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.Column(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -125,7 +149,11 @@ namespace Ext.Net
         /// </summary>
         public Column.Builder Column()
         {
-            return this.Column(new Column());
+#if MVC
+			return this.Column(new Column { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.Column(new Column());
+#endif			
         }
 
         /// <summary>
@@ -133,7 +161,10 @@ namespace Ext.Net
         /// </summary>
         public Column.Builder Column(Column component)
         {
-            return new Column.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new Column.Builder(component);
         }
 
         /// <summary>
@@ -141,7 +172,11 @@ namespace Ext.Net
         /// </summary>
         public Column.Builder Column(Column.Config config)
         {
-            return new Column.Builder(new Column(config));
+#if MVC
+			return new Column.Builder(new Column(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new Column.Builder(new Column(config));
+#endif			
         }
     }
 }

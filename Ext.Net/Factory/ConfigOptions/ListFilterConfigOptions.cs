@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -56,10 +56,12 @@ namespace Ext.Net
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
                 list.Add("type", new ConfigOption("type", new SerializationOptions(JsonMode.ToLower), null, this.Type ));
+                list.Add("iDField", new ConfigOption("iDField", new SerializationOptions("idField"), "id", this.IDField ));
                 list.Add("loadingText", new ConfigOption("loadingText", null, "Loading...", this.LoadingText ));
                 list.Add("loadOnShow", new ConfigOption("loadOnShow", null, true, this.LoadOnShow ));
                 list.Add("single", new ConfigOption("single", null, false, this.Single ));
                 list.Add("value", new ConfigOption("value", new SerializationOptions(typeof(StringArrayJsonConverter)), null, this.Value ));
+                list.Add("menuConfig", new ConfigOption("menuConfig", new SerializationOptions("menuConfig", typeof(LazyControlJsonConverter)), null, this.MenuConfig ));
                 list.Add("optionsProxy", new ConfigOption("optionsProxy", new SerializationOptions("options", JsonMode.Raw), "", this.OptionsProxy ));
                 list.Add("storeProxy", new ConfigOption("storeProxy", new SerializationOptions("store", JsonMode.Raw), "", this.StoreProxy ));
                 list.Add("labelFieldProxy", new ConfigOption("labelFieldProxy", new SerializationOptions("labelField"), "text", this.LabelFieldProxy ));

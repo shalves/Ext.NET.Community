@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -56,6 +56,14 @@ namespace Ext.Net
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
                 list.Add("valueProxy", new ConfigOption("valueProxy", new SerializationOptions("value"), null, this.ValueProxy ));
+                list.Add("autoSelect", new ConfigOption("autoSelect", null, true, this.AutoSelect ));
+                list.Add("forceSelection", new ConfigOption("forceSelection", null, false, this.ForceSelection ));
+                list.Add("growToLongestValue", new ConfigOption("growToLongestValue", null, true, this.GrowToLongestValue ));
+                list.Add("fireSelectOnLoad", new ConfigOption("fireSelectOnLoad", null, false, this.FireSelectOnLoad ));
+                list.Add("minChars", new ConfigOption("minChars", null, 0, this.MinChars ));
+                list.Add("typeAhead", new ConfigOption("typeAhead", null, false, this.TypeAhead ));
+                list.Add("typeAheadDelay", new ConfigOption("typeAheadDelay", null, 250, this.TypeAheadDelay ));
+                list.Add("valueNotFoundText", new ConfigOption("valueNotFoundText", null, "", this.ValueNotFoundText ));
                 list.Add("altFormatsProxy", new ConfigOption("altFormatsProxy", new SerializationOptions("altFormats"), "", this.AltFormatsProxy ));
                 list.Add("formatProxy", new ConfigOption("formatProxy", new SerializationOptions("format"), "", this.FormatProxy ));
                 list.Add("increment", new ConfigOption("increment", null, 15, this.Increment ));
@@ -68,6 +76,13 @@ namespace Ext.Net
                 list.Add("selectOnTab", new ConfigOption("selectOnTab", null, true, this.SelectOnTab ));
                 list.Add("snapToIncrement", new ConfigOption("snapToIncrement", null, false, this.SnapToIncrement ));
                 list.Add("submitFormatProxy", new ConfigOption("submitFormatProxy", new SerializationOptions("submitFormat"), "", this.SubmitFormatProxy ));
+                list.Add("listConfig", new ConfigOption("listConfig", new SerializationOptions("listConfig", typeof(LazyControlJsonConverter)), null, this.ListConfig ));
+                list.Add("pageSize", new ConfigOption("pageSize", null, 0, this.PageSize ));
+                list.Add("queryCaching", new ConfigOption("queryCaching", null, true, this.QueryCaching ));
+                list.Add("queryDelay", new ConfigOption("queryDelay", null, -1, this.QueryDelay ));
+                list.Add("queryMode", new ConfigOption("queryMode", new SerializationOptions("queryMode", JsonMode.ToLower), DataLoadMode.Local, this.QueryMode ));
+                list.Add("queryParam", new ConfigOption("queryParam", null, "query", this.QueryParam ));
+                list.Add("triggerAction", new ConfigOption("triggerAction", new SerializationOptions(JsonMode.ToLower), TriggerAction.Query, this.TriggerAction ));
                 list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
                 list.Add("directEvents", new ConfigOption("directEvents", new SerializationOptions("directEvents", JsonMode.Object), null, this.DirectEvents ));
 

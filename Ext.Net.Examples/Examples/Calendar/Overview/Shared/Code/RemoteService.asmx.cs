@@ -22,10 +22,10 @@ namespace Ext.Net.Calendar.Demo
         }
 
         [WebMethod]
-        public void SaveAll(List<EventModel> events)
+        public string SaveAll(List<EventModel> events)
         {
-            var uc = ((EventsViewer)UserControlRenderer.LoadControl("/Examples/Calendar/Overview/Shared/Common/EventsViewer.ascx"));
-            uc.Render(events);
+            EventsViewer uc = ((EventsViewer)UserControlRenderer.LoadControl("/Examples/Calendar/Overview/Shared/Common/EventsViewer.ascx"));
+            return uc.ToScript(events);
         }
     }
 }

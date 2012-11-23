@@ -7,7 +7,7 @@
 <html>
 <head runat="server">
     <title>Password Validation - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -35,8 +35,13 @@
                     runat="server"                    
                     FieldLabel="Password"
                     InputType="Password"
-                    AnchorHorizontal="100%"
-                    />
+                    AllowBlank="false"
+                    AnchorHorizontal="100%">
+                        <Listeners>
+                            <ValidityChange Handler="this.next().validate();" />
+                            <Blur Handler="this.next().validate();" />
+                        </Listeners>
+                    </ext:TextField>
                 <ext:TextField 
                     runat="server"                     
                     Vtype="password"

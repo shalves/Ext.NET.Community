@@ -10,6 +10,7 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
         }
         
         this.grid = grid;
+        this.isTree = this.grid.isTree;
         this.headerCt = this.grid.headerCt || this.grid.normalGrid.headerCt;
         this.store = grid.store;
         this.selModel = this.grid.getSelectionModel();
@@ -34,7 +35,7 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
             sm.on("selectionchange", this.updateSelection, this, { buffer: 10 });
         }
         
-        this.grid.getView().on("afterrender", this.renderHiddenField, this);        
+        this.grid.getView().on("viewready", this.renderHiddenField, this);        
         this.grid.store.on("clear", this.clearField, this);
     },
 
@@ -51,7 +52,7 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
     
     getSelectionModelField : function () {        
         if (!this.hField) {
-            var id = this.selModel.proxyId || this.selModel.id;
+            var id = this.selModel.hiddenName || this.selModel.proxyId || this.selModel.id;
             this.hField = new Ext.form.Hidden({ name: id });           
         }
 
@@ -61,7 +62,9 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
     destroy : function () {
         if (this.hField && this.hField.rendered) {
             this.hField.destroy();
-            this.store.un("load", this.doSelection, this, { single: true, delay : 100 });
+            if (!this.isTree) {
+                this.store.un("load", this.doSelection, this, { single: true, delay : 100 });
+            }
         }
         
         var sm = this.grid.getSelectionModel();
@@ -72,7 +75,7 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
             sm.un("selectionchange", this.updateSelection, this, { buffer: 10 });
         }
 
-        this.grid.getView().un("afterrender", this.renderHiddenField, this);        
+        this.grid.getView().un("viewready", this.renderHiddenField, this);        
         this.grid.store.un("clear", this.clearField, this);
     },
     
@@ -102,6 +105,7 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
                 }
             } else if (selModel instanceof Ext.selection.RowModel) {
                 var records = [],
+                    notFoundRecords = [],
                     sMemory = grid.getSelectionMemory && grid.getSelectionMemory(),
                     record;
 
@@ -128,7 +132,7 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
                             sMemory.onMemorySelectId(null, idx, data[i].recordID);
                         }
                     } else if (!Ext.isEmpty(data[i].rowIndex)) {
-                        record = store.getAt(data[i].rowIndex);
+                        record = this.isTree ? store.getRootNode().getChildAt(data[i].rowIndex) : store.getAt(data[i].rowIndex);
 
                         if (sMemory && !Ext.isEmpty(record)) {
                             sMemory.onMemorySelectId(null, data[i].rowIndex, record.getId());
@@ -138,13 +142,28 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
                     if (!Ext.isEmpty(record)) {
                         records.push(record);
                     }
+                    else if (this.isTree) {
+                        notFoundRecords.push(data[i]);
+                    }
                 }
-                selModel.select(records);
-            }
+                if (records.length == 0) {
+                    selModel.deselectAll();
+                }
+                else {
+                    selModel.select(records, false, !this.grid.selectionMemoryEvents);
+                }
+            }            
             
             this.updateSelection();
             delete selModel.bulkChange;
             delete selModel.selectedData;
+
+            if (this.isTree && notFoundRecords.length > 0) {
+                selModel.selectedData = notFoundRecords;
+                this.store.on("load", this.doSelection, this, { single: true, delay : 10 });
+            }
+
+            selModel.maybeFireSelectionChange(records.length > 0);
         }
     },
     
@@ -173,8 +192,12 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
                 var selectedRecords = selModel.getSelection();
 
                 for (var i = 0; i < selectedRecords.length; i++) {
-                    rowIndex = store.indexOf(selectedRecords[i]);
-                    records.push({ RecordID: selectedRecords[i].getId(), RowIndex: rowIndex });
+                    if (this.isTree) {
+                        records.push({ RecordID: selectedRecords[i].getId() });
+                    } else {
+                        rowIndex = store.indexOf(selectedRecords[i]);
+                        records.push({ RecordID: selectedRecords[i].getId(), RowIndex: rowIndex });
+                    }
                 }
             }
 
@@ -196,9 +219,9 @@ Ext.define('Ext.grid.plugin.SelectionSubmit', {
         }
     },
 
-    initSelectionData : function () {
-        if (this.store) {
-            if (this.store.getCount() > 0) {
+    initSelectionData : function () {        
+        if (this.grid.view.viewReady && this.store) {
+            if (this.store.getCount() > 0 || this.isTree) {
                Ext.defer(this.doSelection, 100, this);
             } else {
                 this.store.on("load", this.doSelection, this, { single: true, delay : 100 });

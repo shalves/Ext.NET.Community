@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -116,7 +116,7 @@ namespace Ext.Net
         {
             get
             {
-                var style = this.State.Get<string>("BodyStyle", "");
+                string style = this.State.Get<string>("BodyStyle", "");
 
                 if (style.IsNotEmpty() && !style.EndsWith(";"))
                 {
@@ -481,8 +481,7 @@ namespace Ext.Net
         /// <summary>
         /// True to render the panel collapsed, false to render it expanded (defaults to false).
         /// </summary>
-        [Meta]
-        [ConfigOption]
+        [Meta]        
         [DirectEventUpdate(MethodName = "SetCollapsed")]
         [Category("5. AbstractPanel")]
         [DefaultValue(false)]
@@ -497,6 +496,37 @@ namespace Ext.Net
             set
             {
                 this.State.Set("Collapsed", value);
+            }
+        }
+
+        [ConfigOption("collapsed", JsonMode.Raw)]
+        [DefaultValue("")]
+        protected virtual string CollapsedProxy
+        {
+            get
+            {
+                bool isAccordion = false; 
+                
+                AbstractContainer ownerCt = this.OwnerCt;
+
+                if(ownerCt != null)
+                {
+                    if (ownerCt.LayoutConfig.Count > 0 && ownerCt.LayoutConfig.Primary is AccordionLayoutConfig)
+                    {
+                        isAccordion = true;
+                    }
+                    else if (ownerCt.Layout.IsNotEmpty() && ownerCt.LayoutProxy == "accordion")
+                    {
+                        isAccordion = true;
+                    }
+                }
+
+                if(isAccordion)
+                {
+                    return !this.Collapsed && this.HasOwnState("Collapsed") ? "false" : "";
+                }
+
+                return this.Collapsed ? "true" : "";
             }
         }
 
@@ -589,9 +619,9 @@ namespace Ext.Net
             {
                 this.InitDockedItems();
 
-                var realItems = new ItemsCollection<AbstractComponent>();
+                ItemsCollection<AbstractComponent> realItems = new ItemsCollection<AbstractComponent>();
 
-                foreach (var cmp in this.dockedItems)
+                foreach (AbstractComponent cmp in this.dockedItems)
                 {
                     if (cmp is UserControlLoader)
                     {
@@ -1244,44 +1274,6 @@ namespace Ext.Net
             }
         }
 
-        private KeyBindingCollection keyMap;
-
-        /// <summary>
-        /// A KeyMap config object (in the format expected by Ext.KeyMap.addBinding used to assign custom key handling to this panel (defaults to null).
-        /// </summary>
-        [Meta]
-        [ConfigOption("keys", JsonMode.Array)]
-        [Category("5. AbstractPanel")]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [NotifyParentProperty(true)]
-        [Description("A KeyMap config object (in the format expected by Ext.KeyMap.addBinding used to assign custom key handling to this panel (defaults to null).")]
-        public virtual KeyBindingCollection KeyMap
-        {
-            get
-            {
-                // TODO Implement?
-                //throw new NotImplementedException("The KeyMap property is not supported. We will consider to implement it in some of next releases. For now please set up an individual KeyMap.");
-                if (this.keyMap == null)
-                {
-                    this.keyMap = new KeyBindingCollection();
-                    this.keyMap.AfterItemAdd += this.AfterKeyBindingAdd;
-                }
-
-                return this.keyMap;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="keyBinding"></param>
-        [Description("")]
-        protected virtual void AfterKeyBindingAdd(KeyBinding keyBinding)
-        {
-            keyBinding.Owner = this;
-            keyBinding.Listeners.Event.Owner = this;
-        }
-
         private ToolsCollection tools;
 
         /// <summary>
@@ -1661,7 +1653,8 @@ namespace Ext.Net
         {
             add
             {
-                this.Events.AddHandler(EventPanelStateChanged, value);
+                this.CheckForceId();
+				this.Events.AddHandler(EventPanelStateChanged, value);
             }
             remove
             {
@@ -1676,7 +1669,7 @@ namespace Ext.Net
         [Description("")]
         protected virtual void OnStateChanged(EventArgs e)
         {
-            var handler = (EventHandler)this.Events[EventPanelStateChanged];
+            EventHandler handler = (EventHandler)this.Events[EventPanelStateChanged];
 
             if (handler != null)
             {

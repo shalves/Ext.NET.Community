@@ -70,7 +70,7 @@ namespace Ext.Net.Examples.SimpleTasks
             sm.Listeners.SelectionChange.Fn = TasksTree.SCOPE + ".selectionChange";
             sm.Listeners.SelectionChange.Scope = TasksTree.SCOPE;
 
-            var view = this.View[0];
+            TreeView view = this.View[0];
             view.Listeners.BeforeDrop.Fn = TasksTree.SCOPE + ".beforeNodeDrop";
             view.Listeners.BeforeDrop.Scope = TasksTree.SCOPE;
             
@@ -103,7 +103,7 @@ namespace Ext.Net.Examples.SimpleTasks
         {
             get
             {
-                var ctx = new SimpleTasksDataContext();
+                SimpleTasksDataContext ctx = new SimpleTasksDataContext();
                 ctx.DeferredLoadingEnabled = true;
 
                 return ctx;
@@ -116,8 +116,8 @@ namespace Ext.Net.Examples.SimpleTasks
             {
                 int nodeId = int.Parse(e.NodeID);
                 int targetNodeId = int.Parse(e.TargetNodeID);
-            
-                var ctx = this.DBContext;
+
+                SimpleTasksDataContext ctx = this.DBContext;
 
                 Category category = (from tl in ctx.Categories
                                  where tl.ID == nodeId
@@ -144,15 +144,15 @@ namespace Ext.Net.Examples.SimpleTasks
             {
                 int nodeId = int.Parse(e.NodeID);
 
-                var ctx = this.DBContext;
+                SimpleTasksDataContext ctx = this.DBContext;
 
                 Category category = (from tl in ctx.Categories
                                   where tl.ID == nodeId
                                   select tl).First();
 
-                var query = from tl in ctx.Categories
-                            where (tl.IsFolder == category.IsFolder && tl.ParentID == category.ParentID && tl.ID != category.ID && tl.Name == e.Value<string>())
-                            select tl;
+                IEnumerable<Category> query = from tl in ctx.Categories
+                                              where (tl.IsFolder == category.IsFolder && tl.ParentID == category.ParentID && tl.ID != category.ID && tl.Name == e.Value<string>())
+                                              select tl;
 
                 if (query.Count() > 0)
                 {
@@ -185,7 +185,7 @@ namespace Ext.Net.Examples.SimpleTasks
                     e.RefusalMessage = "The root node can't be deleted";
                 }
 
-                var ctx = this.DBContext;
+                SimpleTasksDataContext ctx = this.DBContext;
                 
                 Category category = (from tl in ctx.Categories
                                   where tl.ID == nodeId
@@ -219,7 +219,7 @@ namespace Ext.Net.Examples.SimpleTasks
 
                 SimpleTasksDataContext ctx = this.DBContext;
 
-                var query = from tl in ctx.Categories
+                IEnumerable<Category> query = from tl in ctx.Categories
                             where (tl.IsFolder == isFolder && tl.ParentID == folderId && tl.Name == e.Text)
                             select tl;
 
@@ -257,7 +257,7 @@ namespace Ext.Net.Examples.SimpleTasks
 
             SimpleTasksDataContext ctx = this.DBContext;
 
-            var query = from tl in ctx.Categories
+            IEnumerable<Category> query = from tl in ctx.Categories
                         where tl.ParentID == folderID
                         select tl;
 
@@ -266,7 +266,7 @@ namespace Ext.Net.Examples.SimpleTasks
 
         private void ListToNode(IEnumerable<Category> lists, NodeCollection nodes)
         {
-            foreach (var tasksList in lists)
+            foreach (Category tasksList in lists)
             {
                 Node node = new Node();
                 node.NodeID = tasksList.ID.ToString();
@@ -298,13 +298,13 @@ namespace Ext.Net.Examples.SimpleTasks
         {
             SimpleTasksDataContext ctx = this.DBContext;
 
-            var tasks = from t in ctx.Tasks
+            IEnumerable<Task> tasks = from t in ctx.Tasks
                         where ids.Contains(t.ID)
                         select t;
 
-            var category = (from categories in ctx.Categories where categories.ID == categoryID select categories).First();
+            Category category = (from categories in ctx.Categories where categories.ID == categoryID select categories).First();
 
-            foreach (var task in tasks)
+            foreach (Task task in tasks)
             {
                 task.Category = category;
             }

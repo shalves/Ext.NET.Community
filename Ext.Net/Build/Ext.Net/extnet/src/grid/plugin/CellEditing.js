@@ -1,6 +1,11 @@
 ﻿Ext.grid.plugin.CellEditing.override({
     getColumnField: function (columnHeader, defaultField, record) {
-        if (columnHeader instanceof Ext.ux.CheckColumn) {
+        if (columnHeader instanceof Ext.ux.CheckColumn
+           || columnHeader instanceof Ext.grid.column.Action
+           || columnHeader instanceof Ext.grid.RowNumberer
+           || columnHeader instanceof Ext.grid.column.CommandColumn
+           || columnHeader instanceof Ext.grid.column.ComponentColumn
+           || columnHeader instanceof Ext.grid.column.ImageCommand) {
             return;
         }
 
@@ -32,11 +37,9 @@
             if (Ext.isString(field)) {
                 field = { xtype: field };
             }
-
             if (!field.isFormField) {
                 field = Ext.ComponentManager.create(field, this.defaultFieldXType);
             }
-            
             columnHeader.field = field;
  
             Ext.apply(field, {
@@ -71,7 +74,6 @@
             if (!(editor instanceof Ext.form.field.Base)) {
                 editor = Ext.ComponentManager.create(editor, 'textfield');
             }
-
             editor = editors[index] = new Ext.grid.CellEditor({ 
                 field: editor                
             });
@@ -123,9 +125,7 @@
                 complete: me.onEditComplete,
                 canceledit: me.cancelEdit
             });
-            
             editors.add(editor);
-
             return editor;
         }
     },
@@ -142,11 +142,11 @@
             column = columns[c];
 
             Ext.applyIf(column, {
-                getEditor : function (record, defaultField) {
+                getEditor: function (record, defaultField) {
                     return me.getColumnField(this, defaultField, record);
                 },
 
-                setEditor : function (field) {
+                setEditor: function (field) {
                     me.setColumnField(this, field);
                 }
             });

@@ -33,9 +33,9 @@
 <head runat="server">
     <title>Add Click Listener to Button - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .example { 
             padding : 30px; 
         }
@@ -49,7 +49,7 @@
             </Listeners>
         </ext:ResourceManager>
         
-        <script type="text/javascript">
+        <script>
             var myCustomFn = function () {
                 Ext.Msg.alert('Confirm', Ext.String.format('You Clicked {0}', this.id));
             };

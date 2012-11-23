@@ -6,7 +6,7 @@
 <html>
 <head runat="server">
     <title>Pies Chart - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
     <script runat="server">
         public System.Drawing.Color ColorFromHSL(double h, double sl, double l)
@@ -72,7 +72,7 @@
     
         protected void Page_Load(object sender, EventArgs e)
         {
-            var data = new List<Pair> 
+            List<Pair> data = new List<Pair> 
             { 
                 new Pair("Ruby", 40),
                 new Pair("JavaScript", 26),
@@ -101,7 +101,7 @@
             this.angle = 0;
             this.start = 0;
 
-            var total = 0;
+            int total = 0;
 
             for (int i = 0; i < data.Count; i++)
             {
@@ -115,14 +115,14 @@
 
         private void Process(DrawComponent draw, int i, Pair item, int total)
         {
-            var value = (int)item.Second;                
-            var angleplus = 360 * value * 1.0 / total;            
-            var popangle = this.angle + (angleplus / 2);            
-            var color = this.ColorFromHSL(this.start, 0.5, 0.5);                            
-            var delta = 30;
-            var bcolor = this.ColorFromHSL(this.start, 1, 0.5);                
-            var r = 200;
-            var rad = Math.PI / 180;
+            int value = (int)item.Second;                
+            double angleplus = 360 * value * 1.0 / total;
+            double popangle = this.angle + (angleplus / 2);            
+            System.Drawing.Color color = this.ColorFromHSL(this.start, 0.5, 0.5);                            
+            int delta = 30;
+            System.Drawing.Color bcolor = this.ColorFromHSL(this.start, 1, 0.5);                
+            int r = 200;
+            double rad = Math.PI / 180;
             
             draw.Gradients.Add(new Gradient{
                 Angle = 90,
@@ -133,14 +133,15 @@
                 }
             });
 
-            var sector = this.Sector(350, 350, r, this.angle, this.angle + angleplus);
+            Sprite sector = this.Sector(350, 350, r, this.angle, this.angle + angleplus);
             sector.Fill = "url(#Grd"+i+")";
             sector.Stroke = "#fff";
             sector.StrokeWidth = 3;
             
             draw.Items.Add(sector);
-            
-            var text = new Sprite{
+
+            Sprite text = new Sprite
+            {
                 SpriteID = "text"+i,
                 Type = SpriteType.Text,
                 X = Convert.ToInt32(350 + (r + delta + 55) * Math.Cos(-popangle * rad)),
@@ -162,12 +163,12 @@
         }
         
         private Sprite Sector(int cx, int cy, int r, double startAngle, double endAngle) {
-            var rad = Math.PI / 180;
+            double rad = Math.PI / 180;
             
-            var x1 =JSON.Serialize(cx + r * Math.Cos(-startAngle * rad));
-            var x2 = JSON.Serialize(cx + r * Math.Cos(-endAngle * rad));
-            var y1 = JSON.Serialize(cy + r * Math.Sin(-startAngle * rad));
-            var y2 = JSON.Serialize(cy + r * Math.Sin(-endAngle * rad));
+            string x1 = JSON.Serialize(cx + r * Math.Cos(-startAngle * rad));
+            string x2 = JSON.Serialize(cx + r * Math.Cos(-endAngle * rad));
+            string y1 = JSON.Serialize(cy + r * Math.Sin(-startAngle * rad));
+            string y2 = JSON.Serialize(cy + r * Math.Sin(-endAngle * rad));
             
             return new Sprite{
                 Type = SpriteType.Path,               
@@ -176,7 +177,7 @@
         }
     </script>
 
-    <script type="text/javascript">
+    <script>
         function onMouseOver(sprite, i) {
             sprite.stopAnimation().animate({to:{scale: {x: 1.1, y: 1.1, cx: 350, cy : 350}}, duration : 500, easing: "backOut"});
             sprite.surface.items.get("text"+i).stopAnimation().animate({to:{opacity: 1}, duration : 500});

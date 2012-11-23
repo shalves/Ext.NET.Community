@@ -15,9 +15,9 @@
 <html>
 <head runat="server">
     <title>Overview of TriggerField - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var triggerHandler = function (field, trigger, index) {
             switch (index) {
                 case 0:

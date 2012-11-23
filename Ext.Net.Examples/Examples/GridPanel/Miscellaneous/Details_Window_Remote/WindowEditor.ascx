@@ -64,7 +64,7 @@
 
         db.SubmitChanges();
 
-        var record = this.GridStore.GetById(id);        
+        ModelProxy record = this.GridStore.GetById(id);        
 
         this.EmployeeDetailsWindow.Hide();
         CompanyInfoTab.UpdateRecord(record);

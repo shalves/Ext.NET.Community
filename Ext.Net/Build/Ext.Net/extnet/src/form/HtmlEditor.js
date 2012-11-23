@@ -2,36 +2,36 @@
 // @source core/form/HtmlEditor.js
 
 Ext.form.field.HtmlEditor.override({
-    escapeValue: true,
+    escapeValue : true,
 
-    initComponent: function () {
+    initComponent : function () {
         this.callParent(arguments);
         if (this.initialConfig && this.initialConfig.buttonTips) {
-            this.buttonTips = Ext.Object.merge(Ext.clone(Ext.form.field.HtmlEditor.prototype.buttonTips), this.buttonTips);
+            this.buttonTips = Ext.Object.merge(Ext.clone(Ext.form.field.HtmlEditor.prototype.buttonTips), this.buttonTips);   
         }
-
+       
         if (!this.name) {
             this.name = this.id || this.inputId || Ext.id();
         }
     },
 
-    getSubTplData: function () {
+    getSubTplData : function () {
         var cssPrefix = Ext.baseCSSPrefix;
 
         return {
-            $comp: this,
-            cmpId: this.id,
-            id: this.getInputId(),
-            textareaCls: Ext.baseCSSPrefix + 'hidden',
-            value: this.value,
-            iframeName: Ext.id(),
-            iframeSrc: Ext.SSL_SECURE_URL,
-            size: 'height:100%;width:100%;',
-            name: this.submitValue ? this.getName() : undefined
+            $comp       : this,
+            cmpId       : this.id,
+            id          : this.getInputId(),
+            textareaCls : Ext.baseCSSPrefix + 'hidden',
+            value       : this.value,
+            iframeName  : Ext.id(),
+            iframeSrc   : Ext.SSL_SECURE_URL,
+            size        : 'height:100%;width:100%;',
+            name           : this.submitValue ? this.getName() : undefined
         };
     },
-
-    syncValue: function () {
+    
+    syncValue : function () {
         var me = this,
             body, changed, html, bodyStyle, match;
         if (me.initialized) {
@@ -46,7 +46,7 @@ Ext.form.field.HtmlEditor.override({
             }
             html = me.cleanHtml(html);
             if (me.fireEvent('beforesync', me, html) !== false) {
-
+                
                 if (me.textareaEl.dom.value != html) {
                     this.textareaEl.dom.value = this.escapeValue ? escape(html) : html;
                     changed = true;
@@ -64,8 +64,8 @@ Ext.form.field.HtmlEditor.override({
             }
         }
     },
-
-    setValue: function (value) {
+    
+    setValue : function (value) {
         var me = this,
             textarea = me.textareaEl;
         me.mixins.field.setValue.call(me, value);
@@ -78,9 +78,9 @@ Ext.form.field.HtmlEditor.override({
         me.pushValue();
         return this;
     },
+    
 
-
-    getValue: function () {
+    getValue : function () {
         var me = this,
             value;
         if (!me.sourceEditMode) {
@@ -88,11 +88,11 @@ Ext.form.field.HtmlEditor.override({
         }
         value = me.rendered ? me.textareaEl.dom.value : me.value;
         me.value = value;
-
+        
         return this.escapeValue ? unescape(value) : value;
     },
 
-    toggleSourceEdit: function (sourceEditMode) {
+    toggleSourceEdit : function (sourceEditMode) {
         var me = this,
             iframe = me.iframeEl,
             textarea = me.textareaEl,
@@ -136,9 +136,9 @@ Ext.form.field.HtmlEditor.override({
         me.fireEvent('editmodechange', me, sourceEditMode);
         me.doComponentLayout();
     },
-
-    pushValue: function () {
-        var me = this,
+    
+    pushValue : function () {
+         var me = this,
             v;
         if (me.initialized) {
             v = (me.escapeValue ? unescape(me.textareaEl.dom.value) : me.textareaEl.dom.value) || "";
@@ -156,22 +156,21 @@ Ext.form.field.HtmlEditor.override({
             }
         }
     },
-
-    onEditorEvent: function () {
+     
+    onEditorEvent : function () {
         if (Ext.isIE) {
             this.currentRange = this.getDoc().selection.createRange();
         }
         this.updateToolbar();
     },
-
-    insertAtCursor: function (text) {
+    
+    insertAtCursor : function (text) {
         if (!this.activated) {
             return;
         }
-
+        
         this.win.focus();
-
-        if (Ext.isIE) {
+        if (Ext.isIE) {            
             var doc = this.getDoc(),
                 r = this.currentRange || doc.selection.createRange();
 

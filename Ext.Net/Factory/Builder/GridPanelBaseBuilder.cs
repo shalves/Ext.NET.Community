@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TGridPanelBase, TBuilder> : TablePanel.Builder<TGridPanelBase, TBuilder>
+        new public abstract partial class Builder<TGridPanelBase, TBuilder> : TablePanel.Builder<TGridPanelBase, TBuilder>
             where TGridPanelBase : GridPanelBase
             where TBuilder : Builder<TGridPanelBase, TBuilder>
         {
@@ -66,6 +66,73 @@ namespace Ext.Net
                 return this as TBuilder;
             }
              
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder SelectionMemory(bool selectionMemory)
+            {
+                this.ToComponent().SelectionMemory = selectionMemory;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder SelectionMemoryEvents(bool selectionMemoryEvents)
+            {
+                this.ToComponent().SelectionMemoryEvents = selectionMemoryEvents;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Synchronize rowHeight between the normal and locked grid view. This is turned on by default. If your grid is guaranteed to have rows of all the same height, you should set this to false to optimize performance. 
+			/// </summary>
+            public virtual TBuilder SyncRowHeight(bool syncRowHeight)
+            {
+                this.ToComponent().SyncRowHeight = syncRowHeight;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder LockText(string lockText)
+            {
+                this.ToComponent().LockText = lockText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder UnlockText(string unlockText)
+            {
+                this.ToComponent().UnlockText = unlockText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A view configuration to be applied to the locked side of the grid. Any conflicting configurations between lockedViewConfig and viewConfig will be overwritten by the lockedViewConfig.
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder LockedView(Action<ViewCollection<GridView>> action)
+            {
+                action(this.ToComponent().LockedView);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// A view configuration to be applied to the normal/unlocked side of the grid. Any conflicting configurations between normalViewConfig and viewConfig will be overwritten by the normalViewConfig. 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder NormalView(Action<ViewCollection<GridView>> action)
+            {
+                action(this.ToComponent().NormalView);
+                return this as TBuilder;
+            }
+			 
  			/// <summary>
 			/// The Ext.grid.View used by the grid. This can be set before a call to render().
  			/// </summary>

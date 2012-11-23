@@ -7,7 +7,7 @@
     {
         if (!X.IsAjaxRequest)
         {
-            var store = this.GridPanel1.GetStore();
+            Store store = this.GridPanel1.GetStore();
             
             store.DataSource = new object[] 
             { 
@@ -26,9 +26,9 @@
 <html>
 <head runat="server">
     <title>GridPanel with Total Row - Ext.Net Example</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>        
         var updateTotal = function (grid, container) {
             if (!grid.view.rendered) {
                 return;
@@ -76,7 +76,7 @@
         };
     </script>
  
-    <style type="text/css">
+    <style>
         .total-field{
             background-color : #fff;            
             border           : solid 1px silver;
@@ -89,7 +89,9 @@
             font-weight      : bold !important;                       
             font-size        : 11px;
             font-family      : tahoma, arial, verdana, sans-serif;
-            color            : #000;            
+            color            : #000;  
+            padding          : 3px 0px 2px 5px;
+                      
         } 
     </style>
 </head>
@@ -134,6 +136,9 @@
             </Listeners>
             <DockedItems>
                 <ext:Container ID="Container1" runat="server" Layout="HBoxLayout" Dock="Bottom" StyleSpec="margin-top:2px;">
+                    <Defaults>
+                        <ext:Parameter Name="height" Value="22" />
+                    </Defaults>
                     <Items>                        
                         <ext:DisplayField
                             runat="server"

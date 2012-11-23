@@ -17,41 +17,84 @@ Ext.net.Notification = function () {
 
     return {
         show : function (config) {
+            if (config && (config.items || config.dockedItems))
+            {   
+                var resources = [];
+
+                if (config.items && config.items['x.res']) {
+                    if (config.items['x.res'].ns) {
+                        Ext.ns.apply(Ext, config.items['x.res'].ns);
+                    }                                      
+
+                    if (config.items['x.res'].res) {
+                        resources = config.items['x.res'].res;
+                    }         
+                    
+                    config.items = config.items.config;
+                }
+                
+                if (config.dockedItems && config.dockedItems['x.res']) {
+                    if (config.dockedItems['x.res'].ns) {
+                        Ext.ns.apply(Ext, config.dockedItems['x.res'].ns);
+                    }                                      
+
+                    if (config.dockedItems['x.res'].res) {
+                        resources = Ext.Array.push(resources, config.dockedItems['x.res'].res);
+                    }                    
+                    config.dockedItems = config.dockedItems.config;
+                }
+
+                if (resources.length > 0)
+                {
+                    Ext.net.ResourceMgr.load(resources, Ext.Function.bind(this.show, this, [config]));
+                    return;
+                }    
+                else {
+                    if (Ext.isString(config.items)) {
+                        config.items = Ext.decode(config.items);
+                    }
+
+                    if (Ext.isString(config.dockedItems)) {
+                        config.dockedItems = Ext.decode(config.dockedItems);
+                    }
+                }
+            }
+
             config = Ext.applyIf(config || {}, {
-                width: 200,
-                height: 100,
-                autoHide: true,
-                plain: false,
-                resizable: false,
-                draggable: false,
-                bodyStyle: "padding:3px;text-align:center",
-                alignToCfg: {
-                    el: document,
-                    position: "br-br",
-                    offset: [-10, -10]
+                width      : 200,
+                height     : 100,
+                autoHide   : true,
+                plain      : false,
+                resizable  : false,
+                draggable  : false,
+                bodyStyle  : "padding:3px;text-align:center",
+                alignToCfg : {
+                    el       : document,
+                    position : "br-br",
+                    offset   : [-10, -10]
                 },
-                showMode: "grid", /* "grid|stack" */
-                closeVisible: false,
-                bringToFront: false,
-                pinEvent: "none",
-                hideDelay: 2500,
-                shadow: false,
-                showPin: false,
-                pinned: false,
-                showFx: {
-                    fxName: "slideIn",
-                    args: ["b", {}]
+                showMode  : "grid", /* "grid|stack" */
+                closeVisible : false,
+                bringToFront : false,
+                pinEvent  : "none",
+                hideDelay : 2500,
+                shadow    : false,
+                showPin   : false,
+                pinned    : false,
+                showFx    : {
+                    fxName : "slideIn",
+                    args   : ["b", {}]
                 },
-                hideFx: {
-                    fxName: "slideOut",
-                    args: ["b", {}]
+                hideFx : {
+                    fxName : "slideOut",
+                    args   : ["b", {}]
                 },
 
                 /*functions*/
-                focus: Ext.emptyFn,
+                focus : Ext.emptyFn,
 
                 stopHiding : function () {
-                    this.removeCls("x-notification-auto-hide");
+                    this.tools.close.show();
                     this.pinned = true;
 
                     if (this.autoHide) {
@@ -208,7 +251,7 @@ Ext.net.Notification = function () {
             });
 
             config.cls = config.cls || "";
-            config.cls += " x-notification" + (config.autoHide ? " x-notification-auto-hide" : "");
+            config.cls += " x-notification";
 
             if (config.closeVisible) {
                 for (var i = notifications.length - 1; i >= 0; i--) {
@@ -221,8 +264,8 @@ Ext.net.Notification = function () {
 
                 notifications = [];
             }
-
-            var w = new Ext.Window(config),
+            
+            var w = new Ext.window.Window(config),
                 mOver = function (e, t) {
                     if (!this.pinned) {
                         this.hideTask.cancel();
@@ -238,12 +281,11 @@ Ext.net.Notification = function () {
 
             w.on("render", function () {
                 if (this.autoHide) {
-                    this.body.on("mouseover", mOver, this);
-                    this.body.on("mouseout", mOut, this);
+                    this.el.on("mouseover", mOver, this);
+                    this.el.on("mouseout", mOut, this);
 
                     if (this.header) {
-                        this.header.on("mouseover", mOver, this);
-                        this.header.on("mouseout", mOut, this);
+                        this.tools.close.hide();
                     }
                 }
 
@@ -254,31 +296,35 @@ Ext.net.Notification = function () {
 
             w.afterRender = Ext.Function.createSequence(w.afterRender, function () {
                 if (this.showPin) {
-                    this.pin = function (e, tool) {
-                        Ext.fly(tool).hide();
+                    this.pin = function (e, toolEl , owner, tool) {
+                        this.tools.unpin.hide();
                         this.tools.pin.show();
                         this.hideTask.cancel();
                         this.pinned = true;
                     };
 
-                    this.unpin = function (e, tool) {
-                        Ext.fly(tool).hide();
+                    this.unpin = function (e, toolEl , owner, tool) {
+                        this.tools.pin.hide();
                         this.tools.unpin.show();
                         this.hide();
                         this.pinned = false;
                     };
 
                     this.addTool({
-                        id: "unpin",
+                        type: "unpin",
+                        itemId : "unpin",
                         handler: this.pin,
                         hidden: this.pinned,
+                        hideMode : "display",
                         scope: this
                     });
 
                     this.addTool({
-                        id: "pin",
+                        type: "pin",
+                        itemId : "pin",
                         handler: this.unpin,
                         hidden: !this.pinned,
+                        hideMode : "display",
                         scope: this
                     });
                 }
@@ -301,7 +347,7 @@ Ext.net.Notification = function () {
 
             w.afterShow = Ext.Function.createSequence(w.afterShow, function () {
                 if (this.pinEvent !== "none") {
-                    this.body.on(this.pinEvent, this.stopHiding, this);
+                    this.el.on(this.pinEvent, this.stopHiding, this);
                     this.on(this.pinEvent, this.stopHiding, this);
                 }
 

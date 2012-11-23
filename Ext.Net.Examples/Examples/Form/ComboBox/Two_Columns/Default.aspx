@@ -69,9 +69,9 @@
 <html>
 <head runat="server">
     <title>Comboboxes - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .cbStates-list {
             width : 298px;
             font  : 11px tahoma,arial,helvetica,sans-serif;

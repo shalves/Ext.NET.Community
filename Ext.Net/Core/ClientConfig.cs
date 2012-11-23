@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -377,6 +377,14 @@ namespace Ext.Net
                         case JsonMode.UnrollObject:
                             this.Process(originalValue);
                             break;
+                        case JsonMode.Reflection:
+                            if (originalValue != null)
+                            {
+                                var props = originalValue.GetType().GetProperties().Each(x => {
+                                    this.WriteRawValue(x.Name.ToLowerCamelCase(), JSON.Serialize(x.GetValue(originalValue, null), new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()));
+                                });                                    
+                            }
+                            break;
                         case JsonMode.Array:
                         case JsonMode.AlwaysArray:
                             if (originalValue is IEnumerable)
@@ -607,10 +615,11 @@ namespace Ext.Net
                 if (temp.StartsWith("<string>"))
                 {
                     int count = 8;
+                    string rawMarker = TokenUtils.Settings.RawMarker;
 
-                    if (temp.StartsWith("<string><raw>"))
+                    if (temp.StartsWith("<string>"+rawMarker))
                     {
-                        count = 13;
+                        count += rawMarker.Length;
                     }
 
                     this.writer.WritePropertyName(name);

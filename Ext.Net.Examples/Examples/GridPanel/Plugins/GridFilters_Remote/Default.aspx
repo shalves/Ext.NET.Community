@@ -108,7 +108,7 @@
 
 
         //-- start paging ------------------------------------------------------------
-        var limit = e.Limit;
+        int limit = e.Limit;
         
         if ((e.Start + e.Limit) > data.Count)
         {
@@ -134,7 +134,7 @@
 <html>
 <head runat="server">
     <title>GridPanel with Remote Filtering, Sorting and Paging - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">

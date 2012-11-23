@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,54 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ToolTipBase.Builder<ToolTip, ToolTip.Builder>
+        new public abstract partial class Builder<TToolTip, TBuilder> : ToolTipBase.Builder<TToolTip, TBuilder>
+            where TToolTip : ToolTip
+            where TBuilder : Builder<TToolTip, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TToolTip component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<PanelListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<PanelDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ToolTip.Builder<ToolTip, ToolTip.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,37 +119,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ToolTip.Builder</returns>
-            public virtual ToolTip.Builder Listeners(Action<PanelListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as ToolTip.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ToolTip.Builder</returns>
-            public virtual ToolTip.Builder DirectEvents(Action<PanelDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as ToolTip.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -111,6 +127,14 @@ namespace Ext.Net
         public ToolTip.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ToolTip(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -125,7 +149,11 @@ namespace Ext.Net
         /// </summary>
         public ToolTip.Builder ToolTip()
         {
-            return this.ToolTip(new ToolTip());
+#if MVC
+			return this.ToolTip(new ToolTip { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ToolTip(new ToolTip());
+#endif			
         }
 
         /// <summary>
@@ -133,7 +161,10 @@ namespace Ext.Net
         /// </summary>
         public ToolTip.Builder ToolTip(ToolTip component)
         {
-            return new ToolTip.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ToolTip.Builder(component);
         }
 
         /// <summary>
@@ -141,7 +172,11 @@ namespace Ext.Net
         /// </summary>
         public ToolTip.Builder ToolTip(ToolTip.Config config)
         {
-            return new ToolTip.Builder(new ToolTip(config));
+#if MVC
+			return new ToolTip.Builder(new ToolTip(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ToolTip.Builder(new ToolTip(config));
+#endif			
         }
     }
 }

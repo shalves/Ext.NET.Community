@@ -18,7 +18,7 @@ namespace Ext.Net.Examples
     public class PlantJsonService : System.Web.Services.WebService
     {
         [WebMethod]
-        public Paging<Plant> PlantsPaging(int start, int limit, string sort, string filter)
+        public object PlantsPaging(int start, int limit, string sort, string filter)
         {
             List<Plant> plants = Plant.TestData;
 
@@ -29,7 +29,7 @@ namespace Ext.Net.Examples
 
             if (!string.IsNullOrEmpty(sort))
             {
-                var dataSorter = DataSorter.From(sort);
+                DataSorter[] dataSorter = DataSorter.From(sort);
                 if (dataSorter.Length > 0)
                 {
                     plants.Sort(delegate(Plant x, Plant y)
@@ -54,7 +54,7 @@ namespace Ext.Net.Examples
 
             List<Plant> rangePlants = (start < 0 || limit < 0) ? plants : plants.GetRange(start, limit);
 
-            return new Paging<Plant>(rangePlants, plants.Count);
+            return new Paging<Plant>(rangePlants, plants.Count).SerializationObject();
         }
     }
 }

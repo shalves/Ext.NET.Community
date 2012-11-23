@@ -29,9 +29,9 @@
 <html>
 <head runat="server">
     <title>Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var cellSelect = function (grid, record, ceIlndex, textField, ctxMenu) {
             var name = grid.columns[ceIlndex].dataIndex,
                 value = record.get(name);

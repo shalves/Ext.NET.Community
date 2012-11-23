@@ -10,6 +10,22 @@ Ext.net.DirectEvent = new Ext.data.Connection({
 
     confirmRequest : function (directEventConfig) {
         directEventConfig = directEventConfig || {};
+
+        if (Ext.isFunction(directEventConfig.success)) {
+            directEventConfig.userSuccess = directEventConfig.success;
+            delete directEventConfig.success;
+        }
+
+        if (Ext.isFunction(directEventConfig.failure)) {
+            directEventConfig.userFailure = directEventConfig.failure;
+            delete directEventConfig.failure;
+        }
+
+        if (Ext.isFunction(directEventConfig.complete)) {
+            directEventConfig.userComplete = directEventConfig.complete;
+            delete directEventConfig.complete;
+        }
+
         if (directEventConfig.confirmation && directEventConfig.confirmation.confirmRequest) {
             if (directEventConfig.confirmation.beforeConfirm && directEventConfig.confirmation.beforeConfirm(directEventConfig) === false) {
                 Ext.net.DirectEvent.request(directEventConfig);
@@ -156,6 +172,7 @@ Ext.net.DirectEvent = new Ext.data.Connection({
     parseResponse : function (response, options) {
         var text = response.responseText,
             result = {},
+            tmpResult,
             exception = false;
 
         result.success = true;
@@ -230,7 +247,6 @@ Ext.net.DirectEvent = new Ext.data.Connection({
                 }
             }
 
-            //json parsing
             result = eval("(" + text + ")");
 
         } catch (e) {
@@ -251,7 +267,15 @@ Ext.net.DirectEvent = new Ext.data.Connection({
             result = result.d;
 
             if (Ext.isString(result) && options.isDirectMethod !== true) {
-                result = Ext.decode(result);
+                tmpResult = Ext.decode(result, true);
+                if (!tmpResult) {
+                    result = {
+                        script : result
+                    };
+                }
+                else {
+                    result = tmpResult;
+                }
             }
         }
 
@@ -291,16 +315,36 @@ Ext.net.DirectEvent = new Ext.data.Connection({
     listeners : {
         beforerequest : {
             fn : function (conn, options) {
-                var o = options || {};
+                var o = options || {},
+                    key,
+                    obj;
 
                 o.eventType = o.eventType || "event";
+                o._paramsFn = {};
 
                 var isInstance = o.eventType == "public",
-                    submitConfig = {},
+                    submitConfig = {},                    
                     forms,
                     aspForm;
 
-                o.extraParams = o.extraParams || {};
+                if (o.extraParams) {
+                    for (key in o.extraParams) {
+                        if (o.extraParams.hasOwnProperty(key)) {
+                            obj = o.extraParams[key];
+
+                            if (obj === undefined) {
+                                delete o.extraParams[key];
+                            }
+                            else if (Ext.isFunction(obj)) {
+                                o._paramsFn[key] = o.extraParams[key];
+                                o.extraParams[key] = obj.apply(o.control);
+                            }
+                        }
+                    }
+                }
+                else {
+                    o.extraParams = {};
+                }
 
                 switch (o.eventType) {
                 case "event":
@@ -324,7 +368,12 @@ Ext.net.DirectEvent = new Ext.data.Connection({
                     o.headers = Ext.apply(o.headers || {}, { "X-Ext.Net" : "delta=true" });
 
                     if (o.type == "submit") {
-                        o.form = Ext.get(o.formId);
+                        if (Ext.isFunction(o.formId)) {
+                            o.form = o.formId.call(o.control);
+                        }
+                        else {
+                            o.form = Ext.get(o.formId);
+                        }                        
 
                         if (!Ext.isEmpty(o.form) && !Ext.isEmpty(o.form.id)) {
                             var cmp = Ext.getCmp(o.form.id);
@@ -358,16 +407,28 @@ Ext.net.DirectEvent = new Ext.data.Connection({
                             this.buildForm(o, o.control);
                         }                                        
 
-                        if (Ext.isEmpty(o.form) && o.control && o.control.up) {
+                        if (Ext.isEmpty(o.form) && o.control && Ext.isFunction(o.control.up)) {
                             var formCmp = o.control.up("form");
 
-                            if (formCmp) {
+                            if (formCmp && Ext.isFunction(formCmp.getForm)) {
                                 this.buildForm(o, formCmp);
                             }
                         }
+
+                        if (o.isUpload && Ext.isEmpty(o.form)) {
+                            
+                            o.form = Ext.get(Ext.DomHelper.append(Ext.getBody(), {
+                                tag   : 'form',
+                                style : 'display:none'
+                            }));
+                            
+                            o.formCfg = {};
+                            o.formCfg.form = o.form;
+                        }
                                
-                    } else if (o.type == "load" && Ext.isEmpty(o.method)) {
-                        o.method = "GET";
+                    } else if (o.type == "load") {
+                        //o.method = "GET";
+                        delete o.form;
                     }                    
                     
                     if (Ext.isEmpty(o.form) && Ext.isEmpty(o.url)) {
@@ -451,6 +512,7 @@ Ext.net.DirectEvent = new Ext.data.Connection({
 
                         if (o.json) {
                             o.jsonData = o.params;
+                            o.headers = Ext.apply(o.headers || {}, {Accept: 'application/json'});
                             if ((o.method || this.method) !== "GET") {
                                 o.params = "";
                             }
@@ -458,7 +520,7 @@ Ext.net.DirectEvent = new Ext.data.Connection({
                         } else {
 							var ov;
 
-                            for (var key in o.params) {
+                            for (key in o.params) {
                                 ov = o.params[key];
 
                                 if (typeof ov == "object") {
@@ -523,6 +585,17 @@ Ext.net.DirectEvent = new Ext.data.Connection({
                         }
                         
                         break;
+                    case "body":
+                        if (o.control.body) {
+                            el = o.control.body;
+                        }
+                        else if (o.control.getEl) {
+                            el = o.control.getEl();
+                        } else if (o.control.dom) {
+                            el = o.control;
+                        }
+                        
+                        break;
                     case "parent":
                         if (o.control.getEl) {
                             el = o.control.getEl().parent();
@@ -552,10 +625,28 @@ Ext.net.DirectEvent = new Ext.data.Connection({
                         break;
                     case "customtarget":
                         var trg = em.customTarget || "";
-                        el = Ext.net.getEl(trg);
+                        
+                        if (Ext.isFunction(trg)) {
+                            el = Ext.net.getEl(trg.call(o.control));
+                        }
+                        else {                        
+                            el = Ext.net.getEl(trg);
 
-                        if (Ext.isEmpty(el)) {
-                            el = trg.getEl ? trg.getEl() : null;
+                            if (Ext.isEmpty(el)) {
+                                el = trg.getEl ? trg.getEl() : null;
+                            }
+
+                            if (!el && o.control.el) {
+                                try {
+                                    el = o.control.el.down(trg);
+                                } catch (e) {}
+                            }
+
+                            if (!el) {
+                                try {
+                                    el = Ext.select(trg);
+                                } catch (e) {}
+                            }
                         }
 
                         break;
@@ -717,6 +808,11 @@ Ext.net.DirectEvent.request = Ext.Function.createSequence(Ext.net.DirectEvent.re
     if (o.formCfg) {
         Ext.removeNode(o.formCfg.form);
         delete o.formCfg;
+    }
+
+    if (!Ext.isEmptyObj(o._paramsFn)) {
+        Ext.apply(o.extraParams, o._paramsFn);
+        delete o._paramsFn;
     }
     
     if (o.after) {

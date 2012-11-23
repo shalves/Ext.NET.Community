@@ -35,9 +35,9 @@
 <html>
 <head runat="server">
     <title>Drag&amp;Drop - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .app-header .x-panel-body {
             background-color: #ddd;
             padding-left: 5px;
@@ -94,7 +94,7 @@
         }
     </style>
     
-    <script type="text/javascript">
+    <script>
         var getDragData = function (e) {
             var view = App.PatientView,
                 sourceEl = e.getTarget(view.itemSelector, 10);

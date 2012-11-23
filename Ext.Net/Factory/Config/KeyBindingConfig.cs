@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -135,21 +135,21 @@ namespace Ext.Net
 				}
 			}
 
-			private bool stopEvent = false;
+			private string handler = "";
 
 			/// <summary>
-			/// True to stop the event from bubbling and prevent the default browser action if the key was handled by the KeyMap (defaults to false)
+			/// The function to call when KeyMap finds the expected key combination
 			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool StopEvent 
+			[DefaultValue("")]
+			public virtual string Handler 
 			{ 
 				get
 				{
-					return this.stopEvent;
+					return this.handler;
 				}
 				set
 				{
-					this.stopEvent = value;
+					this.handler = value;
 				}
 			}
 
@@ -170,25 +170,43 @@ namespace Ext.Net
 					this.scope = value;
 				}
 			}
-        
-			private KeyListeners listeners = null;
+
+			private EventAction defaultEventAction = EventAction.None;
 
 			/// <summary>
-			/// Client-side JavaScript Event Handlers
+			/// A default action to apply to the event. Possible values are: stopEvent, stopPropagation, preventDefault. If no value is set no action is performed.
 			/// </summary>
-			public KeyListeners Listeners
-			{
+			[DefaultValue(EventAction.None)]
+			public virtual EventAction DefaultEventAction 
+			{ 
 				get
 				{
-					if (this.listeners == null)
-					{
-						this.listeners = new KeyListeners();
-					}
-			
-					return this.listeners;
+					return this.defaultEventAction;
+				}
+				set
+				{
+					this.defaultEventAction = value;
 				}
 			}
-			
+
+			private string keysString = "";
+
+			/// <summary>
+			/// A single keycode or an array of keycodes to handle
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string KeysString 
+			{ 
+				get
+				{
+					return this.keysString;
+				}
+				set
+				{
+					this.keysString = value;
+				}
+			}
+
         }
     }
 }

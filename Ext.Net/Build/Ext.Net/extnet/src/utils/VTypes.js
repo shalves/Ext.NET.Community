@@ -7,14 +7,16 @@ Ext.apply(Ext.form.VTypes, {
         if (date) {
             if (field.startDateField && (!this.dateRangeMax || (date.getTime() !== this.dateRangeMax.getTime()))) {
                 var start = Ext.getCmp(field.startDateField);
+
+                this.dateRangeMax = date;
                 start.setMaxValue(date);
                 start.validate();
-                this.dateRangeMax = date;
             } else if (field.endDateField && (!this.dateRangeMin || (date.getTime() !== this.dateRangeMin.getTime()))) {
                 var end = Ext.getCmp(field.endDateField);
+
+                this.dateRangeMin = date;
                 end.setMinValue(date);
                 end.validate();
-                this.dateRangeMin = date;
             }
         }
         
@@ -30,7 +32,17 @@ Ext.apply(Ext.form.VTypes, {
     password : function (val, field) {
         if (field.initialPassField) {
             var pwd = Ext.getCmp(field.initialPassField);
-            return pwd ? (val == pwd.getValue()) : false;
+
+            if (pwd) {
+                if (pwd.processRawValue) {
+                    return pwd ? (val === pwd.processRawValue(pwd.getRawValue())) : false;
+                }
+                else {
+                    return pwd ? (val === pwd.getRawValue()) : false;
+                }
+            }
+
+            return false;            
         }
 
         return true;

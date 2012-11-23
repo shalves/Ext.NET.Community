@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,126 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ComboBoxBase.Builder<MultiCombo, MultiCombo.Builder>
+        new public abstract partial class Builder<TMultiCombo, TBuilder> : ComboBoxBase.Builder<TMultiCombo, TBuilder>
+            where TMultiCombo : MultiCombo
+            where TBuilder : Builder<TMultiCombo, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TMultiCombo component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// True to sort selected items by DisplayField. Defaults to false.
+			/// </summary>
+            public virtual TBuilder SortByDisplayField(bool sortByDisplayField)
+            {
+                this.ToComponent().SortByDisplayField = sortByDisplayField;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to wrap by square brackets.
+			/// </summary>
+            public virtual TBuilder WrapBySquareBrackets(bool wrapBySquareBrackets)
+            {
+                this.ToComponent().WrapBySquareBrackets = wrapBySquareBrackets;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Selection UI mode
+			/// </summary>
+            public virtual TBuilder SelectionMode(MultiSelectMode selectionMode)
+            {
+                this.ToComponent().SelectionMode = selectionMode;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<ComboBoxListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<ComboBoxDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+ 			/// <summary>
+			/// Select all items
+			/// </summary>
+            public virtual TBuilder SelectAll()
+            {
+                this.ToComponent().SelectAll();
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Deselect item by index
+			/// </summary>
+            public virtual TBuilder DeselectItem(int index)
+            {
+                this.ToComponent().DeselectItem(index);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Deselect item by value
+			/// </summary>
+            public virtual TBuilder DeselectItem(string value)
+            {
+                this.ToComponent().DeselectItem(value);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Select item by index
+			/// </summary>
+            public virtual TBuilder SelectItem(int index)
+            {
+                this.ToComponent().SelectItem(index);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Select item by value
+			/// </summary>
+            public virtual TBuilder SelectItem(string value)
+            {
+                this.ToComponent().SelectItem(value);
+                return this as TBuilder;
+            }
+            
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : MultiCombo.Builder<MultiCombo, MultiCombo.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,100 +191,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// True to wrap by square brackets.
-			/// </summary>
-            public virtual MultiCombo.Builder WrapBySquareBrackets(bool wrapBySquareBrackets)
-            {
-                this.ToComponent().WrapBySquareBrackets = wrapBySquareBrackets;
-                return this as MultiCombo.Builder;
-            }
-             
- 			/// <summary>
-			/// Selection UI mode
-			/// </summary>
-            public virtual MultiCombo.Builder SelectionMode(MultiSelectMode selectionMode)
-            {
-                this.ToComponent().SelectionMode = selectionMode;
-                return this as MultiCombo.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of MultiCombo.Builder</returns>
-            public virtual MultiCombo.Builder Listeners(Action<ComboBoxListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as MultiCombo.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of MultiCombo.Builder</returns>
-            public virtual MultiCombo.Builder DirectEvents(Action<ComboBoxDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as MultiCombo.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
- 			/// <summary>
-			/// Select all items
-			/// </summary>
-            public virtual MultiCombo.Builder SelectAll()
-            {
-                this.ToComponent().SelectAll();
-                return this;
-            }
-            
- 			/// <summary>
-			/// Deselect item by index
-			/// </summary>
-            public virtual MultiCombo.Builder DeselectItem(int index)
-            {
-                this.ToComponent().DeselectItem(index);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Deselect item by value
-			/// </summary>
-            public virtual MultiCombo.Builder DeselectItem(string value)
-            {
-                this.ToComponent().DeselectItem(value);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Select item by index
-			/// </summary>
-            public virtual MultiCombo.Builder SelectItem(int index)
-            {
-                this.ToComponent().SelectItem(index);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Select item by value
-			/// </summary>
-            public virtual MultiCombo.Builder SelectItem(string value)
-            {
-                this.ToComponent().SelectItem(value);
-                return this;
-            }
-            
         }
 
         /// <summary>
@@ -174,6 +199,14 @@ namespace Ext.Net
         public MultiCombo.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.MultiCombo(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -188,7 +221,11 @@ namespace Ext.Net
         /// </summary>
         public MultiCombo.Builder MultiCombo()
         {
-            return this.MultiCombo(new MultiCombo());
+#if MVC
+			return this.MultiCombo(new MultiCombo { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.MultiCombo(new MultiCombo());
+#endif			
         }
 
         /// <summary>
@@ -196,7 +233,10 @@ namespace Ext.Net
         /// </summary>
         public MultiCombo.Builder MultiCombo(MultiCombo component)
         {
-            return new MultiCombo.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new MultiCombo.Builder(component);
         }
 
         /// <summary>
@@ -204,7 +244,11 @@ namespace Ext.Net
         /// </summary>
         public MultiCombo.Builder MultiCombo(MultiCombo.Config config)
         {
-            return new MultiCombo.Builder(new MultiCombo(config));
+#if MVC
+			return new MultiCombo.Builder(new MultiCombo(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new MultiCombo.Builder(new MultiCombo(config));
+#endif			
         }
     }
 }

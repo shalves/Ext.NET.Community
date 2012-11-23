@@ -7,7 +7,7 @@
 <html>
 <head runat="server">
     <title>AJAX Request to HttpHander returns Json - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <ext:ResourceManager ID="ResourceManager1" runat="server" />   

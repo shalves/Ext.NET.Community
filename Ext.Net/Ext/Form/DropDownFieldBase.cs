@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -35,8 +35,8 @@ namespace Ext.Net
     [Meta]
     [Description("")]
     public abstract partial class DropDownFieldBase : PickerField
-    {
-		/// <summary>
+    {       
+        /// <summary>
 		/// 
 		/// </summary>
 		[Description("")]
@@ -174,7 +174,7 @@ namespace Ext.Net
             }
         }
 
-        ItemsCollection<AbstractPanel> component;
+        ItemsCollection<AbstractContainer> component;
 
         /// <summary>
         /// 
@@ -186,13 +186,13 @@ namespace Ext.Net
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [ConfigOption("component", typeof(SingleItemCollectionJsonConverter))]
         [Description("")]
-        public virtual ItemsCollection<AbstractPanel> Component
+        public virtual ItemsCollection<AbstractContainer> Component
         {
             get
             {
                 if (this.component == null)
                 {
-                    this.component = new ItemsCollection<AbstractPanel>();
+                    this.component = new ItemsCollection<AbstractContainer>();
                     this.component.SingleItemMode = true;
                     this.component.AfterItemAdd += this.AfterItemAdd;
                     this.component.AfterItemRemove += this.AfterItemRemove;
@@ -279,6 +279,17 @@ namespace Ext.Net
             this.Call("setValue", value, text, collapse);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
+        public virtual void SetValue(string value, string text, bool collapse, bool preventSync)
+        {
+            this.SuspendScripting();
+            this.Value = value;
+            this.ResumeScripting();
+            this.Call("setValue", value, text, collapse, preventSync);
+        }
 
         /// <summary>
         /// 

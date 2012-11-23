@@ -135,7 +135,7 @@
     {
         if (extraParams.ContainsKey("id"))
         {
-            var id = Convert.ToInt32(extraParams["id"]);
+            int id = Convert.ToInt32(extraParams["id"]);
             return this.Customers.Where(c => c.Id == id);
         }
         
@@ -147,14 +147,14 @@
     {
         if (extraParams.ContainsKey("id"))
         {
-            var id = Convert.ToInt32(extraParams["id"]);
+            int id = Convert.ToInt32(extraParams["id"]);
             return this.Orders.Where(o => o.Id == id);
         }
         
-        var customerId = -1;
+        int customerId = -1;
 
         StoreRequestParameters prms = new StoreRequestParameters(extraParams);
-        var filter = prms.Filter;
+        DataFilter[] filter = prms.Filter;
         if (filter.Length > 0 && filter[0].Property == "CustomerId")
         {
             customerId = Convert.ToInt32(filter[0].Value);
@@ -168,14 +168,14 @@
     {
         if (extraParams.ContainsKey("id"))
         {
-            var id = Convert.ToInt32(extraParams["id"]);
+            int id = Convert.ToInt32(extraParams["id"]);
             return this.OrderItems.Where(oi => oi.Id == id);
         }
         
-        var orderId = -1;
+        int orderId = -1;
 
         StoreRequestParameters prms = new StoreRequestParameters(extraParams);
-        var filter = prms.Filter;
+        DataFilter[] filter = prms.Filter;
         if (filter.Length > 0 && filter[0].Property == "OrderId")
         {
             orderId = Convert.ToInt32(filter[0].Value);

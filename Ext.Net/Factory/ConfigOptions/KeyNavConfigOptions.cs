@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -55,6 +55,17 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
+                list.Add("componentEvent", new ConfigOption("componentEvent", null, false, this.ComponentEvent ));
+                list.Add("defaultEventAction", new ConfigOption("defaultEventAction", null, EventAction.StopEvent, this.DefaultEventAction ));
+                list.Add("disabled", new ConfigOption("disabled", null, false, this.Disabled ));
+                list.Add("eventName", new ConfigOption("eventName", null, "", this.EventName ));
+                list.Add("forceKeyDown", new ConfigOption("forceKeyDown", null, false, this.ForceKeyDown ));
+                list.Add("componentElement", new ConfigOption("componentElement", new SerializationOptions("cmpEl"), "", this.ComponentElement ));
+                list.Add("ignoreInputFields", new ConfigOption("ignoreInputFields", null, false, this.IgnoreInputFields ));
+                list.Add("processEvent", new ConfigOption("processEvent", new SerializationOptions(JsonMode.Raw), null, this.ProcessEvent ));
+                list.Add("processEventScope", new ConfigOption("processEventScope", new SerializationOptions(JsonMode.Raw), "", this.ProcessEventScope ));
+                list.Add("targetProxy", new ConfigOption("targetProxy", new SerializationOptions("target", JsonMode.Raw), "", this.TargetProxy ));
+                list.Add("space", new ConfigOption("space", new SerializationOptions(JsonMode.Raw), null, this.Space ));
                 list.Add("left", new ConfigOption("left", new SerializationOptions(JsonMode.Raw), null, this.Left ));
                 list.Add("right", new ConfigOption("right", new SerializationOptions(JsonMode.Raw), null, this.Right ));
                 list.Add("up", new ConfigOption("up", new SerializationOptions(JsonMode.Raw), null, this.Up ));
@@ -67,10 +78,6 @@ namespace Ext.Net
                 list.Add("enter", new ConfigOption("enter", new SerializationOptions(JsonMode.Raw), null, this.Enter ));
                 list.Add("esc", new ConfigOption("esc", new SerializationOptions(JsonMode.Raw), null, this.Esc ));
                 list.Add("tab", new ConfigOption("tab", new SerializationOptions(JsonMode.Raw), null, this.Tab ));
-                list.Add("defaultEventAction", new ConfigOption("defaultEventAction", null, KeyEventAction.StopEvent, this.DefaultEventAction ));
-                list.Add("disabled", new ConfigOption("disabled", null, false, this.Disabled ));
-                list.Add("forceKeyDown", new ConfigOption("forceKeyDown", null, false, this.ForceKeyDown ));
-                list.Add("scope", new ConfigOption("scope", new SerializationOptions(JsonMode.Raw), "", this.Scope ));
 
                 return list;
             }

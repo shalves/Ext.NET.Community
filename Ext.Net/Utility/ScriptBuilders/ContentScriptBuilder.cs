@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -86,6 +86,7 @@ namespace Ext.Net
                 Page pageHolder = null;
                 this.Control.TopDynamicControl = true;
                 this.Control.ForceIdRendering = true;
+                this.ResourceManager = Ext.Net.ResourceManager.GetInstance();
 
                 if (selfRendering && this.Control.Page == null)
                 {
@@ -97,7 +98,10 @@ namespace Ext.Net
                     rm.IDMode = IDMode.Explicit;
                     rm.IsDynamic = true;
                     pageHolder.Controls.Add(rm);
-                    this.ResourceManager = Ext.Net.ResourceManager.GetInstance() ?? rm;
+                    if (this.ResourceManager == null)
+                    {
+                        this.ResourceManager = rm;
+                    }
 
                     pageHolder.Controls.Add(this.Control);
                 }
@@ -105,7 +109,10 @@ namespace Ext.Net
                 {
                     pageHolder = this.Control.Page;
                     ResourceManager newMgr = Ext.Net.Utilities.ControlUtils.FindControl<ResourceManager>(pageHolder);
-                    this.ResourceManager = Ext.Net.ResourceManager.GetInstance() ?? newMgr;
+                    if (this.ResourceManager == null)
+                    {
+                        this.ResourceManager = newMgr;
+                    }
                     if (newMgr != null)
                     {
                         newMgr.IsDynamic = true;
@@ -123,11 +130,15 @@ namespace Ext.Net
 
                 List<BaseControl> childControls = this.FindControls(this.Control, selfRendering, sb, null, null);
 
+                if (selfRendering && pageHolder != null)
+                {
+                    pageHolder.Items["Ext.Net.DeferInitScriptGeneration"] = new object();
+                }
+
                 foreach (BaseControl c in childControls)
                 {
                     if (c.Visible)
-                    {
-                        c.DeferInitScriptGeneration = selfRendering;
+                    {                        
                         if (c.AutoDataBind)
                         {
                             c.DataBind();
@@ -139,9 +150,9 @@ namespace Ext.Net
                 {
                     this.RegisterHtml(sb, pageHolder);
 
-                    foreach (BaseControl c in childControls)
+                    if (pageHolder != null)
                     {
-                        c.DeferInitScriptGeneration = false;
+                        pageHolder.Items["Ext.Net.DeferInitScriptGeneration"] = null;
                     }
 
                     List<BaseControl> newChildControls = this.FindControls(this.Control, false, sb, null, null);

@@ -48,8 +48,8 @@
     
     protected void Store1_RefreshData(object sender, StoreReadDataEventArgs e)
     {
-        var store = this.GridPanel1.GetStore();
-        var data = this.TestData;
+        Store store = this.GridPanel1.GetStore();
+        object[] data = this.TestData;
 
         e.Total = data.Length;
         store.DataSource = data.Skip(e.Start).Take(e.Limit);
@@ -59,16 +59,9 @@
     protected void Store1_RecordUpdated(object sender, AfterRecordUpdatedEventArgs e)
     {
         // This event is fired once for each Record that is Updated.
-
-        var company = new { 
-            Name = e.Values["company"],
-            Price = e.Values["price"],
-            LastChange = e.Values["lastChange"] 
-        };
-
         string tpl = "Name: {0}, Price: {1}, LastChange: {2}<br />";
-        
-        this.Label1.Html += string.Format(tpl, company.Name, company.Price, company.LastChange);
+
+        this.Label1.Html += string.Format(tpl, e.Values["company"], e.Values["price"], e.Values["lastChange"]);
     }
 </script>
 
@@ -77,9 +70,9 @@
 <html>
 <head runat="server">
     <title>Simple Array Grid With Paging and Remote reloading - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {
@@ -137,7 +130,7 @@
                 <ext:CellEditing runat="server" />
             </Plugins>
             <TopBar>
-                <ext:Toolbar ID="ToolBar1" runat="server">
+                <ext:Toolbar runat="server">
                     <Items>
                         <ext:Button ID="btnSave" runat="server" Text="Save" Icon="Disk">
                             <Listeners>

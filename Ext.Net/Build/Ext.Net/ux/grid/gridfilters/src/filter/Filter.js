@@ -117,7 +117,7 @@ Ext.define('Ext.ux.grid.filter.Filter', {
      * @return {Ext.menu.Menu}
      */
     createMenu : function(config) {
-        return Ext.create('Ext.menu.Menu', config.menuItems ? {items : config.menuItems} : {});
+        return Ext.create('Ext.menu.Menu', config.menuItems ? {items : config.menuItems} : config);
     },
 
     /**

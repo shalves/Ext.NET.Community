@@ -52,9 +52,8 @@ Ext.Component.prototype.initComponent = Ext.Function.createSequence(Ext.Componen
 });
 
 Ext.Component.prototype.afterRender = Ext.Function.createSequence(Ext.Component.prototype.afterRender, function () {
-    if (this.tooltips) {
+    if (this.tooltips) {        
         var tooltips = [];
-
         Ext.each(this.tooltips, function (tooltip) {
             if (!tooltip.target) {
                 tooltip.target = this.el;
@@ -64,5 +63,22 @@ Ext.Component.prototype.afterRender = Ext.Function.createSequence(Ext.Component.
         }, this);
 
         this.tooltips = tooltips;
+    }
+
+    if (this.keyMap && !this.keyMap.addBinding) {
+        this.keyMap = new Ext.util.KeyMap(Ext.apply({
+            target: this.keyMap.componentEvent ? this : (this.keyMap.cmpEl ? this[this.keyMap.cmpEl] : this.el)
+        }, this.keyMap));
+
+        if (this instanceof Ext.window.Window) {
+            this._keyMap = this.keyMap;
+            delete this.keyMap;
+        }
+    }
+
+    if (this.keyNav && !Ext.isFunction(this.keyNav.destroy)) {
+        this.keyNav = new Ext.util.KeyNav(Ext.apply({
+            target: this.keyMap.componentEvent ? this : (this.keyMap.cmpEl ? this[this.keyMap.cmpEl] : this.el)
+        }, this.keyNav));
     }
 });

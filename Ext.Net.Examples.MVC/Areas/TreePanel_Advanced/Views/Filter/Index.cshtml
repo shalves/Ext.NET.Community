@@ -1,0 +1,69 @@
+﻿@model Ext.Net.Node
+           
+@{
+    ViewBag.Title = "Tree Filter - Ext.NET Examples";
+    Layout = "~/Views/Shared/_BaseLayout.cshtml";
+}
+
+@section headtag
+{
+    <script>
+        var filterTree = function (tf, e) {
+            var tree = this.up("treepanel"),
+                text = tf.getRawValue();            
+
+            tree.clearFilter();
+            
+            if (Ext.isEmpty(text, false)) {
+                return;
+            }
+            
+            if (e.getKey() === Ext.EventObject.ESC) {
+                clearFilter();
+            } else {
+                var re = new RegExp(".*" + text + ".*", "i");
+                
+                tree.filterBy(function (node) {
+                    return re.test(node.data.text);
+                });
+            }
+        };
+        
+        var clearFilter = function () {
+            var field = this,
+                tree = this.up("treepanel");
+            
+            field.setValue(""); 
+            tree.clearFilter(true);             
+            tree.getView().focus();            
+        };
+    </script>
+}
+
+@section example
+{
+    <h1>Tree Filter</h1>
+
+    @(
+        Html.X().TreePanel()
+            .Height(300)
+            .Width(250)
+            .UseArrows(true)
+            .Root(Model)
+            .TopBarItem(
+                Html.X().ToolbarTextItem().Text("Filter:"),
+                Html.X().ToolbarSpacer(),
+                Html.X().TriggerField()
+                    .EnableKeyEvents(true)
+                    .Triggers(
+                        Html.X().FieldTrigger().Icon(TriggerIcon.Clear)
+                    )
+                    .Listeners(l => {
+                        l.KeyUp.Fn = "filterTree";
+                        l.KeyUp.Buffer = 250;
+
+                        l.TriggerClick.Fn = "clearFilter";
+                    })
+            )
+    )
+}

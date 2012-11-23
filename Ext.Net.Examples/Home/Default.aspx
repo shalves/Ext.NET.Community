@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title></title>
-    <link rel="stylesheet" type="text/css" href="../resources/css/main.css" />
+    <link rel="stylesheet" href="../resources/css/main.css" />
 
-    <script type="text/javascript">
+    <script>
         Ext.onReady(function () {
             if (top !== self) {
                 Ext.select("a").on("click", function (e, el) { parent.location = el.href; }, null, { preventDefault : true });

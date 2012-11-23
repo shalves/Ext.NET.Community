@@ -7,8 +7,8 @@
 <html>
 <head runat="server">
     <title>Draggable Panel - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <style>
         .invite {
             background-color : #99bbe8 !important;
         }

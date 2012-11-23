@@ -126,7 +126,7 @@
             </Buttons>
 
             <HtmlBin>
-                <script type="text/javascript">
+                <script>
                     function sendForm() {
                         if (this.up('form').getForm().isValid()) {
                             /* In a real application, this would submit the form to the configured url */

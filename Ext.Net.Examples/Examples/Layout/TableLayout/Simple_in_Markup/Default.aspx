@@ -7,8 +7,8 @@
 <html>
 <head runat="server">
     <title>Simple TableLayout in Markup - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <style>
         #pnlTableLayout .x-table-layout {
             padding : 5px;
         }
@@ -42,6 +42,7 @@
                         runat="server" 
                         Title="Lots of Spanning" 
                         BodyPadding="15"
+                        Height="320"
                         Html="<p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p>" 
                         RowSpan="3"
                         />
@@ -50,6 +51,7 @@
                         runat="server" 
                         Title="Basic Table Cell" 
                         BodyPadding="15"
+                        Height="105"
                         Html="<p>Basic panel in a table cell.</p>"
                         />
                     <ext:Panel 
@@ -57,6 +59,7 @@
                         runat="server" 
                         Header="false"
                         BodyPadding="15"
+                        Height="105"
                         Html="<p>Plain panel</p>"
                         />
                     <ext:Panel 
@@ -65,6 +68,7 @@
                         RowSpan="2" 
                         Title="Another Cell"
                         Width="300"
+                        Height="220"
                         BodyPadding="15"
                         Html="<p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p>"
                         />
@@ -73,6 +77,7 @@
                         ID="Panel5" 
                         runat="server" 
                         ColSpan="2"
+                        Height="100"
                         Header="false"
                         BodyPadding="15"
                         Html="Plain cell spanning two columns"
@@ -81,6 +86,7 @@
                         ID="Panel6" 
                         runat="server" 
                         ColSpan="3"
+                        Height="85"
                         Title="More Column Spanning"
                         BodyPadding="15"
                         Html="<p>Spanning three columns.</p>"

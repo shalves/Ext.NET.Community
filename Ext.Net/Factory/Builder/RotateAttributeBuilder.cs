@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,41 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : TranslateAttribute.Builder<RotateAttribute, RotateAttribute.Builder>
+        new public abstract partial class Builder<TRotateAttribute, TBuilder> : TranslateAttribute.Builder<TRotateAttribute, TBuilder>
+            where TRotateAttribute : RotateAttribute
+            where TBuilder : Builder<TRotateAttribute, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TRotateAttribute component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Degrees(int? degrees)
+            {
+                this.ToComponent().Degrees = degrees;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : RotateAttribute.Builder<RotateAttribute, RotateAttribute.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,24 +106,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual RotateAttribute.Builder Degrees(int? degrees)
-            {
-                this.ToComponent().Degrees = degrees;
-                return this as RotateAttribute.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -98,6 +114,14 @@ namespace Ext.Net
         public RotateAttribute.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.RotateAttribute(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -112,7 +136,11 @@ namespace Ext.Net
         /// </summary>
         public RotateAttribute.Builder RotateAttribute()
         {
-            return this.RotateAttribute(new RotateAttribute());
+#if MVC
+			return this.RotateAttribute(new RotateAttribute { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.RotateAttribute(new RotateAttribute());
+#endif			
         }
 
         /// <summary>
@@ -120,7 +148,10 @@ namespace Ext.Net
         /// </summary>
         public RotateAttribute.Builder RotateAttribute(RotateAttribute component)
         {
-            return new RotateAttribute.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new RotateAttribute.Builder(component);
         }
 
         /// <summary>
@@ -128,7 +159,11 @@ namespace Ext.Net
         /// </summary>
         public RotateAttribute.Builder RotateAttribute(RotateAttribute.Config config)
         {
-            return new RotateAttribute.Builder(new RotateAttribute(config));
+#if MVC
+			return new RotateAttribute.Builder(new RotateAttribute(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new RotateAttribute.Builder(new RotateAttribute(config));
+#endif			
         }
     }
 }

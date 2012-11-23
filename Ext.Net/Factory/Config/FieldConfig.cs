@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -475,6 +475,24 @@ namespace Ext.Net
 				set
 				{
 					this.inputType = value;
+				}
+			}
+
+			private int inputWidth = 100;
+
+			/// <summary>
+			/// The width of the field input element in pixels. Defaults to 100.
+			/// </summary>
+			[DefaultValue(100)]
+			public virtual int InputWidth 
+			{ 
+				get
+				{
+					return this.inputWidth;
+				}
+				set
+				{
+					this.inputWidth = value;
 				}
 			}
 
@@ -1215,7 +1233,115 @@ namespace Ext.Net
 					this.emptyValue = value;
 				}
 			}
+        
+			private JFunction validator = null;
 
+			/// <summary>
+			/// A custom validation function to be called during field validation (getErrors) (defaults to undefined). If specified, this function will be called first, allowing the developer to override the default validation process.
+			/// </summary>
+			public JFunction Validator
+			{
+				get
+				{
+					if (this.validator == null)
+					{
+						this.validator = new JFunction();
+					}
+			
+					return this.validator;
+				}
+			}
+			
+			private string validatorText = "";
+
+			/// <summary>
+			/// A custom error message to display in place of the default message provided for the validator currently set for this field (defaults to ''). Only applies if validator is set, else ignored.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string ValidatorText 
+			{ 
+				get
+				{
+					return this.validatorText;
+				}
+				set
+				{
+					this.validatorText = value;
+				}
+			}
+
+			private ValidationType standardVtype = ValidationType.None;
+
+			/// <summary>
+			/// A validation type name as defined in Ext.form.VTypes (defaults to null).
+			/// </summary>
+			[DefaultValue(ValidationType.None)]
+			public virtual ValidationType StandardVtype 
+			{ 
+				get
+				{
+					return this.standardVtype;
+				}
+				set
+				{
+					this.standardVtype = value;
+				}
+			}
+
+			private string vtype = "";
+
+			/// <summary>
+			/// A validation type name as defined in Ext.form.VTypes (defaults to null).
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string Vtype 
+			{ 
+				get
+				{
+					return this.vtype;
+				}
+				set
+				{
+					this.vtype = value;
+				}
+			}
+
+			private string vtypeText = "";
+
+			/// <summary>
+			/// A custom error message to display in place of the default message provided for the vtype currently set for this field (defaults to ''). Only applies if vtype is set, else ignored.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string VtypeText 
+			{ 
+				get
+				{
+					return this.vtypeText;
+				}
+				set
+				{
+					this.vtypeText = value;
+				}
+			}
+        
+			private ParameterCollection vTypeParams = null;
+
+			/// <summary>
+			/// Parameters are passed to VType validation method
+			/// </summary>
+			public ParameterCollection VTypeParams
+			{
+				get
+				{
+					if (this.vTypeParams == null)
+					{
+						this.vTypeParams = new ParameterCollection();
+					}
+			
+					return this.vTypeParams;
+				}
+			}
+			
 			private bool isRemoteValidation = false;
 
 			/// <summary>
@@ -1231,6 +1357,42 @@ namespace Ext.Net
 				set
 				{
 					this.isRemoteValidation = value;
+				}
+			}
+        
+			private RemoteValidationDirectEvent remoteValidation = null;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			public RemoteValidationDirectEvent RemoteValidation
+			{
+				get
+				{
+					if (this.remoteValidation == null)
+					{
+						this.remoteValidation = new RemoteValidationDirectEvent();
+					}
+			
+					return this.remoteValidation;
+				}
+			}
+			
+			private bool rethrowLoadPostDataException = false;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool RethrowLoadPostDataException 
+			{ 
+				get
+				{
+					return this.rethrowLoadPostDataException;
+				}
+				set
+				{
+					this.rethrowLoadPostDataException = value;
 				}
 			}
 

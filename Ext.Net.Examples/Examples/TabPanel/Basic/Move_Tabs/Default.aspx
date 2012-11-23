@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>Moving Tab between TabPanels - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var moveTab = function (source, destination) {
             var tab = source.getActiveTab();
             source.remove(tab, false);

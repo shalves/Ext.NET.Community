@@ -41,9 +41,9 @@
 <html>
 <head runat="server">
     <title>Registration Form - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />       
+    <link href="/resources/css/examples.css" rel="stylesheet" />       
 
-     <style type="text/css">
+     <style>
         /* Styling of global error indicator */
         .form-error-state {
             font-size: 11px;
@@ -68,7 +68,7 @@
         }
     </style>
 
-    <script type="text/javascript">
+    <script>
         function updateErrorState (form) {
             var me = form,
                 errorCmp, fields, errors;
@@ -103,11 +103,7 @@
                 baseCls = me.baseCls,
                 tip = me.tooltips[0];
 
-            if (!tip.rendered) {
-                tip.show();
-            }
-
-            errors = Ext.Array.from(errors);
+            errors = Ext.Array.from(errors);                       
 
             // Update CSS class and tooltip content
             if (errors.length) {
@@ -115,6 +111,9 @@
                 me.removeCls(baseCls + '-valid');
                 me.update("Form has errors");
                 tip.setDisabled(false);
+                if (!tip.rendered) {
+                    tip.show();
+                }
                 tip.update(me.bin[0].apply(errors));
             } else {
                 me.addCls(baseCls + '-valid');
@@ -122,7 +121,7 @@
                 me.update("Form is valid");
                 tip.setDisabled(true);
                 tip.hide();
-            }
+            }            
         }
     </script>
 </head>
@@ -245,6 +244,7 @@
                                     Anchor="top"
                                     MouseOffset="-11,-2"
                                     Closable="true"
+                                    Disabled="true"
                                     ConstrainPosition="false"
                                     Cls="errors-tip" />
                             </ToolTips>

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,63 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Store.Builder<EventStore, EventStore.Builder>
+        new public abstract partial class Builder<TEventStore, TBuilder> : Store.Builder<TEventStore, TBuilder>
+            where TEventStore : EventStore
+            where TBuilder : Builder<TEventStore, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TEventStore component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Events(Action<EventModelCollection> action)
+            {
+                action(this.ToComponent().Events);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder NoMappings(bool noMappings)
+            {
+                this.ToComponent().NoMappings = noMappings;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Mappings(Action<ModelFieldCollection> action)
+            {
+                action(this.ToComponent().Mappings);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : EventStore.Builder<EventStore, EventStore.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,46 +128,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of EventStore.Builder</returns>
-            public virtual EventStore.Builder Events(Action<EventModelCollection> action)
-            {
-                action(this.ToComponent().Events);
-                return this as EventStore.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual EventStore.Builder NoMappings(bool noMappings)
-            {
-                this.ToComponent().NoMappings = noMappings;
-                return this as EventStore.Builder;
-            }
-             
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of EventStore.Builder</returns>
-            public virtual EventStore.Builder Mappings(Action<ModelFieldCollection> action)
-            {
-                action(this.ToComponent().Mappings);
-                return this as EventStore.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -120,6 +136,14 @@ namespace Ext.Net
         public EventStore.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.EventStore(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -134,7 +158,11 @@ namespace Ext.Net
         /// </summary>
         public EventStore.Builder EventStore()
         {
-            return this.EventStore(new EventStore());
+#if MVC
+			return this.EventStore(new EventStore { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.EventStore(new EventStore());
+#endif			
         }
 
         /// <summary>
@@ -142,7 +170,10 @@ namespace Ext.Net
         /// </summary>
         public EventStore.Builder EventStore(EventStore component)
         {
-            return new EventStore.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new EventStore.Builder(component);
         }
 
         /// <summary>
@@ -150,7 +181,11 @@ namespace Ext.Net
         /// </summary>
         public EventStore.Builder EventStore(EventStore.Config config)
         {
-            return new EventStore.Builder(new EventStore(config));
+#if MVC
+			return new EventStore.Builder(new EventStore(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new EventStore.Builder(new EventStore(config));
+#endif			
         }
     }
 }

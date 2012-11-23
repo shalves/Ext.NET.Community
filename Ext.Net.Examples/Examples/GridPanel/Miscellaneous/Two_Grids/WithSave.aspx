@@ -24,7 +24,7 @@
 <head runat="server">
     <title>Ext.NET Examples</title>
     
-    <script type="text/javascript">
+    <script>
         var CountrySelector = {
             swapRecords : function (source, destination, records) {
                 for (var i = 0; i < records.length; i++) {
@@ -57,7 +57,7 @@
             }
         };
     </script>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">

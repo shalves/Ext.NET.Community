@@ -26,15 +26,27 @@
     background-image: url(images/tabmenu/tab-menu.gif);
 }
 
+.x-ie6 .x-tab-strip-withmenu a.x-tab-strip-menu,
+.x-ie7 .x-tab-strip-withmenu a.x-tab-strip-menu,
+.x-ie8 .x-tab-strip-withmenu a.x-tab-strip-menu {
+    top: 4px;
+}
+
 .x-theme-gray .x-tab-strip-withmenu a.x-tab-strip-menu
 {
     background-image: url(images/tabmenu/gray-tab-menu.gif);
 }
 
-
 .x-tab-closable a.x-tab-strip-menu
 {
     right: 15px;
+}
+
+.x-ie6 .x-tab-closable a.x-tab-strip-menu,
+.x-ie7 .x-tab-closable a.x-tab-strip-menu,
+.x-ie8 .x-tab-closable a.x-tab-strip-menu 
+{
+    right: 17px;
 }
 
 a.x-tab-strip-menu:hover

@@ -32,7 +32,7 @@
         <SelectionChange Handler="this.active = selected[0]; this.down('#btnLoad').setDisabled(!this.active);" />
     </Listeners>
     <HtmlBin>
-        <script type="text/javascript">
+        <script>
             var onBackClick = function(){
                 var grid = this.up("gridpanel");
 

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -82,10 +82,28 @@ namespace Ext.Net
 				}
 			}
 
+			private bool? lockable = null;
+
+			/// <summary>
+			/// If the grid is configured with enableLocking, or has columns which are configured with a locked value, this option may be used to disable user-driven locking or unlocking of this column. This column will remain in the side into which its own locked configuration placed it.
+			/// </summary>
+			[DefaultValue(null)]
+			public virtual bool? Lockable 
+			{ 
+				get
+				{
+					return this.lockable;
+				}
+				set
+				{
+					this.lockable = value;
+				}
+			}
+
 			private bool? locked = null;
 
 			/// <summary>
-			/// 
+			/// True to lock this column in place. Implicitly enables locking on the grid.
 			/// </summary>
 			[DefaultValue(null)]
 			public virtual bool? Locked 
@@ -421,6 +439,60 @@ namespace Ext.Net
 				set
 				{
 					this.text = value;
+				}
+			}
+
+			private string toolTip = "";
+
+			/// <summary>
+			/// A tooltip to display for this column header
+			/// </summary>
+			[DefaultValue("")]
+			public override string ToolTip 
+			{ 
+				get
+				{
+					return this.toolTip;
+				}
+				set
+				{
+					this.toolTip = value;
+				}
+			}
+
+			private ToolTipType toolTipType = ToolTipType.Qtip;
+
+			/// <summary>
+			/// The type of tooltip to use. Either 'qtip' for QuickTips or 'title' for title attribute.
+			/// </summary>
+			[DefaultValue(ToolTipType.Qtip)]
+			public virtual ToolTipType ToolTipType 
+			{ 
+				get
+				{
+					return this.toolTipType;
+				}
+				set
+				{
+					this.toolTipType = value;
+				}
+			}
+
+			private bool? wrap = null;
+
+			/// <summary>
+			/// True to wrap the cells text (excluding header). Defaults to null.
+			/// </summary>
+			[DefaultValue(null)]
+			public virtual bool? Wrap 
+			{ 
+				get
+				{
+					return this.wrap;
+				}
+				set
+				{
+					this.wrap = value;
 				}
 			}
 

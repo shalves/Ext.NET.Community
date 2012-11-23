@@ -60,9 +60,9 @@
 <head runat="server">
     <title>Drag and Drop from GridPanel to TreePanel - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
          var beforerecorddrop = function (node, data, overModel, dropPosition, dropFn) { 
             if (Ext.isArray(data.records)) {                
                 var records = data.records,
@@ -109,7 +109,7 @@
                         lastChange   : rec.get("qtip")
                     }));
 
-                    rec.stores[0].remove(rec);
+                    rec.remove(true);
                 }
                 
                 return true;

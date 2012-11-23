@@ -43,9 +43,9 @@
 <html>
 <head runat="server">
     <title>Portal in TabPanel - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" /> 
+    <link href="/resources/css/examples.css" rel="stylesheet" /> 
     
-    <style type="text/css">
+    <style>
         .x-column-padding{
             padding : 10px 0px 10px 10px;
         }

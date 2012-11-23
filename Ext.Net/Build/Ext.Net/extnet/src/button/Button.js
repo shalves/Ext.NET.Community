@@ -2,7 +2,21 @@
 // @source core/buttons/Button.js
 
 Ext.override(Ext.Button, {
-	getPressedField : function () {
+	initComponent : function () {
+        this.callParent(arguments);
+
+        if (this.flat) {
+            this.ui = this.ui + '-toolbar';
+        }
+    },
+
+    onRender : function (el) {
+        this.callParent(arguments);
+
+        this.onButtonRender(el);
+    },
+
+    getPressedField : function () {
         if (!this.pressedField && (this.hasId() || this.pressedHiddenName)) {
             this.pressedField = new Ext.form.Hidden({ 
                 name : this.pressedHiddenName || (this.id + "_Pressed") 
@@ -87,21 +101,16 @@ Ext.override(Ext.Button, {
             me.removeClsWithUI(me.overCls);
         }
         me.fireEvent('mouseout', me, e);
+    },
+
+    setIconCls : function (cls) {
+        this.callParent([cls && cls.indexOf('#') === 0 ? X.net.RM.getIcon(cls.substring(1)) : cls]);
+    },
+
+    setIcon : function (icon) {
+        if (this.iconCls) {
+            this.setIconCls("");
+        }
+        this.callParent([icon && icon.indexOf('#') === 0 ? X.net.RM.getIconUrl(icon.substring(1)) : icon]);
     }
 });
-
-Ext.Button.prototype.initComponent = Ext.Function.createSequence(Ext.Button.prototype.initComponent, function (el) {
-    if (this.flat) {
-        this.ui = this.ui + '-toolbar';
-    }
-});
-
-Ext.Button.prototype.onRender = Ext.Function.createSequence(Ext.Button.prototype.onRender, function (el) {
-    this.onButtonRender(el);
-});
-
-Ext.button.Button.prototype.setIconClsOld = Ext.button.Button.prototype.setIconCls;
-
-Ext.button.Button.prototype.setIconCls = function (cls) {
-    this.setIconClsOld(cls && cls.indexOf('#') === 0 ? X.net.RM.getIcon(cls.substring(1)) : cls);
-};

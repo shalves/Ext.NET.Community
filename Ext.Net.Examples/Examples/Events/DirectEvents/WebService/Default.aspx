@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>DirectEvents Summary - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var sayHello = function (result) {
             var params = result.extraParamsResponse || {};
 

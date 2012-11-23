@@ -6,20 +6,20 @@
 
 <html>
 <head runat="server">
-    <title>Group Commands - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <title>Group Image Commands - Ext.NET Examples</title>
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <style type="text/css">
-        .x-row-body-grid .x-grid-cell{
-            border:none;
+    <style>
+        .x-row-body-grid .x-grid-cell {
+            border: none;
         }
 
         .x-row-body-grid .x-grid-rowbody {
-            margin-bottom:10px;
+            margin-bottom: 10px;
         }
     </style>
 
-    <script type="text/javascript">
+    <script>
         var prepareCommand = function (grid, command, record, row) {
             // you can prepare group command
             if (command.command == 'Delete' && record.data.Price < 5) {
@@ -32,7 +32,7 @@
             // you can prepare group command
         };
 
-        var getRowData = function (data, idx, record, orig) {
+        var getAdditionalData = function (data, idx, record, orig) {
             var o = Ext.grid.feature.RowBody.prototype.getAdditionalData.apply(this, arguments),
                 d = data;
 
@@ -50,7 +50,7 @@
     <form runat="server">
         <ext:ResourceManager runat="server" />
         
-        <h1>ImageCommandColumn is a simpler and faster version of CommanColumn</h1>
+        <h1>ImageCommandColumn is a simpler and faster version of CommandColumn</h1>
 
         <ext:GridPanel
             runat="server" 
@@ -61,7 +61,7 @@
             Title="Plants" 
             Frame="true">
             <Store>
-                <ext:Store ID="Store1" runat="server" GroupField="Light">
+                <ext:Store runat="server" GroupField="Light">
                     <Proxy>
                         <ext:AjaxProxy Url="../../Shared/PlantService.asmx/Plants">
                             <ActionMethods Read="POST" />
@@ -95,7 +95,7 @@
                         runat="server" 
                         Text="Common Name" 
                         DataIndex="Common" 
-                        Width="220" 
+                        Flex="1" 
                         />
                     <ext:Column 
                         runat="server" 
@@ -126,12 +126,15 @@
                         DataIndex="Indoor" 
                         Width="55" 
                         />
-                    <ext:ImageCommandColumn runat="server" Width="110">
+                    <ext:ImageCommandColumn runat="server" Width="170">
                         <Commands>
                             <ext:ImageCommand CommandName="Delete" Icon="Delete" Text="Delete">
                                 <ToolTip Text="Delete" />
                             </ext:ImageCommand>
                             <ext:ImageCommand CommandName="Edit" Icon="TableEdit" Text="Edit">
+                                <ToolTip Text="Edit" />
+                            </ext:ImageCommand>
+                            <ext:ImageCommand CommandName="Disabled" Icon="PageWhiteEdit" Text="Disabled" Disabled="true">
                                 <ToolTip Text="Edit" />
                             </ext:ImageCommand>
                         </Commands>
@@ -171,10 +174,10 @@
                 <ext:Grouping 
                     runat="server" 
                     HideGroupedHeader="true" 
-                    GroupHeaderTplString='{text} ({[values.rows.length]} {[values.rows.length > 1 ? "Items" : "Item"]})' 
+                    GroupHeaderTplString='{columnName}: {name} ({[values.rows.length]} {[values.rows.length > 1 ? "Items" : "Item"]})' 
                     />
                 <ext:RowBody runat="server">
-                    <GetAdditionalData Fn="getRowData" />
+                    <GetAdditionalData Fn="getAdditionalData" />
                 </ext:RowBody>
             </Features>         
         </ext:GridPanel>

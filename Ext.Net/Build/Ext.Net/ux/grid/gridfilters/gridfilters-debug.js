@@ -16,7 +16,10 @@
 
 
 Ext.define('Ext.ux.grid.menu.ListMenu', {
-    extend : 'Ext.menu.Menu',
+    extend: 'Ext.menu.Menu',
+    
+    
+    idField :  'id',
 
     
     labelField :  'text',
@@ -28,35 +31,41 @@ Ext.define('Ext.ux.grid.menu.ListMenu', {
     single : false,
 
     constructor : function (cfg) {
-        this.selected = [];
-        this.addEvents(
+        var me = this,
+            options,
+            i,
+            len,
+            value;
+            
+        me.selected = [];
+        me.addEvents(
             
             'checkchange'
         );
 
-        this.callParent([cfg = cfg || {}]);
+        me.callParent([cfg = cfg || {}]);
 
-        if (!cfg.store && cfg.options) {
-            var options = [];
-            for(var i=0, len=cfg.options.length; i<len; i++){
-                var value = cfg.options[i];
+        if(!cfg.store && cfg.options) {
+            options = [];
+            for(i = 0, len = cfg.options.length; i < len; i++){
+                value = cfg.options[i];
                 switch(Ext.type(value)){
                     case 'array':  options.push(value); break;
-                    case 'object': options.push([value.id, value[this.labelField]]); break;
+                    case 'object': options.push([value[me.idField], value[me.labelField]]); break;
                     case 'string': options.push([value, value]); break;
                 }
             }
 
-            this.store = Ext.create('Ext.data.ArrayStore', {
-                fields    : ['id', this.labelField],
-                data      :   options,
-                listeners : {
-                    'load' : this.onLoad,
-                    scope  :  this
+            me.store = Ext.create('Ext.data.ArrayStore', {
+                fields: [me.idField, me.labelField],
+                data:   options,
+                listeners: {
+                    load: me.onLoad,
+                    scope:  me
                 }
             });
-            this.loaded = true;
-            this.autoStore = true;
+            me.loaded = true;
+            me.autoStore = true;
         } else {
             if(this.store.getCount() > 0) {
                 this.onLoad(this.store, this.store.getRange());
@@ -84,19 +93,11 @@ Ext.define('Ext.ux.grid.menu.ListMenu', {
 
     
     show : function () {
-        var lastArgs = null;
-        return function(){
-            if(arguments.length === 0){
-                this.callParent(lastArgs);
-            } else {
-                lastArgs = arguments;
-                if (this.loadOnShow && !this.loaded) {
-                    this.store.load();
-                }
-                this.callParent(arguments);
-            }
-        };
-    }(),
+        if (this.loadOnShow && !this.loaded && !this.store.loading) {
+            this.store.load();
+        }
+        this.callParent();
+    },
 
     
     onLoad : function (store, records) {
@@ -112,7 +113,7 @@ Ext.define('Ext.ux.grid.menu.ListMenu', {
 
         gid = me.single ? Ext.id() : null;
         for (i = 0, len = records.length; i < len; i++) {
-            itemValue = records[i].get('id');
+            itemValue = records[i].get(me.idField);
             me.add(Ext.create('Ext.menu.CheckItem', {
                 text: records[i].get(me.labelField),
                 group: gid,
@@ -180,7 +181,7 @@ Ext.define('Ext.ux.grid.menu.RangeMenu', {
     
 
     
-    iconCls : {
+    itemIconCls : {
         gt : 'ux-rangemenu-gt',
         lt : 'ux-rangemenu-lt',
         eq : 'ux-rangemenu-eq'
@@ -226,17 +227,12 @@ Ext.define('Ext.ux.grid.menu.RangeMenu', {
             if (item !== '-') {
                 // defaults
                 cfg = {
-                    itemId : 'range-' + item,
-                    enableKeyEvents : true,
-                    hideLabel  : false,
-                    fieldLabel : me.iconTpl.apply({
-                        cls  : me.iconCls[item] || 'no-icon',
-                        text : me.fieldLabels[item] || '',
-                        src  : Ext.BLANK_IMAGE_URL
-                    }),
+                    itemId: 'range-' + item,
+                    enableKeyEvents: true,
+                    hideEmptyLabel: false,
+                    labelCls: 'ux-rangemenu-icon ' + me.itemIconCls[item],
                     labelSeparator : '',
-                    labelWidth     : 29,
-                    labelStyle     : 'position: relative;',
+                    labelWidth     : 29,                    
                     listeners  : {
                         scope  : me,
                         change : me.onInputChange,
@@ -333,13 +329,6 @@ Ext.define('Ext.ux.grid.menu.RangeMenu', {
         // restart the timer
         this.updateTask.delay(this.updateBuffer);
     }
-}, function() {
-
-    
-    this.prototype.iconTpl = Ext.create('Ext.XTemplate',
-        '<img src="{src}" alt="{text}" class="' + Ext.baseCSSPrefix + 'menu-item-icon ux-rangemenu-icon {cls}" />'
-    );
-
 });
 
 
@@ -397,7 +386,7 @@ Ext.define('Ext.ux.grid.filter.Filter', {
 
     
     createMenu : function(config) {
-        return Ext.create('Ext.menu.Menu', config.menuItems ? {items : config.menuItems} : {});
+        return Ext.create('Ext.menu.Menu', config.menuItems ? {items : config.menuItems} : config);
     },
 
     
@@ -562,7 +551,11 @@ Ext.define('Ext.ux.grid.filter.DateFilter', {
                     menu: Ext.create('Ext.menu.Menu', {
                         items: [
                             Ext.apply(pickerCfg, {
-                                itemId: item
+                                itemId: item,
+                                listeners: {
+                                    select: me.onPickerSelect,
+                                    scope: me
+                                }
                             })
                         ]
                     }),
@@ -576,11 +569,22 @@ Ext.define('Ext.ux.grid.filter.DateFilter', {
             //me.add(item);
             me.menu.add(item);
         }
+        me.values = {};
     },
 
-    onCheckChange : function () {
-        this.setActive(this.isActivatable());
-        this.fireEvent('update', this);
+    onCheckChange : function (item, checked) {
+        var me = this,
+            picker = item.menu.items.first(),
+            itemId = picker.itemId,
+            values = me.values;
+
+        if (checked) {
+            values[itemId] = picker.getValue();
+        } else {
+            delete values[itemId]
+        }
+        me.setActive(me.isActivatable());
+        me.fireEvent('update', me);
     },
 
     
@@ -668,7 +672,7 @@ Ext.define('Ext.ux.grid.filter.DateFilter', {
 
     
     getFieldValue : function(item){
-        return this.getPicker(item).getValue();
+        return this.values[item];
     },
 
     
@@ -703,6 +707,14 @@ Ext.define('Ext.ux.grid.filter.DateFilter', {
             }
         }
         return true;
+    },
+
+    onPickerSelect: function(picker, date) {
+        // keep track of the picker value separately because the menu gets destroyed
+        // when columns order changes.  We return this value from getValue() instead
+        // of picker.getValue()
+        this.values[picker.itemId] = date;
+        this.fireEvent('update', this);
     }
 });
 
@@ -725,10 +737,7 @@ Ext.define('Ext.ux.grid.filter.ListFilter', {
 
     
     createMenu: function(config) {
-        var menuCfg = config.menuItems ? {items : config.menuItems} : {};
-        Ext.copyTo(menuCfg, config, "labelField,loadingText,loadOnShow,single,store,options");
-        
-        var menu = Ext.create('Ext.ux.grid.menu.ListMenu', menuCfg);
+        var menu = Ext.create('Ext.ux.grid.menu.ListMenu', Ext.applyIf(this.menuConfig || {}, config));
         menu.on('checkchange', this.onCheckChange, this);
         return menu;
     },
@@ -1014,6 +1023,12 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         me.mixins.observable.constructor.call(me);
     },
 
+    ensureFilters : function () {
+        if (this.view && this.view.headerCt && !this.view.headerCt.menu) {
+            this.view.headerCt.getMenu();
+        }
+    },
+
     createFiltersCollection: function () {
         return Ext.create('Ext.util.MixedCollection', false, function (o) {
             return o ? o.dataIndex : null;
@@ -1270,6 +1285,7 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         if(!options){
             return;
         }
+        this.ensureFilters();
         options.params = options.params || {};
         this.cleanParams(options.params);
         var params = this.buildQuery(this.getFilterData());
@@ -1382,6 +1398,7 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
 
     
     getFilter : function (dataIndex) {
+        this.ensureFilters();        
         return this.filters.get(dataIndex);
     },
 
@@ -1392,21 +1409,35 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         });
     },
 
+    getFilterItems: function () {
+        var me = this;
+
+        // If there's a locked grid then we must get the filter items for each grid.
+        if (me.lockingPartner) {
+            return me.filters.items.concat(me.lockingPartner.filters.items);
+        }
+
+        return me.filters.items;
+    },
+
     
     getFilterData : function () {
-        var filters = [], i, len;
+        var items = this.getFilterItems(),
+            filters = [],
+            n, nlen, item, d, i, len;
 
-        this.filters.each(function (f) {
-            if (f.active) {
-                var d = [].concat(f.serialize());
+        for (n = 0, nlen = items.length; n < nlen; n++) {
+            item = items[n];
+            if (item.active) {
+                d = [].concat(item.serialize());
                 for (i = 0, len = d.length; i < len; i++) {
                     filters.push({
-                        field: f.dataIndex,
+                        field: item.dataIndex,
                         data: d[i]
                     });
                 }
             }
-        });
+        }
         return filters;
     },
 

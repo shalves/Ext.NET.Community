@@ -22,7 +22,7 @@ namespace Ext.Net.Examples.SimpleTasks
             this.Mode = TreePanelMode.Remote;
             this.Cls = "tasks-tree";
 
-            var view = new TreeView();
+            TreeView view = new TreeView();
             view.Plugins.Add(new TreeViewDragDrop { 
                 AllowLeafDrop = true,
                 AppendOnly = true,

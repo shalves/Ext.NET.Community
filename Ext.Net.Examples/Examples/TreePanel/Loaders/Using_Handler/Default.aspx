@@ -6,14 +6,14 @@
 
 <html>
 <head runat="server">
-    <title>TreePanel with Async TreeLoader using HttpHandler - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <title>TreePanel with ajax proxy using HttpHandler - Ext.NET Examples</title>
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
         <ext:ResourceManager runat="server" />
         
-        <h1>TreePanel with Async TreeLoader using HttpHandler</h1> 
+        <h1>TreePanel with ajax proxy using HttpHandler</h1> 
         
         <ext:TreePanel 
             ID="TreePanel1" 

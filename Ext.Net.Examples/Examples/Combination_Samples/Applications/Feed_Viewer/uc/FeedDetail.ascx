@@ -9,7 +9,7 @@
             return;
         }
         
-        var grid = (GridPanel)e.Control;
+        GridPanel grid = (GridPanel)e.Control;
         grid.Listeners.SelectionChange.Handler = "var selected = selections[0]; if (selected) {var post = this.up('[cls=feed-detail]').down('[cls=preview]'); post.active = selected; post.update(selected.data);}";        
     }
 </script>

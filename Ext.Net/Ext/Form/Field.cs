@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -30,7 +30,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
+using System.Linq;
 using Ext.Net.Utilities;
 using Newtonsoft.Json.Linq;
 
@@ -77,7 +77,7 @@ namespace Ext.Net
         {
             get
             {
-                return !this.IsDynamic;
+                return !this.IsDynamic && this.Name.IsEmpty() && this.InputID.IsEmpty() && !this.IsMVC;
             }
         }
 
@@ -634,6 +634,25 @@ namespace Ext.Net
             }
         }
 
+        /// <summary>
+        /// The width of the field input element in pixels. Defaults to 100.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue(100)]
+        [NotifyParentProperty(true)]
+        [Description("The width of the field input element in pixels. Defaults to 100.")]
+        public virtual int InputWidth
+        {
+            get
+            {
+                return this.State.Get<int>("InputWidth", 100);
+            }
+            set
+            {
+                this.State.Set("InputWidth", value);
+            }
+        }
 
         /// <summary>
         /// The CSS class to use when marking the component invalid (defaults to 'x-form-invalid')
@@ -1757,6 +1776,151 @@ namespace Ext.Net
             }
         }
 
+        private JFunction validator;
+
+        /// <summary>   
+        /// A custom validation function to be called during field validation (getErrors) (defaults to undefined). If specified, this function will be called first, allowing the developer to override the default validation process.
+        /// This function will be passed the following Parameters:
+        /// value: Mixed
+        ///     The current field value
+        /// params: Object
+        /// 
+        /// This function is to Return:
+        /// true: Boolean
+        ///     true if the value is valid
+        /// msg: String
+        ///     An error message if the value is invalid
+        /// </summary>
+        [Meta]
+        [ConfigOption(JsonMode.Raw)]
+        [Category("5. Field")]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [Description("A custom validation function to be called during field validation (getErrors) (defaults to undefined). If specified, this function will be called first, allowing the developer to override the default validation process.")]
+        public virtual JFunction Validator
+        {
+            get
+            {
+                if (this.validator == null)
+                {
+                    this.validator = new JFunction();
+                    if (!this.DesignMode)
+                    {
+                        this.validator.Args = new string[] { "value", "params" };
+                    }
+                }
+
+                return this.validator;
+            }
+        }
+
+        /// <summary>
+        /// A custom error message to display in place of the default message provided for the validator currently set for this field (defaults to ''). Only applies if validator is set, else ignored.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("5. Field")]
+        [DefaultValue("")]
+        [Localizable(true)]
+        [Description("A custom error message to display in place of the default message provided for the validator currently set for this field (defaults to ''). Only applies if validator is set, else ignored.")]
+        public virtual string ValidatorText
+        {
+            get
+            {
+                return this.State.Get<string>("ValidatorText", "");
+            }
+            set
+            {
+                this.State.Set("ValidatorText", value);
+            }
+        }
+
+        /// <summary>
+        /// A validation type name as defined in Ext.form.VTypes (defaults to null).
+        /// </summary>
+        [Meta]
+        [ConfigOption("vtype", JsonMode.ToLower)]
+        [Category("5. Field")]
+        [DefaultValue(ValidationType.None)]
+        [Description("A validation type name as defined in Ext.form.VTypes (defaults to null).")]
+        public virtual ValidationType StandardVtype
+        {
+            get
+            {
+                return this.State.Get<ValidationType>("StandardVtype", ValidationType.None);
+            }
+            set
+            {
+                this.State.Set("StandardVtype", value);
+            }
+        }
+
+        /// <summary>
+        /// A validation type name as defined in Ext.form.VTypes (defaults to null).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("5. Field")]
+        [DefaultValue("")]
+        [Description("A validation type name as defined in Ext.form.VTypes (defaults to null).")]
+        public virtual string Vtype
+        {
+            get
+            {
+                return this.State.Get<string>("Vtype", "");
+            }
+            set
+            {
+                this.State.Set("Vtype", value);
+            }
+        }
+
+        /// <summary>
+        /// A custom error message to display in place of the default message provided for the vtype currently set for this field (defaults to ''). Only applies if vtype is set, else ignored.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("5. Field")]
+        [DefaultValue("")]
+        [Localizable(true)]
+        [Description("A custom error message to display in place of the default message provided for the vtype currently set for this field (defaults to ''). Only applies if vtype is set, else ignored.")]
+        public virtual string VtypeText
+        {
+            get
+            {
+                return this.State.Get<string>("VtypeText", "");
+            }
+            set
+            {
+                this.State.Set("VtypeText", value);
+            }
+        }
+
+        private ParameterCollection vtypeParams;
+
+        /// <summary>
+        /// Parameters are passed to VType validation method
+        /// </summary>
+        [Meta]
+        [ConfigOption("vtypeParams", JsonMode.ArrayToObject)]
+        [Category("5. Field")]
+        [NotifyParentProperty(true)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("Parameters are passed to VType validation method")]
+        public virtual ParameterCollection VTypeParams
+        {
+            get
+            {
+                if (this.vtypeParams == null)
+                {
+                    this.vtypeParams = new ParameterCollection();
+                    this.vtypeParams.Owner = this;
+                }
+
+                return this.vtypeParams;
+            }
+        }
+
         /// <summary>
         /// Clears the Field value.
         /// </summary>
@@ -1994,6 +2158,16 @@ namespace Ext.Net
         }
 
         /// <summary>
+        /// Forces the field to be validated client side.
+        /// </summary>
+        [Meta]
+        [Description("Forces the field to be validated client side.")]
+        public virtual void Validate()
+        {
+            this.Call("validate");
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         [Description("")]
@@ -2005,7 +2179,7 @@ namespace Ext.Net
                 icons.Add(this.IndicatorIcon);
                 return icons;
             }
-        }
+        }       
 
         /* Remote Validation */
         
@@ -2034,6 +2208,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
+        [Meta]
         [Category("5. Field")]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
@@ -2055,6 +2230,33 @@ namespace Ext.Net
 
         /*  IPostBackDataHandler + IPostBackEventHandler
             -----------------------------------------------------------------------------------------------*/
+
+        [DefaultValue(true)]
+        public virtual bool SuccessLoadPostData
+        {
+            get
+            {
+                return this.State.Get<bool>("SuccessLoadPostData", true);
+            }
+            protected set
+            {
+                this.State.Set("SuccessLoadPostData", value);
+            }
+        }
+
+        [Meta]
+        [DefaultValue(false)]
+        public virtual bool RethrowLoadPostDataException
+        {
+            get
+            {
+                return this.State.Get<bool>("RethrowLoadPostDataException", false);
+            }
+            set
+            {
+                this.State.Set("RethrowLoadPostDataException", value);
+            }
+        }
 
         /// <summary>
         /// 

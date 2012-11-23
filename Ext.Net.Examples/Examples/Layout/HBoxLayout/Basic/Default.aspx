@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>HBoxLayout - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         html, body {
             font    : normal 12px verdana;
             margin  : 0;
@@ -19,7 +19,7 @@
         }
     </style>
     
-    <script type="text/javascript">
+    <script>
         var replace = function (panel) {
             var btns = Ext.getCmp("btns");
 

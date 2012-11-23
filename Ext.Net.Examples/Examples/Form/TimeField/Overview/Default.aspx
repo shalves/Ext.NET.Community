@@ -7,7 +7,7 @@
 <html>
 <head runat="server">
     <title>TimeField Control Variations - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
     <script runat="server">
         protected void Page_Load(object sender, EventArgs e)

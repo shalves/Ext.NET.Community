@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -281,6 +281,48 @@ namespace Ext.Net
             get
             {
                 return this.iconChange ?? (this.iconChange = new ComponentListener());
+            }
+        }
+
+        private ComponentListener _float;
+
+        /// <summary>
+        /// Fires after a collapsed Panel has been "floated" by clicking on it's header. Only applicable when the Panel is an item in a Border Layout.
+        /// Parameters
+        /// item : Ext.panel.Panel        
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(Panel), "this")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("float", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires after a collapsed Panel has been \"floated\" by clicking on it's header. Only applicable when the Panel is an item in a Border Layout.")]
+        public virtual ComponentListener Float
+        {
+            get
+            {
+                return this._float ?? (this._float = new ComponentListener());
+            }
+        }
+
+        private ComponentListener unfloat;
+
+        /// <summary>
+        /// Fires after a "floated" Panel has returned to it's collapsed state as a result of the mouse leaving the Panel. Only applicable when the Panel is an item in a Border Layout.
+        /// Parameters
+        /// item : Ext.panel.Panel        
+        /// </summary>
+        [ListenerArgument(0, "item", typeof(Panel), "this")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("unfloat", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires after a \"floated\" Panel has returned to it's collapsed state as a result of the mouse leaving the Panel. Only applicable when the Panel is an item in a Border Layout.")]
+        public virtual ComponentListener Unfloat
+        {
+            get
+            {
+                return this.unfloat ?? (this.unfloat = new ComponentListener());
             }
         }
     }

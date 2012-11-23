@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TColumnBase, TBuilder> : ComponentBase.Builder<TColumnBase, TBuilder>
+        new public abstract partial class Builder<TColumnBase, TBuilder> : ComponentBase.Builder<TColumnBase, TBuilder>
             where TColumnBase : ColumnBase
             where TBuilder : Builder<TColumnBase, TBuilder>
         {
@@ -78,7 +78,16 @@ namespace Ext.Net
             }
              
  			/// <summary>
-			/// 
+			/// If the grid is configured with enableLocking, or has columns which are configured with a locked value, this option may be used to disable user-driven locking or unlocking of this column. This column will remain in the side into which its own locked configuration placed it.
+			/// </summary>
+            public virtual TBuilder Lockable(bool? lockable)
+            {
+                this.ToComponent().Lockable = lockable;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to lock this column in place. Implicitly enables locking on the grid.
 			/// </summary>
             public virtual TBuilder Locked(bool? locked)
             {
@@ -253,6 +262,33 @@ namespace Ext.Net
             public virtual TBuilder Text(string text)
             {
                 this.ToComponent().Text = text;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A tooltip to display for this column header
+			/// </summary>
+            public virtual TBuilder ToolTip(string toolTip)
+            {
+                this.ToComponent().ToolTip = toolTip;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The type of tooltip to use. Either 'qtip' for QuickTips or 'title' for title attribute.
+			/// </summary>
+            public virtual TBuilder ToolTipType(ToolTipType toolTipType)
+            {
+                this.ToComponent().ToolTipType = toolTipType;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to wrap the cells text (excluding header). Defaults to null.
+			/// </summary>
+            public virtual TBuilder Wrap(bool? wrap)
+            {
+                this.ToComponent().Wrap = wrap;
                 return this as TBuilder;
             }
             

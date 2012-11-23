@@ -7,7 +7,7 @@
 <html>
 <head runat="server">
     <title>GridPanel with JSON WebService - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -24,7 +24,7 @@
                         <ext:AjaxProxy Json="true" Url="../../Shared/PlantJsonService.asmx/PlantsPaging">
                             <ActionMethods Read="POST" />                            
                             <Reader>
-                                <ext:JsonReader Root="d.Data" TotalProperty="d.TotalRecords" />
+                                <ext:JsonReader Root="d.data" TotalProperty="d.total" />
                             </Reader>
                         </ext:AjaxProxy>
                     </Proxy>

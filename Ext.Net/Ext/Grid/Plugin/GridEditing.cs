@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -91,26 +91,15 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        public override string CallID
-        {
-            get
-            {
-                return this.ParentComponent.ClientID;
-            }
-        }
-
-        /// <summary>
         /// Start editing the specified record, using the specified Column definition to define which field is being edited.
         /// </summary>
         /// <param name="recordId">The Store data record id which backs the row to be edited.</param>
         /// <param name="dataIndex">The Column object dataIndex defining the column to be edited.</param>
         public virtual void StartEdit(object recordId, string dataIndex)
         {
-            this.Call("editingPlugin.startEdit", 
-                new JRawValue("{0}.store.getById({1})".FormatWith(this.CallID, JSON.Serialize(recordId))),
-                new JRawValue("{0}.headerCt.down('gridcolumn[dataIndex={1}]')".FormatWith(this.CallID, dataIndex)));
+            this.Call("startEdit", 
+                new JRawValue("{0}.grid.store.getById({1})".FormatWith(this.CallID, JSON.Serialize(recordId))),
+                new JRawValue("{0}.grid.headerCt.down('gridcolumn[dataIndex={1}]')".FormatWith(this.ClientID, dataIndex)));
         }
 
         /// <summary>
@@ -120,7 +109,7 @@ namespace Ext.Net
         /// <param name="columnIndex">The Column object index defining the column to be edited.</param>
         public virtual void StartEdit(int recordIndex, int columnIndex)
         {
-            this.Call("editingPlugin.startEdit", recordIndex, columnIndex);
+            this.Call("startEdit", recordIndex, columnIndex);
         }
 
         /// <summary>
@@ -130,7 +119,7 @@ namespace Ext.Net
         /// <param name="columnIndex">The Column object index defining the column to be edited.</param>
         public virtual void StartEdit(ModelProxy record, int columnIndex)
         {
-            this.Call("editingPlugin.startEdit", JRawValue.From(record.ModelInstance), columnIndex);
+            this.Call("startEdit", JRawValue.From(record.ModelInstance), columnIndex);
         }
 
         /// <summary>
@@ -140,9 +129,9 @@ namespace Ext.Net
         /// <param name="dataIndex">The Column object dataIndex defining the column to be edited.</param>
         public virtual void StartEdit(ModelProxy record, string dataIndex)
         {
-            this.Call("editingPlugin.startEdit",
+            this.Call("startEdit",
                 JRawValue.From(record.ModelInstance),
-                new JRawValue("{0}.headerCt.down('gridcolumn[dataIndex={1}]')".FormatWith(this.CallID, dataIndex)));
+                new JRawValue("{0}.grid.headerCt.down('gridcolumn[dataIndex={1}]')".FormatWith(this.ClientID, dataIndex)));
         }
 
         /// <summary>
@@ -150,7 +139,7 @@ namespace Ext.Net
         /// </summary>
         public virtual void CancelEdit()
         {
-            this.Call("editingPlugin.cancelEdit");
+            this.Call("cancelEdit");
         }
 
         /// <summary>
@@ -158,7 +147,7 @@ namespace Ext.Net
         /// </summary>
         public virtual void CompleteEdit()
         {
-            this.Call("editingPlugin.completeEdit");
+            this.Call("completeEdit");
         }
     }
 }

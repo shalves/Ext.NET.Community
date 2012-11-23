@@ -16,11 +16,11 @@ namespace Ext.Net.Examples
         {
             context.Response.ContentType = "text/json";
 
-            var start = 0;
-            var limit = 10;
-            var sort = string.Empty;
-            var dir = string.Empty;
-            var query = string.Empty;
+            int start = 0;
+            int limit = 10;
+            string sort = string.Empty;
+            string dir = string.Empty;
+            string query = string.Empty;
 
             if (!string.IsNullOrEmpty(context.Request["start"]))
             {

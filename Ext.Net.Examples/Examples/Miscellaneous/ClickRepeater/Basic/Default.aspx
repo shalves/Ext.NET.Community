@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>ClickRepeater - Ext.NET Examples</title>    
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .pressedTd {
             background-color : Silver;
         }    
@@ -41,13 +41,13 @@
         
         <ext:ClickRepeater runat="server" Target="minusTd" PressClass="pressedTd">     
             <Listeners>
-                <Click Handler="#{ValueLabel}.setText(parseInt(#{ValueLabel}.getText()) - 1);" />
+                <Click Handler="#{ValueLabel}.setText((parseInt(#{ValueLabel}.getText(), 10) - 1).toString());" />
             </Listeners>
         </ext:ClickRepeater>
         
         <ext:ClickRepeater runat="server" Target="plusTd" PressClass="pressedTd">     
             <Listeners>
-                <Click Handler="#{ValueLabel}.setText(parseInt(#{ValueLabel}.getText()) + 1);" />
+                <Click Handler="#{ValueLabel}.setText((parseInt(#{ValueLabel}.getText(), 10) + 1).toString());" />
             </Listeners>
         </ext:ClickRepeater>
         
@@ -68,8 +68,8 @@
             PreventDefault="true"
             StopDefault="true">
             <Listeners>
-                <LeftClick Handler="#{ValueLabel1}.setText(parseInt(#{ValueLabel1}.getText()) - 1);" />
-                <RightClick Handler="#{ValueLabel1}.setText(parseInt(#{ValueLabel1}.getText()) + 1);" />
+                <LeftClick Handler="#{ValueLabel1}.setText((parseInt(#{ValueLabel1}.getText(), 10) - 1).toString());" />
+                <RightClick Handler="#{ValueLabel1}.setText((parseInt(#{ValueLabel1}.getText(), 10) + 1).toString());" />
             </Listeners>
         </ext:ClickRepeater>
     </form>    

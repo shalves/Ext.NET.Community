@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>Field Note - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .red-note {
             color: red !important;
         }

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,50 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : DayView.Builder<WeekView, WeekView.Builder>
+        new public abstract partial class Builder<TWeekView, TBuilder> : DayView.Builder<TWeekView, TBuilder>
+            where TWeekView : WeekView
+            where TBuilder : Builder<TWeekView, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TWeekView component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The number of days to display in the view (defaults to 7)
+			/// </summary>
+            public virtual TBuilder DayCount(int dayCount)
+            {
+                this.ToComponent().DayCount = dayCount;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The 0-based index for the day on which the calendar week begins (0=Sunday, which is the default)
+			/// </summary>
+            public virtual TBuilder StartDay(int startDay)
+            {
+                this.ToComponent().StartDay = startDay;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : WeekView.Builder<WeekView, WeekView.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,24 +115,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The number of days to display in the view (defaults to 7)
-			/// </summary>
-            public virtual WeekView.Builder DayCount(int dayCount)
-            {
-                this.ToComponent().DayCount = dayCount;
-                return this as WeekView.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -98,6 +123,14 @@ namespace Ext.Net
         public WeekView.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.WeekView(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -112,7 +145,11 @@ namespace Ext.Net
         /// </summary>
         public WeekView.Builder WeekView()
         {
-            return this.WeekView(new WeekView());
+#if MVC
+			return this.WeekView(new WeekView { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.WeekView(new WeekView());
+#endif			
         }
 
         /// <summary>
@@ -120,7 +157,10 @@ namespace Ext.Net
         /// </summary>
         public WeekView.Builder WeekView(WeekView component)
         {
-            return new WeekView.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new WeekView.Builder(component);
         }
 
         /// <summary>
@@ -128,7 +168,11 @@ namespace Ext.Net
         /// </summary>
         public WeekView.Builder WeekView(WeekView.Config config)
         {
-            return new WeekView.Builder(new WeekView(config));
+#if MVC
+			return new WeekView.Builder(new WeekView(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new WeekView.Builder(new WeekView(config));
+#endif			
         }
     }
 }

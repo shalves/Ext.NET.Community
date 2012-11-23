@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,32 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : WebStorageProxy.Builder<SessionStorageProxy, SessionStorageProxy.Builder>
+        new public abstract partial class Builder<TSessionStorageProxy, TBuilder> : WebStorageProxy.Builder<TSessionStorageProxy, TBuilder>
+            where TSessionStorageProxy : SessionStorageProxy
+            where TBuilder : Builder<TSessionStorageProxy, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TSessionStorageProxy component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : SessionStorageProxy.Builder<SessionStorageProxy, SessionStorageProxy.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,15 +97,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -89,6 +105,14 @@ namespace Ext.Net
         public SessionStorageProxy.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.SessionStorageProxy(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -103,7 +127,11 @@ namespace Ext.Net
         /// </summary>
         public SessionStorageProxy.Builder SessionStorageProxy()
         {
-            return this.SessionStorageProxy(new SessionStorageProxy());
+#if MVC
+			return this.SessionStorageProxy(new SessionStorageProxy { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.SessionStorageProxy(new SessionStorageProxy());
+#endif			
         }
 
         /// <summary>
@@ -111,7 +139,10 @@ namespace Ext.Net
         /// </summary>
         public SessionStorageProxy.Builder SessionStorageProxy(SessionStorageProxy component)
         {
-            return new SessionStorageProxy.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new SessionStorageProxy.Builder(component);
         }
 
         /// <summary>
@@ -119,7 +150,11 @@ namespace Ext.Net
         /// </summary>
         public SessionStorageProxy.Builder SessionStorageProxy(SessionStorageProxy.Config config)
         {
-            return new SessionStorageProxy.Builder(new SessionStorageProxy(config));
+#if MVC
+			return new SessionStorageProxy.Builder(new SessionStorageProxy(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new SessionStorageProxy.Builder(new SessionStorageProxy(config));
+#endif			
         }
     }
 }

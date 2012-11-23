@@ -21,7 +21,7 @@
         this.propertyNames = this.propertyNames || [];
         
         if (!this.editable) {
-            this.editingPlugin.on("beforeedit", function () {
+            this.on("beforeedit", function () {
                 return false;
             });
         }

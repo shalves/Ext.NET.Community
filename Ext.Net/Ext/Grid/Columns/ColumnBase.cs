@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -30,6 +30,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Ext.Net.Utilities;
 
 namespace Ext.Net
 {
@@ -99,15 +100,35 @@ namespace Ext.Net
                 this.State.Set("HideTitleEl", value);
             }
         }
-        
+
         /// <summary>
-        /// 
+        /// If the grid is configured with enableLocking, or has columns which are configured with a locked value, this option may be used to disable user-driven locking or unlocking of this column. This column will remain in the side into which its own locked configuration placed it.
         /// </summary>
         [Meta]
         [ConfigOption]
         [Category("2. ColumnBase")]
         [DefaultValue(null)]
-        [Description("")]
+        [Description("If the grid is configured with enableLocking, or has columns which are configured with a locked value, this option may be used to disable user-driven locking or unlocking of this column. This column will remain in the side into which its own locked configuration placed it.")]
+        public virtual bool? Lockable
+        {
+            get
+            {
+                return this.State.Get<bool?>("Lockable", null);
+            }
+            set
+            {
+                this.State.Set("Lockable", value);
+            }
+        }
+        
+        /// <summary>
+        /// True to lock this column in place. Implicitly enables locking on the grid.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("2. ColumnBase")]
+        [DefaultValue(null)]
+        [Description("True to lock this column in place. Implicitly enables locking on the grid.")]
         public virtual bool? Locked
         {
             get
@@ -281,12 +302,14 @@ namespace Ext.Net
                 if (this.Parent == null || this.Parent.Parent == null)
                 {
                     return false;
-                }                
+                }
 
-                var grid = this.Parent.Parent as ComponentBase;
+                ComponentBase grid = this.Parent.Parent as ComponentBase;
+
                 if (grid != null)
                 {                    
-                    var rowEditing = grid.Plugins.Find(p => p is RowEditing);
+                    Plugin rowEditing = grid.Plugins.Find(p => p is RowEditing);
+
                     return rowEditing != null;
                 }
 
@@ -303,16 +326,21 @@ namespace Ext.Net
         protected virtual string EditorProxy
         {
             get
-            {
+            {                
                 if ((this.Editor.Count == 0 && this.EditorOptions.IsDefaultInstanceName) || (this.Editor.Count == 0 && this.IsRowEditing) || this.Editor.Count > 1)
                 {
                     return "";
                 }
 
+                if (this is INoneEditable && !this.IsRowEditing)
+                {
+                    throw new Exception("The {0} is not editable".FormatWith(this.GetType().FullName));
+                }
+
                 if (this.IsRowEditing)
                 {
                     return Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{                        
-                            {"id", this.Editor.Primary.ClientID + "_ClientInit"},
+                            {"id", this.Editor.Primary.BaseClientID + "_ClientInit"},
                             {"tpl", "{0}"}
                         });
                 }
@@ -328,7 +356,7 @@ namespace Ext.Net
                 string tpl = "new " + this.EditorOptions.InstanceName + "(Ext.apply({{field:{0}}}, " + options + "))";
 
                 return Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{                        
-                            {"id", this.Editor.Primary.ClientID + "_ClientInit"},
+                            {"id", this.Editor.Primary.BaseClientID + "_ClientInit"},
                             {"tpl", tpl}
                         });
             }
@@ -354,16 +382,21 @@ namespace Ext.Net
                     return "";
                 }
 
+                if (this is INoneEditable && !this.IsRowEditing)
+                {
+                    throw new Exception("The {0} is not editable".FormatWith(this.GetType().FullName));
+                }
+
                 string options = this.EditorOptions.Serialize();
                 options = options.Replace("{", "{{").Replace("}", "}}");
                 string tpl = "new " + this.EditorOptions.InstanceName + "(Ext.apply({{field:{0}}}, " + options + "))";
 
                 StringBuilder sb = new StringBuilder("[");
 
-                foreach (var ed in this.Editor)
+                foreach (Field ed in this.Editor)
                 {
                     sb.Append(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{                        
-                            {"id", ed.ClientID + "_ClientInit"},
+                            {"id", ed.BaseClientID + "_ClientInit"},
                             {"tpl", tpl}
                         }));
                     sb.Append(",");
@@ -725,6 +758,69 @@ namespace Ext.Net
             set
             {
                 this.State.Set("Text", value);
+            }
+        }
+
+        /// <summary>
+        /// A tooltip to display for this column header
+        /// </summary>
+        [Meta]
+        [ConfigOption("tooltip")]
+        [Localizable(true)]
+        [DefaultValue("")]
+        [Description("A tooltip to display for this column header")]
+        [ReadOnly(false)]
+        [Browsable(true)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public override string ToolTip
+        {
+            get
+            {
+                return this.State.Get<string>("ToolTip", "");
+            }
+            set
+            {
+                this.State.Set("ToolTip", value);
+            }
+        }
+
+        /// <summary>
+        /// The type of tooltip to use. Either 'qtip' for QuickTips or 'title' for title attribute.
+        /// </summary>
+        [Meta]
+        [ConfigOption("tooltipType")]
+        [DefaultValue(ToolTipType.Qtip)]
+        [Description("The type of tooltip to use. Either 'qtip' for QuickTips or 'title' for title attribute.")]
+        public virtual ToolTipType ToolTipType
+        {
+            get
+            {
+                return this.State.Get<ToolTipType>("ToolTipType", ToolTipType.Qtip);
+            }
+            set
+            {
+                this.State.Set("ToolTipType", value);
+            }
+        }
+
+        /// <summary>
+        /// True to wrap the cells text (excluding header). Defaults to null.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("2. ColumnBase")]
+        [DefaultValue(null)]
+        [Description("True to wrap the cells text (excluding header). Defaults to null.")]
+        public virtual bool? Wrap
+        {
+            get
+            {
+                return this.State.Get<bool?>("Wrap", null);
+            }
+            set
+            {
+                this.State.Set("Wrap", value);
             }
         }
 

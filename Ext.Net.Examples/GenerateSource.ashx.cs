@@ -60,7 +60,7 @@ namespace Ext.Net.Examples
 
             url = context.Request["f"];
             path = context.Server.MapPath(url);
-            var fi = new FileInfo(path);
+            FileInfo fi = new FileInfo(path);
 
             if (!path.StartsWith(examplesRoot, true, CultureInfo.CurrentCulture) &&
                     !path.StartsWith(codeRoot, true, CultureInfo.CurrentCulture))
@@ -111,7 +111,7 @@ namespace Ext.Net.Examples
             FileStream ostream;
             byte[] obuffer;
 
-            var oZipStream = new ZipOutputStream(HttpContext.Current.Response.OutputStream);
+            ZipOutputStream oZipStream = new ZipOutputStream(HttpContext.Current.Response.OutputStream);
 
             oZipStream.SetLevel(6);
             ZipEntry oZipEntry;
@@ -131,7 +131,7 @@ namespace Ext.Net.Examples
 
             if (File.Exists(inputFolderPath + "config.xml"))
             {
-                var cfg = new ExampleConfig(inputFolderPath + "config.xml", true);
+                ExampleConfig cfg = new ExampleConfig(inputFolderPath + "config.xml", true);
                 foreach (string file in cfg.OuterFiles)
                 {
                     oZipEntry = new ZipEntry(new FileInfo(file).Name);
@@ -174,8 +174,8 @@ namespace Ext.Net.Examples
 
         private ArrayList GenerateFileList(string dir)
         {
-            var dirInfo = new DirectoryInfo(dir);
-            var fils = new ArrayList();
+            DirectoryInfo dirInfo = new DirectoryInfo(dir);
+            ArrayList fils = new ArrayList();
 
             if (excludeFolders.Contains(dirInfo.Name.ToLower()) || dirInfo.Name.StartsWith("_"))
             {

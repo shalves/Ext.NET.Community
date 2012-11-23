@@ -68,7 +68,7 @@ var swfobject = function () {
                     }
                 }
             }
-            catch (e) {}
+            catch(e) {}
         }
         return { w3:w3cdom, pv:playerVersion, wk:webkit, ie:ie, win:windows, mac:mac };
     }(),
@@ -100,7 +100,7 @@ var swfobject = function () {
                         try {
                             doc.documentElement.doScroll("left");
                         }
-                        catch (e) {
+                        catch(e) {
                             setTimeout(arguments.callee, 0);
                             return;
                         }

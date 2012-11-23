@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project path="" name="Ext.Net" author="Ext.NET, Inc." version="2.0.0" copyright="@version   : 2.0.0 - Community Edition (AGPLv3 License)&#xD;&#xA;@author    : Ext.NET, Inc. http://www.ext.net/&#xD;&#xA;@date      : 2012-07-24&#xD;&#xA;@copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.&#xD;&#xA;@license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.&#xD;&#xA;@website   : http://www.ext.net/" output="$project" source="False" source-dir="$output\source" minify="False" min-dir="$output" doc="False" doc-dir="$output\docs" master="true" master-file="$output\yui-ext.js" zip="true" zip-file="$output\yuo-ext.$version.zip">
+<project path="" name="Ext.Net" author="Ext.NET, Inc." version="2.1.0" copyright="@version   : 2.1.0 - Ext.NET Pro License&#xD;&#xA;@author    : Ext.NET, Inc. http://www.ext.net/&#xD;&#xA;@date      : 2012-11-21&#xD;&#xA;@copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.&#xD;&#xA;@license   : See license.txt and http://www.ext.net/license/." output="$project" source="False" source-dir="$output\source" minify="False" min-dir="$output" doc="False" doc-dir="$output\docs" master="true" master-file="$output\yui-ext.js" zip="true" zip-file="$output\yuo-ext.$version.zip">
   <directory name="src" />
   <file name="src\utils\DirectObservable.js" path="utils" />
   <file name="src\ajax\Ajax.js" path="ajax" />
@@ -63,7 +63,7 @@
   <file name="src\toolbar\Toolbar.js" path="toolbar" />
   <file name="src\toolbar\Paging.js" path="toolbar" />
   <file name="src\toolbar\TextItem.js" path="toolbar" />
-  <file name="src\tips\Tooltip.js" path="tips" />
+  <file name="src\tips\ToolTip.js" path="tips" />
   <file name="src\layout\Field.js" path="layout" />
   <file name="src\layout\Accordion.js" path="layout" />
   <file name="src\layout\Column.js" path="layout" />
@@ -95,6 +95,8 @@
   <file name="src\data\writer\Writer.js" path="data\writer" />
   <file name="src\data\writer\Json.js" path="data\writer" />
   <file name="src\view\AbstractView.js" path="view" />
+  <file name="src\view\TableView.js" path="view" />
+  <file name="src\view\TableLayout.js" path="view" />
   <file name="src\view\View.js" path="view" />
   <file name="src\view\SelectionSubmit.js" path="view" />
   <file name="src\view\BoundList.js" path="view" />
@@ -108,11 +110,13 @@
   <file name="src\grid\plugin\SelectionSubmit.js" path="grid\plugin" />
   <file name="src\grid\header\Container.js" path="grid\header" />
   <file name="src\grid\column\Column.js" path="grid\column" />
+  <file name="src\grid\column\RowNumberer.js" path="grid\column" />
   <file name="src\grid\column\ImageCommandColumn.js" path="grid\column" />
   <file name="src\grid\column\CommandColumn.js" path="grid\column" />
   <file name="src\grid\column\ComponentColumn.js" path="grid\column" />
   <file name="src\grid\column\CheckColumn.js" path="grid\column" />
   <file name="src\grid\header\DragZone.js" path="grid\header" />
+  <file name="src\grid\header\DropZone.js" path="grid\header" />
   <file name="src\grid\plugin\HeaderResizer.js" path="grid\plugin" />
   <file name="src\grid\plugin\CellEditing.js" path="grid\plugin" />
   <file name="src\grid\plugin\RowEditing.js" path="grid\plugin" />
@@ -121,6 +125,7 @@
   <file name="src\grid\property\Grid.js" path="grid\property" />
   <file name="src\tree\Panel.js" path="tree" />
   <file name="src\tree\Column.js" path="tree" />
+  <file name="src\tree\View.js" path="tree" />
   <file name="src\tree\plugin\TreeViewDragDrop.js" path="tree\plugin" />
   <file name="src\draw\Component.js" path="draw" />
   <file name="src\draw\Sprite.js" path="draw" />
@@ -222,6 +227,8 @@
     <include name="src\data\writer\Writer.js" />
     <include name="src\data\writer\Json.js" />
     <include name="src\view\AbstractView.js" />
+    <include name="src\view\TableView.js" />
+    <include name="src\view\TableLayout.js" />
     <include name="src\view\View.js" />
     <include name="src\view\SelectionSubmit.js" />
     <include name="src\view\BoundList.js" />
@@ -235,11 +242,13 @@
     <include name="src\grid\plugin\SelectionSubmit.js" />
     <include name="src\grid\header\Container.js" />
     <include name="src\grid\column\Column.js" />
+    <include name="src\grid\column\RowNumberer.js" />
     <include name="src\grid\column\ImageCommandColumn.js" />
     <include name="src\grid\column\CommandColumn.js" />
     <include name="src\grid\column\ComponentColumn.js" />
     <include name="src\grid\column\CheckColumn.js" />
     <include name="src\grid\header\DragZone.js" />
+    <include name="src\grid\header\DropZone.js" />
     <include name="src\grid\plugin\HeaderResizer.js" />
     <include name="src\grid\plugin\CellEditing.js" />
     <include name="src\grid\plugin\RowEditing.js" />
@@ -248,6 +257,7 @@
     <include name="src\grid\property\Grid.js" />
     <include name="src\tree\Panel.js" />
     <include name="src\tree\Column.js" />
+    <include name="src\tree\View.js" />
     <include name="src\tree\plugin\TreeViewDragDrop.js" />
     <include name="src\draw\Component.js" />
     <include name="src\draw\Sprite.js" />

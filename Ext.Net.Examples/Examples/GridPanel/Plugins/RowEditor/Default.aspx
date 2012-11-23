@@ -10,7 +10,7 @@
     {
         if (!X.IsAjaxRequest)
         {
-            var store = this.GridPanel1.GetStore();
+            Store store = this.GridPanel1.GetStore();
             
             store.DataSource = new List<object>
             {
@@ -61,10 +61,10 @@
 <html>
 <head runat="server">
     <title>GridPanel with RowEditor Plugin - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
     <ext:XScript runat="server">
-        <script type="text/javascript">
+        <script>
             var addEmployee = function () {
                 var grid = #{GridPanel1};
                 grid.editingPlugin.cancelEdit();
@@ -73,14 +73,14 @@
                 var r = Ext.ModelManager.create({
                     name: 'New Guy',
                     email: 'new@ext.net',
-                    start: new Date(),
+                    start: Ext.Date.clearTime(new Date()),
                     salary: 50000,
                     active: true
                 }, 'Employee');
 
                 grid.store.insert(0, r);
                 grid.editingPlugin.startEdit(0, 0);
-            }
+            };
             
             var removeEmployee = function () {
                 var grid = #{GridPanel1},
@@ -91,7 +91,7 @@
                 if (grid.store.getCount() > 0) {
                     sm.select(0);
                 }
-            }
+            };
         </script>
     </ext:XScript>
 </head>

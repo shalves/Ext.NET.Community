@@ -44,7 +44,7 @@
 <html>
 <head runat="server">
     <title>Spotlight - Ext.NET Examples</title>    
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -66,7 +66,7 @@
             </DirectEvents>
         </ext:Button>
         
-        <ext:Panel runat="server" Border="false" Layout="TableLayout">
+        <ext:Panel runat="server" Border="false" Layout="TableLayout" ShrinkWrap="Width">
             <LayoutConfig>
                 <ext:TableLayoutConfig Columns="3" />
             </LayoutConfig>

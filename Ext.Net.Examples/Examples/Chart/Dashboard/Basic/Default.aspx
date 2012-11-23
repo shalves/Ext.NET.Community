@@ -7,7 +7,7 @@
     {
         get
         {
-            var companies = new string[] 
+            string[] companies = new string[] 
             { 
                 "3m Co",
                 "Alcoa Inc",
@@ -39,9 +39,9 @@
                 "Verizon Communications",
                 "Wal-Mart Stores, Inc."
             };
-            
-            var rand = new Random();
-            var data = new List<object>(companies.Length);
+
+            Random rand = new Random();
+            List<object> data = new List<object>(companies.Length);
             
             for (int i = 0; i < companies.Length; i++)
             {
@@ -80,9 +80,9 @@
 <html>
 <head runat="server">
     <title>Form with embedded Grid</title>
-    <link href="../../../../resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="../../../../resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var form = false,
             rec = false,
             selectedStoreItem = false;
@@ -137,8 +137,10 @@
                 if (newValue > field.maxValue) {
                     field.setValue(field.maxValue);
                 } else {
-                    form.updateRecord(rec);
-                    updateRecord(rec);
+                    if (form.isValid()) {
+                        form.updateRecord(rec);
+                        updateRecord(rec);
+                    }
                 }
             }
         };
@@ -190,7 +192,7 @@
         };
     </script>
 
-    <style type="text/css">
+    <style>
         .x-panel-framed {
             padding: 0;
         }

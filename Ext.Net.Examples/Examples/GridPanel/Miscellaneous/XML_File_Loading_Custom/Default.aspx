@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>Custom XML file loading - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var idConvert = function (value, record) {
             var xmlNode = record.raw;
             return xmlNode.attributes[0].value;   

@@ -31,7 +31,7 @@
     [DirectMethod]
     public static string AddTab(string parameters)
     {
-        var prms = JSON.Deserialize<Dictionary<string, string>>(parameters);
+        Dictionary<string, string> prms = JSON.Deserialize<Dictionary<string, string>>(parameters);
         
         return ComponentLoader.ToConfig(new Panel { 
             Title = prms["name"], 
@@ -46,7 +46,7 @@
 <html>
 <head runat="server">
     <title>Loader - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <h1>Component Loader (DirectMethod)</h1>

@@ -71,9 +71,9 @@
 <html>
 <head runat="server">
     <title>Combo Boxes - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <style type="text/css">
+    <style>
         .example {
             width: 600px;
             border: 1px solid #CCC;

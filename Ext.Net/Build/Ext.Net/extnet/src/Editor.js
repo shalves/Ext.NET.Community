@@ -109,7 +109,7 @@ Ext.Editor.override({
                 }
             }
             else {
-                value = Ext.String.trim(this.boundEl.dom.innerText);                
+                value = Ext.String.trim(this.boundEl.dom[Ext.isGecko ? "textContent" : "innerText"]);                
             }
         }
         

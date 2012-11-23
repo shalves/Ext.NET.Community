@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,186 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseItem.Builder<HtmlEditorButtonTips, HtmlEditorButtonTips.Builder>
+        new public abstract partial class Builder<THtmlEditorButtonTips, TBuilder> : BaseItem.Builder<THtmlEditorButtonTips, TBuilder>
+            where THtmlEditorButtonTips : HtmlEditorButtonTips
+            where TBuilder : Builder<THtmlEditorButtonTips, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(THtmlEditorButtonTips component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Bold(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().Bold);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Italic(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().Italic);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Underline(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().Underline);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder IncreaseFontSize(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().IncreaseFontSize);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DecreaseFontSize(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().DecreaseFontSize);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder BackColor(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().BackColor);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder ForeColor(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().ForeColor);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder JustifyLeft(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().JustifyLeft);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder JustifyCenter(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().JustifyCenter);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder JustifyRight(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().JustifyRight);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder InsertUnorderedList(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().InsertUnorderedList);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder InsertOrderedList(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().InsertOrderedList);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder CreateLink(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().CreateLink);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder SourceEdit(Action<HtmlEditorButtonTip> action)
+            {
+                action(this.ToComponent().SourceEdit);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : HtmlEditorButtonTips.Builder<HtmlEditorButtonTips, HtmlEditorButtonTips.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,169 +251,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder Bold(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().Bold);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder Italic(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().Italic);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder Underline(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().Underline);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder IncreaseFontSize(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().IncreaseFontSize);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder DecreaseFontSize(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().DecreaseFontSize);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder BackColor(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().BackColor);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder ForeColor(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().ForeColor);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder JustifyLeft(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().JustifyLeft);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder JustifyCenter(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().JustifyCenter);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder JustifyRight(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().JustifyRight);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder InsertUnorderedList(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().InsertUnorderedList);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder InsertOrderedList(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().InsertOrderedList);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder CreateLink(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().CreateLink);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of HtmlEditorButtonTips.Builder</returns>
-            public virtual HtmlEditorButtonTips.Builder SourceEdit(Action<HtmlEditorButtonTip> action)
-            {
-                action(this.ToComponent().SourceEdit);
-                return this as HtmlEditorButtonTips.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -243,6 +259,14 @@ namespace Ext.Net
         public HtmlEditorButtonTips.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.HtmlEditorButtonTips(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -257,7 +281,11 @@ namespace Ext.Net
         /// </summary>
         public HtmlEditorButtonTips.Builder HtmlEditorButtonTips()
         {
-            return this.HtmlEditorButtonTips(new HtmlEditorButtonTips());
+#if MVC
+			return this.HtmlEditorButtonTips(new HtmlEditorButtonTips { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.HtmlEditorButtonTips(new HtmlEditorButtonTips());
+#endif			
         }
 
         /// <summary>
@@ -265,7 +293,10 @@ namespace Ext.Net
         /// </summary>
         public HtmlEditorButtonTips.Builder HtmlEditorButtonTips(HtmlEditorButtonTips component)
         {
-            return new HtmlEditorButtonTips.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new HtmlEditorButtonTips.Builder(component);
         }
 
         /// <summary>
@@ -273,7 +304,11 @@ namespace Ext.Net
         /// </summary>
         public HtmlEditorButtonTips.Builder HtmlEditorButtonTips(HtmlEditorButtonTips.Config config)
         {
-            return new HtmlEditorButtonTips.Builder(new HtmlEditorButtonTips(config));
+#if MVC
+			return new HtmlEditorButtonTips.Builder(new HtmlEditorButtonTips(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new HtmlEditorButtonTips.Builder(new HtmlEditorButtonTips(config));
+#endif			
         }
     }
 }

@@ -62,9 +62,9 @@
 <html>
 <head runat="server">
     <title>GridPanel with RowExpander Plugin - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {
@@ -76,38 +76,38 @@
         }
     </script>
 </head>
-<body scroll="no">
+<body>
     <form runat="server">
         <ext:ResourceManager ID="ResourceManager1" runat="server" />
         
-        <h1>GridPanel with RowExpander Plugin</h1>
-        
-        <ext:Store ID="Store1" runat="server">
-            <Model>
-                <ext:Model runat="server">
-                    <Fields>
-                        <ext:ModelField Name="company" />
-                        <ext:ModelField Name="price" Type="Float" />
-                        <ext:ModelField Name="change" Type="Float" />
-                        <ext:ModelField Name="pctChange" Type="Float" />
-                        <ext:ModelField Name="lastChange" Type="Date" DateFormat="M/d hh:mmtt" />
-                        <ext:ModelField Name="industry" />
-                        <ext:ModelField Name="desc" />
-                    </Fields>
-                </ext:Model>
-            </Model>
-        </ext:Store>
+        <h1>GridPanel with RowExpander Plugin</h1>        
         
         <ext:GridPanel 
             ID="GridPanel1" 
-            runat="server" 
-            StoreID="Store1" 
+            runat="server"             
             Title="RowExpander" 
             Collapsible="true" 
             AnimCollapse="true"
             Icon="Table" 
             Width="600" 
             Height="600">
+            <Store>
+                <ext:Store ID="Store1" runat="server">
+                    <Model>
+                        <ext:Model runat="server">
+                            <Fields>
+                                <ext:ModelField Name="company" />
+                                <ext:ModelField Name="price" Type="Float" />
+                                <ext:ModelField Name="change" Type="Float" />
+                                <ext:ModelField Name="pctChange" Type="Float" />
+                                <ext:ModelField Name="lastChange" Type="Date" DateFormat="M/d hh:mmtt" />
+                                <ext:ModelField Name="industry" />
+                                <ext:ModelField Name="desc" />
+                            </Fields>
+                        </ext:Model>
+                    </Model>
+                </ext:Store>
+            </Store>
             <ColumnModel runat="server">
                 <Columns>
                     <ext:Column runat="server" Text="Company" DataIndex="company" Flex="1" />
@@ -132,8 +132,8 @@
             <Plugins>
                 <ext:RowExpander ID="RowExpander1" runat="server">
                     <Listeners>
-                        <Collapse Handler="Ext.Msg.notify('Row collapsed', 'Row ¹ ' + rowIndex);" />
-                        <Expand Handler="Ext.Msg.notify('Row expanded', 'Row ¹ ' + rowIndex);" />
+                        <Collapse Handler="Ext.Msg.notify('Row collapsed', 'Row ¹ ' + rowIndex);" Delay="1" />
+                        <Expand Handler="Ext.Msg.notify('Row expanded', 'Row ¹ ' + rowIndex);" Delay="1" />
                     </Listeners>
                     <Template ID="Template1" runat="server">
                         <Html>

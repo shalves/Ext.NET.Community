@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>GridPanel GroupingView with EnableRowBody - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />  
+    <link href="/resources/css/examples.css" rel="stylesheet" />  
 
-    <script type="text/javascript">
+    <script>        
         // this "setGroupStyle" function is called when the GroupingView is refreshed.     
         var setGroupStyle = function (view) {
             // get an instance of the Groups
@@ -24,11 +24,48 @@
                 Ext.get(groups[i]).select('.x-grid-cell-inner').setStyle("background-color", color);
             }
         };
+
+        var fillMenu = function (menu, store) {
+            var groups = store.getGroups();
+            Ext.each(groups, function(g){
+                menu.add({
+                    xtype: 'menucheckitem',
+                    text: g.name,
+                    handler: toggleGroup
+                });
+            })
+        };
+
+        var toggleGroup = function(item) {
+            var groupName = item.text;
+            if (item.checked) {
+                App.Grouping1.expand(groupName, true);
+            } else {
+                App.Grouping1.collapse(groupName, true);
+            }
+        };
+
+        var groupcollapse = function(view, n, groupName) {
+            var grid = view.panel;
+            if (!grid.down('[text=Toggle groups...]').disabled) {
+                grid.down('menucheckitem[text=' + groupName + ']').setChecked(false, true);
+            }
+        };
+        
+        var groupexpand = function(view, n, groupName) {
+            var grid = view.panel;
+            if (!grid.down('[text=Toggle groups...]').disabled) {
+                grid.down('menucheckitem[text=' + groupName + ']').setChecked(true, true);
+            }
+        };
     </script>   
 </head>
 <body>
     <form runat="server">
         <ext:ResourceManager runat="server" />
+
+        <h1>Grouping Grid Example</h1>
+        <p>This example illustrates how to use the grouping feature of the Grid.</p>
 
         <ext:GridPanel
             ID="GridPanel1"
@@ -65,6 +102,9 @@
                     <Sorters>
                         <ext:DataSorter Property="Common" Direction="ASC" />
                     </Sorters>
+                    <Listeners>
+                        <Load Handler="fillMenu(#{Menu1}, this);" />
+                    </Listeners>
                 </ext:Store>
             </Store>
             <ColumnModel runat="server">
@@ -88,6 +128,8 @@
                 <ext:GridView runat="server">
                     <Listeners>
                         <Refresh Fn="setGroupStyle" />
+                        <GroupExpand Fn="groupexpand" />
+                        <GroupCollapse Fn="groupcollapse" />
                     </Listeners>
                 </ext:GridView>
             </View>      
@@ -97,8 +139,7 @@
                     runat="server"
                     HideGroupedHeader="true"
                     StartCollapsed="true"
-                    GroupHeaderTplString='{text} ({[values.rows.length]} {[values.rows.length > 1 ? "Items" : "Item"]})'
-                    />
+                    GroupHeaderTplString='{columnName}: {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})' />
                 <ext:RowBody runat="server">
                     <GetAdditionalData 
                         Handler="var d = data;
@@ -118,7 +159,23 @@
                         <Click Handler="#{Grouping1}[#{Grouping1}.expanded ? 'collapseAll' : 'expandAll'](); #{Grouping1}.expanded = !#{Grouping1}.expanded;" />
                     </Listeners>
                 </ext:Button>
+
+                <ext:Button runat="server" Text="Clear Grouping" Handler="#{Grouping1}.disable();" />
             </Buttons>
+
+            <TopBar>
+                <ext:Toolbar runat="server">
+                    <Items>
+                        <ext:ToolbarFill />
+                        <ext:Button runat="server" Text="Toggle groups...">
+                            <Menu>
+                                <ext:Menu ID="Menu1" runat="server">                                    
+                                </ext:Menu>
+                            </Menu>
+                        </ext:Button>
+                    </Items>
+                </ext:Toolbar>
+            </TopBar>
         </ext:GridPanel>
     </form>
 </body>

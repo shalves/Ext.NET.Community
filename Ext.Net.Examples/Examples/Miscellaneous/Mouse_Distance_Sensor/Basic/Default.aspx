@@ -7,7 +7,7 @@
     {
         if (!X.IsAjaxRequest)
         {
-            var store = this.GridPanel1.GetStore();
+            Store store = this.GridPanel1.GetStore();
             
             store.DataSource = this.Data;
             store.DataBind();
@@ -59,11 +59,11 @@
 <html>
 <head runat="server">
     <title>Mouse Sensor Distance - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
     <ext:ResourcePlaceHolder runat="server" />
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {

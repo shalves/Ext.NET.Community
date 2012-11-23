@@ -2,8 +2,8 @@
 //http://www.openajax.org/member/wiki/OpenAjax_Hub_2.0_Specification_Topic_Names
 
 Ext.define("Ext.net.MessageBus", {    
-    mixins : {
-        observable : 'Ext.util.Observable'
+    mixins: {
+        observable: 'Ext.util.Observable'
     }, 
      
     statics: { 
@@ -25,7 +25,6 @@ Ext.define("Ext.net.MessageBus", {
 
                     bus.subscribe(name, listener);
                 });
-
                 owner.messageBusListeners = null;
             }
 
@@ -41,7 +40,6 @@ Ext.define("Ext.net.MessageBus", {
                     if (!bus) {
                         throw new Error("Bus is not found: " + listener.bus);
                     }
-
                     listener.isDirect = true;                    
                     listener.scope = listener.scope || owner;
                     bus.subscribe(name, listener);
@@ -115,18 +113,18 @@ Ext.define("Ext.net.MessageBus", {
 
     publish : function (name, data, /*private*/target, /*private*/fromParent) {
         //!!! do not replace == by ===
-        if(target == this){
+        if (target == this) {
             return;
         }
         
         this.fireEvent("message", name, data);
 
-        if(!target) {
+        if (!target) {
             target = this;
         }
         
         //!!! do not replace != by !===
-        if(parent != window && fromParent !== true){
+        if (parent != window && fromParent !== true) {
             this.publishToFrame(parent, name, data, target);            
         }
 

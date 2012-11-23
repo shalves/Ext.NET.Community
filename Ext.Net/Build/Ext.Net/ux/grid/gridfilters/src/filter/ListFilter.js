@@ -127,10 +127,7 @@ filter : [{"type":"list","value":"small,medium","field":"size"}]
      * @return {Ext.menu.Menu}
      */
     createMenu: function(config) {
-        var menuCfg = config.menuItems ? {items : config.menuItems} : {};
-        Ext.copyTo(menuCfg, config, "labelField,loadingText,loadOnShow,single,store,options");
-        
-        var menu = Ext.create('Ext.ux.grid.menu.ListMenu', menuCfg);
+        var menu = Ext.create('Ext.ux.grid.menu.ListMenu', Ext.applyIf(this.menuConfig || {}, config));
         menu.on('checkchange', this.onCheckChange, this);
         return menu;
     },

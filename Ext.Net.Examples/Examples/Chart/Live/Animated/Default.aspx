@@ -51,8 +51,8 @@
     {
         get
         {
-            var data = this.List;                                
-            var random = new Random();
+            List<DataItem> data = this.List;
+            Random random = new Random();
 
             data.Add(new DataItem
             {
@@ -74,8 +74,8 @@
 
     protected void GetNewData(object sender, DirectEventArgs e)
     {
-        var data = this.Data;
-        var timeAxis = (TimeAxis)this.Chart1.Axes[1];
+        List<DataItem> data = this.Data;
+        TimeAxis timeAxis = (TimeAxis)this.Chart1.Axes[1];
 
         if (new DateTime(2011, 1, 7) < data.Last().Date)
         {
@@ -84,7 +84,7 @@
             timeAxis.SetFromDate(DateUnit.Day, 1);
         }
 
-        var store = this.Chart1.GetStore();
+        Store store = this.Chart1.GetStore();
         
         store.DataSource = data;
         store.DataBind();
@@ -94,7 +94,7 @@
     {
         if (!X.IsAjaxRequest)
         {
-            var store = this.Chart1.GetStore();
+            Store store = this.Chart1.GetStore();
             
             store.DataSource = this.Data;
             store.DataBind();
@@ -107,7 +107,7 @@
 <html>
 <head runat="server">
     <title>Live Updated Chart - Animated - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">

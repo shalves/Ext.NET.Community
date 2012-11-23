@@ -7,7 +7,7 @@
     {
         this.Store1.DataSource = new object[]
         {
-            new object[]{"AL", "Alabama", "The Heart of Dixie", 5.99},
+            new object[] { "AL", "Alabama", "The Heart of Dixie", 5.99},
             new object[] { "AK", "Alaska", "The Land of the Midnight Sun", 5.99},
             new object[] { "AZ", "Arizona", "The Grand Canyon State", 5.99},
             new object[] { "AR", "Arkansas", "The Natural State", 5.99},
@@ -69,8 +69,8 @@
 <html>
 <head runat="server">
     <title>Comboboxes - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <style>
         .list-item {
             font:normal 11px tahoma, arial, helvetica, sans-serif;
             padding:3px 10px 3px 10px;

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,50 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : TranslateAttribute.Builder<ScaleAttribute, ScaleAttribute.Builder>
+        new public abstract partial class Builder<TScaleAttribute, TBuilder> : TranslateAttribute.Builder<TScaleAttribute, TBuilder>
+            where TScaleAttribute : ScaleAttribute
+            where TBuilder : Builder<TScaleAttribute, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TScaleAttribute component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder CX(double? cX)
+            {
+                this.ToComponent().CX = cX;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder CY(double? cY)
+            {
+                this.ToComponent().CY = cY;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ScaleAttribute.Builder<ScaleAttribute, ScaleAttribute.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,33 +115,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ScaleAttribute.Builder CX(double? cX)
-            {
-                this.ToComponent().CX = cX;
-                return this as ScaleAttribute.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ScaleAttribute.Builder CY(double? cY)
-            {
-                this.ToComponent().CY = cY;
-                return this as ScaleAttribute.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -107,6 +123,14 @@ namespace Ext.Net
         public ScaleAttribute.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ScaleAttribute(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -121,7 +145,11 @@ namespace Ext.Net
         /// </summary>
         public ScaleAttribute.Builder ScaleAttribute()
         {
-            return this.ScaleAttribute(new ScaleAttribute());
+#if MVC
+			return this.ScaleAttribute(new ScaleAttribute { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ScaleAttribute(new ScaleAttribute());
+#endif			
         }
 
         /// <summary>
@@ -129,7 +157,10 @@ namespace Ext.Net
         /// </summary>
         public ScaleAttribute.Builder ScaleAttribute(ScaleAttribute component)
         {
-            return new ScaleAttribute.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ScaleAttribute.Builder(component);
         }
 
         /// <summary>
@@ -137,7 +168,11 @@ namespace Ext.Net
         /// </summary>
         public ScaleAttribute.Builder ScaleAttribute(ScaleAttribute.Config config)
         {
-            return new ScaleAttribute.Builder(new ScaleAttribute(config));
+#if MVC
+			return new ScaleAttribute.Builder(new ScaleAttribute(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ScaleAttribute.Builder(new ScaleAttribute(config));
+#endif			
         }
     }
 }

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -81,6 +81,96 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
+			private ToolType type = ToolType.None;
+
+			/// <summary>
+			/// The type of tool to create.
+			/// </summary>
+			[DefaultValue(ToolType.None)]
+			public virtual ToolType Type 
+			{ 
+				get
+				{
+					return this.type;
+				}
+				set
+				{
+					this.type = value;
+				}
+			}
+
+			private string customType = "";
+
+			/// <summary>
+			/// The custom type of tool to create.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string CustomType 
+			{ 
+				get
+				{
+					return this.customType;
+				}
+				set
+				{
+					this.customType = value;
+				}
+			}
+
+			private string fn = "";
+
+			/// <summary>
+			/// The raw JavaScript function to be called when this Listener fires.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string Fn 
+			{ 
+				get
+				{
+					return this.fn;
+				}
+				set
+				{
+					this.fn = value;
+				}
+			}
+
+			private string handler = "";
+
+			/// <summary>
+			/// The function to call when clicked. Arguments passed are 'event', 'toolEl', 'owner' and 'tool'.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string Handler 
+			{ 
+				get
+				{
+					return this.handler;
+				}
+				set
+				{
+					this.handler = value;
+				}
+			}
+
+			private string scope = "this";
+
+			/// <summary>
+			/// The scope in which to call the handler.
+			/// </summary>
+			[DefaultValue("this")]
+			public virtual string Scope 
+			{ 
+				get
+				{
+					return this.scope;
+				}
+				set
+				{
+					this.scope = value;
+				}
+			}
+
 			private bool stopEvent = true;
 
 			/// <summary>
@@ -189,6 +279,24 @@ namespace Ext.Net
 				}
 			}
 			
+			private string directClickUrl = "";
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string DirectClickUrl 
+			{ 
+				get
+				{
+					return this.directClickUrl;
+				}
+				set
+				{
+					this.directClickUrl = value;
+				}
+			}
+
         }
     }
 }

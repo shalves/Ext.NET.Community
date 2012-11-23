@@ -106,9 +106,9 @@
 <html>
 <head runat="server">
     <title>Element Overview - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var hoverCard = function () {
             Ext.get("Cards1").select(".cards-header a").removeCls("current");
             

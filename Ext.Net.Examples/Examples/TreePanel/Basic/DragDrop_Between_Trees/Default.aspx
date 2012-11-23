@@ -69,8 +69,8 @@
 <html>
 <head runat="server">
     <title>Drag and Drop betweens two TreePanels - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <style>
         .tree {
     	    float  : left;
     	    margin : 20px;
@@ -90,7 +90,7 @@
         
         <p>Drag along the edge of the tree to trigger auto scrolling while performing a drag and drop.</p>
 
-        <p>The data for this tree is asynchronously loaded with a JSON TreeLoader.</p>
+        <p>The data for this tree is asynchronously loaded with a TreeStore.</p>
         
         <div class="tree">
             <ext:TreePanel 

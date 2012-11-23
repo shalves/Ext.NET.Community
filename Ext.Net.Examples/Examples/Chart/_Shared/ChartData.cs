@@ -66,11 +66,21 @@ namespace Ext.Net.Examples
             set;
         }
 
-        public static List<ChartData> GenerateData(int n = 12, int floor = 20)
+        public static List<ChartData> GenerateData()
         {
-            var data = new List<ChartData>(n);
-            var random = new Random();
-            var p = (random.NextDouble() * 11) + 1;
+            return ChartData.GenerateData(12, 20);
+        }
+
+        public static List<ChartData> GenerateData(int n)
+        {
+            return ChartData.GenerateData(n, 20);
+        }
+
+        public static List<ChartData> GenerateData(int n, int floor)
+        {
+            List<ChartData> data = new List<ChartData>(n);
+            Random random = new Random();
+            double p = (random.NextDouble() * 11) + 1;
 
             for (int i = 0; i < n; i++)
             {
@@ -92,11 +102,16 @@ namespace Ext.Net.Examples
             return data;
         }
 
-        public static List<ChartData> GenerateDataNegative(int n = 12, int floor = 20)
+        public static List<ChartData> GenerateDataNegative()
         {
-            var data = new List<ChartData>(n);
-            var random = new Random();
-            var p = (random.NextDouble() * 11) + 1;
+            return ChartData.GenerateDataNegative(12, 20);
+        }
+
+        public static List<ChartData> GenerateDataNegative(int n, int floor)
+        {
+            List<ChartData> data = new List<ChartData>(n);
+            Random random = new Random();
+            double p = (random.NextDouble() * 11) + 1;
 
             for (int i = 0; i < n; i++)
             {

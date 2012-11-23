@@ -36,7 +36,7 @@
             }
         });
 
-        layer.AlignTo(Panel1.Element, "tl-tr", new int[] {5, 0}).SlideIn("l");
+        layer.SetVisible(false, false).AlignTo(Panel1.Element, "tl-tr", new int[] {5, 0}).SlideIn("l");
         
         ((Ext.Net.Button)sender).Disabled = true;
     }
@@ -58,7 +58,7 @@
             ID = "Panel2",
             Title = "Panel in Layer",
             Html = "Ext.Net Panel",
-            BodyPadding = 5,
+            BodyPadding = 5,            
             Width = 300, 
             Height = 100,
             Tools = { 
@@ -76,7 +76,7 @@
             ExistingElement = p.Element
         });
 
-        layer.AlignTo(Panel1.Element, "tl-bl", new int[] { 0, 5 }).SlideIn("t");
+        layer.SetVisible(false, false).AlignTo(Panel1.Element, "tl-bl", new int[] { 0, 5 }).SlideIn("t");
         
         ((Ext.Net.Button)sender).Disabled = true;
     }
@@ -96,9 +96,9 @@
 <html>
 <head runat="server">
     <title>Layer Overview - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />  
+    <link href="/resources/css/examples.css" rel="stylesheet" />  
     
-    <style type="text/css">
+    <style>
         .layer {             
              width   : 100px;
              height  : 270px;

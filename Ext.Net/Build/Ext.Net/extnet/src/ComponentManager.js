@@ -92,3 +92,24 @@ Ext.PluginManager.create = function (config, defaultType) {
 
     return p;
 };
+
+Ext.ComponentManager.onAvailable = function (id, fn, scope) {
+    var all = this.all,
+        item,
+        callback;
+        
+    if (all.containsKey(id)) {
+        item = all.get(id);
+        fn.call(scope || item, item);
+    } else {
+        callback = function (map, key, item) {
+            if (key == id) {
+                fn.call(scope || item, item);                    
+                item.on("destroy", function () {
+                    Ext.Function.defer(all.un, 1, all, ["add", callback]);
+                })                
+            }
+        }; 
+        all.on('add', callback);
+    }
+};

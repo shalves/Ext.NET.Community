@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -114,6 +114,24 @@ namespace Ext.Net
 				set
 				{
 					this.editable = value;
+				}
+			}
+
+			private bool inferTypes = true;
+
+			/// <summary>
+			/// True to automatically infer the type based on the initial value passed for each field. This ensures the editor remains the correct type even if the value is blanked and becomes empty. Defaults to: true
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool InferTypes 
+			{ 
+				get
+				{
+					return this.inferTypes;
+				}
+				set
+				{
+					this.inferTypes = value;
 				}
 			}
 

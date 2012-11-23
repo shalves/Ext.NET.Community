@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -213,7 +213,7 @@ namespace Ext.Net
         /// A function called when the save button is clicked
         /// </summary>
         [Meta]
-        [ConfigOption(JsonMode.Raw)]
+        [ConfigOption(typeof(FunctionJsonConverter))]
         [DefaultValue("")]
         [Description("A function called when the save button is clicked")]
         public virtual string SaveHandler
@@ -274,7 +274,7 @@ namespace Ext.Net
         /// <param name="recordId">The Store data record id which backs the row to be edited.</param>
         public virtual void StartEdit(object recordId)
         {
-            this.Call("startEdit", new JRawValue("{0}.grid.store.getById({1})".FormatWith(this.ClientID, JSON.Serialize(recordId))));
+            this.Call("startEdit", new JRawValue("{0}.grid.store.getById({1})".FormatWith(this.ClientID, JSON.Serialize(recordId))), 0);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace Ext.Net
         /// <param name="recordIndex">The Store data record index which backs the row to be edited.</param>
         public virtual void StartEdit(int recordIndex)
         {
-            this.Call("startEdit", recordIndex);
+            this.Call("startEdit", recordIndex, 0);
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace Ext.Net
         /// <param name="record">The Store data record which backs the row to be edited.</param>
         public virtual void StartEdit(ModelProxy record)
         {
-            this.Call("startEdit", JRawValue.From(record.ModelInstance));
+            this.Call("startEdit", JRawValue.From(record.ModelInstance), 0);
         }
     }
 }

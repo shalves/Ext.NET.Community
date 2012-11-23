@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TTreePanelBase, TBuilder> : TablePanel.Builder<TTreePanelBase, TBuilder>
+        new public abstract partial class Builder<TTreePanelBase, TBuilder> : TablePanel.Builder<TTreePanelBase, TBuilder>
             where TTreePanelBase : TreePanelBase
             where TBuilder : Builder<TTreePanelBase, TBuilder>
         {
@@ -79,6 +79,24 @@ namespace Ext.Net
                 return this as TBuilder;
             }
 			 
+ 			/// <summary>
+			/// HiddenField name which submits selected nodes
+			/// </summary>
+            public virtual TBuilder SelectedHiddenName(string selectedHiddenName)
+            {
+                this.ToComponent().SelectedHiddenName = selectedHiddenName;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// HiddenField name which submits checked nodes
+			/// </summary>
+            public virtual TBuilder CheckedHiddenName(string checkedHiddenName)
+            {
+                this.ToComponent().CheckedHiddenName = checkedHiddenName;
+                return this as TBuilder;
+            }
+             
  			/// <summary>
 			/// The Ext.data.Model associated with this store
 			/// </summary>
@@ -248,6 +266,15 @@ namespace Ext.Net
             public virtual TBuilder NoLeafIcon(bool noLeafIcon)
             {
                 this.ToComponent().NoLeafIcon = noLeafIcon;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The default URL to be used for requests to the server.
+			/// </summary>
+            public virtual TBuilder SubmitUrl(string submitUrl)
+            {
+                this.ToComponent().SubmitUrl = submitUrl;
                 return this as TBuilder;
             }
             

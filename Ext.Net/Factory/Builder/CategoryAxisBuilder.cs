@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,50 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Axis.Builder<CategoryAxis, CategoryAxis.Builder>
+        new public abstract partial class Builder<TCategoryAxis, TBuilder> : Axis.Builder<TCategoryAxis, TBuilder>
+            where TCategoryAxis : CategoryAxis
+            where TBuilder : Builder<TCategoryAxis, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TCategoryAxis component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Indicates whether or not to calculate the number of categories (ticks and labels) when there is not enough room to display all labels on the axis. If set to true, the axis will determine the number of categories to plot. If not, all categories will be plotted. Defaults to: false
+			/// </summary>
+            public virtual TBuilder CalculateCategoryCount(bool calculateCategoryCount)
+            {
+                this.ToComponent().CalculateCategoryCount = calculateCategoryCount;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A list of category names to display along this axis.
+			/// </summary>
+            public virtual TBuilder CategoryNames(string[] categoryNames)
+            {
+                this.ToComponent().CategoryNames = categoryNames;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : CategoryAxis.Builder<CategoryAxis, CategoryAxis.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,33 +115,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Indicates whether or not to calculate the number of categories (ticks and labels) when there is not enough room to display all labels on the axis. If set to true, the axis will determine the number of categories to plot. If not, all categories will be plotted. Defaults to: false
-			/// </summary>
-            public virtual CategoryAxis.Builder CalculateCategoryCount(bool calculateCategoryCount)
-            {
-                this.ToComponent().CalculateCategoryCount = calculateCategoryCount;
-                return this as CategoryAxis.Builder;
-            }
-             
- 			/// <summary>
-			/// A list of category names to display along this axis.
-			/// </summary>
-            public virtual CategoryAxis.Builder CategoryNames(string[] categoryNames)
-            {
-                this.ToComponent().CategoryNames = categoryNames;
-                return this as CategoryAxis.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -107,6 +123,14 @@ namespace Ext.Net
         public CategoryAxis.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.CategoryAxis(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -121,7 +145,11 @@ namespace Ext.Net
         /// </summary>
         public CategoryAxis.Builder CategoryAxis()
         {
-            return this.CategoryAxis(new CategoryAxis());
+#if MVC
+			return this.CategoryAxis(new CategoryAxis { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.CategoryAxis(new CategoryAxis());
+#endif			
         }
 
         /// <summary>
@@ -129,7 +157,10 @@ namespace Ext.Net
         /// </summary>
         public CategoryAxis.Builder CategoryAxis(CategoryAxis component)
         {
-            return new CategoryAxis.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new CategoryAxis.Builder(component);
         }
 
         /// <summary>
@@ -137,7 +168,11 @@ namespace Ext.Net
         /// </summary>
         public CategoryAxis.Builder CategoryAxis(CategoryAxis.Config config)
         {
-            return new CategoryAxis.Builder(new CategoryAxis(config));
+#if MVC
+			return new CategoryAxis.Builder(new CategoryAxis(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new CategoryAxis.Builder(new CategoryAxis(config));
+#endif			
         }
     }
 }

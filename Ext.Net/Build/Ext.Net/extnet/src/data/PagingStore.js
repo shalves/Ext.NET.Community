@@ -40,8 +40,7 @@ Ext.define("Ext.data.PagingStore", {
             if (!me.buffered) {
                 range = me.getRange();
                 ln = range.length;
-                i  = 0;
-                for (; i < ln; i++) {
+                for (i = 0; i < ln; i++) {
                     range[i].index = i;
                 }
             }
@@ -108,7 +107,7 @@ Ext.define("Ext.data.PagingStore", {
             sync = false,
             i = 0,
             length = records.length,
-            isPhantom,
+            isNotPhantom,
             index,
             record;
 
@@ -131,15 +130,15 @@ Ext.define("Ext.data.PagingStore", {
             this.totalCount--;
             
             if (index > -1) {
-                isPhantom = record.phantom === true;
-                if (!isMove && !isPhantom) {
+                isNotPhantom = record.phantom !== true;
+                if (!isMove && isNotPhantom) {
                     // don't push phantom records onto removed
                     me.removed.push(record);
                 }
 
                 record.unjoin(me);
                 me.data.remove(record);
-                sync = sync || !isPhantom;                
+                sync = sync || isNotPhantom;                
 
                 me.fireEvent('remove', me, record, index);
             }
@@ -198,7 +197,7 @@ Ext.define("Ext.data.PagingStore", {
         this.data.clear();
 
         if (isLoad !== true || me.clearRemovedOnLoad) {
-            me.removed = [];
+            me.removed.length = 0;
         }
     },
     
@@ -243,12 +242,16 @@ Ext.define("Ext.data.PagingStore", {
         var me     = this,
             i      = 0,
             length = records.length,
-            start = (options = options || {}).start,
+            start,
+            addRecords,
             snapshot = me.snapshot;
 
-        options = options || {};
+        if (options) {
+            start = options.start;
+            addRecords = options.addRecords;
+        }
 
-        if (!options.addRecords) {
+        if (!addRecords) {
             delete me.snapshot;
             me.clearData(true);
         } else if (snapshot) {
@@ -257,7 +260,7 @@ Ext.define("Ext.data.PagingStore", {
         
         me.data.addAll(records);
 
-        if (typeof start != 'undefined') {
+        if (start !== undefined) {
             for (; i < length; i++) {
                 records[i].index = start + i;
                 records[i].join(me);
@@ -279,7 +282,7 @@ Ext.define("Ext.data.PagingStore", {
         }
 
         if (me.sortOnLoad && !me.remoteSort) {
-            me.sort();
+            me.sort(undefined, undefined, undefined, true);
         }
 
         me.resumeEvents();
@@ -320,6 +323,52 @@ Ext.define("Ext.data.PagingStore", {
         var data = this.snapshot || this.allData || this.data;
         return data.filterBy(fn, scope || this);
     },
+
+    filter: function (filters, value) {
+        if (Ext.isString(filters)) {
+            filters = {
+                property: filters,
+                value: value
+            };
+        }
+
+        var me = this,
+            decoded = me.decodeFilters(filters),
+            i = 0,
+            doLocalSort = me.sorters.length && me.sortOnFilter && !me.remoteSort,
+            length = decoded.length;
+
+        for (; i < length; i++) {
+            me.filters.replace(decoded[i]);
+        }
+
+        if (me.remoteFilter) {
+            delete me.totalCount;
+            
+            if (me.buffered) {
+                me.pageMap.clear();
+                me.loadPage(1);
+            } else {
+                me.currentPage = 1;
+                me.load();
+            }
+        } else {
+            if (me.filters.getCount()) {
+                me.snapshot = me.snapshot || me.allData || me.data.clone();
+                me.data = (me.allData || me.data).filter(me.filters.items);               
+
+                if (doLocalSort) {
+                    me.sort();
+                    me.applyPaging();
+                } else {
+                    me.applyPaging();
+                    // fire datachanged event if it hasn't already been fired by doSort
+                    me.fireEvent('datachanged', me);
+                    me.fireEvent('refresh', me);
+                }
+            }
+        }
+    },
     
     clearFilter : function (suppressEvent) {
         var me = this;
@@ -331,6 +380,8 @@ Ext.define("Ext.data.PagingStore", {
             if (suppressEvent) {
                 return;
             }
+
+            delete me.totalCount;
 
             // For a buffered Store, we have to clear the prefetch cache because the dataset will change upon filtering.
             // Then we must prefetch the new page 1, and when that arrives, reload the visible part of the Store

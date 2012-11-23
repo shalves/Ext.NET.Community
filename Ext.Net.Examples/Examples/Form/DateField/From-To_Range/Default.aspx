@@ -7,23 +7,24 @@
 <html>
 <head runat="server">
     <title>Multiple DateFields with DateRange Validation - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
-        var onKeyUp = function (field) {
-            var v = this.getRawValue(),
+    <script>
+        var onKeyUp = function () {
+            var me = this,
+                v = me.getValue(),
                 field;
-
-            if (this.startDateField) {
-                field = Ext.getCmp(this.startDateField);
-                field.setMaxValue();
-                this.dateRangeMax = null;
-            } else if (this.endDateField) {
-                field = Ext.getCmp(this.endDateField);
-                field.setMinValue();
-                this.dateRangeMin = null;
+ 
+            if (me.startDateField) {
+                field = Ext.getCmp(me.startDateField);
+                field.setMaxValue(v);
+                me.dateRangeMax = v;
+            } else if (me.endDateField) {
+                field = Ext.getCmp(me.endDateField);
+                field.setMinValue(v);
+                me.dateRangeMin = v;
             }
-
+ 
             field.validate();
         };
     </script>

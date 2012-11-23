@@ -7,8 +7,8 @@
 <head runat="server">
     <title>Simple Tasks - Ext.NET Examples</title>    
     
-    <link href="resources/main.css" rel="stylesheet" type="text/css" />
-    <script src="resources/main.js" type="text/javascript"></script>
+    <link href="resources/main.css" rel="stylesheet" />
+    <script src="resources/main.js"></script>
 </head>
 <body>
     <form runat="server">

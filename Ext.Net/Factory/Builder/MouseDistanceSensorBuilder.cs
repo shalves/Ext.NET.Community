@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,86 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Plugin.Builder<MouseDistanceSensor, MouseDistanceSensor.Builder>
+        new public abstract partial class Builder<TMouseDistanceSensor, TBuilder> : Plugin.Builder<TMouseDistanceSensor, TBuilder>
+            where TMouseDistanceSensor : MouseDistanceSensor
+            where TBuilder : Builder<TMouseDistanceSensor, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TMouseDistanceSensor component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Threshold(int threshold)
+            {
+                this.ToComponent().Threshold = threshold;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Opacity(bool opacity)
+            {
+                this.ToComponent().Opacity = opacity;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder MinOpacity(decimal minOpacity)
+            {
+                this.ToComponent().MinOpacity = minOpacity;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder MaxOpacity(decimal maxOpacity)
+            {
+                this.ToComponent().MaxOpacity = maxOpacity;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder SensorElement(string sensorElement)
+            {
+                this.ToComponent().SensorElement = sensorElement;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder ConstrainElement(string constrainElement)
+            {
+                this.ToComponent().ConstrainElement = constrainElement;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : MouseDistanceSensor.Builder<MouseDistanceSensor, MouseDistanceSensor.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,69 +151,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual MouseDistanceSensor.Builder Threshold(int threshold)
-            {
-                this.ToComponent().Threshold = threshold;
-                return this as MouseDistanceSensor.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual MouseDistanceSensor.Builder Opacity(bool opacity)
-            {
-                this.ToComponent().Opacity = opacity;
-                return this as MouseDistanceSensor.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual MouseDistanceSensor.Builder MinOpacity(decimal minOpacity)
-            {
-                this.ToComponent().MinOpacity = minOpacity;
-                return this as MouseDistanceSensor.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual MouseDistanceSensor.Builder MaxOpacity(decimal maxOpacity)
-            {
-                this.ToComponent().MaxOpacity = maxOpacity;
-                return this as MouseDistanceSensor.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual MouseDistanceSensor.Builder SensorElement(string sensorElement)
-            {
-                this.ToComponent().SensorElement = sensorElement;
-                return this as MouseDistanceSensor.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual MouseDistanceSensor.Builder ConstrainElement(string constrainElement)
-            {
-                this.ToComponent().ConstrainElement = constrainElement;
-                return this as MouseDistanceSensor.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -143,6 +159,14 @@ namespace Ext.Net
         public MouseDistanceSensor.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.MouseDistanceSensor(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -157,7 +181,11 @@ namespace Ext.Net
         /// </summary>
         public MouseDistanceSensor.Builder MouseDistanceSensor()
         {
-            return this.MouseDistanceSensor(new MouseDistanceSensor());
+#if MVC
+			return this.MouseDistanceSensor(new MouseDistanceSensor { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.MouseDistanceSensor(new MouseDistanceSensor());
+#endif			
         }
 
         /// <summary>
@@ -165,7 +193,10 @@ namespace Ext.Net
         /// </summary>
         public MouseDistanceSensor.Builder MouseDistanceSensor(MouseDistanceSensor component)
         {
-            return new MouseDistanceSensor.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new MouseDistanceSensor.Builder(component);
         }
 
         /// <summary>
@@ -173,7 +204,11 @@ namespace Ext.Net
         /// </summary>
         public MouseDistanceSensor.Builder MouseDistanceSensor(MouseDistanceSensor.Config config)
         {
-            return new MouseDistanceSensor.Builder(new MouseDistanceSensor(config));
+#if MVC
+			return new MouseDistanceSensor.Builder(new MouseDistanceSensor(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new MouseDistanceSensor.Builder(new MouseDistanceSensor(config));
+#endif			
         }
     }
 }

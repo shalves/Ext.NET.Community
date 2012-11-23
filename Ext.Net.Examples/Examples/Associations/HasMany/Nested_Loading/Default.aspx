@@ -6,10 +6,10 @@
 <html>
 <head runat="server">
     <title> - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />  
-    <link href="Book.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />  
+    <link href="Book.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var stars = function(values) {
             var res = [],
                 extension = Ext.isIE6 ? 'gif' : 'png',
@@ -116,7 +116,7 @@
                         Border="false"
                         AutoScroll="true">
                         <LayoutConfig>
-                            <ext:HBoxLayoutConfig Align="Middle" Pack="Center" AvailableSpaceOffset="17" />
+                            <ext:HBoxLayoutConfig Align="Middle" Pack="Center" />
                         </LayoutConfig>
                         <Items>
                             <ext:Image runat="server" MarginSpec="0 20 0 0" Width="250" Height="308" ImageUrl="={Ext.BLANK_IMAGE_URL}">

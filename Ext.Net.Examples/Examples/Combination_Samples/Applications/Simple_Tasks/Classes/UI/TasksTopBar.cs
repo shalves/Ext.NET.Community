@@ -6,7 +6,6 @@
 
         public TasksTopBar()
         {
-            this.AutoHeight = true;
             this.BodyCls = "x-hidden";
             this.BuildTopBar();
 

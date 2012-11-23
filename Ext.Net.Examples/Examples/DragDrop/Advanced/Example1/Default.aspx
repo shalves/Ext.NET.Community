@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>Drag&amp;Drop - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         body {
             font-size   : 11px;
             font-family : arial;
@@ -60,7 +60,7 @@
     
     <ext:ResourcePlaceHolder runat="server" Mode="ScriptFiles" />
     
-    <script type="text/javascript">
+    <script>
         var getDragData = function (e) {
             if (!this.ddel) {
                  this.ddel = document.createElement('div');

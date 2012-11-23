@@ -7,8 +7,8 @@
 <html>
 <head runat="server">
     <title></title>
-    <link href="../resources/css/examples.css" rel="stylesheet" type="text/css" />    
-    <link rel="stylesheet" type="text/css" href="../resources/css/main.css" />
+    <link href="../resources/css/examples.css" rel="stylesheet" />    
+    <link rel="stylesheet" href="../resources/css/main.css" />
 </head>
 <body>
     <ext:ResourceManager runat="server" />

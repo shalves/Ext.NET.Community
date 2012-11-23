@@ -171,7 +171,7 @@ SimpleTasks.TasksGrid = {
 		
 		e.stopEvent();
 		
-	    Ext.getCmp("ctxTreeCategory").setRootNode(SimpleTasks.fixCopy(SimpleTasks.TasksTree.tree.getRootNode(), false, true));
+	    Ext.getCmp("ctxTreeCategory").setRootNode(SimpleTasks.TasksTree.tree.getRootNode().copy(false, true));
 		this.grid.ctxMenu.showAt(e.getXY());
     },
     
@@ -379,7 +379,7 @@ SimpleTasks.TasksGrid = {
         var tree = SimpleTasks.TasksTree.tree,
 		    node = this.getActiveNodeCategory();
 		    
-        ntTreeCategory.setRootNode(SimpleTasks.fixCopy(node, false, true));
+        ntTreeCategory.setRootNode(node.copy(false, true));
     }
 };
 
@@ -402,7 +402,7 @@ SimpleTasks.TaskWindow = {
 		    taskCategory = w.down("#taskCategory"),
             picker = taskCategory.getPicker();
 
-		picker.setRootNode(SimpleTasks.fixCopy(tree.getRootNode(), false, true));
+		picker.setRootNode(tree.getRootNode().copy(false, true));
 		picker.getSelectionModel().select(picker.store.getNodeById(parseInt(taskCategory.getValue())));
     },
     
@@ -469,19 +469,4 @@ SimpleTasks.TaskWindow = {
             }
         );
     }
-};
-
-SimpleTasks.fixCopy = function(node, newId, deep) {
-    var me = node,
-        result = new me.self(me.raw, newId !== false ? [Ext.data.Model.id(me)] : me.id, null, Ext.apply({}, me[me.persistenceProperty])),        
-        len = me.childNodes ? me.childNodes.length : 0,
-        i;
-
-    // Move child nodes across to the copy if required
-    if (deep) {
-        for (i = 0; i < len; i++) {
-            result.appendChild(me.childNodes[i].copy(newId));
-        }
-    }
-    return result;
 };

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,104 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : AbstractSeries.Builder<GaugeSeries, GaugeSeries.Builder>
+        new public abstract partial class Builder<TGaugeSeries, TBuilder> : AbstractSeries.Builder<TGaugeSeries, TBuilder>
+            where TGaugeSeries : GaugeSeries
+            where TBuilder : Builder<TGaugeSeries, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TGaugeSeries component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The store record field name to be used for the pie angles. The values bound to this field name must be positive real numbers. REQUIRED
+			/// </summary>
+            public virtual TBuilder AngleField(string angleField)
+            {
+                this.ToComponent().AngleField = angleField;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Use the entire disk or just a fraction of it for the gauge.
+			/// </summary>
+            public virtual TBuilder Donut(int donut)
+            {
+                this.ToComponent().Donut = donut;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The duration for the pie slice highlight effect. Defaults to: 150
+			/// </summary>
+            public virtual TBuilder HighlightDuration(int highlightDuration)
+            {
+                this.ToComponent().HighlightDuration = highlightDuration;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Use the Gauge Series as an area series or add a needle to it. Default's false.
+			/// </summary>
+            public virtual TBuilder Needle(bool needle)
+            {
+                this.ToComponent().Needle = needle;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Whether to add the pie chart elements as legend items. Default's false.
+			/// </summary>
+            public virtual TBuilder ShowInLegend(bool showInLegend)
+            {
+                this.ToComponent().ShowInLegend = showInLegend;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Style(SpriteAttributes style)
+            {
+                this.ToComponent().Style = style;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// An array of color values which will be used, in order, as the gauge slice fill colors.
+			/// </summary>
+            public virtual TBuilder ColorSet(string[] colorSet)
+            {
+                this.ToComponent().ColorSet = colorSet;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder SetValue(object value)
+            {
+                this.ToComponent().SetValue(value);
+                return this as TBuilder;
+            }
+            
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : GaugeSeries.Builder<GaugeSeries, GaugeSeries.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,87 +169,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The store record field name to be used for the pie angles. The values bound to this field name must be positive real numbers. REQUIRED
-			/// </summary>
-            public virtual GaugeSeries.Builder AngleField(string angleField)
-            {
-                this.ToComponent().AngleField = angleField;
-                return this as GaugeSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// Use the entire disk or just a fraction of it for the gauge.
-			/// </summary>
-            public virtual GaugeSeries.Builder Donut(int donut)
-            {
-                this.ToComponent().Donut = donut;
-                return this as GaugeSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// The duration for the pie slice highlight effect. Defaults to: 150
-			/// </summary>
-            public virtual GaugeSeries.Builder HighlightDuration(int highlightDuration)
-            {
-                this.ToComponent().HighlightDuration = highlightDuration;
-                return this as GaugeSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// Use the Gauge Series as an area series or add a needle to it. Default's false.
-			/// </summary>
-            public virtual GaugeSeries.Builder Needle(bool needle)
-            {
-                this.ToComponent().Needle = needle;
-                return this as GaugeSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// Whether to add the pie chart elements as legend items. Default's false.
-			/// </summary>
-            public virtual GaugeSeries.Builder ShowInLegend(bool showInLegend)
-            {
-                this.ToComponent().ShowInLegend = showInLegend;
-                return this as GaugeSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual GaugeSeries.Builder Style(SpriteAttributes style)
-            {
-                this.ToComponent().Style = style;
-                return this as GaugeSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// An array of color values which will be used, in order, as the gauge slice fill colors.
-			/// </summary>
-            public virtual GaugeSeries.Builder ColorSet(string[] colorSet)
-            {
-                this.ToComponent().ColorSet = colorSet;
-                return this as GaugeSeries.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual GaugeSeries.Builder SetValue(object value)
-            {
-                this.ToComponent().SetValue(value);
-                return this;
-            }
-            
         }
 
         /// <summary>
@@ -161,6 +177,14 @@ namespace Ext.Net
         public GaugeSeries.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.GaugeSeries(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -175,7 +199,11 @@ namespace Ext.Net
         /// </summary>
         public GaugeSeries.Builder GaugeSeries()
         {
-            return this.GaugeSeries(new GaugeSeries());
+#if MVC
+			return this.GaugeSeries(new GaugeSeries { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.GaugeSeries(new GaugeSeries());
+#endif			
         }
 
         /// <summary>
@@ -183,7 +211,10 @@ namespace Ext.Net
         /// </summary>
         public GaugeSeries.Builder GaugeSeries(GaugeSeries component)
         {
-            return new GaugeSeries.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new GaugeSeries.Builder(component);
         }
 
         /// <summary>
@@ -191,7 +222,11 @@ namespace Ext.Net
         /// </summary>
         public GaugeSeries.Builder GaugeSeries(GaugeSeries.Config config)
         {
-            return new GaugeSeries.Builder(new GaugeSeries(config));
+#if MVC
+			return new GaugeSeries.Builder(new GaugeSeries(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new GaugeSeries.Builder(new GaugeSeries(config));
+#endif			
         }
     }
 }

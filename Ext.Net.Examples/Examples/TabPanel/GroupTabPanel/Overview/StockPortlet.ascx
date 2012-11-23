@@ -6,10 +6,10 @@
     {
         if (!X.IsAjaxRequest)
         {
-            var data = new List<object>();
-            var last_djia = 10000.0;
-            var last_sp500 = 1100.0;
-            var random = new Random();
+            List<object> data = new List<object>();
+            double last_djia = 10000.0;
+            double last_sp500 = 1100.0;
+            Random random = new Random();
 
             data.Add(new { name = 0, djia = last_djia, sp500 = last_sp500 });
 

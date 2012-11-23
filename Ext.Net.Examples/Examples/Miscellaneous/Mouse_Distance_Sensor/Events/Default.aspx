@@ -7,31 +7,21 @@
 <html>
 <head runat="server">
     <title>Mouse Sensor Distance Events - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
     
-    <ext:XScript runat="server">
-        <script type="text/javascript">
-            var near = function (el, sensorEl) {
-                var bar = #{Toolbar1},
-                    win = #{Window1};
+    <script>
+        var near = function (el, sensorEl) {
+            var bar = App.Toolbar1,
+                win = App.Window1;
               
-                bar.setWidth(win.body.getWidth() - 2);
-                bar.el.setStyle("zIndex", win.el.getStyle("zIndex")+1);
-                bar.show();
-                bar.getPositionEl().alignTo(sensorEl, "t-t", [0, 23]);
-            };
-            
-            var far = function () {
-                var bar = #{Toolbar1};
-                bar.hide();
-            };
-        </script>
-    </ext:XScript>
+            bar.setWidth(win.body.getWidth() - 2);
+            bar.el.setStyle("zIndex", win.el.getStyle("zIndex")+1);
+            bar.show();
+            bar.getPositionEl().alignTo(sensorEl, "t-t", [0, 23]);
+        };
+    </script>
 </head>
 <body>
     <ext:ResourceManager runat="server" />
-    
-    <h1>Mouse Sensor Distance Events</h1>
     
     <ext:Window 
         ID="Window1"
@@ -49,13 +39,13 @@
         <Plugins>
             <ext:MouseDistanceSensor 
                 runat="server" 
-                SensorElement="={#{Window1}.header}" 
+                SensorElement="={App.Window1.header}" 
                 ConstrainElement="Window1"
                 Opacity="false"
                 Threshold="25">
                 <Listeners>
                     <Near Fn="near" />
-                    <Far Fn="far" />
+                    <Far Handler="App.Toolbar1.hide();" />
                 </Listeners>
             </ext:MouseDistanceSensor>
         </Plugins>

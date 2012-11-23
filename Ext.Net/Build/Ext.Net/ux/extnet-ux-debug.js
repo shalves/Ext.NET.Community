@@ -1,15 +1,28 @@
-/*
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+/********
+ * This file is part of Ext.NET.
+ *     
+ * Ext.NET is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * Ext.NET is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
+ * 
+ * You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
+ * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
- * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
- * @website   : http://www.ext.net/
- */
-
-
-
-
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
+ *              See license.txt and http://www.ext.net/license/.
+ *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
+ ********/
 
 Ext.define('Ext.ux.grid.menu.ListMenu', {
     extend : 'Ext.menu.Menu',
@@ -80,19 +93,11 @@ Ext.define('Ext.ux.grid.menu.ListMenu', {
 
     
     show : function () {
-        var lastArgs = null;
-        return function(){
-            if(arguments.length === 0){
-                this.callParent(lastArgs);
-            } else {
-                lastArgs = arguments;
-                if (this.loadOnShow && !this.loaded) {
-                    this.store.load();
-                }
-                this.callParent(arguments);
-            }
-        };
-    }(),
+        if (this.loadOnShow && !this.loaded && !this.store.loading) {
+            this.store.load();
+        }
+        this.callParent();
+    },
 
     
     onLoad : function (store, records) {
@@ -176,7 +181,7 @@ Ext.define('Ext.ux.grid.menu.RangeMenu', {
     
 
     
-    iconCls : {
+    itemIconCls : {
         gt : 'ux-rangemenu-gt',
         lt : 'ux-rangemenu-lt',
         eq : 'ux-rangemenu-eq'
@@ -222,17 +227,12 @@ Ext.define('Ext.ux.grid.menu.RangeMenu', {
             if (item !== '-') {
                 // defaults
                 cfg = {
-                    itemId : 'range-' + item,
-                    enableKeyEvents : true,
-                    hideLabel  : false,
-                    fieldLabel : me.iconTpl.apply({
-                        cls  : me.iconCls[item] || 'no-icon',
-                        text : me.fieldLabels[item] || '',
-                        src  : Ext.BLANK_IMAGE_URL
-                    }),
+                    itemId: 'range-' + item,
+                    enableKeyEvents: true,
+                    hideEmptyLabel: false,
+                    labelCls: 'ux-rangemenu-icon ' + me.itemIconCls[item],
                     labelSeparator : '',
-                    labelWidth     : 29,
-                    labelStyle     : 'position: relative;',
+                    labelWidth     : 29,                    
                     listeners  : {
                         scope  : me,
                         change : me.onInputChange,
@@ -329,13 +329,6 @@ Ext.define('Ext.ux.grid.menu.RangeMenu', {
         // restart the timer
         this.updateTask.delay(this.updateBuffer);
     }
-}, function() {
-
-    
-    this.prototype.iconTpl = Ext.create('Ext.XTemplate',
-        '<img src="{src}" alt="{text}" class="' + Ext.baseCSSPrefix + 'menu-item-icon ux-rangemenu-icon {cls}" />'
-    );
-
 });
 
 
@@ -558,7 +551,11 @@ Ext.define('Ext.ux.grid.filter.DateFilter', {
                     menu: Ext.create('Ext.menu.Menu', {
                         items: [
                             Ext.apply(pickerCfg, {
-                                itemId: item
+                                itemId: item,
+                                listeners: {
+                                    select: me.onPickerSelect,
+                                    scope: me
+                                }
                             })
                         ]
                     }),
@@ -572,11 +569,22 @@ Ext.define('Ext.ux.grid.filter.DateFilter', {
             //me.add(item);
             me.menu.add(item);
         }
+        me.values = {};
     },
 
-    onCheckChange : function () {
-        this.setActive(this.isActivatable());
-        this.fireEvent('update', this);
+    onCheckChange : function (item, checked) {
+        var me = this,
+            picker = item.menu.items.first(),
+            itemId = picker.itemId,
+            values = me.values;
+
+        if (checked) {
+            values[itemId] = picker.getValue();
+        } else {
+            delete values[itemId]
+        }
+        me.setActive(me.isActivatable());
+        me.fireEvent('update', me);
     },
 
     
@@ -664,7 +672,7 @@ Ext.define('Ext.ux.grid.filter.DateFilter', {
 
     
     getFieldValue : function(item){
-        return this.getPicker(item).getValue();
+        return this.values[item];
     },
 
     
@@ -699,6 +707,14 @@ Ext.define('Ext.ux.grid.filter.DateFilter', {
             }
         }
         return true;
+    },
+
+    onPickerSelect: function(picker, date) {
+        // keep track of the picker value separately because the menu gets destroyed
+        // when columns order changes.  We return this value from getValue() instead
+        // of picker.getValue()
+        this.values[picker.itemId] = date;
+        this.fireEvent('update', this);
     }
 });
 
@@ -721,10 +737,7 @@ Ext.define('Ext.ux.grid.filter.ListFilter', {
 
     
     createMenu: function(config) {
-        var menuCfg = config.menuItems ? {items : config.menuItems} : {};
-        Ext.copyTo(menuCfg, config, "labelField,loadingText,loadOnShow,single,store,options");
-        
-        var menu = Ext.create('Ext.ux.grid.menu.ListMenu', menuCfg);
+        var menu = Ext.create('Ext.ux.grid.menu.ListMenu', Ext.applyIf(this.menuConfig || {}, config));
         menu.on('checkchange', this.onCheckChange, this);
         return menu;
     },
@@ -1010,6 +1023,12 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         me.mixins.observable.constructor.call(me);
     },
 
+    ensureFilters : function () {
+        if (this.view && this.view.headerCt && !this.view.headerCt.menu) {
+            this.view.headerCt.getMenu();
+        }
+    },
+
     createFiltersCollection: function () {
         return Ext.create('Ext.util.MixedCollection', false, function (o) {
             return o ? o.dataIndex : null;
@@ -1266,6 +1285,7 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         if(!options){
             return;
         }
+        this.ensureFilters();
         options.params = options.params || {};
         this.cleanParams(options.params);
         var params = this.buildQuery(this.getFilterData());
@@ -1378,6 +1398,7 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
 
     
     getFilter : function (dataIndex) {
+        this.ensureFilters();        
         return this.filters.get(dataIndex);
     },
 
@@ -1492,9 +1513,11 @@ Ext.define('Ext.ux.form.MultiSelect', {
     alternateClassName: 'Ext.ux.Multiselect',
     alias: ['widget.multiselectfield', 'widget.multiselect'],
     
-    requires: ['Ext.panel.Panel', 'Ext.view.BoundList'],
+    requires: ['Ext.panel.Panel', 'Ext.view.BoundList', 'Ext.layout.container.Fit'],
     
     uses: ['Ext.view.DragZone', 'Ext.view.DropZone'],
+    
+    layout: 'anchor',
     
     
 
@@ -1529,9 +1552,9 @@ Ext.define('Ext.ux.form.MultiSelect', {
 
     
     minSelectionsText: 'Minimum {0} item(s) required',
-
     
-    maxSelectionsText: 'Maximum {0} item(s) allowed',
+    
+    maxSelectionsText: 'Minimum {0} item(s) required',
 
     
     delimiter: ',',
@@ -1610,7 +1633,7 @@ Ext.define('Ext.ux.form.MultiSelect', {
         if (!Ext.isDefined(me.valueField)) {
             me.valueField = me.displayField;
         }
-        Ext.apply(me, me.setupItems());
+        me.items = me.setupItems();
         
         
         me.callParent();
@@ -1620,9 +1643,11 @@ Ext.define('Ext.ux.form.MultiSelect', {
     
     setupItems: function() {
         var me = this;
-        
+
         me.boundList = Ext.create('Ext.view.BoundList', Ext.apply({
+            anchor: 'none 100%',
             deferInitialRefresh: false,
+	        border: 1,            
             multiSelect: this.multiSelect,
             singleSelect: this.singleSelect,
             simpleSelect: (this.multiSelect || this.singleSelect) ? false : this.simpleSelect,
@@ -1630,10 +1655,21 @@ Ext.define('Ext.ux.form.MultiSelect', {
             store: me.store,
             disabled: me.disabled
         }, me.listConfig));
-        
+
         me.boundList.getSelectionModel().on('selectionchange', me.onSelectChange, me);
+        
+        // Only need to wrap the BoundList in a Panel if we have a title.
+        if (!me.title) {
+            me.boundList.border = this.border;
+            return me.boundList;
+        }
+
+        // Wrap to add a title
+        me.boundList.border = false;
         return {
-            layout: 'fit',
+	        border: this.border,
+            anchor: 'none 100%',
+            layout: 'anchor',
             title: me.title,
             tbar: me.tbar,
             items: me.boundList
@@ -1765,6 +1801,7 @@ Ext.define('Ext.ux.form.MultiSelect', {
             me.updateLayout();
         }
     },
+
     
     clearInvalid : function() {
         // Clear the message and fire the 'valid' event
@@ -1799,7 +1836,7 @@ Ext.define('Ext.ux.form.MultiSelect', {
     },
     
     getValue: function(){
-        return this.value;
+        return this.value || [];
     },
     
     getRecordsForValue: function(value){
@@ -1831,26 +1868,33 @@ Ext.define('Ext.ux.form.MultiSelect', {
         var delimiter = this.delimiter,
             valueField = this.valueField,
             i = 0,
+            out,
             len,
             item;
             
-        if (delimiter && Ext.isString(value)) {
-            value = value.split(delimiter);
-        } else if (!Ext.isArray(value)) {
-            value = [value];
-        }
-        
-        for (len = value.length; i < len; ++i) {
-            item = value[i];
-            if (item && item.isModel) {
-                value[i] = item.get(valueField);
+        if (Ext.isDefined(value)) {
+            if (delimiter && Ext.isString(value)) {
+                value = value.split(delimiter);
+            } else if (!Ext.isArray(value)) {
+                value = [value];
             }
+        
+            for (len = value.length; i < len; ++i) {
+                item = value[i];
+                if (item && item.isModel) {
+                    value[i] = item.get(valueField);
+                }
+            }
+            out = Ext.Array.unique(value);
+        } else {
+            out = [];
         }
-        return Ext.Array.unique(value);
+        return out;
     },
     
     setValue: function(value){
         var me = this,
+            rs,
             selModel = me.boundList.getSelectionModel();
 
         // Store not loaded yet - we cannot set the value
@@ -1867,8 +1911,11 @@ Ext.define('Ext.ux.form.MultiSelect', {
         
         if (me.rendered) {
             ++me.ignoreSelectChange;
-            selModel.deselectAll();
-            selModel.select(me.getRecordsForValue(value));
+            selModel.deselectAll();            
+            rs = me.getRecordsForValue(value);
+            if(rs.length > 0){
+                selModel.select(rs);
+            }
             --me.ignoreSelectChange;
         } else {
             me.selectOnRender = true;
@@ -1956,6 +2003,11 @@ Ext.define('Ext.ux.form.MultiSelect', {
     setSelectedItems : function (items) {
         if(items){
             items = Ext.Array.from(items);
+
+            if(!this.rendered){
+                this.selectedItems = items;
+                return;
+            }
             
             var rec,
                 values=[];
@@ -1981,7 +2033,19 @@ Ext.define('Ext.ux.form.MultiSelect', {
                 }
             }, this);
 
-            this.setValue(values);
+            this.setValue(values);            
+        }
+    },
+
+    afterLayout : function () {
+        this.callParent(arguments);
+
+        if(this.labelAlign == "top")
+        {
+            Ext.suspendLayouts(); 
+            var td = this.boundList.el.parent();
+            this.boundList.el.setHeight(td.getHeight() - td.getBorderWidth("tb") - td.getPadding("tb"));
+            Ext.resumeLayouts(); 
         }
     }
 });
@@ -2280,7 +2344,6 @@ Ext.define('Ext.ux.grid.TransformGrid', {
 
 
 Ext.define('Ext.ux.SlidingPager', {
-    extend: 'Object',
     requires: [
         'Ext.slider.Single',
         'Ext.slider.Tip'
@@ -2533,9 +2596,11 @@ Ext.define('Ext.ux.BoxReorderer', {
         me.animatePolicy[container.getLayout().names.x] = true;
 
         // Initialize the DD on first layout, when the innerCt has been created.
-        me.container.afterLayout = Ext.Function.createSequence(me.container.afterLayout, me.afterFirstLayout, me);
-
-        container.destroy = Ext.Function.createSequence(container.destroy, me.onContainerDestroy, me);
+        me.container.on({
+            scope: me,
+            boxready: me.afterFirstLayout,
+            destroy: me.onContainerDestroy
+        });
     },
 
     
@@ -2547,23 +2612,22 @@ Ext.define('Ext.ux.BoxReorderer', {
 
     afterFirstLayout: function() {
         var me = this,
-            l = me.container.getLayout();
-
-        // delete the sequence
-        delete me.container.afterLayout;
+            layout = me.container.getLayout(),
+            names = layout.names,
+            dd;
 
         // Create a DD instance. Poke the handlers in.
         // TODO: Ext5's DD classes should apply config to themselves.
         // TODO: Ext5's DD classes should not use init internally because it collides with use as a plugin
         // TODO: Ext5's DD classes should be Observable.
         // TODO: When all the above are trus, this plugin should extend the DD class.
-        me.dd = Ext.create('Ext.dd.DD', l.innerCt, me.container.id + '-reorderer');
-        Ext.apply(me.dd, {
+        dd = me.dd = Ext.create('Ext.dd.DD', layout.innerCt, me.container.id + '-reorderer');
+        Ext.apply(dd, {
             animate: me.animate,
             reorderer: me,
             container: me.container,
             getDragCmp: this.getDragCmp,
-            clickValidator: Ext.Function.createInterceptor(me.dd.clickValidator, me.clickValidator, me, false),
+            clickValidator: Ext.Function.createInterceptor(dd.clickValidator, me.clickValidator, me, false),
             onMouseDown: me.onMouseDown,
             startDrag: me.startDrag,
             onDrag: me.onDrag,
@@ -2575,9 +2639,9 @@ Ext.define('Ext.ux.BoxReorderer', {
 
         // Decide which dimension we are measuring, and which measurement metric defines
         // the *start* of the box depending upon orientation.
-        me.dd.dim = l.names.width;
-        me.dd.startAttr = l.names.left;
-        me.dd.endAttr = l.names.right;
+        dd.dim = names.width;
+        dd.startAttr = names.left;
+        dd.endAttr = names.right;
     },
 
     getDragCmp: function(e) {
@@ -2630,26 +2694,26 @@ Ext.define('Ext.ux.BoxReorderer', {
     },
 
     startDrag: function() {
-        var me = this;
-        if (me.dragCmp) {
+        var me = this,
+            dragCmp = me.dragCmp;
+            
+        if (dragCmp) {
             // For the entire duration of dragging the *Element*, defeat any positioning and animation of the dragged *Component*
-            me.dragCmp.setPosition = Ext.emptyFn;
-            me.dragCmp.animate = false;
+            dragCmp.setPosition = Ext.emptyFn;
+            dragCmp.animate = false;
 
             // Animate the BoxLayout just for the duration of the drag operation.
             if (me.animate) {
                 me.container.getLayout().animatePolicy = me.reorderer.animatePolicy;
             }
             // We drag the Component element
-            me.dragElId = me.dragCmp.getEl().id;
-            me.reorderer.fireEvent('StartDrag', me, me.container, me.dragCmp, me.curIndex);
+            me.dragElId = dragCmp.getEl().id;
+            me.reorderer.fireEvent('StartDrag', me, me.container, dragCmp, me.curIndex);
             // Suspend events, and set the disabled flag so that the mousedown and mouseup events
             // that are going to take place do not cause any other UI interaction.
-            me.dragCmp.suspendEvents();
-            me.dragCmp.disabled = true;
-            me.dragCmp.el.setStyle('zIndex', 100);
-
-
+            dragCmp.suspendEvents();
+            dragCmp.disabled = true;
+            dragCmp.el.setStyle('zIndex', 100);
         } else {
             me.dragElId = null;
         }
@@ -2688,6 +2752,8 @@ Ext.define('Ext.ux.BoxReorderer', {
     doSwap : function (newIndex) {
         var me = this,
             items = me.container.items,
+            container = me.container,
+            wasRoot = me.container._isLayoutRoot,
             orig, dest, tmpIndex, temp;
 
         newIndex = me.findReorderable(newIndex);
@@ -2696,7 +2762,7 @@ Ext.define('Ext.ux.BoxReorderer', {
             return;
         }
 
-        me.reorderer.fireEvent('ChangeIndex', me, me.container, me.dragCmp, me.startIndex, newIndex);
+        me.reorderer.fireEvent('ChangeIndex', me, container, me.dragCmp, me.startIndex, newIndex);
         orig = items.getAt(me.curIndex);
         dest = items.getAt(newIndex);
         items.remove(orig);
@@ -2706,9 +2772,9 @@ Ext.define('Ext.ux.BoxReorderer', {
         items.insert(me.curIndex, dest);
 
         // Make the Box Container the topmost layout participant during the layout.
-        me.container._isLayoutRoot = true;
-        me.container.updateLayout();
-        me.container._isLayoutRoot = undefined;
+        container._isLayoutRoot = true;
+        container.updateLayout();
+        container._isLayoutRoot = wasRoot;
         me.curIndex = newIndex;
     },
 
@@ -2724,8 +2790,10 @@ Ext.define('Ext.ux.BoxReorderer', {
 
     },
 
-    endDrag : function (e) {
-        e && e.stopEvent();
+    endDrag: function(e) {
+        if (e) {
+            e.stopEvent();
+        }
         var me = this,
             layout = me.container.getLayout(),
             temp;
@@ -4340,22 +4408,7 @@ Ext.define('Ext.ux.desktop.Desktop', {
     },
 
     //------------------------------------------------------
-    // Window management methods
-
-    cascadeWindows: function() {
-        var x = 0, y = 0,
-            zmgr = this.getDesktopZIndexManager();
-
-        if(zmgr){
-            zmgr.eachBottomUp(function(win) {
-                if (win.isWindow && win.isVisible() && !win.maximized) {
-                    win.setPosition(x, y);
-                    x += 20;
-                    y += 20;
-                }
-            });
-        }
-    },
+    // Window management methods    
 
     showWindow : function (config, cls) {
         var w = this.createWindow(config, cls);
@@ -4409,6 +4462,8 @@ Ext.define('Ext.ux.desktop.Desktop', {
     createWindow : function (config, cls) {
         var me = this, 
             win, 
+            availWidth,
+            availHeight,
             cfg = Ext.applyIf(config || {}, {
                 stateful: false,
                 isWindow: true,
@@ -4416,7 +4471,7 @@ Ext.define('Ext.ux.desktop.Desktop', {
                 //constrainHeader: true,
                 minimizable: true,
                 maximizable: true,
-                center: me.centerWindow,
+                center: me.centerWindow,                
                 //afterFirstLayout : me.afterWindowFirstLayout,
                 desktop: me
             });
@@ -4480,6 +4535,17 @@ Ext.define('Ext.ux.desktop.Desktop', {
             };
         }
 
+        availWidth = me.body.getWidth(true);
+        availHeight = me.body.getHeight(true);
+
+        if (win.height > availHeight) {
+            win.height = availHeight;
+        }
+
+        if (win.width > availWidth) {
+            win.width = availWidth;
+        }
+
         return win;
     },
 
@@ -4541,8 +4607,11 @@ Ext.define('Ext.ux.desktop.Desktop', {
     },
 
     tileWindows : function () {
-        var me = this, availWidth = me.body.getWidth(true);
-        var x = me.xTickSize, y = me.yTickSize, nextY = y;
+        var me = this, 
+            availWidth = me.body.getWidth(true),
+            x = me.xTickSize, 
+            y = me.yTickSize, 
+            nextY = y;
 
         me.windows.each(function (win) {
             if (win.isVisible() && !win.maximized) {
@@ -4561,6 +4630,127 @@ Ext.define('Ext.ux.desktop.Desktop', {
             }
         });
     },
+
+    cascadeWindows: function() {
+        var x = 0, 
+            y = 0,
+            zmgr = this.getDesktopZIndexManager();
+
+        if(zmgr){
+            zmgr.eachBottomUp(function(win) {
+                if (win.isWindow && win.isVisible() && !win.maximized) {
+                    win.setPosition(x, y);
+                    x += 20;
+                    y += 20;
+                }
+            });
+        }
+    },
+
+    checkerboardWindows : function() {
+      var me = this, 
+          availWidth = me.body.getWidth(true),
+          availHeight = me.body.getHeight(true),
+          x = 0, 
+          y = 0,
+          lastx = 0, 
+          lasty = 0,
+          square = 400;
+
+      me.windows.each(function(win) {         
+         if (win.isVisible()) {            
+            win.setWidth(square);
+            win.setHeight(square);
+
+            win.setPosition(x, y);
+            x += square;
+
+            if (x + square > availWidth) {
+               x = lastx;
+               y += square;
+
+               if (y > availHeight) {
+                  lastx += 20;
+                  lasty += 20;
+                  x = lastx;
+                  y = lasty;
+               }
+            }
+         }
+      }, me);
+   },
+
+   snapFitWindows : function() {
+       var me = this, 
+          availWidth = me.body.getWidth(true),
+          availHeight = me.body.getHeight(true),
+          x = 0, 
+          y = 0,
+          snapCount = 0,
+          snapSize;
+
+      me.windows.each(function(win) {
+         if (win.isVisible()) {
+            snapCount++;
+         }
+      });
+
+      snapSize = parseInt(availWidth / snapCount);
+
+      if (snapSize > 0) {
+         me.windows.each(function(win) {
+            if (win.isVisible()) {          
+               win.setWidth(snapSize);
+               win.setHeight(availHeight);
+
+               win.setPosition(x, y);
+               x += snapSize;
+            }
+         });
+      }
+   },
+
+   snapFitVWindows : function(){
+      var me = this, 
+          availWidth = me.body.getWidth(true),
+          availHeight = me.body.getHeight(true),
+          x = 0, 
+          y = 0,
+          snapCount = 0,
+          snapSize;
+
+      me.windows.each(function(win) {
+         if (win.isVisible()) {
+            snapCount++;
+         }
+      });
+
+      snapSize = parseInt(availHeight / snapCount);
+
+      if (snapSize > 0) {
+         me.windows.each(function(win) {
+            if (win.isVisible()) {           
+               win.setWidth(availWidth);
+               win.setHeight(snapSize);
+
+               win.setPosition(x, y);
+               y += snapSize;
+            }
+         });
+      }
+   },
+
+   closeWindows : function() {
+      this.windows.each(function(win) {
+         win.close();
+      });
+   },
+
+   minimizeWindows : function() {
+      this.windows.each(function(win) {
+         this.minimizeWindow(win);
+      }, this);
+   },
 
     updateActiveWindow : function () {
         var me = this, activeWindow = me.getActiveWindow(), last = me.lastActiveWindow;
@@ -4968,7 +5158,7 @@ Ext.define('Ext.ux.DataView.LabelEditor', {
 
     constructor: function(config) {
         config.field = config.field || Ext.create('Ext.form.field.Text', {
-            allowBlank: false,
+            allowOnlyWhitespace: false,
             selectOnFocus:true
         });
         this.callParent([config]);
@@ -5815,6 +6005,13 @@ Ext.define('Ext.calendar.util.Date', {
             dt2.setMilliseconds(0);
         }
         return dt2.getTime() - dt1.getTime();
+    },
+
+    isMidnight: function(dt) {
+        return dt.getHours() === 0 &&
+               dt.getMinutes() === 0 &&
+               dt.getSeconds() === 0 && 
+               dt.getMilliseconds() === 0;    
     },
 
     // private helper fn
@@ -7026,6 +7223,17 @@ Ext.define('Ext.calendar.form.field.DateRange', {
         me.endDate = me.down('#' + me.id + '-end-date');
         me.allDay = me.down('#' + me.id + '-allday');
         me.toLabel = me.down('#' + me.id + '-to-label');
+
+        me.startDate.validateOnChange = me.endDate.validateOnChange = false;
+
+        me.startDate.isValid = me.endDate.isValid = function() {
+                                    var me = this,
+                                        valid = Ext.isDate(me.getValue());
+                                    if (!valid) {
+                                        me.focus();
+                                    }
+                                    return valid;
+                                 };
     },
     
     getFieldConfigs: function() {
@@ -7204,10 +7412,25 @@ Ext.define('Ext.calendar.form.field.DateRange', {
     
     
     getValue: function(){
+        var eDate = Ext.calendar.util.Date,
+            start = this.getDT('start'),
+            end = this.getDT('end'),
+            allDay = this.allDay.getValue();
+        
+        if (Ext.isDate(start) && Ext.isDate(end) && start.getTime() !== end.getTime()) {
+            if (!allDay && eDate.isMidnight(start) && eDate.isMidnight(end)) {
+                // 12:00am -> 12:00am over n days, all day event
+                allDay = true;
+                end = eDate.add(end, {
+                    days: -1
+                });
+            }
+        }
+        
         return [
-            this.getDT('start'), 
-            this.getDT('end'),
-            this.allDay.getValue()
+            start, 
+            end,
+            allDay
         ];
     },
     
@@ -10614,8 +10837,6 @@ Ext.define('Ext.calendar.CalendarPanel', {
 
 
 Ext.define('Ext.ux.Spotlight', {
-    extend: 'Object',
-
     
     baseCls: 'x-spotlight',
 
@@ -11077,7 +11298,6 @@ Ext.define('Ext.ux.FieldReplicator', {
 
 
 Ext.define('Ext.ux.ProgressBarPager', {
-    extend: 'Object',
 
     requires: ['Ext.ProgressBar'],
     
@@ -11109,18 +11329,22 @@ Ext.define('Ext.ux.ProgressBarPager', {
             this.progressBar = Ext.create('Ext.ProgressBar', {
                 text    : this.defaultText,
                 width   : this.width,
-                animate : this.defaultAnimCfg
+                animate : this.defaultAnimCfg,
+                style: {
+                    cursor: 'pointer'
+                },
+                listeners: {
+                    el: {
+                        scope: this,
+                        click: this.handleProgressBarClick
+                    }
+                }
             });
 
             parent.displayItem = this.progressBar;
 
             parent.add(parent.displayItem);
-            parent.doLayout();
             Ext.apply(parent, this.parentOverrides);
-
-            this.progressBar.on('render', function(pb) {
-                pb.mon(pb.getEl().applyStyles('cursor:pointer'), 'click', this.handleProgressBarClick, this);
-            }, this, {single: true});
         }
     },
     // private
@@ -11132,9 +11356,9 @@ Ext.define('Ext.ux.ProgressBarPager', {
             xy = e.getXY(),
             position = xy[0]- box.x,
             pages = Math.ceil(parent.store.getTotalCount()/parent.store.pageSize),
-            newpage = Math.ceil(position/(displayItem.width/pages));
+            newPage = Math.max(Math.ceil(position / (displayItem.width / pages)), 1);
 
-        parent.store.loadPage(newpage);
+        parent.store.loadPage(newPage);
     },
 
     // private, overriddes
@@ -11165,24 +11389,23 @@ Ext.define('Ext.ux.ProgressBarPager', {
 Ext.ns('Ext.ux');
 
 Ext.define('Ext.ux.TabScrollerMenu', {
-    alias : 'plugin.tabscrollermenu',
-    uses  : ['Ext.menu.Menu'],
+    alias: 'plugin.tabscrollermenu',
+
+    requires: ['Ext.menu.Menu'],
 
     
     pageSize : 10,
     
     maxText : 15,
     
-    menuPrefixText : 'Items',
-    constructor    : function(config) {
-        config = config || {};
+    menuPrefixText: 'Items',
+    constructor: function(config) {
         Ext.apply(this, config);
     },
     //private
     init : function(tabPanel) {
         var me = this;
 
-        Ext.apply(tabPanel, me.parentOverrides);
         me.tabPanel = tabPanel;
 
         tabPanel.on({
@@ -11250,14 +11473,14 @@ Ext.define('Ext.ux.TabScrollerMenu', {
         if (me.tabsMenu) {
             me.tabsMenu.removeAll();
         } else {
-            me.tabsMenu = Ext.create('Ext.menu.Menu');
+            me.tabsMenu = new Ext.menu.Menu();
             me.tabPanel.on('destroy', me.tabsMenu.destroy, me.tabsMenu);
         }
 
         me.generateTabMenuItems();
 
-        var target = Ext.get(e.getTarget());
-        var xy = target.getXY();
+        var target = Ext.get(e.getTarget()),
+            xy = target.getXY();
 
         //Y param + 24 pixels
         xy[1] += 24;
@@ -11266,15 +11489,26 @@ Ext.define('Ext.ux.TabScrollerMenu', {
     },
 
     // private
-    generateTabMenuItems : function () {
+    generateTabMenuItems: function() {
         var me = this,
             tabPanel = me.tabPanel,
             curActive = tabPanel.getActiveTab(),
-            totalItems = tabPanel.items.getCount(),
+            allItems = tabPanel.items.getRange(),
             pageSize = me.getPageSize(),
-            numSubMenus = Math.floor(totalItems / pageSize),
-            remainder = totalItems % pageSize,
+            tabsMenu = me.tabsMenu,
+            totalItems, numSubMenus, remainder,
             i, curPage, menuItems, x, item, start, index;
+            
+        tabsMenu.suspendLayouts();
+        allItems = Ext.Array.filter(allItems, function(item){
+            if (item.id == curActive.id) {
+                return false;
+            }
+            return item.hidden ? !!item.hiddenByLayout : true;
+        });
+        totalItems = allItems.length;
+        numSubMenus = Math.floor(totalItems / pageSize);
+        remainder = totalItems % pageSize;
 
         if (totalItems > pageSize) {
 
@@ -11285,11 +11519,11 @@ Ext.define('Ext.ux.TabScrollerMenu', {
 
                 for (x = 0; x < pageSize; x++) {
                     index = x + curPage - pageSize;
-                    item = tabPanel.items.get(index);
+                    item = allItems[index];
                     menuItems.push(me.autoGenMenuItem(item));
                 }
 
-                me.tabsMenu.add({
+                tabsMenu.add({
                     text: me.getMenuPrefixText() + ' ' + (curPage - pageSize + 1) + ' - ' + curPage,
                     menu: menuItems
                 });
@@ -11299,7 +11533,7 @@ Ext.define('Ext.ux.TabScrollerMenu', {
                 start = numSubMenus * pageSize;
                 menuItems = [];
                 for (i = start; i < totalItems; i++) {
-                    item = tabPanel.items.get(i);
+                    item = allItems[i];
                     menuItems.push(me.autoGenMenuItem(item));
                 }
 
@@ -11309,14 +11543,12 @@ Ext.define('Ext.ux.TabScrollerMenu', {
                 });
 
             }
+        } else {
+            for (i = 0; i < totalItems; ++i) {
+                tabsMenu.add(me.autoGenMenuItem(allItems[i]));
+            }
         }
-        else {
-            tabPanel.items.each(function (item) {
-                if (item.id != curActive.id && !item.hidden) {
-                    me.tabsMenu.add(me.autoGenMenuItem(item));
-                }
-            });
-        }
+        tabsMenu.resumeLayouts(true);
     },
 
     // private
@@ -12004,5 +12236,747 @@ Ext.define("Ext.net.CapsLockDetector", {
                 this.fireEvent("capslockoff", this);
             }
         }
+    }
+});
+Ext.define('Ext.net.PasswordMask', {
+    extend: 'Ext.AbstractPlugin', 
+    alias: 'plugin.passwordmask',
+                        
+	duration: 2000,
+	replacementChar: '%u25CF',		    
+            
+    constructor: function(config) {
+        this.callParent(arguments); 
+               
+        var field = this.getCmp(),
+            name = field.getName() || field.id || field.getInputId();
+
+        field.submitValue = false;
+
+        this.hiddenField = Ext.create('Ext.form.field.Hidden', {
+            name : name
+        });
+               
+        if (field.rendered) {
+            field.inputEl.dom.removeAttribute('name');
+            this.renderHiddenField();
+        }
+        else {
+            field.on("afterrender", this.renderHiddenField, this);
+        }
+               
+        this.maskAll = Ext.Function.createBuffered(this._maskAll, this.duration, this);
+
+        field.on("change", this.handleValue, this);               
+        this.handleValue(field, field.getValue(), "");               
+    },
+
+    destroy : function () {
+        this.callParent(arguments);
+        this.hiddenField.destroy();
+    },
+
+    renderHiddenField : function () {
+        var field = this.getCmp();
+        if(field.ownerCt){
+            field.ownerCt.items.add(this.hiddenField);
+        }
+        else{
+            this.hiddenField.render(field.el.parent());
+        }               
+    },
+
+    onDelete: function(caret, delta){
+		var value = this.hiddenField.getValue(),
+		    split = caret;
+
+		if (Ext.isNumber(caret) && (this.getCaretPosition() < caret)) {			        
+			split = caret - delta;
+		}
+		else if (!Ext.isObject(caret)) {			        
+			caret = caret + delta;
+		}
+
+		this.hiddenField.setValue(value.slice(0, caret.start || split) + value.slice(caret.end || caret));
+	},
+
+    maskChars: function(str) {		        
+		var tmp = '',
+            value = this.hiddenField.getValue(),
+		    add = 0,
+            i;
+
+		for (i=0; i < str.length; i++) {
+			if (str.charAt(i) == unescape(this.replacementChar)) {
+				tmp += value.charAt(i - add);
+			} else {
+				tmp += str.charAt(i);
+				if (this.getCaretPosition() !== str.length) {
+					add++;
+				}
+			}
+
+		}
+		this.hiddenField.setValue(tmp);
+	},
+
+    _maskAll: function() {
+		var field = this.getCmp(),
+            value = field.getValue(),
+            tmp,
+            caret,
+            i;
+
+        if (value != '') {
+			tmp = '';
+			for (i=0; i < value.length; i++) {
+				tmp += unescape(this.replacementChar);
+			}
+			        
+            if (field.hasFocus) {                        
+                caret = this.getCaretRange();
+            }
+
+            field.setValue(tmp);
+			        
+            if (field.hasFocus) {                        
+                this.restoreCaretPos(caret);
+            }
+		}
+	},
+
+    handleValue : function (field, newValue, oldValue) {
+        var tmp,
+            i,
+            caret;
+
+        if(!this.getCmp().hasFocus)
+        {
+            return;
+        }
+
+        newValue = newValue || "";
+        oldValue = oldValue || "";
+                
+        if (newValue.length < oldValue.length) {			        
+			this.onDelete(this.getCaretRange(), oldValue.length - newValue.length);
+		}
+
+        if (oldValue != newValue) {
+			this.maskChars(newValue);
+			if (newValue.length > 1) {
+				tmp = '';
+				for (i=0; i < newValue.length-1; i++) {
+					tmp += unescape(this.replacementChar);
+				}
+				tmp += newValue.charAt(newValue.length-1);
+				caret = this.getCaretRange();
+				field.setValue(tmp);
+				this.restoreCaretPos(caret);
+			}			        
+
+            this.maskAll();
+		}
+    },
+
+    selectText : function(start, end){
+        var me = this.getCmp(),
+            v = me.getRawValue(),
+            el = me.inputEl.dom,
+            undef,
+            range;
+
+        if (v.length > 0) {
+            start = start === undef ? 0 : start;
+            end = end === undef ? v.length : end;
+            if (el.setSelectionRange) {
+                el.setSelectionRange(start, end);
+            }
+            else if(el.createTextRange) {
+                range = el.createTextRange();
+                range.moveStart('character', start);
+                range.moveEnd('character', end - v.length);
+                range.select();
+            }
+        }
+    },
+
+    restoreCaretPos: function(caret){
+		if (!this.getCmp().hasFocus) {
+            return;
+        }
+
+        if(Ext.isNumber(caret)) {
+            return this.selectText(caret, caret);
+        }
+        else if(Ext.isObject(caret)) {
+            return this.selectText(caret.start, caret.end);
+        }
+	},            
+
+    getCaretPosition : function () {
+        var caretPos = 0,
+            field = this.getCmp(),
+            dom = field.inputEl.dom,
+            sel;
+                
+        if (document.selection) {
+            //field.focus();
+            sel = document.selection.createRange();
+            sel.moveStart ('character', -field.getValue().length);
+            caretPos = sel.text.length;
+        }                
+        else if (dom.selectionStart || dom.selectionStart == '0') {
+            caretPos = dom.selectionStart;
+        }
+
+        return caretPos;
+    },
+
+    getSelectedRange : function () {
+        var caretPos = 0,
+            field = this.getCmp(),
+            dom = field.inputEl.dom,
+            sel;
+                
+        if (document.selection) {
+            var start = 0, 
+                end = 0, 
+                normalizedValue, 
+                textInputRange, 
+                len, 
+                endRange,
+                range = document.selection.createRange();
+
+            if (range && range.parentElement() == dom) {
+                len = dom.value.length;
+
+                normalizedValue = dom.value.replace(/\r\n/g, "\n");
+                textInputRange = dom.createTextRange();
+                textInputRange.moveToBookmark(range.getBookmark());
+                endRange = dom.createTextRange();
+                endRange.collapse(false);
+                if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+                    start = end = len;
+                } else {
+                    start = -textInputRange.moveStart("character", -len);
+                    start += normalizedValue.slice(0, start).split("\n").length - 1;
+                    if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+                        end = len;
+                    } else {
+                        end = -textInputRange.moveEnd("character", -len);
+                        end += normalizedValue.slice(0, end).split("\n").length - 1;
+                    }
+                }
+            }
+
+            caretPos = {                    
+                start : start,
+                end : end
+            };
+        }                
+        else if (dom.selectionStart || dom.selectionStart == '0') {
+            caretPos = {                    
+                start : dom.selectionStart,
+                end : dom.selectionEnd
+            };
+        }
+
+        return caretPos;
+    },
+
+	getCaretRange: function(){		        
+		var range = this.getSelectedRange();
+        return (range.start === range.end) ? this.getCaretPosition() : range;
+	}
+});
+Ext.define('Ext.net.InputMask', {
+    extend: 'Ext.AbstractPlugin', 
+    alias: 'plugin.inputmask',
+
+    defaultMaskSymbols: {
+		"9": "[0-9]",
+		"a": "[A-Za-z]",
+		"*": "[A-Za-z0-9]"     
+	},
+
+    placeholder : "_",
+    alwaysShow : false,
+    clearWhenInvalid : true,
+    allowInvalid : false,
+    invalidMaskText : "",
+    unmaskOnBlur : false,
+
+    constructor : function(config) {
+        this.callParent(arguments);
+
+        this.maskSymbols = Ext.applyIf(this.maskSymbols || {}, this.defaultMaskSymbols);
+        this.removeEmptyMaskSymbols();
+
+        var field = this.getCmp();
+        field.inputMask = this;
+        field.enableKeyEvents = true;
+                
+        if(field.rendered){
+            field.mon(field.inputEl, {
+                scope: field,
+                keyup: field.onKeyUp,
+                keydown: field.onKeyDown,
+                keypress: field.onKeyPress
+            });
+        }
+        
+        field.on("focus", this.onFocus, this);
+        field.on("blur", this.onBlur, this);
+        field.on("keydown", this.onKeyDown, this);
+        field.on("keypress", this.onKeyPress, this);
+
+        if(!field.preventMark){
+            field.preventMark = true;
+            this.clearPreventMark = true;
+        }
+
+        if(this.rendered){
+            this.initPasteEvent();
+        }
+        else{
+            field.on("afterrender", this.initPasteEvent, this, {single : true});
+        }
+
+        if(!this.allowInvalid) {
+            this.fieldGetErrors = field.getErrors;
+            field.getErrors = Ext.Function.bind(this.getErrors, this);
+        }
+                
+        this.setMask(this.mask);                
+    },
+
+    getErrors : function () {
+        var field = this.getCmp(),
+            errors = this.fieldGetErrors.call(field, field.processRawValue(field.getRawValue()));
+
+        if(!this.isValueValid()){
+            errors.push(this.invalidMaskText || field.invalidText);
+        }
+
+        return errors;
+    },
+
+    initPasteEvent : function () {
+        this.getCmp().inputEl.on((Ext.isIE ? "paste" : "input"), function (){
+            if(this.unmasked){
+                return;
+            }
+            var pos = this.validateMask(true);
+            this.getCmp().selectText(pos, pos);
+        }, this, {delay:1});
+    },
+
+    onFocus : function (field) {        
+        if(this.unmaskOnBlur){
+            this.setMask(this.mask);
+        }
+
+        if(this.unmasked){
+            return;
+        }
+
+        if(!this.alwaysShow) {
+            this.focusText = field.getValue();
+			var pos = this.validateMask();
+			this.writeBuffer();
+				
+            if(Ext.isIE) {
+                this.moveCaret(pos);
+            }
+            else{
+                Ext.Function.defer(this.moveCaret, 1, this, [pos]);
+            }				
+        }
+
+        if (this.clearPreventMark) {
+            field.preventMark = false;
+            delete this.clearPreventMark;
+        }
+    },
+
+    onBlur : function () {
+        if(this.unmasked){
+            return;
+        }
+
+        if(!this.alwaysShow) {
+            this.validateMask();
+        }
+        else if(this.clearWhenInvalid && !this.isValueValid()){
+            this.getCmp().setValue("");
+			this.clearBuffer(0, this.maskLength);
+			this.writeBuffer();
+        }
+
+        if(this.unmaskOnBlur){
+            if(!this.isValueValid()){
+                this.unmasked = true;                
+                this.getCmp().setValue("");
+			    this.clearBuffer(0, this.maskLength);
+			    if(this.alwaysShow){
+                   this.writeBuffer();
+                }
+            }
+            else{
+                this.unmask();
+            }
+        }
+    },
+
+    moveCaret : function (pos) {
+        this.getCmp().selectText(pos == this.mask.length ? 0 : pos, pos);
+    },
+
+    removeEmptyMaskSymbols : function () {
+        Ext.Object.each(this.maskSymbols, function(key, value){
+            if(Ext.isEmpty(value)){
+                delete this.maskSymbols[key];
+            }
+        });
+    },
+
+    setMask : function (mask, init) {
+        var field = this.getCmp();
+
+        this.unmasked = false;
+			    
+        this.mask = mask;
+        this.regexes = [];
+        this.placeholders = [];
+		this.requiredPartEnd = mask.length;
+		this.maskStart = null;
+		this.maskLength = mask.length;
+        this.focusText = field.getValue();
+
+		Ext.each(mask.split(""), function(char, index) {
+			if (char == '?') {
+				this.maskLength--;
+				this.requiredPartEnd = index;
+			} else if (this.maskSymbols[char]) {
+				this.regexes.push(new RegExp(this.maskSymbols[char].regex || this.maskSymbols[char]));
+                this.placeholders.push(this.maskSymbols[char].placeholder || this.placeholder);
+					    
+                if(this.maskStart == null) {
+					this.maskStart =  this.regexes.length - 1;
+                }
+			} else {
+				this.regexes.push(null);
+                this.placeholders.push(null);
+			}
+		}, this);     
+
+        this.buffer = [];
+                
+        var i = 0,
+            char,
+            array = this.mask.split(""),
+            len = array.length;
+
+        for (; i < len; i++) {                    
+            char = array[i];
+            if (char != "?") {
+                this.buffer.push(this.maskSymbols[char] ? (this.maskSymbols[char].placeholder || this.placeholder) : char) 
+            }
+        }
+
+        this.validateMask();
+        if(this.alwaysShow) {
+            this.writeBuffer();
+        }
+    },
+
+    getSelectedRange : function () {
+        var caretPos = 0,
+            field = this.getCmp(),
+            dom = field.inputEl.dom,
+            sel;
+                
+        if (document.selection) {
+            var start = 0, 
+                end = 0, 
+                normalizedValue, 
+                textInputRange, 
+                len, 
+                endRange,
+                range = document.selection.createRange();
+
+            if (range && range.parentElement() == dom) {
+                len = dom.value.length;
+
+                normalizedValue = dom.value.replace(/\r\n/g, "\n");
+                textInputRange = dom.createTextRange();
+                textInputRange.moveToBookmark(range.getBookmark());
+                endRange = dom.createTextRange();
+                endRange.collapse(false);
+                if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+                    start = end = len;
+                } else {
+                    start = -textInputRange.moveStart("character", -len);
+                    start += normalizedValue.slice(0, start).split("\n").length - 1;
+                    if (textInputRange.compareEndPoints("EndToEnd", endRange) > -1) {
+                        end = len;
+                    } else {
+                        end = -textInputRange.moveEnd("character", -len);
+                        end += normalizedValue.slice(0, end).split("\n").length - 1;
+                    }
+                }
+            }
+
+            caretPos = {                    
+                begin : start,
+                end : end
+            };
+        }                
+        else if (dom.selectionStart || dom.selectionStart == '0') {
+            caretPos = {                    
+                begin : dom.selectionStart,
+                end : dom.selectionEnd
+            };
+        }
+
+        return caretPos;
+    },
+
+
+    seekNext : function (pos) {
+		while (++pos <= this.maskLength && !this.regexes[pos]);
+		return pos;
+	},
+
+	seekPrev : function (pos) {
+		while (--pos >= 0 && !this.regexes[pos]);
+		return pos;
+	},
+
+	shiftL : function (begin,end) {
+		if(begin<0) {
+			return;
+        }
+
+		for (var i = begin, j = this.seekNext(end); i < this.maskLength; i++) {
+			if (this.regexes[i]) {
+				if (j < this.maskLength && this.regexes[i].test(this.buffer[j])) {
+					this.buffer[i] = this.buffer[j];
+					this.buffer[j] = this.placeholders[j] || this.placeholder;
+				} else {
+					break;
+                }
+				j = this.seekNext(j);
+			}
+		}
+
+		this.writeBuffer();
+		this.getCmp().selectText(Math.max(this.maskStart, begin), Math.max(this.maskStart, begin));
+	},
+
+	shiftR : function (pos) {
+		for (var i = pos, c = this.placeholder; i < this.maskLength; i++) {
+			if (this.regexes[i]) {
+				var j = this.seekNext(i),
+					t = this.buffer[i];
+
+				this.buffer[i] = c;
+				if (j < this.maskLength && this.regexes[j].test(t)){
+					c = t;
+				} else {
+					break;
+                }
+			}
+		}
+	},
+
+    onKeyDown : function (field, e) {
+		if(this.unmasked){
+            return;
+        }
+
+        var key = e.getKey();
+				
+		if (key == e.BACKSPACE || key == e.DELETE) {
+			var pos = this.getSelectedRange(),
+				begin = pos.begin,
+				end = pos.end;
+
+			if (end-begin == 0) {
+				begin = key != e.DELETE ? this.seekPrev(begin) : (end = this.seekNext(begin-1));
+				end = key == e.DELETE ? this.seekNext(end) : end;
+			}
+
+			this.clearBuffer(begin, end);
+			this.shiftL(begin, end-1);
+            e.stopEvent(); 
+			return false;
+		} else if (key == e.ESC) {
+			field.setValue(this.focusText);
+			field.selectText(0, this.validateMask());
+            e.stopEvent(); 
+			return false;
+		}
+	},
+
+	onKeyPress : function (field, e) {				        
+        if (e.ctrlKey && !e.altKey || this.unmasked) {
+            return;
+        }
+
+        var key = e.getKey(),
+            charCode = String.fromCharCode(e.getCharCode()),
+            p,
+            next,
+            pos = this.getSelectedRange();
+
+        if((Ext.isGecko || Ext.isOpera) && (e.isNavKeyPress() || key === e.BACKSPACE || (key === e.DELETE && e.button === -1))){
+            return;
+        }
+
+        if((!Ext.isGecko && !Ext.isOpera) && e.isSpecialKey() && !charCode){
+            return;
+        } 
+
+        if (key < 32) {
+            return;
+        }
+
+		if (key) {
+			if(pos.end - pos.begin != 0 ){
+				this.clearBuffer(pos.begin, pos.end);
+				this.shiftL(pos.begin, pos.end - 1);
+			}
+
+			p = this.seekNext(pos.begin - 1);
+			if (p < this.maskLength) {						
+				if (this.regexes[p].test(charCode)) {
+					this.shiftR(p);
+					this.buffer[p] = charCode;
+					this.writeBuffer();
+					next = this.seekNext(p);
+                    field.selectText(next, next);
+					//if (next >= this.maskLength) {								                                
+                    //}
+				}
+			}
+            e.stopEvent();
+			return false;
+		}
+	},
+
+    clearBuffer : function (start, end) {
+		for (var i = start; i < end && i < this.maskLength; i++) {
+			if (this.regexes[i]) {
+				this.buffer[i] = this.placeholders[i];
+            }
+		}
+	},
+
+	writeBuffer : function () { 
+        this.getCmp().setValue(this.buffer.join('')); 
+        return this.getCmp().getValue();
+    },
+
+    isValueValid : function () {                
+        var value = this.getCmp().getValue(),
+			valid = true,
+            lastMatch = -1,
+            i,
+            c,
+            pos;
+
+		for (i = 0, pos = 0; i < this.maskLength; i++) {
+			if (this.regexes[i]) {
+						
+                while (pos++ < this.regexes.length) {
+					c = value.charAt(pos - 1);
+					if (this.regexes[i].test(c)) {
+						lastMatch = i;
+						break;
+					}
+				}
+
+				if (pos > value.length) {
+					break;
+                }
+			} else if (this.buffer[i] == value.charAt(pos) && i != this.requiredPartEnd) {
+				pos++;
+				lastMatch = i;
+			}
+		}
+
+        if ((lastMatch + 1) < this.requiredPartEnd) {
+			valid = false;                    
+		}
+
+		return valid;
+    },
+
+    validateMask : function (allow) {				
+		var value = this.getCmp().getValue(),
+			lastMatch = -1,
+            i,
+            c,
+            pos;
+
+		for (i = 0, pos = 0; i < this.maskLength; i++) {
+			if (this.regexes[i]) {
+				this.buffer[i] = this.placeholders[i];
+						
+                while (pos++ < this.regexes.length) {
+					c = value.charAt(pos - 1);
+					if (this.regexes[i].test(c)) {
+						this.buffer[i] = c;
+						lastMatch = i;
+						break;
+					}
+				}
+
+				if (pos > value.length) {
+					break;
+                }
+			} else if (this.buffer[i] == value.charAt(pos) && i != this.requiredPartEnd) {
+				pos++;
+				lastMatch = i;
+			}
+		}
+
+		if (!allow && (lastMatch + 1) < this.requiredPartEnd) {
+			if(!this.alwaysShow) {
+                this.getCmp().setValue("");
+				this.clearBuffer(0, this.maskLength);
+            }                    
+		} else if (allow || lastMatch + 1 >= this.requiredPartEnd) {
+			this.writeBuffer();
+			if (!allow) {
+                this.getCmp().setValue(this.getCmp().getValue().substring(0, lastMatch + 1));                        
+            }
+		}
+		return (this.requiredPartEnd ? i : this.maskStart);
+	},
+
+    getUnmaskedValue : function () {        
+        var i,
+            c,
+            value = this.getCmp().getValue(),
+            uValue = [];
+
+        for (i = 0; i < this.maskLength; i++) {
+			if (this.regexes[i]) {
+                c = value.charAt(i);
+                if(c){
+                    uValue.push(c);
+                }
+            }
+        }
+
+        return uValue.join("");
+    },
+
+    unmask : function () {
+        this.unmasked = true;        
+        this.getCmp().setValue(this.getUnmaskedValue());
     }
 });

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,171 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : GridCommandBase.Builder<GridCommand, GridCommand.Builder>
+        new public abstract partial class Builder<TGridCommand, TBuilder> : GridCommandBase.Builder<TGridCommand, TBuilder>
+            where TGridCommand : GridCommand
+            where TBuilder : Builder<TGridCommand, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TGridCommand component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder CommandName(string commandName)
+            {
+                this.ToComponent().CommandName = commandName;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder ToolTip(Action<SimpleToolTip> action)
+            {
+                action(this.ToComponent().ToolTip);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Icon(Icon icon)
+            {
+                this.ToComponent().Icon = icon;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder IconCls(string iconCls)
+            {
+                this.ToComponent().IconCls = iconCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Text(string text)
+            {
+                this.ToComponent().Text = text;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to enable stand out by default (defaults to false).
+			/// </summary>
+            public virtual TBuilder StandOut(bool standOut)
+            {
+                this.ToComponent().StandOut = standOut;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Cls(string cls)
+            {
+                this.ToComponent().Cls = cls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder CtCls(string ctCls)
+            {
+                this.ToComponent().CtCls = ctCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Disabled(bool disabled)
+            {
+                this.ToComponent().Disabled = disabled;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder DisabledClass(string disabledClass)
+            {
+                this.ToComponent().DisabledClass = disabledClass;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Hidden(bool hidden)
+            {
+                this.ToComponent().Hidden = hidden;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder OverCls(string overCls)
+            {
+                this.ToComponent().OverCls = overCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Menu(Action<CommandMenu> action)
+            {
+                action(this.ToComponent().Menu);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// How this component should be hidden. Supported values are 'visibility' (css visibility), 'offsets' (negative offset position) and 'display' (css display) - defaults to 'display'.
+			/// </summary>
+            public virtual TBuilder HideMode(HideMode hideMode)
+            {
+                this.ToComponent().HideMode = hideMode;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The minimum width for this button (used to give a set of buttons a common width).
+			/// </summary>
+            public virtual TBuilder MinWidth(Unit minWidth)
+            {
+                this.ToComponent().MinWidth = minWidth;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : GridCommand.Builder<GridCommand, GridCommand.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,154 +236,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual GridCommand.Builder CommandName(string commandName)
-            {
-                this.ToComponent().CommandName = commandName;
-                return this as GridCommand.Builder;
-            }
-             
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of GridCommand.Builder</returns>
-            public virtual GridCommand.Builder ToolTip(Action<SimpleToolTip> action)
-            {
-                action(this.ToComponent().ToolTip);
-                return this as GridCommand.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual GridCommand.Builder Icon(Icon icon)
-            {
-                this.ToComponent().Icon = icon;
-                return this as GridCommand.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual GridCommand.Builder IconCls(string iconCls)
-            {
-                this.ToComponent().IconCls = iconCls;
-                return this as GridCommand.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual GridCommand.Builder Text(string text)
-            {
-                this.ToComponent().Text = text;
-                return this as GridCommand.Builder;
-            }
-             
- 			/// <summary>
-			/// True to enable stand out by default (defaults to false).
-			/// </summary>
-            public virtual GridCommand.Builder StandOut(bool standOut)
-            {
-                this.ToComponent().StandOut = standOut;
-                return this as GridCommand.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual GridCommand.Builder Cls(string cls)
-            {
-                this.ToComponent().Cls = cls;
-                return this as GridCommand.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual GridCommand.Builder CtCls(string ctCls)
-            {
-                this.ToComponent().CtCls = ctCls;
-                return this as GridCommand.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual GridCommand.Builder Disabled(bool disabled)
-            {
-                this.ToComponent().Disabled = disabled;
-                return this as GridCommand.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual GridCommand.Builder DisabledClass(string disabledClass)
-            {
-                this.ToComponent().DisabledClass = disabledClass;
-                return this as GridCommand.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual GridCommand.Builder Hidden(bool hidden)
-            {
-                this.ToComponent().Hidden = hidden;
-                return this as GridCommand.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual GridCommand.Builder OverCls(string overCls)
-            {
-                this.ToComponent().OverCls = overCls;
-                return this as GridCommand.Builder;
-            }
-             
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of GridCommand.Builder</returns>
-            public virtual GridCommand.Builder Menu(Action<CommandMenu> action)
-            {
-                action(this.ToComponent().Menu);
-                return this as GridCommand.Builder;
-            }
-			 
- 			/// <summary>
-			/// How this component should be hidden. Supported values are 'visibility' (css visibility), 'offsets' (negative offset position) and 'display' (css display) - defaults to 'display'.
-			/// </summary>
-            public virtual GridCommand.Builder HideMode(HideMode hideMode)
-            {
-                this.ToComponent().HideMode = hideMode;
-                return this as GridCommand.Builder;
-            }
-             
- 			/// <summary>
-			/// The minimum width for this button (used to give a set of buttons a common width).
-			/// </summary>
-            public virtual GridCommand.Builder MinWidth(Unit minWidth)
-            {
-                this.ToComponent().MinWidth = minWidth;
-                return this as GridCommand.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -228,6 +244,14 @@ namespace Ext.Net
         public GridCommand.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.GridCommand(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -242,7 +266,11 @@ namespace Ext.Net
         /// </summary>
         public GridCommand.Builder GridCommand()
         {
-            return this.GridCommand(new GridCommand());
+#if MVC
+			return this.GridCommand(new GridCommand { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.GridCommand(new GridCommand());
+#endif			
         }
 
         /// <summary>
@@ -250,7 +278,10 @@ namespace Ext.Net
         /// </summary>
         public GridCommand.Builder GridCommand(GridCommand component)
         {
-            return new GridCommand.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new GridCommand.Builder(component);
         }
 
         /// <summary>
@@ -258,7 +289,11 @@ namespace Ext.Net
         /// </summary>
         public GridCommand.Builder GridCommand(GridCommand.Config config)
         {
-            return new GridCommand.Builder(new GridCommand(config));
+#if MVC
+			return new GridCommand.Builder(new GridCommand(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new GridCommand.Builder(new GridCommand(config));
+#endif			
         }
     }
 }

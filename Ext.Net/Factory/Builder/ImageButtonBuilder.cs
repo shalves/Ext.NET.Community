@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,86 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Button.Builder<ImageButton, ImageButton.Builder>
+        new public abstract partial class Builder<TImageButton, TBuilder> : Button.Builder<TImageButton, TBuilder>
+            where TImageButton : ImageButton
+            where TBuilder : Builder<TImageButton, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TImageButton component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder ImageUrl(string imageUrl)
+            {
+                this.ToComponent().ImageUrl = imageUrl;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder OverImageUrl(string overImageUrl)
+            {
+                this.ToComponent().OverImageUrl = overImageUrl;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder DisabledImageUrl(string disabledImageUrl)
+            {
+                this.ToComponent().DisabledImageUrl = disabledImageUrl;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder PressedImageUrl(string pressedImageUrl)
+            {
+                this.ToComponent().PressedImageUrl = pressedImageUrl;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder AlternateText(string alternateText)
+            {
+                this.ToComponent().AlternateText = alternateText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Align(ImageAlign align)
+            {
+                this.ToComponent().Align = align;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ImageButton.Builder<ImageButton, ImageButton.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,69 +151,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ImageButton.Builder ImageUrl(string imageUrl)
-            {
-                this.ToComponent().ImageUrl = imageUrl;
-                return this as ImageButton.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ImageButton.Builder OverImageUrl(string overImageUrl)
-            {
-                this.ToComponent().OverImageUrl = overImageUrl;
-                return this as ImageButton.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ImageButton.Builder DisabledImageUrl(string disabledImageUrl)
-            {
-                this.ToComponent().DisabledImageUrl = disabledImageUrl;
-                return this as ImageButton.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ImageButton.Builder PressedImageUrl(string pressedImageUrl)
-            {
-                this.ToComponent().PressedImageUrl = pressedImageUrl;
-                return this as ImageButton.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ImageButton.Builder AlternateText(string alternateText)
-            {
-                this.ToComponent().AlternateText = alternateText;
-                return this as ImageButton.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ImageButton.Builder Align(ImageAlign align)
-            {
-                this.ToComponent().Align = align;
-                return this as ImageButton.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -143,6 +159,14 @@ namespace Ext.Net
         public ImageButton.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ImageButton(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -157,7 +181,11 @@ namespace Ext.Net
         /// </summary>
         public ImageButton.Builder ImageButton()
         {
-            return this.ImageButton(new ImageButton());
+#if MVC
+			return this.ImageButton(new ImageButton { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ImageButton(new ImageButton());
+#endif			
         }
 
         /// <summary>
@@ -165,7 +193,10 @@ namespace Ext.Net
         /// </summary>
         public ImageButton.Builder ImageButton(ImageButton component)
         {
-            return new ImageButton.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ImageButton.Builder(component);
         }
 
         /// <summary>
@@ -173,7 +204,11 @@ namespace Ext.Net
         /// </summary>
         public ImageButton.Builder ImageButton(ImageButton.Config config)
         {
-            return new ImageButton.Builder(new ImageButton(config));
+#if MVC
+			return new ImageButton.Builder(new ImageButton(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ImageButton.Builder(new ImageButton(config));
+#endif			
         }
     }
 }

@@ -62,9 +62,9 @@
 <html>
 <head runat="server">
     <title>Field Mapping - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var departmentRenderer = function (value) {
             if (!Ext.isEmpty(value)) {
                 return value.Name;
@@ -76,18 +76,16 @@
 </head>
 <body>
     <form runat="server">
-        <ext:ResourceManager ID="ResourceManager1" runat="server" />
+        <ext:ResourceManager runat="server" />
         
         <ext:GridPanel 
-            EnableViewState="true" 
-            AutoHeight="true" 
             runat="server"
             Title="List" 
             Icon="Application">
             <Store>
                 <ext:Store ID="Store1" runat="server">
                     <Model>
-                        <ext:Model runat="server" IDProperty="ID">
+                        <ext:Model runat="server">
                             <Fields>
                                 <ext:ModelField Name="ID" Type="Int" />
                                 <ext:ModelField Name="Name" />
@@ -103,14 +101,11 @@
                     <ext:Column runat="server" Text="ID" DataIndex="ID" />
                     <ext:Column runat="server" Text="NAME" DataIndex="Name" />
                     <ext:Column runat="server" Text="SURNAME" DataIndex="Surname" />
-                    <ext:Column runat="server" DataIndex="Department" Text="Department" Width="240">
+                    <ext:Column runat="server" Text="DEPARTMENT" DataIndex="Department"  Width="240">
                         <Renderer Fn="departmentRenderer" />                        
                     </ext:Column>
                 </Columns>
             </ColumnModel>
-            <SelectionModel>
-                <ext:RowSelectionModel runat="server" Mode="Multi" />
-            </SelectionModel>
         </ext:GridPanel>
     </form>
 </body>

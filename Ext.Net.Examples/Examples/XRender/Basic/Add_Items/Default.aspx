@@ -8,11 +8,11 @@
 <script runat="server">
     protected void Button1_Click(object sender, DirectEventArgs e)
     {
-        var index = this.GetIndex();
+        int index = this.GetIndex();
 
         /* TabPanel */
 
-        var tab = new Panel
+        Ext.Net.Panel tab = new Panel
         {
             ID = "Tab" + index,
             Title = "Tab " + index,
@@ -28,7 +28,7 @@
         
         /* Accordion */
 
-        var panel = new Panel
+        Ext.Net.Panel panel = new Panel
         {
             ID = "Panel" + index,
             Title = "Panel " + index,
@@ -48,7 +48,7 @@
 
     private int GetIndex()
     {
-        var index = Convert.ToInt32(this.Hidden1.Text) + 1;
+        int index = Convert.ToInt32(this.Hidden1.Text) + 1;
         
         this.Hidden1.Text = index.ToString();
 
@@ -61,7 +61,7 @@
 <html>
 <head runat="server">
     <title>Dynamically add a new Panel to a Parent Items Collection - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">

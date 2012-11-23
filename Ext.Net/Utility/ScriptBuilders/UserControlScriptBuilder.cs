@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,11 +25,11 @@
  ********/
 
 using System;
+using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
 
 using Ext.Net.Utilities;
-using System.ComponentModel;
 
 namespace Ext.Net
 {
@@ -51,7 +51,9 @@ namespace Ext.Net
         {
             string id = config.UserControlId ?? BaseControl.GenerateID();
             UserControl uc = UserControlRenderer.LoadControl(config.UserControlPath, id);
+#if NET40
             uc.ClientIDMode = config.UserControlClientIDMode;
+#endif
             Page pageHolder = uc.Page;
 
             if (uc is IDynamicUserControl)
@@ -158,7 +160,7 @@ namespace Ext.Net
 
             if (!userControlPath.StartsWith("~") && !userControlPath.StartsWith("/") && HttpContext.Current != null && HttpContext.Current.CurrentHandler is System.Web.UI.Page)
             {
-                var dir = System.IO.Path.GetDirectoryName(HttpContext.Current.Request.CurrentExecutionFilePath).Replace("\\", "/");
+                string dir = System.IO.Path.GetDirectoryName(HttpContext.Current.Request.CurrentExecutionFilePath).Replace("\\", "/");
                 userControlPath = dir + "/" + userControlPath;
             }
 
@@ -192,7 +194,7 @@ namespace Ext.Net
         {
             ResourceManager rm = ResourceManager.GetInstance(HttpContext.Current);
             
-            var script = UserControlRenderer.ToScript(config);
+            string script = UserControlRenderer.ToScript(config);
 
             if (HttpContext.Current.CurrentHandler is Page && rm != null)
             {

@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>ProgressBar - Ext.NET Examples</title>    
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />  
+    <link href="/resources/css/examples.css" rel="stylesheet" />  
     
-    <style type="text/css">
+    <style>
         .status {
             color:#555;
         }
@@ -36,7 +36,7 @@
         }
     </style>  
     
-    <script type="text/javascript">
+    <script>
        var updateBar = function (value, pbar, btn, count, callback) {
             if (value > count) {
                 btn.setDisabled(false);

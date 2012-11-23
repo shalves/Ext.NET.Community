@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -105,6 +105,56 @@ namespace Ext.Net
             get
             {
                 return this.deactivate ?? (this.deactivate = new ComponentDirectEvent(this));
+            }
+        }
+
+        private ComponentDirectEvent textchange;
+
+        /// <summary>
+        /// Fired when the item's text is changed by the setText} method.
+        /// Parameters
+        /// item : Ext.button.Button
+        /// oldText : String
+        /// newText : String
+        /// </summary>
+        [ListenerArgument(0, "item")]
+        [ListenerArgument(1, "oldText")]
+        [ListenerArgument(2, "newText")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("textchange", typeof(DirectEventJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fired when the item's text is changed by the setText} method.")]
+        public virtual ComponentDirectEvent TextChange
+        {
+            get
+            {
+                return this.textchange ?? (this.textchange = new ComponentDirectEvent(this));
+            }
+        }
+
+        private ComponentDirectEvent iconchange;
+
+        /// <summary>
+        /// Fired when the item's icon is changed by the setIcon or setIconCls methods.
+        /// Parameters
+        /// item : Ext.button.Button
+        /// oldIcon : String
+        /// newIcon : String
+        /// </summary>
+        [ListenerArgument(0, "item")]
+        [ListenerArgument(1, "oldIcon")]
+        [ListenerArgument(2, "newIcon")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("iconchange", typeof(DirectEventJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fired when the item's icon is changed by the setIcon or setIconCls methods.")]
+        public virtual ComponentDirectEvent IconChange
+        {
+            get
+            {
+                return this.iconchange ?? (this.iconchange = new ComponentDirectEvent(this));
             }
         }
     }

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,72 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ButtonBase.Builder<Button, Button.Builder>
+        new public abstract partial class Builder<TButton, TBuilder> : ButtonBase.Builder<TButton, TBuilder>
+            where TButton : Button
+            where TBuilder : Builder<TButton, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TButton component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<ButtonListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side DirectEventHandlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<ButtonDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder DirectClickUrl(string directClickUrl)
+            {
+                this.ToComponent().DirectClickUrl = directClickUrl;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder DirectToggleUrl(string directToggleUrl)
+            {
+                this.ToComponent().DirectToggleUrl = directToggleUrl;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : Button.Builder<Button, Button.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,37 +137,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Button.Builder</returns>
-            public virtual Button.Builder Listeners(Action<ButtonListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as Button.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEventHandlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Button.Builder</returns>
-            public virtual Button.Builder DirectEvents(Action<ButtonDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as Button.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -111,6 +145,14 @@ namespace Ext.Net
         public Button.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.Button(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -125,7 +167,11 @@ namespace Ext.Net
         /// </summary>
         public Button.Builder Button()
         {
-            return this.Button(new Button());
+#if MVC
+			return this.Button(new Button { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.Button(new Button());
+#endif			
         }
 
         /// <summary>
@@ -133,7 +179,10 @@ namespace Ext.Net
         /// </summary>
         public Button.Builder Button(Button component)
         {
-            return new Button.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new Button.Builder(component);
         }
 
         /// <summary>
@@ -141,7 +190,11 @@ namespace Ext.Net
         /// </summary>
         public Button.Builder Button(Button.Config config)
         {
-            return new Button.Builder(new Button(config));
+#if MVC
+			return new Button.Builder(new Button(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new Button.Builder(new Button(config));
+#endif			
         }
     }
 }

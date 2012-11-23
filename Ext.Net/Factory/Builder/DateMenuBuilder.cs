@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,74 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : MenuBase.Builder<DateMenu, DateMenu.Builder>
+        new public abstract partial class Builder<TDateMenu, TBuilder> : MenuBase.Builder<TDateMenu, TBuilder>
+            where TDateMenu : DateMenu
+            where TBuilder : Builder<TDateMenu, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TDateMenu component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// False to continue showing the menu after a date is selected, defaults to true.
+			/// </summary>
+            public virtual TBuilder HideOnClick(bool hideOnClick)
+            {
+                this.ToComponent().HideOnClick = hideOnClick;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The Ext.DatePicker object
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Picker(Action<DatePicker> action)
+            {
+                action(this.ToComponent().Picker);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<DateMenuListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side DirectEventHandlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<DateMenuDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : DateMenu.Builder<DateMenu, DateMenu.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,57 +139,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// False to continue showing the menu after a date is selected, defaults to true.
-			/// </summary>
-            public virtual DateMenu.Builder HideOnClick(bool hideOnClick)
-            {
-                this.ToComponent().HideOnClick = hideOnClick;
-                return this as DateMenu.Builder;
-            }
-             
- 			/// <summary>
-			/// The Ext.DatePicker object
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DateMenu.Builder</returns>
-            public virtual DateMenu.Builder Picker(Action<DatePicker> action)
-            {
-                action(this.ToComponent().Picker);
-                return this as DateMenu.Builder;
-            }
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DateMenu.Builder</returns>
-            public virtual DateMenu.Builder Listeners(Action<DateMenuListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as DateMenu.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEventHandlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DateMenu.Builder</returns>
-            public virtual DateMenu.Builder DirectEvents(Action<DateMenuDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as DateMenu.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -131,6 +147,14 @@ namespace Ext.Net
         public DateMenu.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.DateMenu(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -145,7 +169,11 @@ namespace Ext.Net
         /// </summary>
         public DateMenu.Builder DateMenu()
         {
-            return this.DateMenu(new DateMenu());
+#if MVC
+			return this.DateMenu(new DateMenu { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.DateMenu(new DateMenu());
+#endif			
         }
 
         /// <summary>
@@ -153,7 +181,10 @@ namespace Ext.Net
         /// </summary>
         public DateMenu.Builder DateMenu(DateMenu component)
         {
-            return new DateMenu.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new DateMenu.Builder(component);
         }
 
         /// <summary>
@@ -161,7 +192,11 @@ namespace Ext.Net
         /// </summary>
         public DateMenu.Builder DateMenu(DateMenu.Config config)
         {
-            return new DateMenu.Builder(new DateMenu(config));
+#if MVC
+			return new DateMenu.Builder(new DateMenu(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new DateMenu.Builder(new DateMenu(config));
+#endif			
         }
     }
 }

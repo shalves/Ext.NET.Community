@@ -35,7 +35,7 @@
     </DockedItems>
 
     <HtmlBin>
-        <script type="text/javascript">
+        <script>
             var onOrderClick = function () {
                 var wnd = this.up('window'),
                     id = wnd.orderItem.get('OrderId'),

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,59 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseItem.Builder<ChildElement, ChildElement.Builder>
+        new public abstract partial class Builder<TChildElement, TBuilder> : BaseItem.Builder<TChildElement, TBuilder>
+            where TChildElement : ChildElement
+            where TBuilder : Builder<TChildElement, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TChildElement component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The property name on the Component for the child element.
+			/// </summary>
+            public virtual TBuilder Name(string name)
+            {
+                this.ToComponent().Name = name;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The id to combine with the Component's id that is the id of the child element.
+			/// </summary>
+            public virtual TBuilder ItemID(string itemID)
+            {
+                this.ToComponent().ItemID = itemID;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The id of the child element.
+			/// </summary>
+            public virtual TBuilder ID(string iD)
+            {
+                this.ToComponent().ID = iD;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ChildElement.Builder<ChildElement, ChildElement.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,42 +124,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The property name on the Component for the child element.
-			/// </summary>
-            public virtual ChildElement.Builder Name(string name)
-            {
-                this.ToComponent().Name = name;
-                return this as ChildElement.Builder;
-            }
-             
- 			/// <summary>
-			/// The id to combine with the Component's id that is the id of the child element.
-			/// </summary>
-            public virtual ChildElement.Builder ItemID(string itemID)
-            {
-                this.ToComponent().ItemID = itemID;
-                return this as ChildElement.Builder;
-            }
-             
- 			/// <summary>
-			/// The id of the child element.
-			/// </summary>
-            public virtual ChildElement.Builder ID(string iD)
-            {
-                this.ToComponent().ID = iD;
-                return this as ChildElement.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -116,6 +132,14 @@ namespace Ext.Net
         public ChildElement.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ChildElement(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -130,7 +154,11 @@ namespace Ext.Net
         /// </summary>
         public ChildElement.Builder ChildElement()
         {
-            return this.ChildElement(new ChildElement());
+#if MVC
+			return this.ChildElement(new ChildElement { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ChildElement(new ChildElement());
+#endif			
         }
 
         /// <summary>
@@ -138,7 +166,10 @@ namespace Ext.Net
         /// </summary>
         public ChildElement.Builder ChildElement(ChildElement component)
         {
-            return new ChildElement.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ChildElement.Builder(component);
         }
 
         /// <summary>
@@ -146,7 +177,11 @@ namespace Ext.Net
         /// </summary>
         public ChildElement.Builder ChildElement(ChildElement.Config config)
         {
-            return new ChildElement.Builder(new ChildElement(config));
+#if MVC
+			return new ChildElement.Builder(new ChildElement(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ChildElement.Builder(new ChildElement(config));
+#endif			
         }
     }
 }

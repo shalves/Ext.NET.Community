@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -70,7 +70,7 @@ namespace Ext.Net
                 list.Add("collapseDirection", new ConfigOption("collapseDirection", new SerializationOptions(JsonMode.ToLower), Direction.None, this.CollapseDirection ));
                 list.Add("collapseFirst", new ConfigOption("collapseFirst", null, true, this.CollapseFirst ));
                 list.Add("collapseMode", new ConfigOption("collapseMode", new SerializationOptions(JsonMode.ToLower), CollapseMode.Default, this.CollapseMode ));
-                list.Add("collapsed", new ConfigOption("collapsed", null, false, this.Collapsed ));
+                list.Add("collapsedProxy", new ConfigOption("collapsedProxy", new SerializationOptions("collapsed", JsonMode.Raw), "", this.CollapsedProxy ));
                 list.Add("collapsedCls", new ConfigOption("collapsedCls", null, "", this.CollapsedCls ));
                 list.Add("collapsible", new ConfigOption("collapsible", null, false, this.Collapsible ));
                 list.Add("dockedItemsProxy", new ConfigOption("dockedItemsProxy", new SerializationOptions("dockedItems", typeof(ItemCollectionJsonConverter)), null, this.DockedItemsProxy ));
@@ -97,7 +97,6 @@ namespace Ext.Net
                 list.Add("defaultDockWeightsProxy", new ConfigOption("defaultDockWeightsProxy", new SerializationOptions("defaultDockWeights", JsonMode.Raw), null, this.DefaultDockWeightsProxy ));
                 list.Add("iconClsProxy", new ConfigOption("iconClsProxy", new SerializationOptions("iconCls"), "", this.IconClsProxy ));
                 list.Add("iconPath", new ConfigOption("iconPath", new SerializationOptions("icon", JsonMode.Url), "", this.IconPath ));
-                list.Add("keyMap", new ConfigOption("keyMap", new SerializationOptions("keys", JsonMode.Array), null, this.KeyMap ));
                 list.Add("tools", new ConfigOption("tools", new SerializationOptions("tools", typeof(ItemCollectionJsonConverter)), null, this.Tools ));
                 list.Add("unstyled", new ConfigOption("unstyled", null, false, this.Unstyled ));
 

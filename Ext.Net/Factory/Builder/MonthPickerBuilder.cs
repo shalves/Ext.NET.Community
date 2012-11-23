@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,153 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ComponentBase.Builder<MonthPicker, MonthPicker.Builder>
+        new public abstract partial class Builder<TMonthPicker, TBuilder> : ComponentBase.Builder<TMonthPicker, TBuilder>
+            where TMonthPicker : MonthPicker
+            where TBuilder : Builder<TMonthPicker, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TMonthPicker component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder PostBackEvent(string postBackEvent)
+            {
+                this.ToComponent().PostBackEvent = postBackEvent;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The text to display on the cancel button.
+			/// </summary>
+            public virtual TBuilder CancelText(string cancelText)
+            {
+                this.ToComponent().CancelText = cancelText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The text to display on the ok button.
+			/// </summary>
+            public virtual TBuilder OkText(string okText)
+            {
+                this.ToComponent().OkText = okText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The class to be added to selected items in the picker. Defaults to 'x-monthpicker-selected'
+			/// </summary>
+            public virtual TBuilder SelectedCls(string selectedCls)
+            {
+                this.ToComponent().SelectedCls = selectedCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to show ok and cancel buttons below the picker.
+			/// </summary>
+            public virtual TBuilder ShowButtons(bool showButtons)
+            {
+                this.ToComponent().ShowButtons = showButtons;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// AutoPostBack
+			/// </summary>
+            public virtual TBuilder AutoPostBack(bool autoPostBack)
+            {
+                this.ToComponent().AutoPostBack = autoPostBack;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Gets or sets a value indicating whether validation is performed when the control is set to validate when a postback occurs.
+			/// </summary>
+            public virtual TBuilder CausesValidation(bool causesValidation)
+            {
+                this.ToComponent().CausesValidation = causesValidation;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Gets or Sets the Controls ValidationGroup
+			/// </summary>
+            public virtual TBuilder ValidationGroup(string validationGroup)
+            {
+                this.ToComponent().ValidationGroup = validationGroup;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Gets or sets the current selected date of the MonthPicker. Accepts and returns a DateTime object.
+			/// </summary>
+            public virtual TBuilder SelectedDate(DateTime? selectedDate)
+            {
+                this.ToComponent().SelectedDate = selectedDate;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Selected month number
+			/// </summary>
+            public virtual TBuilder SelectedMonth(int? selectedMonth)
+            {
+                this.ToComponent().SelectedMonth = selectedMonth;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Selected year number
+			/// </summary>
+            public virtual TBuilder SelectedYear(int? selectedYear)
+            {
+                this.ToComponent().SelectedYear = selectedYear;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<MonthPickerListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<MonthPickerDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : MonthPicker.Builder<MonthPicker, MonthPicker.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,136 +218,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual MonthPicker.Builder PostBackEvent(string postBackEvent)
-            {
-                this.ToComponent().PostBackEvent = postBackEvent;
-                return this as MonthPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The text to display on the cancel button.
-			/// </summary>
-            public virtual MonthPicker.Builder CancelText(string cancelText)
-            {
-                this.ToComponent().CancelText = cancelText;
-                return this as MonthPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The text to display on the ok button.
-			/// </summary>
-            public virtual MonthPicker.Builder OkText(string okText)
-            {
-                this.ToComponent().OkText = okText;
-                return this as MonthPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The class to be added to selected items in the picker. Defaults to 'x-monthpicker-selected'
-			/// </summary>
-            public virtual MonthPicker.Builder SelectedCls(string selectedCls)
-            {
-                this.ToComponent().SelectedCls = selectedCls;
-                return this as MonthPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// True to show ok and cancel buttons below the picker.
-			/// </summary>
-            public virtual MonthPicker.Builder ShowButtons(bool showButtons)
-            {
-                this.ToComponent().ShowButtons = showButtons;
-                return this as MonthPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// AutoPostBack
-			/// </summary>
-            public virtual MonthPicker.Builder AutoPostBack(bool autoPostBack)
-            {
-                this.ToComponent().AutoPostBack = autoPostBack;
-                return this as MonthPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Gets or sets a value indicating whether validation is performed when the control is set to validate when a postback occurs.
-			/// </summary>
-            public virtual MonthPicker.Builder CausesValidation(bool causesValidation)
-            {
-                this.ToComponent().CausesValidation = causesValidation;
-                return this as MonthPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Gets or Sets the Controls ValidationGroup
-			/// </summary>
-            public virtual MonthPicker.Builder ValidationGroup(string validationGroup)
-            {
-                this.ToComponent().ValidationGroup = validationGroup;
-                return this as MonthPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Gets or sets the current selected date of the MonthPicker. Accepts and returns a DateTime object.
-			/// </summary>
-            public virtual MonthPicker.Builder SelectedDate(DateTime? selectedDate)
-            {
-                this.ToComponent().SelectedDate = selectedDate;
-                return this as MonthPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Selected month number
-			/// </summary>
-            public virtual MonthPicker.Builder SelectedMonth(int? selectedMonth)
-            {
-                this.ToComponent().SelectedMonth = selectedMonth;
-                return this as MonthPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Selected year number
-			/// </summary>
-            public virtual MonthPicker.Builder SelectedYear(int? selectedYear)
-            {
-                this.ToComponent().SelectedYear = selectedYear;
-                return this as MonthPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of MonthPicker.Builder</returns>
-            public virtual MonthPicker.Builder Listeners(Action<MonthPickerListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as MonthPicker.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of MonthPicker.Builder</returns>
-            public virtual MonthPicker.Builder DirectEvents(Action<MonthPickerDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as MonthPicker.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -210,6 +226,14 @@ namespace Ext.Net
         public MonthPicker.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.MonthPicker(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -224,7 +248,11 @@ namespace Ext.Net
         /// </summary>
         public MonthPicker.Builder MonthPicker()
         {
-            return this.MonthPicker(new MonthPicker());
+#if MVC
+			return this.MonthPicker(new MonthPicker { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.MonthPicker(new MonthPicker());
+#endif			
         }
 
         /// <summary>
@@ -232,7 +260,10 @@ namespace Ext.Net
         /// </summary>
         public MonthPicker.Builder MonthPicker(MonthPicker component)
         {
-            return new MonthPicker.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new MonthPicker.Builder(component);
         }
 
         /// <summary>
@@ -240,7 +271,11 @@ namespace Ext.Net
         /// </summary>
         public MonthPicker.Builder MonthPicker(MonthPicker.Config config)
         {
-            return new MonthPicker.Builder(new MonthPicker(config));
+#if MVC
+			return new MonthPicker.Builder(new MonthPicker(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new MonthPicker.Builder(new MonthPicker(config));
+#endif			
         }
     }
 }

@@ -5235,7 +5235,7 @@ TestAction.multiply(
         if (e.status) {
             var answer = Ext.encode(result); // 8
     
-        } else {
+        }else{
             var msg = e.message; // failure message
         }
     }
@@ -20512,7 +20512,7 @@ var list = dh.append('my-div', {tag: 'ul', cls: 'my-list'});
 // get template
 var tpl = dh.createTemplate({tag: 'li', id: 'item{0}', html: 'List Item {0}'});
 
-for (var i = 0; i < 5, i++) {
+for(var i = 0; i < 5, i++) {
     tpl.append(list, [i]); // use template to append to the actual node
 }
 </code></pre></p>
@@ -20715,10 +20715,10 @@ a function which returns such a specification.]]></Summary>
                 if (!/tag|children|cn|html|style/.test(attr)) {
 	                if (attr == 'cls') {
 	                    el.className = val;
-	                } else {
+	                }else{
                         if (useSet) {
                             el.setAttribute(attr, val);
-                        } else {
+                        }else{
                             el[attr] = val;
                         }
 	                }
@@ -24403,7 +24403,7 @@ search as a number or element (defaults to 10 || document.body)]]></Summary>
                 me.target = E.getTarget(e);
                 // same for XY
                 me.xy = E.getXY(e);
-            } else {
+            }else{
                 me.button = -1;
                 me.shiftKey = false;
                 me.ctrlKey = false;

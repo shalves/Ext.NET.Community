@@ -6,12 +6,12 @@
 <html>
 <head runat="server">
     <title>Draw Actions - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
     <script runat="server">
         protected void CreateSprite(object sender, DirectEventArgs e)
         {
-            var sprite = new Sprite
+            Sprite sprite = new Sprite
             {
                 SpriteID = "Sprite1",
                 Type = SpriteType.Rect,
@@ -66,9 +66,9 @@
 
         private void EnableButton(object sender)
         {
-            var button = (Ext.Net.Button)sender;
-            var items = ((AbstractContainer)button.Parent).Items;
-            var index = items.IndexOf(button) + 1;
+            Ext.Net.Button button = (Ext.Net.Button)sender;
+            ItemsCollection<AbstractComponent> items = ((AbstractContainer)button.Parent).Items;
+            int index = items.IndexOf(button) + 1;
             button.Disabled = true;
 
             if (index < items.Count)

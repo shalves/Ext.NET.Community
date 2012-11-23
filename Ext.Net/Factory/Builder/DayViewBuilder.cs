@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,86 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Container.Builder<DayView, DayView.Builder>
+        new public abstract partial class Builder<TDayView, TBuilder> : Container.Builder<TDayView, TBuilder>
+            where TDayView : DayView
+            where TBuilder : Builder<TDayView, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TDayView component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The number of days to display in the view (defaults to 1). Only values from 1 to 7 are allowed.
+			/// </summary>
+            public virtual TBuilder DayCount(int dayCount)
+            {
+                this.ToComponent().DayCount = dayCount;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The text to display inside the drag proxy while dragging over the calendar to create a new event (defaults to 'Create event for {0}' where {0} is a date range supplied by the view)
+			/// </summary>
+            public virtual TBuilder DDCreateEventText(string dDCreateEventText)
+            {
+                this.ToComponent().DDCreateEventText = dDCreateEventText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The text to display inside the drag proxy while dragging an event to reposition it (defaults to 'Move event to {0}' where {0} is the updated event start date/time supplied by the view)
+			/// </summary>
+            public virtual TBuilder DDMoveEventText(string dDMoveEventText)
+            {
+                this.ToComponent().DDMoveEventText = dDMoveEventText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to display the current time in today's box in the calendar, false to not display it (defautls to true)
+			/// </summary>
+            public virtual TBuilder ShowTime(bool showTime)
+            {
+                this.ToComponent().ShowTime = showTime;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to display the todayText string in today's box in the calendar, false to not display it (defautls to true)
+			/// </summary>
+            public virtual TBuilder ShowTodayText(bool showTodayText)
+            {
+                this.ToComponent().ShowTodayText = showTodayText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The text to display in the current day's box in the calendar when showTodayText is true (defaults to 'Today')
+			/// </summary>
+            public virtual TBuilder TodayText(string todayText)
+            {
+                this.ToComponent().TodayText = todayText;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : DayView.Builder<DayView, DayView.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,69 +151,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The number of days to display in the view (defaults to 1). Only values from 1 to 7 are allowed.
-			/// </summary>
-            public virtual DayView.Builder DayCount(int dayCount)
-            {
-                this.ToComponent().DayCount = dayCount;
-                return this as DayView.Builder;
-            }
-             
- 			/// <summary>
-			/// The text to display inside the drag proxy while dragging over the calendar to create a new event (defaults to 'Create event for {0}' where {0} is a date range supplied by the view)
-			/// </summary>
-            public virtual DayView.Builder DDCreateEventText(string dDCreateEventText)
-            {
-                this.ToComponent().DDCreateEventText = dDCreateEventText;
-                return this as DayView.Builder;
-            }
-             
- 			/// <summary>
-			/// The text to display inside the drag proxy while dragging an event to reposition it (defaults to 'Move event to {0}' where {0} is the updated event start date/time supplied by the view)
-			/// </summary>
-            public virtual DayView.Builder DDMoveEventText(string dDMoveEventText)
-            {
-                this.ToComponent().DDMoveEventText = dDMoveEventText;
-                return this as DayView.Builder;
-            }
-             
- 			/// <summary>
-			/// True to display the current time in today's box in the calendar, false to not display it (defautls to true)
-			/// </summary>
-            public virtual DayView.Builder ShowTime(bool showTime)
-            {
-                this.ToComponent().ShowTime = showTime;
-                return this as DayView.Builder;
-            }
-             
- 			/// <summary>
-			/// True to display the todayText string in today's box in the calendar, false to not display it (defautls to true)
-			/// </summary>
-            public virtual DayView.Builder ShowTodayText(bool showTodayText)
-            {
-                this.ToComponent().ShowTodayText = showTodayText;
-                return this as DayView.Builder;
-            }
-             
- 			/// <summary>
-			/// The text to display in the current day's box in the calendar when showTodayText is true (defaults to 'Today')
-			/// </summary>
-            public virtual DayView.Builder TodayText(string todayText)
-            {
-                this.ToComponent().TodayText = todayText;
-                return this as DayView.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -143,6 +159,14 @@ namespace Ext.Net
         public DayView.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.DayView(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -157,7 +181,11 @@ namespace Ext.Net
         /// </summary>
         public DayView.Builder DayView()
         {
-            return this.DayView(new DayView());
+#if MVC
+			return this.DayView(new DayView { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.DayView(new DayView());
+#endif			
         }
 
         /// <summary>
@@ -165,7 +193,10 @@ namespace Ext.Net
         /// </summary>
         public DayView.Builder DayView(DayView component)
         {
-            return new DayView.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new DayView.Builder(component);
         }
 
         /// <summary>
@@ -173,7 +204,11 @@ namespace Ext.Net
         /// </summary>
         public DayView.Builder DayView(DayView.Config config)
         {
-            return new DayView.Builder(new DayView(config));
+#if MVC
+			return new DayView.Builder(new DayView(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new DayView.Builder(new DayView(config));
+#endif			
         }
     }
 }

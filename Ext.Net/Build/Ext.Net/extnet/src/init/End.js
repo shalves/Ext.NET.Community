@@ -39,7 +39,7 @@ Ext.ux.RowExpander.override(Ext.util.DirectObservable);
     buf.push("input.x-tree-node-cb{margin-left:1px;height:18px;vertical-align:bottom;}.x-tree-node .x-tree-node-inline-icon{background:transparent;height:16px !important;}");
     buf.push(".x-toolbar-flat{padding:0px !important;border:0px !important;background:none !important;background-color: transparent !important; background-image: none !important;}");
     buf.push(".x-grid .x-row-expander-control TABLE{table-layout: auto;} .x-grid .x-row-expander-control TABLE.x-grid-row-table{table-layout:fixed;}");
-	buf.push(".x-notification-auto-hide .x-tool-close{display:none !important}");
+	//buf.push(".x-notification-auto-hide .x-tool-close{display:none !important}");
 	//buf.push(".x-grid-row-expanded .x-grid3-row-expander {background-position:-21px 2px;} .x-grid-row-collapsed .x-grid-row-expander {background-position:4px 2px;} .x-grid-row-expanded .x-grid-row-body {display:block !important;} .x-grid-row-collapsed .x-grid-row-body {display:none !important;}");
 	buf.push(".x-grid-row-checker-on{background-position:-25px 0 !important;}");
 	buf.push(".x-grid-header-widgets{border-top-width:0px;} .x-grid-header-widgets .x-form-item{margin-bottom:1px;} .x-border-box .x-ie9 .x-grid-header-ct{padding-left:0px;}");

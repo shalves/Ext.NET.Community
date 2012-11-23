@@ -2,7 +2,7 @@
 // @source core/utils/Observable.js
 
 Ext.util.Observable.override({
-    constructor: function (config) {
+    constructor : function (config) {
         this.callParent(arguments);
 
         this.directListeners = this.directListeners || {};
@@ -40,10 +40,12 @@ Ext.util.DirectObservable = {
         eventName = eventName.toLowerCase();
         var me = this,
             events = me.events,
-            event = events && events[eventName];
+            directListeners = me.directListeners,
+            event = events && events[eventName],
+            directListener = directListeners && directListeners[eventName];
 
-        if (event && (me.hasListeners[eventName] || me.hasDirectListeners[eventName])) {
-            return me.continueFireEvent(eventName, Ext.Array.slice(arguments, 1), event.bubble);
+        if ((event || directListener) && (me.hasListeners[eventName] || me.hasDirectListeners[eventName])) {
+            return me.continueFireEvent(eventName, Ext.Array.slice(arguments, 1), (event || directListener).bubble);
         }
     },
 
@@ -53,13 +55,15 @@ Ext.util.DirectObservable = {
             ret = true;
 
         do {
-            if (target.eventsSuspended === true) {
+            if (target.eventsSuspended) {
                 if ((queue = target.eventQueue)) {
                     queue.push([eventName, args, bubbles]);
                 }
+
                 return ret;
             } else {
                 event = target.events[eventName];
+
                 if (event && event != true) {
                     if ((ret = event.fire.apply(event, args)) === false) {
                         break;
@@ -79,10 +83,16 @@ Ext.util.DirectObservable = {
         return ret;
     },
 
-    addListener: function (ename, fn, scope, options) {
+    addListener : function (ename, fn, scope, options) {
         var me = this,
-            config,
-            event;
+            config, 
+            event, 
+            hasListeners,
+            prevListenerCount = 0;
+
+        if (!me.hasListeners) {
+            me.hasListeners = new me.HasListeners();
+        } 
 
         if (this instanceof Ext.AbstractComponent) {
             var element = ename, 
@@ -119,6 +129,8 @@ Ext.util.DirectObservable = {
                     }
                     me.afterRenderEvents[element].push(listeners);
                 }
+
+                return;
             }
 
             ename = element;
@@ -127,30 +139,52 @@ Ext.util.DirectObservable = {
 
         if (typeof ename !== 'string') {
             options = ename;
+
             for (ename in options) {
                 if (options.hasOwnProperty(ename)) {
                     config = options[ename];
+            
                     if (!me.eventOptionsRe.test(ename)) {
                         me.addListener(ename, (config.fn || config.broadcastOnBus) ? config.fn : config, config.scope || options.scope, (config.fn || config.broadcastOnBus) ? config : options);
                     }
-                }
+                }                
             }
-        }
-        else {
+
+            if (options && options.destroyable) {
+                return new ListenerRemover(me, options);
+            }
+        } else {
             ename = ename.toLowerCase();
-            me.events[ename] = me.events[ename] || true;
-            event = me.events[ename] || true;
-            if (Ext.isBoolean(event)) {
+            event = me.events[ename];
+
+            if (event && event.isEvent) {
+                prevListenerCount = event.listeners.length;
+            } else {
                 me.events[ename] = event = new Ext.util.Event(me, ename);
             }
 
             if (fn) {
                 if (typeof fn === 'string') {
-                    fn = scope[fn] || me.fn;
+                    fn = scope[fn] || me[fn];
                 }
-                event.addListener(fn, scope, Ext.isObject(options) ? options : {});
+                
+                event.addListener(fn, scope, options);
 
-                me.hasListeners[ename] = (me.hasListeners[ename]||0) + 1;
+                if (event.listeners.length !== prevListenerCount) {
+                    hasListeners = me.hasListeners;
+
+                    if (hasListeners.hasOwnProperty(ename)) {
+                        // if we already have listeners at this level, just increment the count...
+                        ++hasListeners[ename];
+                    } else {
+                        // otherwise, start the count at 1 (which hides whatever is in our prototype
+                        // chain)...
+                        hasListeners[ename] = 1;
+                    }
+                }
+                if (options && options.destroyable) {
+                    return new ListenerRemover(me, ename, fn, scope, options);
+                }
             }
 
             if (options && options.broadcastOnBus) {
@@ -161,8 +195,7 @@ Ext.util.DirectObservable = {
                 if (parts.length == 1) {
                     bus = Ext.net.Bus;
                     name = parts[0];
-                }
-                else {
+                } else {
                     bus = Ext.net.ResourceMgr.getCmp(parts[0]);
                     name = parts[1];
                 }
@@ -192,10 +225,17 @@ Ext.util.DirectObservable = {
         }
     },
 
-    addDirectListener: function (ename, fn, scope, options) {
+    addDirectListener : function (ename, fn, scope, options) {
         var me = this,
-            config,
-            event;
+            config, 
+            event, 
+            hasListeners,
+            hasDirectListeners,
+            prevListenerCount = 0;
+
+        if (!me.hasListeners) {
+            me.hasListeners = new me.HasListeners();
+        }
 
         if (!this.directListeners) {
             this.directListeners = {};
@@ -207,20 +247,27 @@ Ext.util.DirectObservable = {
 
         if (typeof ename !== 'string') {
             options = ename;
+
             for (ename in options) {
                 if (options.hasOwnProperty(ename)) {
                     config = options[ename];
+          
                     if (!me.eventOptionsRe.test(ename)) {
                         me.addDirectListener(ename, config.fn || config, config.scope || options.scope, config.fn ? config : options);
                     }
                 }
             }
-        }
-        else {
+          
+            if (options && options.destroyable) {
+                return new ListenerRemover(me, ename, fn, scope, options);
+            }
+        } else {
             ename = ename.toLowerCase();
-            me.directListeners[ename] = me.directListeners[ename] || true;
-            event = me.directListeners[ename] || true;
-            if (Ext.isBoolean(event)) {
+            event = me.directListeners[ename];
+
+            if (event && event.isEvent) {
+                prevListenerCount = event.listeners.length;
+            } else {
                 me.directListeners[ename] = event = new Ext.util.Event(me, ename);
             }
 
@@ -239,8 +286,30 @@ Ext.util.DirectObservable = {
             }
 			
             event.addListener(fn, scope, options);
-            me.hasDirectListeners[ename] = (me.hasDirectListeners[ename]||0) + 1;
-            me.hasListeners[ename] = (me.hasListeners[ename]||0) + 1;
+
+            event.addListener(fn, scope, options);
+
+            if (event.listeners.length !== prevListenerCount) {
+                hasListeners = me.hasListeners;
+
+                if (hasListeners.hasOwnProperty(ename)) {
+                    ++hasListeners[ename];
+                } else {
+                    hasListeners[ename] = 1;
+                }
+
+                hasDirectListeners = me.hasDirectListeners;
+
+                if (hasDirectListeners.hasOwnProperty(ename)) {
+                    ++hasDirectListeners[ename];
+                } else {
+                    hasDirectListeners[ename] = 1;
+                }
+            }
+
+            if (options && options.destroyable) {
+                return new ListenerRemover(me, ename, fn, scope, options);
+            }
         }
     }
 };

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -30,7 +30,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Web.UI;
-
 using Ext.Net.Utilities;
 
 namespace Ext.Net
@@ -222,6 +221,167 @@ namespace Ext.Net
                 }
 
                 this.State.Set("Value", obj);
+            }
+        }
+
+        /// <summary>
+        /// true to automatically highlight the first result gathered by the data store in the dropdown list when it is opened. (Defaults to true). A false value would cause nothing in the list to be highlighted automatically, so the user would have to manually highlight an item before pressing the enter or tab key to select it (unless the value of (typeAhead) were true), or use the mouse to select a value.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(true)]
+        [Description("true to automatically highlight the first result gathered by the data store in the dropdown list when it is opened. (Defaults to true). A false value would cause nothing in the list to be highlighted automatically, so the user would have to manually highlight an item before pressing the enter or tab key to select it (unless the value of (typeAhead) were true), or use the mouse to select a value.")]
+        public virtual bool AutoSelect
+        {
+            get
+            {
+                return this.State.Get<bool>("AutoSelect", true);
+            }
+            set
+            {
+                this.State.Set("AutoSelect", value);
+            }
+        }
+
+        /// <summary>
+        /// true to restrict the selected value to one of the values in the list, false to allow the user to set arbitrary text into the field (defaults to false)
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(false)]
+        [Description("true to restrict the selected value to one of the values in the list, false to allow the user to set arbitrary text into the field (defaults to false)")]
+        public virtual bool ForceSelection
+        {
+            get
+            {
+                return this.State.Get<bool>("ForceSelection", false);
+            }
+            set
+            {
+                this.State.Set("ForceSelection", value);
+            }
+        }
+
+        /// <summary>
+        /// false to not allow the component to resize itself when its data changes (and its grow property is true). Defaults to: true
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(true)]
+        [Description("false to not allow the component to resize itself when its data changes (and its grow property is true). Defaults to: true")]
+        public virtual bool GrowToLongestValue
+        {
+            get
+            {
+                return this.State.Get<bool>("GrowToLongestValue", true);
+            }
+            set
+            {
+                this.State.Set("GrowToLongestValue", value);
+            }
+        }
+
+        /// <summary>
+        /// True to fire select event after setValue on page load
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(false)]
+        [Description("True to fire select event after setValue on page load")]
+        public virtual bool FireSelectOnLoad
+        {
+            get
+            {
+                return this.State.Get<bool>("FireSelectOnLoad", false);
+            }
+            set
+            {
+                this.State.Set("FireSelectOnLoad", value);
+            }
+        }
+
+        /// <summary>
+        /// The minimum number of characters the user must type before autocomplete and typeAhead activate (defaults to 4 if queryMode = 'remote' or 0 if queryMode = 'local', does not apply if editable = false).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(0)]
+        [Description("The minimum number of characters the user must type before autocomplete and typeAhead activate (defaults to 4 if queryMode = 'remote' or 0 if queryMode = 'local', does not apply if editable = false).")]
+        public virtual int MinChars
+        {
+            get
+            {
+                return this.State.Get<int>("MinChars", 0);
+            }
+            set
+            {
+                this.State.Set("MinChars", value);
+            }
+        }
+
+        /// <summary>
+        /// true to populate and autoselect the remainder of the text being typed after a configurable delay (typeAheadDelay) if it matches a known value (defaults to false)
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(false)]
+        [Description("True to populate and autoselect the remainder of the text being typed after a configurable delay (typeAheadDelay) if it matches a known value (defaults to false).")]
+        public virtual bool TypeAhead
+        {
+            get
+            {
+                return this.State.Get<bool>("TypeAhead", false);
+            }
+            set
+            {
+                this.State.Set("TypeAhead", value);
+            }
+        }
+
+        /// <summary>
+        /// The length of time in milliseconds to wait until the typeahead text is displayed if TypeAhead = true (defaults to 250).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue(250)]
+        [Description("The length of time in milliseconds to wait until the typeahead text is displayed if TypeAhead = true (defaults to 250).")]
+        public virtual int TypeAheadDelay
+        {
+            get
+            {
+                return this.State.Get<int>("TypeAheadDelay", 250);
+            }
+            set
+            {
+                this.State.Set("TypeAheadDelay", value);
+            }
+        }
+
+        /// <summary>
+        /// When using a name/value combo, if the value passed to setValue is not found in the store, valueNotFoundText will be displayed as the field text if defined (defaults to undefined). If this default text is used, it means there is no value set and no validation will occur on this field.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. ComboBox")]
+        [DefaultValue("")]
+        [Localizable(true)]
+        [Description("When using a name/value combo, if the value passed to setValue is not found in the store, valueNotFoundText will be displayed as the field text if defined (defaults to undefined). If this default text is used, it means there is no value set and no validation will occur on this field.")]
+        public virtual string ValueNotFoundText
+        {
+            get
+            {
+                return this.State.Get<string>("ValueNotFoundText", "");
+            }
+            set
+            {
+                this.State.Set("ValueNotFoundText", value);
             }
         }
 
@@ -548,7 +708,192 @@ namespace Ext.Net
         {
             get
             {
-                return DateTimeUtils.ConvertNetToPHP(this.SubmitFormat, this.HasResourceManager ? this.ResourceManager.CurrentLocale : CultureInfo.InvariantCulture);
+                return this.IsMVC ? DateTimeUtils.ConvertNetToPHP(this.SubmitFormat, System.Threading.Thread.CurrentThread.CurrentCulture)
+                    : DateTimeUtils.ConvertNetToPHP(this.SubmitFormat, this.HasResourceManager ? this.ResourceManager.CurrentLocale : CultureInfo.InvariantCulture);
+            }
+        }
+
+        private BoundList listConfig;
+
+        /// <summary>
+        /// An optional set of configuration properties that will be passed to the Ext.view.BoundList's constructor. Any configuration that is valid for BoundList can be included. Some of the more useful ones are:
+        /// 
+        /// Ext.view.BoundList.cls - defaults to empty
+        /// Ext.view.BoundList.emptyText - defaults to empty string
+        /// Ext.view.BoundList.itemSelector - defaults to the value defined in BoundList
+        /// Ext.view.BoundList.loadingText - defaults to 'Loading...'
+        /// Ext.view.BoundList.minWidth - defaults to 70
+        /// Ext.view.BoundList.maxWidth - defaults to undefined
+        /// Ext.view.BoundList.maxHeight - defaults to 300
+        /// Ext.view.BoundList.resizable - defaults to false
+        /// Ext.view.BoundList.shadow - defaults to 'sides'
+        /// Ext.view.BoundList.width - defaults to undefined (automatically set to the width of the ComboBox field if matchFieldWidth is true)
+        /// </summary>
+        [Meta]
+        [ConfigOption("listConfig", typeof(LazyControlJsonConverter))]
+        [Category("9. TimeField")]
+        [DefaultValue(null)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("")]
+        public BoundList ListConfig
+        {
+            get
+            {
+                return this.listConfig;
+            }
+            set
+            {
+                if (this.listConfig != null)
+                {
+                    this.Controls.Remove(this.listConfig);
+                    this.LazyItems.Remove(this.listConfig);
+                }
+
+                this.listConfig = value;
+
+                if (this.listConfig != null)
+                {
+                    this.Controls.Add(this.listConfig);
+                    this.LazyItems.Add(this.listConfig);
+                }
+            }
+        }
+
+        /// <summary>
+        /// If greater than 0, a Ext.toolbar.Paging is displayed in the footer of the dropdown list and the filter queries will execute with page start and limit parameters. Only applies when queryMode = 'remote' (defaults to 0).
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("9. TimeField")]
+        [DefaultValue(0)]
+        [Description("If greater than 0, a Ext.toolbar.Paging is displayed in the footer of the dropdown list and the filter queries will execute with page start and limit parameters. Only applies when queryMode = 'remote' (defaults to 0).")]
+        public virtual int PageSize
+        {
+            get
+            {
+                return this.State.Get<int>("PageSize", 0);
+            }
+            set
+            {
+                this.State.Set("PageSize", value);
+            }
+        }
+
+        /// <summary>
+        /// When true, this prevents the combo from re-querying (either locally or remotely) when the current query is the same as the previous query. Defaults to: true
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("9. TimeField")]
+        [DefaultValue(true)]
+        [Description("When true, this prevents the combo from re-querying (either locally or remotely) when the current query is the same as the previous query. Defaults to: true")]
+        public virtual bool QueryCaching
+        {
+            get
+            {
+                return this.State.Get<bool>("QueryCaching", true);
+            }
+            set
+            {
+                this.State.Set("QueryCaching", value);
+            }
+        }
+
+        /// <summary>
+        /// The length of time in milliseconds to delay between the start of typing and sending the query to filter the dropdown list (defaults to 500 if queryMode = 'remote' or 10 if queryMode = 'local')
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("9. TimeField")]
+        [DefaultValue(-1)]
+        [Description("The length of time in milliseconds to delay between the start of typing and sending the query to filter the dropdown list (defaults to 500 if queryMode = 'remote' or 10 if queryMode = 'local')")]
+        public virtual int QueryDelay
+        {
+            get
+            {
+                return this.State.Get<int>("QueryDelay", -1);
+            }
+            set
+            {
+                this.State.Set("QueryDelay", value);
+            }
+        }
+
+        /// <summary>
+        /// Set to 'local' if the ComboBox loads local data (defaults to 'remote' which loads from the server).
+        /// The mode in which the ComboBox uses the configured Store. Acceptable values are:
+        /// 
+        /// 'remote' : Default
+        ///     In queryMode: 'remote', the ComboBox loads its Store dynamically based upon user interaction.
+        ///     This is typically used for "autocomplete" type inputs, and after the user finishes typing, the Store is loaded.
+        ///     A parameter containing the typed string is sent in the load request. The default parameter name for the input string is query, but this can be configured using the queryParam config.
+        ///     In queryMode: 'remote', the Store may be configured with remoteFilter: true, and further filters may be programatically added to the Store which are then passed with every load request which allows the server to further refine the returned dataset.
+        ///     Typically, in an autocomplete situation, hideTrigger is configured true because it has no meaning for autocomplete.
+        /// 'local' :
+        ///     ComboBox loads local data
+        /// 'single' :
+        ///     The mode is switched to 'local' after data loading
+        /// </summary>
+        [Meta]
+        [ConfigOption("queryMode", JsonMode.ToLower)]
+        [Category("9. TimeField")]
+        [DefaultValue(DataLoadMode.Local)]
+        [Description("Set to 'local' if the ComboBox loads local data (defaults to 'remote' which loads from the server).")]
+        public virtual DataLoadMode QueryMode
+        {
+            get
+            {
+                return this.State.Get<DataLoadMode>("QueryMode", DataLoadMode.Local);
+            }
+            set
+            {
+                this.State.Set("QueryMode", value);
+            }
+        }
+
+        /// <summary>
+        /// Name of the parameter used by the Store to pass the typed string when the ComboBox is configured with queryMode: 'remote' (defaults to 'query'). If explicitly set to a falsy value it will not be sent.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("9. TimeField")]
+        [DefaultValue("query")]
+        [Description("Name of the parameter used by the Store to pass the typed string when the ComboBox is configured with queryMode: 'remote' (defaults to 'query'). If explicitly set to a falsy value it will not be sent.")]
+        public virtual string QueryParam
+        {
+            get
+            {
+                return this.State.Get<string>("QueryParam", "query");
+            }
+            set
+            {
+                this.State.Set("QueryParam", value);
+            }
+        }
+
+        /// <summary>
+        /// The action to execute when the trigger is clicked.
+        /// 'all' : Default
+        ///     run the query specified by the allQuery config option
+        /// 'query' :
+        ///     run the query using the raw value.
+        /// See also queryParam.
+        /// </summary>
+        [Meta]
+        [ConfigOption(JsonMode.ToLower)]
+        [Category("9. TimeField")]
+        [DefaultValue(TriggerAction.Query)]
+        [Description("The action to execute when the trigger is clicked.")]
+        public virtual TriggerAction TriggerAction
+        {
+            get
+            {
+                return this.State.Get<TriggerAction>("TriggerAction", TriggerAction.All);
+            }
+            set
+            {
+                this.State.Set("TriggerAction", value);
             }
         }
 
@@ -585,13 +930,29 @@ namespace Ext.Net
 
             this.RawValue = val;
 
+            bool result = false;
+
             if (val.IsEmpty())
             {
                 this.Value = this.EmptyValue;
             }
             else
             {
-                this.Value = val;
+                try
+                {
+                    this.Value = val;
+                }
+                catch
+                {
+                    result = (TimeSpan)this.EmptyValue != this.SelectedTime;
+                    this.SelectedTime = (TimeSpan)this.EmptyValue;
+
+                    this.SuccessLoadPostData = false;
+                    if (this.RethrowLoadPostDataException)
+                    {
+                        throw;
+                    }
+                }
             }
 
             this.ResumeScripting();
@@ -623,7 +984,7 @@ namespace Ext.Net
             this.Call("setMinValue", value);
         }
 
-        private PickerFieldListeners listeners;
+        private ComboBoxListeners listeners;
 
         /// <summary>
         /// Client-side JavaScript Event Handlers
@@ -635,20 +996,20 @@ namespace Ext.Net
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]        
         [Description("Client-side JavaScript Event Handlers")]
-        public PickerFieldListeners Listeners
+        public ComboBoxListeners Listeners
         {
             get
             {
                 if (this.listeners == null)
                 {
-                    this.listeners = new PickerFieldListeners();
+                    this.listeners = new ComboBoxListeners();
                 }
 
                 return this.listeners;
             }
         }
 
-        private PickerFieldDirectEvents directEvents;
+        private ComboBoxDirectEvents directEvents;
 
         /// <summary>
         /// Server-side Ajax Event Handlers
@@ -660,13 +1021,13 @@ namespace Ext.Net
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [ConfigOption("directEvents", JsonMode.Object)]        
         [Description("Server-side Ajax Event Handlers")]
-        public PickerFieldDirectEvents DirectEvents
+        public ComboBoxDirectEvents DirectEvents
         {
             get
             {
                 if (this.directEvents == null)
                 {
-                    this.directEvents = new PickerFieldDirectEvents(this);
+                    this.directEvents = new ComboBoxDirectEvents(this);
                 }
 
                 return this.directEvents;
@@ -681,7 +1042,8 @@ namespace Ext.Net
         {
             add
             {
-                this.DirectEvents.Change.Event += value;
+                this.CheckForceId();
+				this.DirectEvents.Change.Event += value;
             }
             remove
             {
@@ -697,7 +1059,8 @@ namespace Ext.Net
         {
             add
             {
-                this.DirectEvents.Select.Event += value;
+                this.CheckForceId();
+				this.DirectEvents.Select.Event += value;
             }
             remove
             {

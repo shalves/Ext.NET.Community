@@ -144,7 +144,7 @@
 <html>
 <head runat="server">
     <title>Edit Form View - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">

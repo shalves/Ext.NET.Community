@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,86 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseItem.Builder<DataFilter, DataFilter.Builder>
+        new public abstract partial class Builder<TDataFilter, TBuilder> : BaseItem.Builder<TDataFilter, TBuilder>
+            where TDataFilter : DataFilter
+            where TBuilder : Builder<TDataFilter, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TDataFilter component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// True to allow any match - no regex start/end line anchors will be added. Defaults to false
+			/// </summary>
+            public virtual TBuilder AnyMatch(bool anyMatch)
+            {
+                this.ToComponent().AnyMatch = anyMatch;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to make the regex case sensitive (adds 'i' switch to regex). Defaults to false.
+			/// </summary>
+            public virtual TBuilder CaseSensitive(bool caseSensitive)
+            {
+                this.ToComponent().CaseSensitive = caseSensitive;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to force exact match (^ and $ characters added to the regex). Defaults to false. Ignored if anyMatch is true.
+			/// </summary>
+            public virtual TBuilder ExactMatch(bool exactMatch)
+            {
+                this.ToComponent().ExactMatch = exactMatch;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The property to filter on. Required unless a filter is passed
+			/// </summary>
+            public virtual TBuilder Property(string property)
+            {
+                this.ToComponent().Property = property;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Optional root property. This is mostly useful when filtering a Store, in which case we set the root to 'data' to make the filter pull the property out of the data object of each item
+			/// </summary>
+            public virtual TBuilder Root(string root)
+            {
+                this.ToComponent().Root = root;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Filter value
+			/// </summary>
+            public virtual TBuilder Value(string value)
+            {
+                this.ToComponent().Value = value;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : DataFilter.Builder<DataFilter, DataFilter.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,69 +151,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// True to allow any match - no regex start/end line anchors will be added. Defaults to false
-			/// </summary>
-            public virtual DataFilter.Builder AnyMatch(bool anyMatch)
-            {
-                this.ToComponent().AnyMatch = anyMatch;
-                return this as DataFilter.Builder;
-            }
-             
- 			/// <summary>
-			/// True to make the regex case sensitive (adds 'i' switch to regex). Defaults to false.
-			/// </summary>
-            public virtual DataFilter.Builder CaseSensitive(bool caseSensitive)
-            {
-                this.ToComponent().CaseSensitive = caseSensitive;
-                return this as DataFilter.Builder;
-            }
-             
- 			/// <summary>
-			/// True to force exact match (^ and $ characters added to the regex). Defaults to false. Ignored if anyMatch is true.
-			/// </summary>
-            public virtual DataFilter.Builder ExactMatch(bool exactMatch)
-            {
-                this.ToComponent().ExactMatch = exactMatch;
-                return this as DataFilter.Builder;
-            }
-             
- 			/// <summary>
-			/// The property to filter on. Required unless a filter is passed
-			/// </summary>
-            public virtual DataFilter.Builder Property(string property)
-            {
-                this.ToComponent().Property = property;
-                return this as DataFilter.Builder;
-            }
-             
- 			/// <summary>
-			/// Optional root property. This is mostly useful when filtering a Store, in which case we set the root to 'data' to make the filter pull the property out of the data object of each item
-			/// </summary>
-            public virtual DataFilter.Builder Root(string root)
-            {
-                this.ToComponent().Root = root;
-                return this as DataFilter.Builder;
-            }
-             
- 			/// <summary>
-			/// Filter value
-			/// </summary>
-            public virtual DataFilter.Builder Value(string value)
-            {
-                this.ToComponent().Value = value;
-                return this as DataFilter.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -143,6 +159,14 @@ namespace Ext.Net
         public DataFilter.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.DataFilter(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -157,7 +181,11 @@ namespace Ext.Net
         /// </summary>
         public DataFilter.Builder DataFilter()
         {
-            return this.DataFilter(new DataFilter());
+#if MVC
+			return this.DataFilter(new DataFilter { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.DataFilter(new DataFilter());
+#endif			
         }
 
         /// <summary>
@@ -165,7 +193,10 @@ namespace Ext.Net
         /// </summary>
         public DataFilter.Builder DataFilter(DataFilter component)
         {
-            return new DataFilter.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new DataFilter.Builder(component);
         }
 
         /// <summary>
@@ -173,7 +204,11 @@ namespace Ext.Net
         /// </summary>
         public DataFilter.Builder DataFilter(DataFilter.Config config)
         {
-            return new DataFilter.Builder(new DataFilter(config));
+#if MVC
+			return new DataFilter.Builder(new DataFilter(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new DataFilter.Builder(new DataFilter(config));
+#endif			
         }
     }
 }

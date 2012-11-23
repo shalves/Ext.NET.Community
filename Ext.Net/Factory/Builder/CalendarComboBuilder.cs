@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,86 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ComboBox.Builder<CalendarCombo, CalendarCombo.Builder>
+        new public abstract partial class Builder<TCalendarCombo, TBuilder> : ComboBox.Builder<TCalendarCombo, TBuilder>
+            where TCalendarCombo : CalendarCombo
+            where TBuilder : Builder<TCalendarCombo, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TCalendarCombo component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The calendar store ID to use.
+			/// </summary>
+            public virtual TBuilder CalendarStoreID(string calendarStoreID)
+            {
+                this.ToComponent().CalendarStoreID = calendarStoreID;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The label text to display next to this Component (defaults to 'Calendar').
+			/// </summary>
+            public virtual TBuilder FieldLabel(string fieldLabel)
+            {
+                this.ToComponent().FieldLabel = fieldLabel;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The action to execute when the trigger field is activated. Use 'All' to run the query specified by the allQuery config option (defaults to 'All').
+			/// </summary>
+            public virtual TBuilder TriggerAction(TriggerAction triggerAction)
+            {
+                this.ToComponent().TriggerAction = triggerAction;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Set to 'local' if the ComboBox loads local data (defaults to 'Local' which loads from the server).
+			/// </summary>
+            public virtual TBuilder QueryMode(DataLoadMode queryMode)
+            {
+                this.ToComponent().QueryMode = queryMode;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// true to restrict the selected value to one of the values in the list, false to allow the user to set arbitrary text into the field (defaults to true)
+			/// </summary>
+            public virtual TBuilder ForceSelection(bool forceSelection)
+            {
+                this.ToComponent().ForceSelection = forceSelection;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to automatically select any existing field text when the field receives input focus (defaults to true).
+			/// </summary>
+            public virtual TBuilder SelectOnFocus(bool selectOnFocus)
+            {
+                this.ToComponent().SelectOnFocus = selectOnFocus;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : CalendarCombo.Builder<CalendarCombo, CalendarCombo.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,69 +151,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The calendar store ID to use.
-			/// </summary>
-            public virtual CalendarCombo.Builder CalendarStoreID(string calendarStoreID)
-            {
-                this.ToComponent().CalendarStoreID = calendarStoreID;
-                return this as CalendarCombo.Builder;
-            }
-             
- 			/// <summary>
-			/// The label text to display next to this Component (defaults to 'Calendar').
-			/// </summary>
-            public virtual CalendarCombo.Builder FieldLabel(string fieldLabel)
-            {
-                this.ToComponent().FieldLabel = fieldLabel;
-                return this as CalendarCombo.Builder;
-            }
-             
- 			/// <summary>
-			/// The action to execute when the trigger field is activated. Use 'All' to run the query specified by the allQuery config option (defaults to 'All').
-			/// </summary>
-            public virtual CalendarCombo.Builder TriggerAction(TriggerAction triggerAction)
-            {
-                this.ToComponent().TriggerAction = triggerAction;
-                return this as CalendarCombo.Builder;
-            }
-             
- 			/// <summary>
-			/// Set to 'local' if the ComboBox loads local data (defaults to 'Local' which loads from the server).
-			/// </summary>
-            public virtual CalendarCombo.Builder QueryMode(DataLoadMode queryMode)
-            {
-                this.ToComponent().QueryMode = queryMode;
-                return this as CalendarCombo.Builder;
-            }
-             
- 			/// <summary>
-			/// true to restrict the selected value to one of the values in the list, false to allow the user to set arbitrary text into the field (defaults to true)
-			/// </summary>
-            public virtual CalendarCombo.Builder ForceSelection(bool forceSelection)
-            {
-                this.ToComponent().ForceSelection = forceSelection;
-                return this as CalendarCombo.Builder;
-            }
-             
- 			/// <summary>
-			/// True to automatically select any existing field text when the field receives input focus (defaults to true).
-			/// </summary>
-            public virtual CalendarCombo.Builder SelectOnFocus(bool selectOnFocus)
-            {
-                this.ToComponent().SelectOnFocus = selectOnFocus;
-                return this as CalendarCombo.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -143,6 +159,14 @@ namespace Ext.Net
         public CalendarCombo.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.CalendarCombo(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -157,7 +181,11 @@ namespace Ext.Net
         /// </summary>
         public CalendarCombo.Builder CalendarCombo()
         {
-            return this.CalendarCombo(new CalendarCombo());
+#if MVC
+			return this.CalendarCombo(new CalendarCombo { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.CalendarCombo(new CalendarCombo());
+#endif			
         }
 
         /// <summary>
@@ -165,7 +193,10 @@ namespace Ext.Net
         /// </summary>
         public CalendarCombo.Builder CalendarCombo(CalendarCombo component)
         {
-            return new CalendarCombo.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new CalendarCombo.Builder(component);
         }
 
         /// <summary>
@@ -173,7 +204,11 @@ namespace Ext.Net
         /// </summary>
         public CalendarCombo.Builder CalendarCombo(CalendarCombo.Config config)
         {
-            return new CalendarCombo.Builder(new CalendarCombo(config));
+#if MVC
+			return new CalendarCombo.Builder(new CalendarCombo(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new CalendarCombo.Builder(new CalendarCombo(config));
+#endif			
         }
     }
 }

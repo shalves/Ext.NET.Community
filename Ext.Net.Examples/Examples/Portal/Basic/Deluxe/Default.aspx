@@ -31,7 +31,7 @@
 <head runat="server">
     <title>Deluxe Portal in TabPanel - Ext.NET Examples</title>
 
-    <style type="text/css">
+    <style>
     body {
         font-size : 12px;
         background-color : #284051;

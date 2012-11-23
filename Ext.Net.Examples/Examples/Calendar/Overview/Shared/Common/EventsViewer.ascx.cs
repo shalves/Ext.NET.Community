@@ -12,5 +12,11 @@ namespace Ext.Net.Calendar.Demo
             this.SubmittedEventsStore1.DataSource = events;
             this.Window1.Render();
         }
+
+        public string ToScript(List<EventModel> events)
+        {
+            this.SubmittedEventsStore1.DataSource = events;
+            return this.Window1.ToScript();
+        }
     }
 }

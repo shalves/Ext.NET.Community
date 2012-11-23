@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -42,6 +42,41 @@ namespace Ext.Net
     [Description("")]
     public abstract partial class AbstractStore : Observable
     {
+        protected override void OnBeforeClientInit(Observable sender)
+        {
+            if (this.SyncUrl.IsNotEmpty())
+            {
+                if (this.Proxy.Count > 0 && this.Proxy.Primary is ServerProxy)
+                {
+                    ((ServerProxy)this.Proxy.Primary).API.Sync = this.SyncUrl;
+                }
+                else if (this.ModelInstance != null && this.ModelInstance.Proxy.Count > 0 && this.ModelInstance.Proxy.Primary is ServerProxy)
+                {
+                    ((ServerProxy)this.ModelInstance.Proxy.Primary).API.Sync = this.SyncUrl;
+                }
+                else if (this.ServerProxy.Count > 0)
+                {
+                    if (this.ServerProxy.Primary is ServerProxy)
+                    {
+                        ((ServerProxy)this.ServerProxy.Primary).API.Sync = this.SyncUrl;
+                    }
+                }
+                else
+                {
+                    this.ServerProxy.Add(new AjaxProxy
+                    {
+                        API =
+                        {
+                            Sync = this.SyncUrl
+                        }
+                    });
+                }
+
+            }
+
+            base.OnBeforeClientInit(sender);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -50,7 +85,7 @@ namespace Ext.Net
         {
             get
             {
-                return !this.IsDynamic;
+                return !this.IsGeneratedID || !(this.IsSelfRender || this.IsPageSelfRender || this.IsDynamic || this.IsMVC) || this.ForceIdRendering;
             }
         }
 
@@ -307,6 +342,43 @@ namespace Ext.Net
             get
             {
                 return this.proxy ?? (this.proxy = new ProxyCollection());
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [Category("3. AbstractStore")]
+        [DefaultValue("")]
+        [Description("")]
+        public virtual string SyncUrl
+        {
+            get
+            {
+                return this.State.Get<string>("SyncUrl", "");
+            }
+            set
+            {
+                this.State.Set("SyncUrl", value);
+            }
+        }
+
+        private ProxyCollection serverProxy;
+
+        /// <summary>
+        /// The Proxy to use for reload or sync actions when Memory proxy is used for initial data
+        /// </summary>
+        [Meta]
+        [ConfigOption("serverProxy>Primary")]
+        [NotifyParentProperty(true)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("The Proxy to use for this Store.")]
+        public virtual ProxyCollection ServerProxy
+        {
+            get
+            {
+                return this.serverProxy ?? (this.serverProxy = new ProxyCollection());
             }
         }
 

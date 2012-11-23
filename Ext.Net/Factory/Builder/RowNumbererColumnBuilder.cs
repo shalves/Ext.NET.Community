@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,41 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ColumnBase.Builder<RowNumbererColumn, RowNumbererColumn.Builder>
+        new public abstract partial class Builder<TRowNumbererColumn, TBuilder> : ColumnBase.Builder<TRowNumbererColumn, TBuilder>
+            where TRowNumbererColumn : RowNumbererColumn
+            where TBuilder : Builder<TRowNumbererColumn, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TRowNumbererColumn component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// RowSpan attribute for the checkbox table cell
+			/// </summary>
+            public virtual TBuilder RowSpan(int rowSpan)
+            {
+                this.ToComponent().RowSpan = rowSpan;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : RowNumbererColumn.Builder<RowNumbererColumn, RowNumbererColumn.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,24 +106,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// RowSpan attribute for the checkbox table cell
-			/// </summary>
-            public virtual RowNumbererColumn.Builder RowSpan(int rowSpan)
-            {
-                this.ToComponent().RowSpan = rowSpan;
-                return this as RowNumbererColumn.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -98,6 +114,14 @@ namespace Ext.Net
         public RowNumbererColumn.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.RowNumbererColumn(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -112,7 +136,11 @@ namespace Ext.Net
         /// </summary>
         public RowNumbererColumn.Builder RowNumbererColumn()
         {
-            return this.RowNumbererColumn(new RowNumbererColumn());
+#if MVC
+			return this.RowNumbererColumn(new RowNumbererColumn { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.RowNumbererColumn(new RowNumbererColumn());
+#endif			
         }
 
         /// <summary>
@@ -120,7 +148,10 @@ namespace Ext.Net
         /// </summary>
         public RowNumbererColumn.Builder RowNumbererColumn(RowNumbererColumn component)
         {
-            return new RowNumbererColumn.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new RowNumbererColumn.Builder(component);
         }
 
         /// <summary>
@@ -128,7 +159,11 @@ namespace Ext.Net
         /// </summary>
         public RowNumbererColumn.Builder RowNumbererColumn(RowNumbererColumn.Config config)
         {
-            return new RowNumbererColumn.Builder(new RowNumbererColumn(config));
+#if MVC
+			return new RowNumbererColumn.Builder(new RowNumbererColumn(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new RowNumbererColumn.Builder(new RowNumbererColumn(config));
+#endif			
         }
     }
 }

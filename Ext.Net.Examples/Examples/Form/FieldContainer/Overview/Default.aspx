@@ -24,10 +24,10 @@
 
     protected void SaveData(object sender, DirectEventArgs e)
     {
-        var values = JSON.Deserialize<Dictionary<string, string>>(e.ExtraParams["values"]);
+        Dictionary<string, string> values = JSON.Deserialize<Dictionary<string, string>>(e.ExtraParams["values"]);
         StringBuilder sb = new StringBuilder();
         
-        foreach (var value in values)
+        foreach (KeyValuePair<string, string> value in values)
         {
             sb.AppendFormat("{0} = {1}<br />", value.Key, value.Value);
         }
@@ -42,8 +42,8 @@
 <html>
 <head runat="server">
     <title>FieldContainer - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <style>
         .dot-label {
             font-weight : bold; 
             font-size   : 20px;            

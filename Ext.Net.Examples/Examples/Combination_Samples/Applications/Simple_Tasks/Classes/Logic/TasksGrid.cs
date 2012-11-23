@@ -130,7 +130,7 @@ namespace Ext.Net.Examples.SimpleTasks
         {
             try
             {
-                var ctx = this.DBContext;
+                SimpleTasksDataContext ctx = this.DBContext;
                 List<Task> tasks = (from t in ctx.Tasks where taskIds.Contains(t.ID) select t).ToList();
 
                 foreach (Task task in tasks)
@@ -155,7 +155,7 @@ namespace Ext.Net.Examples.SimpleTasks
                         r.Set("CompletedDate", new JRawValue(DateTimeUtils.DateNetToJs(task.CompletedDate.Value)));
                     }
                     this.Store.Primary.ResumeEvents();
-                    this.Store.Primary.FireEvent("refresh", new JRawValue(this.Store.Primary.ClientID));
+                    this.Store.Primary.FireEvent("datachanged", new JRawValue(this.Store.Primary.ClientID));
                 }
 
                 return true;
@@ -186,7 +186,7 @@ namespace Ext.Net.Examples.SimpleTasks
         {
             get
             {
-                var ctx = new SimpleTasksDataContext();
+                SimpleTasksDataContext ctx = new SimpleTasksDataContext();
                 ctx.DeferredLoadingEnabled = true;
 
                 return ctx;
@@ -227,7 +227,7 @@ namespace Ext.Net.Examples.SimpleTasks
                     break;
             }
 
-            var ctx = DBContext;
+            SimpleTasksDataContext ctx = this.DBContext;
 
             List<Task> allTasks = new List<Task>(16);
 
@@ -282,7 +282,7 @@ namespace Ext.Net.Examples.SimpleTasks
 
             try
             {
-                var ctx = this.DBContext;
+                SimpleTasksDataContext ctx = this.DBContext;
 
                 Category category = (from tl in ctx.Categories where tl.ID == categoryID select tl).First();
 
@@ -339,7 +339,7 @@ namespace Ext.Net.Examples.SimpleTasks
 
             try
             {
-                var ctx = this.DBContext;
+                SimpleTasksDataContext ctx = this.DBContext;
                 List<Task> tasks = (from t in ctx.Tasks where taskIds.Contains(t.ID) select t).ToList();
 
                 foreach (Task task in tasks)
@@ -349,15 +349,10 @@ namespace Ext.Net.Examples.SimpleTasks
 
                 ctx.SubmitChanges();
 
-                this.Store.Primary.SuspendEvents(false);
-
                 foreach (int id in taskIds)
                 {
-                   this.Store.Primary.Remove((object)id);
+                    this.Store.Primary.Remove((object)id);
                 }
-
-                this.Store.Primary.ResumeEvents();
-                this.Store.Primary.FireEvent("datachanged", new JRawValue(this.Store.Primary.ClientID));
                 
                 return true;
             }
@@ -378,7 +373,7 @@ namespace Ext.Net.Examples.SimpleTasks
         [DirectMethod]
         public void SaveTask(int taskId, JsonObject values)
         {
-            var ctx = this.DBContext;
+            SimpleTasksDataContext ctx = this.DBContext;
             Task task = (from t in ctx.Tasks where t.ID == taskId select t).First();
 
             task.Title = values.ContainsKey("Title") ? values["Title"].ToString() : "";

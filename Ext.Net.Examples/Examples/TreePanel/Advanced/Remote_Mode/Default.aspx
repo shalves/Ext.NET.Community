@@ -44,7 +44,7 @@
     {
         e.Accept = true;
         
-        foreach (var change in e.Changes)
+        foreach (RowChanges change in e.Changes)
         {
             if (change.Field == "text" && change.IsDirty<string>())
             {
@@ -65,7 +65,7 @@
         //   e.RefusalMessage = "Error";
     }
 
-    protected void RemoteRemove(object sender, RemoteActionEventArgs e)
+    protected void RemoteRemove(object sender, RemoteRemoveEventArgs e)
     {
         e.Accept = true;
     }
@@ -90,9 +90,9 @@
 <html>
 <head runat="server">
     <title>Remote mode - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .bold-text{
             font-weight:bold;
             padding-left: 32px;
@@ -101,7 +101,7 @@
         }
     </style>
     
-    <script type="text/javascript">
+    <script>
         var showMenu = function (view, node, item, index, e) {            
             var menu = App.TreeContextMenu;
             

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,225 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Observable.Builder<ChartTheme, ChartTheme.Builder>
+        new public abstract partial class Builder<TChartTheme, TBuilder> : Observable.Builder<TChartTheme, TBuilder>
+            where TChartTheme : ChartTheme
+            where TBuilder : Builder<TChartTheme, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TChartTheme component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder ThemeName(string themeName)
+            {
+                this.ToComponent().ThemeName = themeName;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Background(bool background)
+            {
+                this.ToComponent().Background = background;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder UseGradients(bool useGradients)
+            {
+                this.ToComponent().UseGradients = useGradients;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder BaseColor(string baseColor)
+            {
+                this.ToComponent().BaseColor = baseColor;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Colors(string[] colors)
+            {
+                this.ToComponent().Colors = colors;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Axis(SpriteAttributes axis)
+            {
+                this.ToComponent().Axis = axis;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder AxisLabelTop(SpriteAttributes axisLabelTop)
+            {
+                this.ToComponent().AxisLabelTop = axisLabelTop;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder AxisLabelRight(SpriteAttributes axisLabelRight)
+            {
+                this.ToComponent().AxisLabelRight = axisLabelRight;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder AxisLabelBottom(SpriteAttributes axisLabelBottom)
+            {
+                this.ToComponent().AxisLabelBottom = axisLabelBottom;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder AxisLabelLeft(SpriteAttributes axisLabelLeft)
+            {
+                this.ToComponent().AxisLabelLeft = axisLabelLeft;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder AxisTitleTop(SpriteAttributes axisTitleTop)
+            {
+                this.ToComponent().AxisTitleTop = axisTitleTop;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder AxisTitleRight(SpriteAttributes axisTitleRight)
+            {
+                this.ToComponent().AxisTitleRight = axisTitleRight;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder AxisTitleBottom(SpriteAttributes axisTitleBottom)
+            {
+                this.ToComponent().AxisTitleBottom = axisTitleBottom;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder AxisTitleLeft(SpriteAttributes axisTitleLeft)
+            {
+                this.ToComponent().AxisTitleLeft = axisTitleLeft;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Series(SpriteAttributes series)
+            {
+                this.ToComponent().Series = series;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder SeriesLabel(SpriteAttributes seriesLabel)
+            {
+                this.ToComponent().SeriesLabel = seriesLabel;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Marker(SpriteAttributes marker)
+            {
+                this.ToComponent().Marker = marker;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder AxisLabel(SpriteAttributes axisLabel)
+            {
+                this.ToComponent().AxisLabel = axisLabel;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder AxisTitle(SpriteAttributes axisTitle)
+            {
+                this.ToComponent().AxisTitle = axisTitle;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder SeriesThemes(Action<SpriteAttributesCollection> action)
+            {
+                action(this.ToComponent().SeriesThemes);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder MarkerThemes(Action<SpriteAttributesCollection> action)
+            {
+                action(this.ToComponent().MarkerThemes);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ChartTheme.Builder<ChartTheme, ChartTheme.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,208 +290,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder ThemeName(string themeName)
-            {
-                this.ToComponent().ThemeName = themeName;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder Background(bool background)
-            {
-                this.ToComponent().Background = background;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder UseGradients(bool useGradients)
-            {
-                this.ToComponent().UseGradients = useGradients;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder BaseColor(string baseColor)
-            {
-                this.ToComponent().BaseColor = baseColor;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder Colors(string[] colors)
-            {
-                this.ToComponent().Colors = colors;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder Axis(SpriteAttributes axis)
-            {
-                this.ToComponent().Axis = axis;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder AxisLabelTop(SpriteAttributes axisLabelTop)
-            {
-                this.ToComponent().AxisLabelTop = axisLabelTop;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder AxisLabelRight(SpriteAttributes axisLabelRight)
-            {
-                this.ToComponent().AxisLabelRight = axisLabelRight;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder AxisLabelBottom(SpriteAttributes axisLabelBottom)
-            {
-                this.ToComponent().AxisLabelBottom = axisLabelBottom;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder AxisLabelLeft(SpriteAttributes axisLabelLeft)
-            {
-                this.ToComponent().AxisLabelLeft = axisLabelLeft;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder AxisTitleTop(SpriteAttributes axisTitleTop)
-            {
-                this.ToComponent().AxisTitleTop = axisTitleTop;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder AxisTitleRight(SpriteAttributes axisTitleRight)
-            {
-                this.ToComponent().AxisTitleRight = axisTitleRight;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder AxisTitleBottom(SpriteAttributes axisTitleBottom)
-            {
-                this.ToComponent().AxisTitleBottom = axisTitleBottom;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder AxisTitleLeft(SpriteAttributes axisTitleLeft)
-            {
-                this.ToComponent().AxisTitleLeft = axisTitleLeft;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder Series(SpriteAttributes series)
-            {
-                this.ToComponent().Series = series;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder SeriesLabel(SpriteAttributes seriesLabel)
-            {
-                this.ToComponent().SeriesLabel = seriesLabel;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder Marker(SpriteAttributes marker)
-            {
-                this.ToComponent().Marker = marker;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder AxisLabel(SpriteAttributes axisLabel)
-            {
-                this.ToComponent().AxisLabel = axisLabel;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ChartTheme.Builder AxisTitle(SpriteAttributes axisTitle)
-            {
-                this.ToComponent().AxisTitle = axisTitle;
-                return this as ChartTheme.Builder;
-            }
-             
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ChartTheme.Builder</returns>
-            public virtual ChartTheme.Builder SeriesThemes(Action<SpriteAttributesCollection> action)
-            {
-                action(this.ToComponent().SeriesThemes);
-                return this as ChartTheme.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ChartTheme.Builder</returns>
-            public virtual ChartTheme.Builder MarkerThemes(Action<SpriteAttributesCollection> action)
-            {
-                action(this.ToComponent().MarkerThemes);
-                return this as ChartTheme.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -282,6 +298,14 @@ namespace Ext.Net
         public ChartTheme.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ChartTheme(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -296,7 +320,11 @@ namespace Ext.Net
         /// </summary>
         public ChartTheme.Builder ChartTheme()
         {
-            return this.ChartTheme(new ChartTheme());
+#if MVC
+			return this.ChartTheme(new ChartTheme { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ChartTheme(new ChartTheme());
+#endif			
         }
 
         /// <summary>
@@ -304,7 +332,10 @@ namespace Ext.Net
         /// </summary>
         public ChartTheme.Builder ChartTheme(ChartTheme component)
         {
-            return new ChartTheme.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ChartTheme.Builder(component);
         }
 
         /// <summary>
@@ -312,7 +343,11 @@ namespace Ext.Net
         /// </summary>
         public ChartTheme.Builder ChartTheme(ChartTheme.Config config)
         {
-            return new ChartTheme.Builder(new ChartTheme(config));
+#if MVC
+			return new ChartTheme.Builder(new ChartTheme(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ChartTheme.Builder(new ChartTheme(config));
+#endif			
         }
     }
 }

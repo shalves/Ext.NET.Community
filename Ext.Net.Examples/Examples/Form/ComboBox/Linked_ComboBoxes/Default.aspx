@@ -7,7 +7,7 @@
 <html>
 <head runat="server">
     <title>Linked ComboBoxes - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     <ext:ResourcePlaceHolder runat="server" Mode="Script" />
 </head>
 <body>

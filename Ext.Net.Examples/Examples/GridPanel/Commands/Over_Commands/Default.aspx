@@ -30,10 +30,10 @@
 
 <html>
 <head runat="server">
-    <title>Menu Row Command - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <title>Over Row Commands - Ext.NET Examples</title>
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {
@@ -55,7 +55,7 @@
         <ext:GridPanel 
             ID="GridPanel1" 
             runat="server" 
-            Title="Menu Row Command" 
+            Title="Over Row Commands" 
             Width="600" 
             Height="300">
             <Store>

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -58,9 +58,10 @@ namespace Ext.Net
                 list.Add("shift", new ConfigOption("shift", null, null, this.Shift ));
                 list.Add("ctrl", new ConfigOption("ctrl", null, null, this.Ctrl ));
                 list.Add("alt", new ConfigOption("alt", null, null, this.Alt ));
-                list.Add("stopEvent", new ConfigOption("stopEvent", null, false, this.StopEvent ));
+                list.Add("handler", new ConfigOption("handler", new SerializationOptions(typeof(FunctionJsonConverter)), "", this.Handler ));
                 list.Add("scope", new ConfigOption("scope", new SerializationOptions(JsonMode.Raw), "", this.Scope ));
-                list.Add("listenerProxy", new ConfigOption("listenerProxy", new SerializationOptions("fn", JsonMode.Raw), "", this.ListenerProxy ));
+                list.Add("defaultEventAction", new ConfigOption("defaultEventAction", new SerializationOptions(JsonMode.ToCamelLower), EventAction.None, this.DefaultEventAction ));
+                list.Add("keysStringProxy", new ConfigOption("keysStringProxy", new SerializationOptions("key", JsonMode.Raw), "", this.KeysStringProxy ));
                 list.Add("keysProxy", new ConfigOption("keysProxy", new SerializationOptions("key", JsonMode.Raw), "", this.KeysProxy ));
 
                 return list;

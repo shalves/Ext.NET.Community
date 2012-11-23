@@ -11,9 +11,9 @@
         if (!X.IsAjaxRequest)
         {
             XElement document = XElement.Load(Server.MapPath("resources/DashboardSchema.xml"));
-            var defaultIcon = document.Attribute("defaultIcon") != null ? document.Attribute("defaultIcon").Value : "";
+            string defaultIcon = document.Attribute("defaultIcon") != null ? document.Attribute("defaultIcon").Value : "";
             
-            var query = from g in document.Elements("group")
+            IEnumerable<object> query = from g in document.Elements("group")
                    select new
                    {
                        Title = g.Attribute("title") != null ? g.Attribute("title").Value : "",
@@ -38,9 +38,9 @@
 <html>
 <head runat="server">
     <title>Grouping DataView - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         div.item-wrap {
             float  : left;
             border : 1px solid transparent;
@@ -85,7 +85,7 @@
         #items-ct .collapsed dl { display : none; }
     </style>
     
-    <script type="text/javascript">        
+    <script>        
         var itemClick = function (view, record, item, index, e) {
             var group = e.getTarget("h2", 3, true);
             

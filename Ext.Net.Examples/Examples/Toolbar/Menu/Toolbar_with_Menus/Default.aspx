@@ -32,8 +32,8 @@
 <html>
 <head runat="server">
     <title>Toolbar with Menus - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <style>
         .menu-title {
             background   : #D6E3F2;
             border-style : solid;
@@ -47,7 +47,7 @@
         }
     </style>
 
-    <script type="text/javascript">
+    <script>
         var onButtonClick = function (btn) {
             msg("Button Click", 'You clicked the \'{0}\' button.', btn.text);
         };

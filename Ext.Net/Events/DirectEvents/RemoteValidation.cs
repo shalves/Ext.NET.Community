@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -37,6 +37,26 @@ namespace Ext.Net
     public partial class RemoteValidationDirectEvent : ObservableDirectEvent
     {
         /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue("")]
+        [NotifyParentProperty(true)]
+        [Description("")]
+        public virtual string DirectFn
+        {
+            get
+            {
+                return this.State.Get<string>("DirectFn", "");
+            }
+            set
+            {
+                this.State.Set("DirectFn", value);
+            }
+        }
+        
+        /// <summary>
         /// Number of milliseconds to wait before the validation request is sent to server
         /// </summary>
         [ConfigOption]
@@ -52,6 +72,25 @@ namespace Ext.Net
             set
             {
                 this.State.Set("ValidationBuffer", value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigOption]
+        [NotifyParentProperty(true)]
+        [DefaultValue(false)]
+        [Description("")]
+        public bool IgnoreLastValue
+        {
+            get
+            {
+                return this.State.Get<bool>("IgnoreLastValue", false);
+            }
+            set
+            {
+                this.State.Set("IgnoreLastValue", value);
             }
         }
 
@@ -165,6 +204,25 @@ namespace Ext.Net
             set
             {
                 this.State.Set("ValidationEvent", value);
+            }
+        }
+
+        /// <summary>
+        /// Default error message
+        /// </summary>
+        [ConfigOption(JsonMode.ToLower)]
+        [NotifyParentProperty(true)]
+        [DefaultValue("Invalid")]
+        [Description("Default error message")]
+        public string ErrorMessage
+        {
+            get
+            {
+                return this.State.Get<string>("ErrorMessage", "Invalid");
+            }
+            set
+            {
+                this.State.Set("ErrorMessage", value);
             }
         }
 

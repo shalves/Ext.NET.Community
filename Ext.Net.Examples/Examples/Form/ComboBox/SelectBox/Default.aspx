@@ -5,7 +5,7 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        var store = this.SelectBox1.GetStore();
+        Store store = this.SelectBox1.GetStore();
         
         store.DataSource = new object[]
         {
@@ -71,7 +71,7 @@
 <html>
 <head runat="server">
     <title>SelectBox - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -79,7 +79,7 @@
         
         <h3>SelectBox</h3>
         
-        <p>A Component similar to an HTML SELECT inpute. Supports clicking and dragging
+        <p>A Component similar to an HTML SELECT input. Supports clicking and dragging
         through the list, with item selection occurring when the mouse button is released.</p>
         
         <ext:SelectBox

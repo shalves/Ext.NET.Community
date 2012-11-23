@@ -50,9 +50,9 @@
 <html>
 <head runat="server">
     <title>GridPanel Row with ToolTip - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {
@@ -124,11 +124,11 @@
         
         <ext:ToolTip 
             runat="server" 
-            XTarget="={#{GridPanel1}.getView().el}"
+            Target="={#{GridPanel1}.getView().el}"
             Delegate="={#{GridPanel1}.getView().itemSelector}"
             TrackMouse="true">
             <Listeners>
-                <BeforeShow Handler="onBeforeShow(this, #{GridPanel1});" />
+                <Show Handler="onBeforeShow(this, #{GridPanel1});" />
             </Listeners>
         </ext:ToolTip>     
     </form>

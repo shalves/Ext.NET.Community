@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -55,7 +55,7 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
-                list.Add("changeHandler", new ConfigOption("changeHandler", new SerializationOptions(JsonMode.Raw), "", this.ChangeHandler ));
+                list.Add("changeHandler", new ConfigOption("changeHandler", new SerializationOptions(typeof(FunctionJsonConverter)), "", this.ChangeHandler ));
                 list.Add("forceIcon", new ConfigOption("forceIcon", null, "", this.ForceIcon ));
                 list.Add("prependText", new ConfigOption("prependText", null, "", this.PrependText ));
                 list.Add("showText", new ConfigOption("showText", null, false, this.ShowText ));

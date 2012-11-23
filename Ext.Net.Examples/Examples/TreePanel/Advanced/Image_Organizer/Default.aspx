@@ -63,12 +63,8 @@
 <html>
 <head runat="server">
     <title>Organizing Images into Albums</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <link href="resources/organizer.css" rel="stylesheet" type="text/css" />
-    
-    <script type="text/javascript">
-
-    </script>
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <link href="resources/organizer.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -96,7 +92,6 @@
                     Width="200"
                     Padding="5"
                     Title="My Albums"
-                    Animate="true"
                     RootVisible="false"
                     DisplayField="name">
                     

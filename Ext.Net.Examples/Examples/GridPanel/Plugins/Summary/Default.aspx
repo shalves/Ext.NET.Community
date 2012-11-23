@@ -10,7 +10,7 @@
     {
         CultureInfo ci = new CultureInfo("en-US");
 
-        var store = this.GridPanel1.GetStore();
+        Store store = this.GridPanel1.GetStore();
         
         store.DataSource = new List<Project> 
         { 
@@ -61,9 +61,9 @@
 <head runat="server">
     <title>GroupingSummary Plugin - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
    
-    <style type="text/css">
+    <style>
         .x-grid-body .x-grid-cell-Cost {
             background-color : #f1f2f4;
         }
@@ -83,7 +83,7 @@
         } 
     </style>
 
-    <script type="text/javascript">
+    <script>
         var totalCost = function (records) {
             var i = 0,
                 length = records.length,

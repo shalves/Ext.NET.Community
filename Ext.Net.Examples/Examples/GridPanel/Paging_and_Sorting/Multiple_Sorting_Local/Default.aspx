@@ -18,24 +18,24 @@
     {
         get
         {
-            var firstNames = new string[] { "Ed", "Tommy", "Aaron", "Abe", "Jamie", "Adam", "Dave", "David", "Jay" };
-            var lastNames = new string[] { "Spencer", "Maintz", "Conran", "Elias", "Avins", "Mishcon", "Kaneda", "Davis", "Robinson" };
-            var ratings = new int[] { 1, 2, 3, 4, 5 };
-            var salaries = new int[] { 100, 400, 900, 1500, 1000000 };
+            string[] firstNames = new string[] { "Ed", "Tommy", "Aaron", "Abe", "Jamie", "Adam", "Dave", "David", "Jay" };
+            string[] lastNames = new string[] { "Spencer", "Maintz", "Conran", "Elias", "Avins", "Mishcon", "Kaneda", "Davis", "Robinson" };
+            int[] ratings = new int[] { 1, 2, 3, 4, 5 };
+            int[] salaries = new int[] { 100, 400, 900, 1500, 1000000 };
 
-            var data = new object[25];
-            var rnd = new Random();
+            object[] data = new object[25];
+            Random rnd = new Random();
 
             for (int i = 0; i < 25; i++)
             {
-                var ratingId = rnd.Next(ratings.Length);
-                var salaryId = rnd.Next(salaries.Length);
-                var firstNameId = rnd.Next(firstNames.Length);
-                var lastNameId = rnd.Next(lastNames.Length);
+                int ratingId = rnd.Next(ratings.Length);
+                int salaryId = rnd.Next(salaries.Length);
+                int firstNameId = rnd.Next(firstNames.Length);
+                int lastNameId = rnd.Next(lastNames.Length);
 
-                var rating = ratings[ratingId];
-                var salary = salaries[salaryId];
-                var name = String.Format("{0} {1}", firstNames[firstNameId], lastNames[lastNameId]);
+                int rating = ratings[ratingId];
+                int salary = salaries[salaryId];
+                string name = String.Format("{0} {1}", firstNames[firstNameId], lastNames[lastNameId]);
 
                 data[i] = new object[] { name, rating, salary };
             }
@@ -50,9 +50,9 @@
 <html>
 <head runat="server">
     <title>Multiple Sorting- Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">        
+    <script>        
         var doSort = function () {
             App.Store1.sort(getSorters());
         };

@@ -48,9 +48,9 @@
 <head runat="server">
     <title>GridPanel with Numbered Rows using a RowNumbererColumn - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {

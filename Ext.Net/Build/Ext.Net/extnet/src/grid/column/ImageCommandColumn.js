@@ -27,7 +27,7 @@ Ext.define('Ext.grid.column.ImageCommand', {
     
     initRenderData : function () {
         var me = this;          
-        me.grid = me.up('gridpanel');
+        me.grid = me.up('tablepanel');
         me.grid.addCls("x-grid-group-imagecommand");
         var groupFeature = me.getGroupingFeature(me.grid);
         
@@ -60,7 +60,17 @@ Ext.define('Ext.grid.column.ImageCommand', {
     getGroupData : function (group, records, preppedRecords, fullWidth) {
         var preparedCommands = [], 
             i,
+            cmd,
+            command,
             groupCommands = this.groupCommands;
+
+        for (i = 0; i < groupCommands.length; i++) {
+            cmd = groupCommands[i];                
+
+            if (cmd.iconCls && cmd.iconCls.charAt(0) === '#') {
+                cmd.iconCls = X.net.RM.getIcon(cmd.iconCls.substring(1));
+            }
+        }
             
         group.cls = (group.cls || "") + " group-imagecmd-ct";
         
@@ -73,15 +83,20 @@ Ext.define('Ext.grid.column.ImageCommand', {
         }
         
         for (i = 0; i < groupCommands.length; i++) {
-            var cmd = groupCommands[i];
+            cmd = groupCommands[i];
             
             cmd.tooltip = cmd.tooltip || {};
+
+            if (cmd.iconCls && cmd.iconCls.charAt(0) === '#') {
+                cmd.iconCls = X.net.RM.getIcon(cmd.iconCls.substring(1));
+            }
             
-            var command = {
+            command = {
                 command    : cmd.command,
                 cls        : cmd.cls,
                 iconCls    : cmd.iconCls,
                 hidden     : cmd.hidden,
+                disabled   : cmd.disabled,
                 text       : cmd.text,
                 style      : cmd.style,
                 qtext      : cmd.tooltip.text,
@@ -92,6 +107,10 @@ Ext.define('Ext.grid.column.ImageCommand', {
             
             if (this.prepareGroupCommand) {
                 this.prepareGroupCommand(this.grid, command, groupId, records);
+            }
+
+            if (command.disabled) {
+                command.cls = (command.cls || "") + " x-imagecommand-disabled";
             }
 
             if (command.hidden) {
@@ -131,12 +150,13 @@ Ext.define('Ext.grid.column.ImageCommand', {
     onClick : function (view, e, recordIndex, cellIndex) {
         var view = this.grid.getView(), 
             cmd,
+            record,
             t = e.getTarget(".row-imagecommand");
             
         if (t) {
             cmd = Ext.fly(t).getAttributeNS("", "cmd");
             
-            if (Ext.isEmpty(cmd, false)) {
+            if (Ext.isEmpty(cmd, false) || Ext.fly(t).hasCls("x-imagecommand-disabled")) {
                 return;
             }
             
@@ -150,7 +170,9 @@ Ext.define('Ext.grid.column.ImageCommand', {
                 return;
             }
 
-            this.fireEvent("command", this, cmd, this.grid.store.getAt(recordIndex), recordIndex, cellIndex);
+            record = this.grid.store.getAt ? this.grid.store.getAt(recordIndex) : view.getRecord(view.getNode(recordIndex));
+
+            this.fireEvent("command", this, cmd, record, recordIndex, cellIndex);
         }
 
         t = e.getTarget(".group-row-imagecommand");
@@ -161,7 +183,7 @@ Ext.define('Ext.grid.column.ImageCommand', {
 
             cmd = Ext.fly(t).getAttributeNS("", "cmd");
             
-            if (Ext.isEmpty(cmd, false)) {
+            if (Ext.isEmpty(cmd, false) || Ext.fly(t).hasCls("x-imagecommand-disabled")) {
                 return;
             }
 
@@ -179,23 +201,39 @@ Ext.define('Ext.grid.column.ImageCommand', {
 
         if (this.commands) {
             var preparedCommands = [],
+                i,
+                cmd,
+                command,
                 commands = this.commands;
+
+            for (i = 0; i < commands.length; i++) {
+                cmd = commands[i];                
+
+                if (cmd.iconCls && cmd.iconCls.charAt(0) === '#') {
+                    cmd.iconCls = X.net.RM.getIcon(cmd.iconCls.substring(1));
+                }
+            }
             
             if (this.prepareCommands) {                
                 commands = Ext.net.clone(this.commands);
                 this.prepareCommands(this.grid, commands, record, row);
             }            
             
-            for (var i = 0; i < commands.length; i++) {
-                var cmd = commands[i];
+            for (i = 0; i < commands.length; i++) {
+                cmd = commands[i];
                 
                 cmd.tooltip = cmd.tooltip || {};
+
+                if (cmd.iconCls && cmd.iconCls.charAt(0) === '#') {
+                    cmd.iconCls = X.net.RM.getIcon(cmd.iconCls.substring(1));
+                }
                 
-                var command = {
+                command = {
                     command  : cmd.command,
                     cls      : cmd.cls,
                     iconCls  : cmd.iconCls,
                     hidden   : cmd.hidden,
+                    disabled : cmd.disabled,
                     text     : cmd.text,
                     style    : cmd.style,
                     qtext    : cmd.tooltip.text,
@@ -205,6 +243,10 @@ Ext.define('Ext.grid.column.ImageCommand', {
                 
                 if (this.prepareCommand) {
                     this.prepareCommand(this.grid, command, record, row);
+                }
+
+                if (command.disabled) {
+                    command.cls = (command.cls || "") + " x-imagecommand-disabled";
                 }
 
                 if (command.hidden) {

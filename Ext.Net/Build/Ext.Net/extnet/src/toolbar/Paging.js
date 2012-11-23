@@ -64,11 +64,8 @@ Ext.toolbar.Paging.override({
         isEmpty = pageCount === 0;
         afterText = Ext.String.format(me.afterPageText, isNaN(pageCount) ? 1 : pageCount);
         
-        if (total === 0) {
+        if (total === 0 || currPage > pageCount) {
             currPage = 1;
-            me.store.currentPage = 1;
-        } else if (currPage > pageCount) {
-            currPage = pageCount;
             me.store.currentPage = 1;
         }        
 

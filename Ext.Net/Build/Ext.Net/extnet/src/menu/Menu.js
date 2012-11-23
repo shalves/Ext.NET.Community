@@ -20,8 +20,15 @@ Ext.override(Ext.menu.Menu, {
     }
 });
 
-Ext.menu.Item.prototype.setIconClsOld = Ext.menu.Item.prototype.setIconCls;
+Ext.override(Ext.menu.Item, {    
+    setIconCls : function (cls) {
+        this.callParent([cls && cls.indexOf('#') === 0 ? X.net.RM.getIcon(cls.substring(1)) : cls]);
+    },
 
-Ext.menu.Item.prototype.setIconCls = function (cls) {
-    this.setIconClsOld(cls && cls.indexOf('#') === 0 ? X.net.RM.getIcon(cls.substring(1)) : cls);
-};
+    setIcon : function (icon) {
+        if (this.iconCls) {
+            this.setIconCls("");
+        }
+        this.callParent([icon && icon.indexOf('#') === 0 ? X.net.RM.getIconUrl(icon.substring(1)) : icon]);
+    }
+});

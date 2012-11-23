@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,65 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : MenuBase.Builder<ColorMenu, ColorMenu.Builder>
+        new public abstract partial class Builder<TColorMenu, TBuilder> : MenuBase.Builder<TColorMenu, TBuilder>
+            where TColorMenu : ColorMenu
+            where TBuilder : Builder<TColorMenu, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TColorMenu component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The ColorPalette object
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Picker(Action<ColorPicker> action)
+            {
+                action(this.ToComponent().Picker);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<ColorMenuListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side DirectEventHandlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<ColorMenuDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ColorMenu.Builder<ColorMenu, ColorMenu.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,48 +130,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The ColorPalette object
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ColorMenu.Builder</returns>
-            public virtual ColorMenu.Builder Picker(Action<ColorPicker> action)
-            {
-                action(this.ToComponent().Picker);
-                return this as ColorMenu.Builder;
-            }
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ColorMenu.Builder</returns>
-            public virtual ColorMenu.Builder Listeners(Action<ColorMenuListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as ColorMenu.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEventHandlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ColorMenu.Builder</returns>
-            public virtual ColorMenu.Builder DirectEvents(Action<ColorMenuDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as ColorMenu.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -122,6 +138,14 @@ namespace Ext.Net
         public ColorMenu.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ColorMenu(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -136,7 +160,11 @@ namespace Ext.Net
         /// </summary>
         public ColorMenu.Builder ColorMenu()
         {
-            return this.ColorMenu(new ColorMenu());
+#if MVC
+			return this.ColorMenu(new ColorMenu { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ColorMenu(new ColorMenu());
+#endif			
         }
 
         /// <summary>
@@ -144,7 +172,10 @@ namespace Ext.Net
         /// </summary>
         public ColorMenu.Builder ColorMenu(ColorMenu component)
         {
-            return new ColorMenu.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ColorMenu.Builder(component);
         }
 
         /// <summary>
@@ -152,7 +183,11 @@ namespace Ext.Net
         /// </summary>
         public ColorMenu.Builder ColorMenu(ColorMenu.Config config)
         {
-            return new ColorMenu.Builder(new ColorMenu(config));
+#if MVC
+			return new ColorMenu.Builder(new ColorMenu(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ColorMenu.Builder(new ColorMenu(config));
+#endif			
         }
     }
 }

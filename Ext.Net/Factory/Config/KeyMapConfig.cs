@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -64,7 +64,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        new public partial class Config : Observable.Config 
+        new public partial class Config : LazyObservable.Config 
         { 
 			/*  Implicit KeyMap.Config Conversion to KeyMap.Builder
 				-----------------------------------------------------------------------------------------------*/
@@ -81,46 +81,28 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			        
-			private KeyBindingCollection keys = null;
+			private KeyBindingCollection binding = null;
 
 			/// <summary>
-			/// A KeyMap config object (in the format expected by Ext.KeyMap.addBinding used to assign custom key handling to this panel (defaults to null).
+			/// Either a single object describing a handling function for s specified key (or set of keys), or an array of such objects.
 			/// </summary>
-			public KeyBindingCollection Keys
+			public KeyBindingCollection Binding
 			{
 				get
 				{
-					if (this.keys == null)
+					if (this.binding == null)
 					{
-						this.keys = new KeyBindingCollection();
+						this.binding = new KeyBindingCollection();
 					}
 			
-					return this.keys;
+					return this.binding;
 				}
 			}
 			
-			private string target = "";
-
-			/// <summary>
-			/// The element to bind to
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string Target 
-			{ 
-				get
-				{
-					return this.target;
-				}
-				set
-				{
-					this.target = value;
-				}
-			}
-
 			private string eventName = "";
 
 			/// <summary>
-			/// (optional) The event to bind to (defaults to 'keydown')
+			/// The event to listen for to pick up key events. Defaults to: \"keydown\"
 			/// </summary>
 			[DefaultValue("")]
 			public virtual string EventName 
@@ -132,6 +114,114 @@ namespace Ext.Net
 				set
 				{
 					this.eventName = value;
+				}
+			}
+
+			private bool componentEvent = false;
+
+			/// <summary>
+			/// True to listen component event instead underlying element
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool ComponentEvent 
+			{ 
+				get
+				{
+					return this.componentEvent;
+				}
+				set
+				{
+					this.componentEvent = value;
+				}
+			}
+
+			private string componentElement = "";
+
+			/// <summary>
+			/// Element name of target component (can be used if KeyMap belongs to a component)
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string ComponentElement 
+			{ 
+				get
+				{
+					return this.componentElement;
+				}
+				set
+				{
+					this.componentElement = value;
+				}
+			}
+
+			private bool ignoreInputFields = false;
+
+			/// <summary>
+			/// Configure this as true if there are any input fields within the target, and this KeyNav should not process events from input fields, (&lt;input>, &lt;textarea> and elements withcontentEditable=\"true\"). Defaults to: false
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool IgnoreInputFields 
+			{ 
+				get
+				{
+					return this.ignoreInputFields;
+				}
+				set
+				{
+					this.ignoreInputFields = value;
+				}
+			}
+        
+			private JFunction processEvent = null;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			public JFunction ProcessEvent
+			{
+				get
+				{
+					if (this.processEvent == null)
+					{
+						this.processEvent = new JFunction();
+					}
+			
+					return this.processEvent;
+				}
+			}
+			
+			private string processEventScope = "";
+
+			/// <summary>
+			/// The scope (this context) in which the processEvent method is executed.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string ProcessEventScope 
+			{ 
+				get
+				{
+					return this.processEventScope;
+				}
+				set
+				{
+					this.processEventScope = value;
+				}
+			}
+
+			private string target = "";
+
+			/// <summary>
+			/// The object on which to listen for the event specified by the eventName config option.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string Target 
+			{ 
+				get
+				{
+					return this.target;
+				}
+				set
+				{
+					this.target = value;
 				}
 			}
 

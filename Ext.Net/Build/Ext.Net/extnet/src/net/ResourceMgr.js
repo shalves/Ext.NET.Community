@@ -8,6 +8,7 @@ Ext.net.ResourceMgr = function () {
         theme : "blue",
         quickTips       : true,
         cssClasses      : {},
+        cssIcons        : {},
         submitDisabled  : true,
         BLANK_IMAGE_URL : "",
         aspInputs       : [],
@@ -129,15 +130,23 @@ Ext.net.ResourceMgr = function () {
         },
 
         registerIcon : function (name, init) {
+            if (typeof name === 'string' && !!this.cssIcons[name]) {
+                return;
+            }
+
             var buffer = [],
                 templateEmb = ".{0}{background-image:url(\"/{1}icons/{2}-png/ext.axd\") !important;background-repeat:no-repeat;}",
                 templateCdn = ".{0}{background-image:url(\"{1}/icons/{2}.png\") !important;background-repeat:no-repeat;}",
                 appName = Ext.isEmpty(this.appName, false) ? "" : (this.appName + "/");
 
             Ext.each(name, function (icon) {
+                if (!!this.cssIcons[icon.name || icon]) {
+                    return;
+                }
+
                 if (!Ext.isObject(icon)) {
                     icon = { name: icon };
-                }
+                }                
 
                 var iconName = this.toCharacterSeparatedFileName(icon.name, "_"),
                     iconRule = icon.name.toLowerCase(),
@@ -156,6 +165,7 @@ Ext.net.ResourceMgr = function () {
                     }
 
                     this.cssClasses[id] = true;
+                    this.cssIcons[icon.name] = true;
                 }
             }, this);
 
@@ -219,11 +229,11 @@ Ext.net.ResourceMgr = function () {
 
             if (this.theme) {
                 if (Ext.isReady) {
-                    Ext.getBody().addCls("x-theme-" + this.theme);
+                    Ext.fly(document.body.parentNode).addCls("x-theme-" + this.theme);
                 }
                 else {
                     Ext.onReady(function () {
-                        Ext.getBody().addCls("x-theme-" + this.theme);
+                        Ext.fly(document.body.parentNode).addCls("x-theme-" + this.theme);
                     }, this);
                 }
             }
@@ -445,6 +455,9 @@ Ext.net.ResourceMgr = function () {
                     }
                 }
             }
+            else {
+               Ext.net.DirectEvent.showFailure(response, response.responseText);
+            }
 
             this.queue.dequeue(options);
 
@@ -513,15 +526,35 @@ Ext.net.ResourceMgr = function () {
         } (),
 
         setTheme : function (url, name) {
-            var html = Ext.get(document.getElementsByTagName("html")[0]);
+            var lowerUrl,
+                html;
+
+            url = url || "";
+            lowerUrl = url.toLowerCase();
+            
+            if (Ext.isEmpty(lowerUrl) || lowerUrl == "blue" || lowerUrl == "default") {
+                url = "~/extjs/resources/css/ext-all-embedded-css/ext.axd";
+                name = "blue";
+            }
+            else if (lowerUrl == "gray") {
+                url = "~/extjs/resources/css/ext-all-gray-embedded-css/ext.axd";
+                name = "gray";
+            }
+            else if (lowerUrl == "access") {
+                url = "~/extjs/resources/css/ext-all-access-embedded-css/ext.axd";
+                name = "access";
+            }
+            
+            url = this.resolveUrl(url);
+            html = document.body.parentNode;
 
             if (this.theme) {
-                html.removeCls("x-theme-" + this.theme);
+                Ext.fly(html).removeCls("x-theme-" + this.theme);
             }
 
             if (name) {
                 this.theme = name;
-                html.addCls("x-theme-" + this.theme);
+                Ext.fly(html).addCls("x-theme-" + this.theme);
             }
 
             Ext.util.CSS.swapStyleSheet("ext-theme", url);

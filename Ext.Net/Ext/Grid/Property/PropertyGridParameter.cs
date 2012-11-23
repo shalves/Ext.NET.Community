@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -29,6 +29,7 @@ using System.Text;
 using System.Web.UI;
 
 using Ext.Net.Utilities;
+using System.Collections.Generic;
 
 namespace Ext.Net
 {
@@ -51,17 +52,95 @@ namespace Ext.Net
 		[Description("")]
         public PropertyGridParameter(string name, string value) : base(name, value) { }
 
+        /// <summary>
+        /// A custom name to appear as label for this field. If specified, the display name will be shown in the name column instead of the property name.
+        /// </summary>
+        [Meta]
+        [Category("Config Options")]
+        [NotifyParentProperty(true)]
+        [DefaultValue("")]
+        [Description("A custom name to appear as label for this field. If specified, the display name will be shown in the name column instead of the property name.")]
+        public string DisplayName
+        {
+            get
+            {
+                return this.State.Get<string>("DisplayName", "");
+            }
+            set
+            {
+                this.State.Set("DisplayName", value);
+            }
+        }
+
+        private Renderer renderer;
+
+        /// <summary>
+        /// A function used to transform the underlying value before it is displayed in the grid. By default, the grid supports strongly-typed rendering of strings, dates, numbers and booleans using built-in form editors, but any custom type can be supported and associated with the type of the value. 
+        ///
+        /// The render function is called with the following parameters:
+        ///     value : Object
+        ///         The data value for the cell.
+        ///     metadata : Object
+        ///         An object in which you may set the following attributes:
+        ///         
+        ///         css : String
+        ///             A CSS class name to add to the cell's TD element.
+        ///         attr : String
+        ///             An HTML attribute definition string to apply to the data container element
+        ///              within the table cell (e.g. 'style="color:red;"').
+        ///     
+        ///     record : Ext.data.record
+        ///         The Ext.data.Record from which the data was extracted.
+        /// Returns:
+        ///     void
+        /// </summary>
+        [Category("Config Options")]
+        [DefaultValue(null)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("A function used to transform the underlying value before it is displayed in the grid. By default, the grid supports strongly-typed rendering of strings, dates, numbers and booleans using built-in form editors, but any custom type can be supported and associated with the type of the value. ")]
+        public virtual Renderer Renderer
+        {
+            get
+            {
+                if (this.renderer == null)
+                {
+                    this.renderer = new Renderer();
+                }
+
+                return this.renderer;
+            }
+        }
+
+        /// <summary>
+        /// Used to explicitly specify the editor type for a particular value. By default, the type is automatically inferred from the value. See inferTypes.
+        /// </summary>
+        [Meta]
+        [Category("Config Options")]
+        [NotifyParentProperty(true)]
+        [DefaultValue(PropertyGridEditorType.Auto)]
+        [Description("Used to explicitly specify the editor type for a particular value. By default, the type is automatically inferred from the value. See inferTypes.")]
+        public PropertyGridEditorType EditorType
+        {
+            get
+            {
+                return this.State.Get<PropertyGridEditorType>("EditorType", PropertyGridEditorType.Auto);
+            }
+            set
+            {
+                this.State.Set("EditorType", value);
+            }
+        }
+
         private EditorCollection editor;
 
         /// <summary>
-        /// (optional) The Ext.form.Field to use when editing values in this column if editing is supported by the grid.
+        /// Allows the grid to support additional types of editable fields. By default, the grid supports strongly-typed editing of strings, dates, numbers and booleans using built-in form editors, but any custom type can be supported and associated with a custom input control by specifying a custom editor.
         /// </summary>
-        //[ClientConfig("editor>Editor")]
         [Meta]
         [Category("Config Options")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
-        [Description("(optional) The Ext.form.Field to use when editing values in this column if editing is supported by the grid.")]
+        [Description("Allows the grid to support additional types of editable fields. By default, the grid supports strongly-typed editing of strings, dates, numbers and booleans using built-in form editors, but any custom type can be supported and associated with a custom input control by specifying a custom editor.")]
         public virtual EditorCollection Editor
         {
             get
@@ -96,74 +175,7 @@ namespace Ext.Net
                 return editorOptions;
             }
         }
-
-        /// <summary>
-        /// (optional) A function used to generate HTML markup for a cell given the cell's data value.
-        /// If not specified, the default renderer uses the raw data value.
-        /// 
-        /// Sets the rendering (formatting) function for a column. 
-        /// See Ext.util.Format for some default formatting functions.
-        ///
-        /// The render function is called with the following parameters:
-        ///     value : Object
-        ///         The data value for the cell.
-        ///     metadata : Object
-        ///         An object in which you may set the following attributes:
-        ///         
-        ///         css : String
-        ///             A CSS class name to add to the cell's TD element.
-        ///         attr : String
-        ///             An HTML attribute definition string to apply to the data container element
-        ///              within the table cell (e.g. 'style="color:red;"').
-        ///     
-        ///     record : Ext.data.record
-        ///         The Ext.data.Record from which the data was extracted.
-        /// Returns:
-        ///     void
-        /// </summary>
-
-        private Renderer renderer;
-
-        /// <summary>
-        /// (optional) A function used to generate HTML markup for a cell given the cell's data value. If not specified, the default renderer uses the raw data value.
-        /// </summary>
-        [Category("Config Options")]
-        [DefaultValue(null)]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [Description("(optional) A function used to generate HTML markup for a cell given the cell's data value. If not specified, the default renderer uses the raw data value.")]
-        public virtual Renderer Renderer
-        {
-            get
-            {
-                if (this.renderer == null)
-                {
-                    this.renderer = new Renderer();
-                }
-
-                return this.renderer;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Meta]
-        [Category("Config Options")]
-        [NotifyParentProperty(true)]
-        [DefaultValue("")]
-        [Description("")]
-        public string DisplayName
-        {
-            get
-            {
-                return this.State.Get<string>("DisplayName", "");
-            }
-            set
-            {
-                this.State.Set("DisplayName", value);
-            }
-        }
-
+        
         private bool isChanged;
 
         /// <summary>
@@ -183,6 +195,74 @@ namespace Ext.Net
             { 
                 this.isChanged = value; 
             }
+        }
+
+        public virtual string ToConfig()
+        {
+            return this.ToConfig(false);
+        }
+
+        public virtual string ToConfig(bool dynamic)
+        {
+            StringBuilder sb = new StringBuilder(256);
+            bool comma = false;
+            sb.Append(JSON.Serialize(this.ToName()) + ":{");
+
+            if (this.DisplayName.IsNotEmpty())
+            {
+                sb.Append("displayName:").Append(JSON.Serialize(this.DisplayName));
+                comma = true;
+            }
+
+            if (!this.Renderer.IsDefault)
+            {                
+                sb.Append(comma ? ",":"").Append("renderer:").Append(this.Renderer.ToConfigString());
+                comma = true;
+            }
+
+            if (this.EditorType != PropertyGridEditorType.Auto)
+            {
+                sb.Append(comma ? "," : "").Append("type:").Append(JSON.Serialize(this.EditorType.ToString().ToLowerInvariant()));
+                comma = true;
+            }
+
+            if (this.Editor.Count > 0)
+            {
+                string options = this.EditorOptions.Serialize();
+                options = options.Replace("{", "{{").Replace("}", "}}");
+                string tpl = "new " + this.EditorOptions.InstanceName + "(Ext.apply({{field:{0}}}, " + options + "))";
+                sb.Append(comma ? "," : "").Append("editor:");
+
+                if(dynamic)
+                {                
+                    this.Editor[0].PreventRenderTo = true;
+                    this.Editor[0].Visible = true;
+                    sb.AppendFormat(tpl, this.Editor[0].ToConfig(LazyMode.Config));
+                    this.Editor[0].Visible = false;
+                }
+                else
+                {
+                    sb.Append(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{                        
+                        {"id", this.Editor[0].BaseClientID + "_ClientInit"},
+                        {"tpl", tpl}
+                    }));
+                }
+
+                comma = true;
+            }
+
+            if (!comma)
+            {
+                return "";
+            }
+
+            sb.Append("}");
+            return sb.ToString();
+        }
+
+        public virtual string ToName()
+        {
+            return this.CamelName ? this.Name.ToLowerCamelCase() : this.Name;
         }
     }
 
@@ -221,11 +301,42 @@ namespace Ext.Net
 		/// 
 		/// </summary>
 		[Description("")]
-        public string ToJsonObject()
+        public string Config()
         {
             if (this.Count == 0)
             {
-                return "{}";
+                return "";
+            }
+
+            StringBuilder sb = new StringBuilder(256);
+            sb.Append("{");
+
+            foreach (PropertyGridParameter parameter in this)
+            {
+                string config = parameter.ToConfig();
+                
+                if (config.IsNotEmpty())
+                {
+                    sb.Append(config.ConcatWith(","));
+                }
+            }
+
+            if (sb.Length <= 1)
+            {
+                return "";
+            }
+
+            sb.Remove(sb.Length - 1, 1);
+            sb.Append("}");
+
+            return sb.ToString();
+        }
+
+        public string Source()
+        {
+            if (this.Count == 0)
+            {
+                return "";
             }
 
             StringBuilder sb = new StringBuilder(256);
@@ -235,7 +346,7 @@ namespace Ext.Net
             {
                 sb.Append(parameter.ToString().ConcatWith(","));
             }
-            
+
             sb.Remove(sb.Length - 1, 1);
             sb.Append("}");
 

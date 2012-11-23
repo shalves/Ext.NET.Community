@@ -77,7 +77,7 @@
     {
         get
         {
-            var persons = this.Session["TestPersons"];
+            object persons = this.Session["TestPersons"];
             
             if (persons == null)
             {
@@ -93,7 +93,7 @@
     {
         lock (lockObj)
         {
-            var persons = this.CurrentData;
+            List<TestPerson> persons = this.CurrentData;
             person.Id = this.NewId;
             persons.Add(person);
             this.Session["TestPersons"] = persons;
@@ -106,7 +106,7 @@
     {
         lock (lockObj)
         {
-            var persons = this.CurrentData;
+            List<TestPerson> persons = this.CurrentData;
             TestPerson person = null;
             
             foreach (TestPerson p in persons)
@@ -132,8 +132,8 @@
     private void UpdatePerson(TestPerson person)
     {
         lock (lockObj)
-        {           
-            var persons = this.CurrentData;
+        {
+            List<TestPerson> persons = this.CurrentData;
             TestPerson updatingPerson = null;
             
             foreach (TestPerson p in persons)
@@ -177,7 +177,7 @@
         {            
             this.AddPerson(created);
 
-            var record = Store1.GetByInternalId(created.PhantomId);            
+            ModelProxy record = Store1.GetByInternalId(created.PhantomId);            
             record.CreateVariable = true;
             record.SetId(created.Id);
             record.Commit();
@@ -194,7 +194,7 @@
         {
             this.UpdatePerson(updated);
 
-            var record = Store1.GetById(updated.Id.Value);
+            ModelProxy record = Store1.GetById(updated.Id.Value);
             record.Commit();
         }
     }
@@ -205,8 +205,8 @@
 <html>
 <head runat="server">
     <title>Grid with AutoSave - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
-    <script type="text/javascript">
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
+    <script>
        var updateRecord = function (form) {
             if (form.getForm()._record == null) {
                 return;

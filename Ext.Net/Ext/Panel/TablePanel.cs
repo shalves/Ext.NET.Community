@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -81,7 +81,8 @@ namespace Ext.Net
         {
             get
             {
-                var rowEditing = this.Plugins.Find(p => p is RowEditing);
+                Plugin rowEditing = this.Plugins.Find(p => p is RowEditing);
+                
                 return rowEditing != null;
             }
         }
@@ -118,10 +119,10 @@ namespace Ext.Net
 
                 StringBuilder sb = new StringBuilder("[");
 
-                foreach (var ed in this.Editor)
+                foreach (Field ed in this.Editor)
                 {
                     sb.Append(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{                        
-                            {"id", ed.ClientID + "_ClientInit"},
+                            {"id", ed.BaseClientID + "_ClientInit"},
                             {"tpl", tpl}
                         }));
                     sb.Append(",");
@@ -434,22 +435,22 @@ namespace Ext.Net
         }
 
         /// <summary>
-        /// True to constrain column dragging so that a column cannot be dragged in or out of it's current group. Only relevant while enableColumnMove is enabled. Defaults to: false
+        /// True to constrain column dragging so that a column cannot be dragged in or out of it's current group. Only relevant while enableColumnMove is enabled.
         /// </summary>
         [Meta]
         [ConfigOption]
         [DefaultValue(false)]
         [NotifyParentProperty(true)]
-        [Description("True to constrain column dragging so that a column cannot be dragged in or out of it's current group. Only relevant while enableColumnMove is enabled. Defaults to: false")]
-        public virtual bool RestrictColumnReorder
+        [Description("True to constrain column dragging so that a column cannot be dragged in or out of it's current group. Only relevant while enableColumnMove is enabled.")]
+        public virtual bool SealedColumns
         {
             get
             {
-                return this.State.Get<bool>("RestrictColumnReorder", false);
+                return this.State.Get<bool>("SealedColumns", false);
             }
             set
             {
-                this.State.Set("RestrictColumnReorder", value);
+                this.State.Set("SealedColumns", value);
             }
         }
 
@@ -851,19 +852,22 @@ namespace Ext.Net
         public virtual void Reconfigure(string storeId)
         {
             StringBuilder sb = new StringBuilder("[");
-            var comma = false;
-            foreach (var column in this.ColumnModel.Columns)
+            
+            bool comma = false;
+            
+            foreach (ColumnBase column in this.ColumnModel.Columns)
 	        {
-                if(comma)
+                if (comma)
                 {
                     sb.Append(",");
                 }
+
                 sb.Append(column.ToConfig(Ext.Net.LazyMode.Config));                
                 comma = true;
 	        }
             sb.Append("]");
 
-            this.Call("reconfigure", JRawValue.From(storeId.IsEmpty() ? "undefined" : storeId), JRawValue.From(sb.ToString()));
+            this.Call("reconfigure", JRawValue.From(storeId.IsEmpty() ? (this.ClientID + ".store") : storeId), JRawValue.From(sb.ToString()));
         }
 
         /// <summary>
@@ -882,19 +886,22 @@ namespace Ext.Net
         public virtual void Reconfigure(AbstractStore store, IEnumerable<ColumnBase> columns)
         {
             StringBuilder sb = new StringBuilder("[");
-            var comma = false;
-            foreach (var column in columns)
+            
+            bool comma = false;
+            
+            foreach (ColumnBase column in columns)
             {
                 if (comma)
                 {
                     sb.Append(",");
                 }
+
                 sb.Append(column.ToConfig(Ext.Net.LazyMode.Config));
                 comma = true;
             }
             sb.Append("]");
 
-            this.Call("reconfigure", JRawValue.From(store == null ? "undefined" : store.ToConfig(Ext.Net.LazyMode.Instance)), JRawValue.From(sb.ToString()));
+            this.Call("reconfigure", JRawValue.From(store == null ? (this.ClientID + ".store") : store.ToConfig(Ext.Net.LazyMode.Instance)), JRawValue.From(sb.ToString()));
         }
 
         /// <summary>
@@ -904,6 +911,15 @@ namespace Ext.Net
         public virtual void Reconfigure(IEnumerable<ColumnBase> columns)
         {
             this.Reconfigure(null, columns);
+        }
+
+        /// <summary>
+        /// Remove all columns.
+        /// </summary>
+        [Meta]
+        public virtual void Refresh()
+        {
+            this.Call("getView().refresh");
         }
         
         #endregion

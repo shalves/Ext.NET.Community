@@ -10,11 +10,11 @@ Ext.data.StoreManager.getArrayStore = function (fieldsCount) {
     }
     
     return new Ext.data.ArrayStore({
-        data        : [],
-        fields      : fields,
-        autoDestroy : true,
-        autoCreated : true,
-        expanded    : false
+        data  : [],
+        fields: fields,
+        autoDestroy: true,
+        autoCreated: true,
+        expanded: false
     });
 };
 
@@ -40,7 +40,7 @@ Ext.data.AbstractStore.override({
     },
     
     onProxyException : function (proxy, response, operation) {
-        var error = operation.getError(),
+        var error = operation.getError() || "Unknown error",
             message = Ext.isString(error) ? error : ("(" + error.status + ")" + error.statusText);
 
         this.fireEvent("exception", proxy, response, operation);
@@ -103,16 +103,24 @@ Ext.data.AbstractStore.override({
         }
     },
     
-    createTempProxy : function (callback, proxyConfig) {
+    createTempProxy : function (callback, proxyConfig, sync) {
         var oldProxy = this.proxy,
             proxyId = Ext.id(),
-            proxy = Ext.createByAlias('proxy.page', Ext.applyIf({
-                type   : 'page',
-                model  : this.model,
-                reader : {
-                    type : oldProxy && oldProxy.reader && oldProxy.reader.type ? oldProxy.reader.type : "json",
-                    root : oldProxy && oldProxy.reader && oldProxy.reader.root ? "data."+oldProxy.reader.root : "data"
-                }
+            proxy = this.serverProxy ? Ext.createByAlias('proxy.' + this.serverProxy.type, Ext.apply({
+                    model  : this.model,
+                    reader : {
+                        type : oldProxy && oldProxy.reader && oldProxy.reader.type ? oldProxy.reader.type : "json",
+                        root : oldProxy && oldProxy.reader && oldProxy.reader.root ? "data."+oldProxy.reader.root : "data"
+                    },
+                    writer : oldProxy.writer
+                }, proxyConfig || {}, this.serverProxy)) : Ext.createByAlias('proxy.page', Ext.applyIf({
+                    type   : 'page',
+                    model  : this.model,
+                    reader : {
+                        type : oldProxy && oldProxy.reader && oldProxy.reader.type ? oldProxy.reader.type : "json",
+                        root : oldProxy && oldProxy.reader && oldProxy.reader.root ? "data."+oldProxy.reader.root : "data"
+                    },
+                    writer : oldProxy.writer
             }, proxyConfig || {}));
         
         this.proxy = proxy;
@@ -124,79 +132,122 @@ Ext.data.AbstractStore.override({
         this.proxy.on("beforerequest", function () {
             this.proxy = oldProxy;
         }, this, {single:true});
-        
-        this.proxy.on("afterrequest", function (proxy, request, success) {
-            if (callback) {
-                callback.call(this, request, success);
-            }
+
+        if (sync) {
+            this.proxy.onBatchComplete = Ext.Function.createInterceptor(this.proxy.onBatchComplete, 
+                function (batchOptions, batch) {
+                    if (callback) {
+                        callback.call(this, null, !batch.hasException);
+                    }
             
-            this.proxy.onDestroy(); 
-            this.proxy.clearListeners();
-            delete this.store[proxyId];
-        }, {
-            proxy    : this.proxy, 
-            oldProxy : oldProxy,
-            store    :this 
-        });
-    }
-});
-
-Ext.data.Store.override({
-    dirtyWarningTitle : "Uncommitted Changes",
-    dirtyWarningText : "You have uncommitted changes.  Are you sure you want to reload data?",
-    
-    addField : function (field, index, rebuildMeta) {
-        if (typeof field == "string") {
-            field = { name: field };
-        }
-
-        field = new Ext.data.Field(field);
-
-        if (Ext.isEmpty(index) || index === -1) {
-            this.model.prototype.fields.replace(field);
-        } else {
-            this.model.prototype.fields.insert(index, field);
-        }
-
-        if (typeof field.defaultValue != "undefined") {
-            this.each(function (r) {
-                if (typeof r.data[field.name] == "undefined") {
-                    r.data[field.name] = field.defaultValue;
+                    this.proxy.onDestroy(); 
+                    this.proxy.clearListeners();
+                    delete this.store[proxyId];
+                }, {
+                    proxy    : this.proxy, 
+                    oldProxy : oldProxy,
+                    store    :this 
                 }
+            );
+        }
+        else {        
+            this.proxy.on("afterrequest", function (proxy, request, success) {
+                if (callback) {
+                    callback.call(this, request, success);
+                }
+            
+                this.proxy.onDestroy(); 
+                this.proxy.clearListeners();
+                delete this.store[proxyId];
+            }, {
+                proxy    : this.proxy, 
+                oldProxy : oldProxy,
+                store    :this 
             });
         }
+    },
 
-        if (rebuildMeta && this.proxy && this.proxy.reader) {
-            this.proxy.reader.buildExtractors(true);
+    reload: function (options) {
+        return this.load(Ext.apply(this.lastOptions || {}, options));
+    },
+
+    getChangedData : function (options) {
+        options = options || {};
+        
+        var json = {},            
+            me = this,
+            obj,
+            newRecords = this.getNewRecords(),
+            updatedRecords = this.getUpdatedRecords(),
+            removedRecords = this.getRemovedRecords(),
+            idProp = me.proxy && me.proxy.reader ? me.proxy.reader.getIdProperty() : "id",
+            
+            handleRecords = function (array) {
+                var i,
+                    len,
+                    obj,
+                    list,
+                    buffer = [];
+                    
+                for (i = 0, len = array.length; i < len; i++) {
+                    obj = {};
+                    record = array[i];
+                    list = Ext.apply(obj, record.data);
+
+                    if (list.hasOwnProperty(idProp)) {
+                        if (record.phantom) {
+                            list[record.clientIdProperty] = record.internalId; 
+                        } else {
+                            list[idProp] = record.getId(); 
+                        }
+                    }
+
+                    list = this.prepareRecord(list, record, options, record.phantom);
+                    
+                    if (record.phantom && (options.skipIdForNewRecords !== false) && list.hasOwnProperty(idProp)) {
+                        delete list[idProp];
+                        delete list[record.clientIdProperty];
+                    }
+
+                    if (!Ext.isEmptyObj(list)) {
+                        buffer.push(list);
+                    }
+                }
+                
+                return buffer;
+            };
+
+        if (removedRecords.length > 0) {            
+            obj = handleRecords.call(this, removedRecords);
+
+            if (obj.length > 0) {
+                json.Deleted = obj;
+            }            
         }
-    },
-
-    rebuildMeta : function () {
-        if (this.proxy.reader) {
-             this.proxy.reader.buildExtractors(true);
+        
+        if (updatedRecords.length > 0) {            
+            obj = handleRecords.call(this, updatedRecords);
+            
+            if (obj.length > 0) {
+                json.Updated = obj;
+            }            
         }
+        
+        if (newRecords.length > 0) {            
+            obj = handleRecords.call(this, newRecords);
+            
+            if (obj.length > 0) {
+                json.Created = obj;
+            }            
+        }
+
+        return options.encode ? Ext.util.Format.htmlEncode(json) : json;
     },
 
-    removeFields : function () {
-        this.model.prototype.fields.clear();
-        this.removeAll();
-    },
-
-    removeField : function (name) {
-        this.model.prototype.fields.removeKey(name);
-
-        this.each(function (r) {
-            delete r.data[name];
-
-            if (r.modified) {
-                delete r.modified[name];
-            }
-        });
-    },
-    
     prepareRecord : function (data, record, options, isNew) {
         var newData = {},
-            field;
+            field,
+            idProp = this.proxy && this.proxy.reader ? this.proxy.reader.getIdProperty() : "id";
 
         if (options.filterRecord && options.filterRecord(record) === false) {
             return;
@@ -270,7 +321,7 @@ Ext.data.Store.override({
                 if (record.phantom) {
                     mappings[record.clientIdProperty] = record.internalId; 
                 } else {
-                    mappings[this.proxy.reader.getIdProperty()] = record.getId(); 
+                    mappings[idProp] = record.getId(); 
                 }
             }
 
@@ -283,7 +334,7 @@ Ext.data.Store.override({
         
         return data;
     },
-    
+
     getFieldByName : function (name) {
         for (var i = 0; i < this.model.prototype.fields.getCount(); i++) {
             var field = this.model.prototype.fields.get(i);
@@ -299,7 +350,67 @@ Ext.data.Store.override({
             type = f && f.type ? f.type.type : "";
 
         return type === "int" || type === "float" || type === "boolean" || type === "date";
+    }
+});
+
+Ext.data.Store.override({
+    dirtyWarningTitle : "Uncommitted Changes",
+    dirtyWarningText : "You have uncommitted changes.  Are you sure you want to reload data?",
+
+    constructor : function (config) {
+        this.callParent(arguments);
+
+        this.on("bulkremove", this.updateRecordIndexes, this);
     },
+    
+    addField : function (field, index, rebuildMeta) {
+        if (typeof field == "string") {
+            field = { name: field };
+        }
+
+        field = new Ext.data.Field(field);
+
+        if (Ext.isEmpty(index) || index === -1) {
+            this.model.prototype.fields.replace(field);
+        } else {
+            this.model.prototype.fields.insert(index, field);
+        }
+
+        if (typeof field.defaultValue != "undefined") {
+            this.each(function (r) {
+                if (typeof r.data[field.name] == "undefined") {
+                    r.data[field.name] = field.defaultValue;
+                }
+            });
+        }
+
+        if (rebuildMeta && this.proxy && this.proxy.reader) {
+            this.proxy.reader.buildExtractors(true);
+        }
+    },
+
+    rebuildMeta : function () {
+        if (this.proxy.reader) {
+             this.proxy.reader.buildExtractors(true);
+        }
+    },
+
+    removeFields : function () {
+        this.model.prototype.fields.clear();
+        this.removeAll();
+    },
+
+    removeField : function (name) {
+        this.model.prototype.fields.removeKey(name);
+
+        this.each(function (r) {
+            delete r.data[name];
+
+            if (r.modified) {
+                delete r.modified[name];
+            }
+        });
+    },    
     
     getRecordsValues : function (options) {
         options = options || {};
@@ -350,84 +461,14 @@ Ext.data.Store.override({
         }
         
         return this._load(options);
-    },
-    
-    getChangedData : function (options) {
-        options = options || {};
-        
-        var json = {},            
-            me = this,
-            obj,
-            newRecords = this.getNewRecords(),
-            updatedRecords = this.getUpdatedRecords(),
-            removedRecords = this.getRemovedRecords(),
-            
-            handleRecords = function (array) {
-                var i,
-                    len,
-                    obj,
-                    list,
-                    buffer = [];
-                    
-                for (i = 0, len = array.length; i < len; i++) {
-                    obj = {};
-                    record = array[i];
-                    list = Ext.apply(obj, record.data);
-
-                    if (list.hasOwnProperty(me.proxy.reader.getIdProperty())) {
-                        if (record.phantom) {
-                            list[record.clientIdProperty] = record.internalId; 
-                        } else {
-                            list[me.proxy.reader.getIdProperty()] = record.getId(); 
-                        }
-                    }
-
-                    list = me.prepareRecord(list, record, options, record.phantom);
-                    
-                    if (record.phantom && (options.skipIdForNewRecords !== false) && list.hasOwnProperty(me.proxy.reader.getIdProperty())) {
-                        delete list[me.proxy.reader.getIdProperty()];
-                        delete list[record.clientIdProperty];
-                    }
-
-                    if (!Ext.isEmptyObj(list)) {
-                        buffer.push(list);
-                    }
-                }
-                
-                return buffer;
-            };
-
-        if (removedRecords.length > 0) {            
-            obj = handleRecords(removedRecords);
-
-            if (obj.length > 0) {
-                json.Deleted = obj;
-            }            
-        }
-        
-        if (updatedRecords.length > 0) {            
-            obj = handleRecords(updatedRecords);
-            
-            if (obj.length > 0) {
-                json.Updated = obj;
-            }            
-        }
-        
-        if (newRecords.length > 0) {            
-            obj = handleRecords(newRecords);
-            
-            if (obj.length > 0) {
-                json.Created = obj;
-            }            
-        }
-
-        return options.encode ? Ext.util.Format.htmlEncode(json) : json;
-    },
+    },    
     
     getAllRange : function (start, end) {
         return this.getRange(start, end);
     },
-    
+
+    _reload : Ext.data.Store.prototype.reload,
+
     reload : function (options, proxyConfig) {
         if (this.proxy instanceof Ext.data.proxy.Memory) {
             this.createTempProxy(function (request, success) {
@@ -443,19 +484,20 @@ Ext.data.Store.override({
                 }
             }, proxyConfig);            
         }
-        this.load(options);
+        
+        return this._reload(options);
     },
     
     _sync : Ext.data.Store.prototype.sync,
     
-    sync : function (proxyConfig) {
+    sync : function (options, proxyConfig) {
         if (this.proxy instanceof Ext.data.proxy.Memory) {
             this.createTempProxy(function (request, success) {
                 
-            }, proxyConfig);            
+            }, proxyConfig, true);            
         } 
         
-        this._sync();
+        this._sync(options);
     },
     
     commitChanges : function (actions) {
@@ -644,5 +686,21 @@ Ext.data.Store.override({
         });
 
         return index != -1 ? this.getAt(index) : null;
+    },
+
+    group: function (groupers, direction) {
+        var useDefault = Ext.isString(groupers) && !this.groupers.get(groupers);
+        this.callParent([groupers, direction || (useDefault ? "ASC" : direction)]);
+    },
+
+    updateRecordIndexes : function () {
+        var i,
+            len = this.getCount(),
+            records = this.getRange(),
+            start = ((this.currentPage - 1) * this.pageSize) || 0;
+
+        for (i = 0; i < len; i++) {
+            records[i].index = start + i;
+        } 
     }
 });

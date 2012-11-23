@@ -49,8 +49,8 @@
 <html>
 <head runat="server">
     <title>Refresh Static Tree - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <script>
         var refreshTree = function (tree) {            
             App.direct.RefreshMenu({
                 success : function (result) {   

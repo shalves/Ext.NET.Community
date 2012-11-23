@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -115,6 +115,7 @@ namespace Ext.Net
 
         private JFunction convert;
         private JFunction customSortType;
+        private JFunction serialize;        
 
 		/// <summary>
 		/// 
@@ -144,6 +145,12 @@ namespace Ext.Net
             this.Name = name;
             this.Type = type;
             this.DateFormat = dateFormat;
+        }
+
+        protected internal ValidationCollection Validations
+        {
+            get;
+            set;
         }
 
         /// <summary>
@@ -362,6 +369,40 @@ namespace Ext.Net
         }
 
         /// <summary>
+        /// A function which converts the Model's value for this Field into a form which can be used by whatever Writer is being used to sync data with the server.
+        /// 
+        /// The function should return a string which represents the Field's value.
+        /// 
+        /// It is passed the following parameters:
+        /// value : Mixed
+        ///     The Field's value - the value to be serialized.
+        /// record : Ext.data.Model
+        ///     The record being serialized.
+        /// </summary>
+        [Meta]
+        [ConfigOption("serialize", JsonMode.Raw)]
+        [Category("Config Options")]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("A function which converts the Model's value for this Field into a form which can be used by whatever Writer is being used to sync data with the server.")]
+        public virtual JFunction Serialize
+        {
+            get
+            {
+                if (this.serialize == null)
+                {
+                    this.serialize = new JFunction();
+
+                    if (!this.DesignMode)
+                    {                        
+                        this.serialize.Args = new string[] { "value", "record" };
+                    }
+                }
+
+                return this.serialize;
+            }
+        }
+
+        /// <summary>
         /// (Optional) A function which converts the value provided by the Reader into an object that will be stored in the Model. It is passed the following parameters:
         /// 
         /// value : Mixed
@@ -483,6 +524,13 @@ namespace Ext.Net
         /// (Optional) Used when converting received data into a Date when the type is specified as "date".
         /// 
         /// A format string for the Ext.Date.parse function, or "timestamp" if the value provided by the Reader is a UNIX timestamp, or "time" if the value provided by the Reader is a javascript millisecond timestamp. 
+        /// 
+        /// It is quite important to note that while this config is optional, it will default to using the base
+        /// JavaScript Date object's `parse` function if not specified, rather than {@link Ext.Date#parse Ext.Date.parse}.
+        /// This can cause unexpected issues, especially when converting between timezones, or when converting dates that
+        /// do not have a timezone specified. The behavior of the native `Date.parse` is implementation-specific, and
+        /// depending on the value of the date string, it might return the UTC date or the local date. For this reason
+        /// it is strongly recommended that you always specify an explicit date format when parsing dates.
         /// </summary>
         [Meta]
         [ConfigOption(typeof(NetToPHPDateFormatStringJsonConverter))]
@@ -497,7 +545,7 @@ namespace Ext.Net
 
                 if (this.Type == ModelFieldType.Date && this.ViewState["DateFormat"] == null)
                 {
-                    temp = this.RenderMilliseconds ? "yyyy-MM-ddTHH:mm:ss.u" : "yyyy-MM-ddTHH:mm:ss";
+                    temp = this.RenderMilliseconds ? "yyyy-MM-dd\\THH:mm:ss.u" : "yyyy-MM-dd\\THH:mm:ss";
                 }
 
                 return temp;
@@ -505,6 +553,46 @@ namespace Ext.Net
             set
             {
                 this.State.Set("DateFormat", value);
+            }
+        }
+
+        /// <summary>
+        /// Used to provide a custom format when serializing dates with a writer. If this is not specified, the DateFormat will be used.
+        /// </summary>
+        [Meta]
+        [ConfigOption(typeof(NetToPHPDateFormatStringJsonConverter))]
+        [Category("Config Options")]
+        [DefaultValue("")]
+        [Description("Used to provide a custom format when serializing dates with a writer. If this is not specified, the DateFormat will be used.")]
+        public virtual string DateWriteFormat
+        {
+            get
+            {
+                return this.State.Get<string>("DateWriteFormat", "");
+            }
+            set
+            {
+                this.State.Set("DateWriteFormat", value);
+            }
+        }
+
+        /// <summary>
+        /// Used when converting received data into a Date when the Type is specified as "Date". This configuration takes precedence over DateFormat.
+        /// </summary>
+        [Meta]
+        [ConfigOption(typeof(NetToPHPDateFormatStringJsonConverter))]
+        [Category("Config Options")]
+        [DefaultValue("")]
+        [Description("Used when converting received data into a Date when the Type is specified as \"Date\". This configuration takes precedence over DateFormat.")]
+        public virtual string DateReadFormat
+        {
+            get
+            {
+                return this.State.Get<string>("DateReadFormat", "");
+            }
+            set
+            {
+                this.State.Set("DateReadFormat", value);
             }
         }
 
@@ -587,6 +675,25 @@ namespace Ext.Net
             set
             {
                 this.State.Set("UseNull", value);
+            }
+        }
+
+        /// <summary>
+        /// Configure `true` to encode html in the field before sync
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue(false)]
+        [Description("Configure `true` to encode html in the field before sync")]
+        public virtual bool HtmlEncode
+        {
+            get
+            {
+                return this.State.Get<bool>("HtmlEncode", false);
+            }
+            set
+            {
+                this.State.Set("HtmlEncode", value);
             }
         }
     }

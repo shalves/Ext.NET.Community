@@ -14,19 +14,19 @@
 <html>
 <head runat="server">
     <title>TaskManager with Client and Server Side Events - Ext.NET Examples</title>    
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>    
     <form runat="server">
         <ext:ResourceManager runat="server">
             <Listeners>
-                <DocumentReady Handler="var msg = function (text) { 
+                <DocumentReady Handler="window.msg = function (text) { 
                     #{LogArea}.setValue(
                         Ext.String.format('{0}\n{1} : {2}', 
                         #{LogArea}.getValue(), 
                         text, 
                         Ext.Date.format(new Date(), 'H:i:s'))); 
-                    }" />
+                    };" />
             </Listeners>
         </ext:ResourceManager>        
         
@@ -39,7 +39,7 @@
                     Icon="Time" 
                     Border="false">
                     <TopBar>
-                        <ext:Toolbar ID="Toolbar1" runat="server">
+                        <ext:Toolbar runat="server">
                             <Items>
                                 <ext:Button 
                                     ID="btnStartAll" 

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,104 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : AbstractSeries.Builder<PieSeries, PieSeries.Builder>
+        new public abstract partial class Builder<TPieSeries, TBuilder> : AbstractSeries.Builder<TPieSeries, TBuilder>
+            where TPieSeries : PieSeries
+            where TBuilder : Builder<TPieSeries, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TPieSeries component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The store record field name to be used for the pie angles. The values bound to this field name must be positive real numbers. REQUIRED
+			/// </summary>
+            public virtual TBuilder AngleField(string angleField)
+            {
+                this.ToComponent().AngleField = angleField;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// An array of color values which will be used, in order, as the gauge slice fill colors.
+			/// </summary>
+            public virtual TBuilder ColorSet(string[] colorSet)
+            {
+                this.ToComponent().ColorSet = colorSet;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Whether to set the pie chart as donut chart. Default's false. Can be set to a particular percentage to set the radius of the donut chart.
+			/// </summary>
+            public virtual TBuilder Donut(int donut)
+            {
+                this.ToComponent().Donut = donut;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The duration for the pie slice highlight effect. Defaults to: 150
+			/// </summary>
+            public virtual TBuilder HighlightDuration(int highlightDuration)
+            {
+                this.ToComponent().HighlightDuration = highlightDuration;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder HighlightSegmentMargin(int? highlightSegmentMargin)
+            {
+                this.ToComponent().HighlightSegmentMargin = highlightSegmentMargin;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The store record field name to be used for the pie slice lengths. The values bound to this field name must be positive real numbers.
+			/// </summary>
+            public virtual TBuilder LengthField(string lengthField)
+            {
+                this.ToComponent().LengthField = lengthField;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Whether to add the pie chart elements as legend items. Default's false.
+			/// </summary>
+            public virtual TBuilder ShowInLegend(bool showInLegend)
+            {
+                this.ToComponent().ShowInLegend = showInLegend;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Style(SpriteAttributes style)
+            {
+                this.ToComponent().Style = style;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : PieSeries.Builder<PieSeries, PieSeries.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,87 +169,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The store record field name to be used for the pie angles. The values bound to this field name must be positive real numbers. REQUIRED
-			/// </summary>
-            public virtual PieSeries.Builder AngleField(string angleField)
-            {
-                this.ToComponent().AngleField = angleField;
-                return this as PieSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// An array of color values which will be used, in order, as the gauge slice fill colors.
-			/// </summary>
-            public virtual PieSeries.Builder ColorSet(string[] colorSet)
-            {
-                this.ToComponent().ColorSet = colorSet;
-                return this as PieSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// Whether to set the pie chart as donut chart. Default's false. Can be set to a particular percentage to set the radius of the donut chart.
-			/// </summary>
-            public virtual PieSeries.Builder Donut(int donut)
-            {
-                this.ToComponent().Donut = donut;
-                return this as PieSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// The duration for the pie slice highlight effect. Defaults to: 150
-			/// </summary>
-            public virtual PieSeries.Builder HighlightDuration(int highlightDuration)
-            {
-                this.ToComponent().HighlightDuration = highlightDuration;
-                return this as PieSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual PieSeries.Builder HighlightSegmentMargin(int? highlightSegmentMargin)
-            {
-                this.ToComponent().HighlightSegmentMargin = highlightSegmentMargin;
-                return this as PieSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// The store record field name to be used for the pie slice lengths. The values bound to this field name must be positive real numbers.
-			/// </summary>
-            public virtual PieSeries.Builder LengthField(string lengthField)
-            {
-                this.ToComponent().LengthField = lengthField;
-                return this as PieSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// Whether to add the pie chart elements as legend items. Default's false.
-			/// </summary>
-            public virtual PieSeries.Builder ShowInLegend(bool showInLegend)
-            {
-                this.ToComponent().ShowInLegend = showInLegend;
-                return this as PieSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual PieSeries.Builder Style(SpriteAttributes style)
-            {
-                this.ToComponent().Style = style;
-                return this as PieSeries.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -161,6 +177,14 @@ namespace Ext.Net
         public PieSeries.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.PieSeries(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -175,7 +199,11 @@ namespace Ext.Net
         /// </summary>
         public PieSeries.Builder PieSeries()
         {
-            return this.PieSeries(new PieSeries());
+#if MVC
+			return this.PieSeries(new PieSeries { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.PieSeries(new PieSeries());
+#endif			
         }
 
         /// <summary>
@@ -183,7 +211,10 @@ namespace Ext.Net
         /// </summary>
         public PieSeries.Builder PieSeries(PieSeries component)
         {
-            return new PieSeries.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new PieSeries.Builder(component);
         }
 
         /// <summary>
@@ -191,7 +222,11 @@ namespace Ext.Net
         /// </summary>
         public PieSeries.Builder PieSeries(PieSeries.Config config)
         {
-            return new PieSeries.Builder(new PieSeries(config));
+#if MVC
+			return new PieSeries.Builder(new PieSeries(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new PieSeries.Builder(new PieSeries(config));
+#endif			
         }
     }
 }

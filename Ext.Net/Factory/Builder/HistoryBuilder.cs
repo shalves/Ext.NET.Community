@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,99 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Observable.Builder<History, History.Builder>
+        new public abstract partial class Builder<THistory, TBuilder> : Observable.Builder<THistory, TBuilder>
+            where THistory : History
+            where TBuilder : Builder<THistory, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(THistory component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<HistoryListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side DirectEventHandlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<HistoryDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder CallHistory(string name, params object[] args)
+            {
+                this.ToComponent().CallHistory(name, args);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Add a new token to the history stack. This can be any arbitrary value, although it would commonly be the concatenation of a component id and another id marking the specifc history state of that component.
+			/// </summary>
+            public virtual TBuilder Add(string token, bool preventDuplicate)
+            {
+                this.ToComponent().Add(token, preventDuplicate);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Add a new token to the history stack. This can be any arbitrary value, although it would commonly be the concatenation of a component id and another id marking the specifc history state of that component.
+			/// </summary>
+            public virtual TBuilder Add(string token)
+            {
+                this.ToComponent().Add(token);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Programmatically steps back one step in browser history (equivalent to the user pressing the Back button).
+			/// </summary>
+            public virtual TBuilder Back()
+            {
+                this.ToComponent().Back();
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Programmatically steps forward one step in browser history (equivalent to the user pressing the Forward button).
+			/// </summary>
+            public virtual TBuilder Forward()
+            {
+                this.ToComponent().Forward();
+                return this as TBuilder;
+            }
+            
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : History.Builder<History, History.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,82 +164,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of History.Builder</returns>
-            public virtual History.Builder Listeners(Action<HistoryListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as History.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEventHandlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of History.Builder</returns>
-            public virtual History.Builder DirectEvents(Action<HistoryDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as History.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual History.Builder CallHistory(string name, params object[] args)
-            {
-                this.ToComponent().CallHistory(name, args);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Add a new token to the history stack. This can be any arbitrary value, although it would commonly be the concatenation of a component id and another id marking the specifc history state of that component.
-			/// </summary>
-            public virtual History.Builder Add(string token, bool preventDuplicate)
-            {
-                this.ToComponent().Add(token, preventDuplicate);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Add a new token to the history stack. This can be any arbitrary value, although it would commonly be the concatenation of a component id and another id marking the specifc history state of that component.
-			/// </summary>
-            public virtual History.Builder Add(string token)
-            {
-                this.ToComponent().Add(token);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Programmatically steps back one step in browser history (equivalent to the user pressing the Back button).
-			/// </summary>
-            public virtual History.Builder Back()
-            {
-                this.ToComponent().Back();
-                return this;
-            }
-            
- 			/// <summary>
-			/// Programmatically steps forward one step in browser history (equivalent to the user pressing the Forward button).
-			/// </summary>
-            public virtual History.Builder Forward()
-            {
-                this.ToComponent().Forward();
-                return this;
-            }
-            
         }
 
         /// <summary>
@@ -156,6 +172,14 @@ namespace Ext.Net
         public History.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.History(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -170,7 +194,11 @@ namespace Ext.Net
         /// </summary>
         public History.Builder History()
         {
-            return this.History(new History());
+#if MVC
+			return this.History(new History { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.History(new History());
+#endif			
         }
 
         /// <summary>
@@ -178,7 +206,10 @@ namespace Ext.Net
         /// </summary>
         public History.Builder History(History component)
         {
-            return new History.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new History.Builder(component);
         }
 
         /// <summary>
@@ -186,7 +217,11 @@ namespace Ext.Net
         /// </summary>
         public History.Builder History(History.Config config)
         {
-            return new History.Builder(new History(config));
+#if MVC
+			return new History.Builder(new History(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new History.Builder(new History(config));
+#endif			
         }
     }
 }

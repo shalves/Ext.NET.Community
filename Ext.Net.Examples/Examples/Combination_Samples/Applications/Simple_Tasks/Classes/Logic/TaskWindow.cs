@@ -14,8 +14,8 @@ namespace Ext.Net.Examples.SimpleTasks
             this.ID = "TaskWindow_" + taskId;
             this.taskId = taskId;
 
-            var ctx = this.DBContext;
-            var task = (from t in ctx.Tasks where t.ID == taskId select t).First();
+            SimpleTasksDataContext ctx = this.DBContext;
+            Task task = (from t in ctx.Tasks where t.ID == taskId select t).First();
             this.Title = "Task - " + task.Title.Ellipsis(40);
 
             if (task.Completed)
@@ -56,7 +56,7 @@ namespace Ext.Net.Examples.SimpleTasks
         {
             get
             {
-                var ctx = new SimpleTasksDataContext();
+                SimpleTasksDataContext ctx = new SimpleTasksDataContext();
                 ctx.DeferredLoadingEnabled = true;
 
                 return ctx;

@@ -7,10 +7,10 @@
 <html>
 <head runat="server">
     <title>Custom VType - Ext.Net Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     <ext:ResourcePlaceHolder runat="server" />
 
-    <script type="text/javascript">
+    <script>
         Ext.apply(Ext.form.VTypes, {
             numberrange : function (val, field) {
                 if (!val) {

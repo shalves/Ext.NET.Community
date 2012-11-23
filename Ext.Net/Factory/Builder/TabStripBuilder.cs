@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,164 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ComponentBase.Builder<TabStrip, TabStrip.Builder>
+        new public abstract partial class Builder<TTabStrip, TBuilder> : ComponentBase.Builder<TTabStrip, TBuilder>
+            where TTabStrip : TabStrip
+            where TBuilder : Builder<TTabStrip, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TTabStrip component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The position where the tab strip should be rendered (defaults to 'top'). The only other supported value is 'Bottom'. Note that tab scrolling is only supported for position 'top'.
+			/// </summary>
+            public virtual TBuilder TabPosition(TabPosition tabPosition)
+            {
+                this.ToComponent().TabPosition = tabPosition;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Items Collection
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Items(Action<Tabs> action)
+            {
+                action(this.ToComponent().Items);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// The ID of the container which has card layout. TabStrip will switch active item automatically beased on the current index.
+			/// </summary>
+            public virtual TBuilder ActionContainerID(string actionContainerID)
+            {
+                this.ToComponent().ActionContainerID = actionContainerID;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The container which has card layout. TabStrip will switch active item automatically beased on the current index.
+			/// </summary>
+            public virtual TBuilder ActionContainer(Container actionContainer)
+            {
+                this.ToComponent().ActionContainer = actionContainer;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The numeric index of the tab that should be initially activated on render.
+			/// </summary>
+            public virtual TBuilder ActiveTabIndex(int activeTabIndex)
+            {
+                this.ToComponent().ActiveTabIndex = activeTabIndex;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder MinTabWidth(int minTabWidth)
+            {
+                this.ToComponent().MinTabWidth = minTabWidth;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder MaxTabWidth(int maxTabWidth)
+            {
+                this.ToComponent().MaxTabWidth = maxTabWidth;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to render the tab strip without a background content Container image (defaults to true).
+			/// </summary>
+            public virtual TBuilder Plain(bool plain)
+            {
+                this.ToComponent().Plain = plain;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<TabStripListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<TabStripDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Gets or sets a value indicating whether the control state automatically posts back to the server when tab changed.
+			/// </summary>
+            public virtual TBuilder AutoPostBack(bool autoPostBack)
+            {
+                this.ToComponent().AutoPostBack = autoPostBack;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder PostBackEvent(string postBackEvent)
+            {
+                this.ToComponent().PostBackEvent = postBackEvent;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Gets or sets a value indicating whether validation is performed when the control is set to validate when a postback occurs.
+			/// </summary>
+            public virtual TBuilder CausesValidation(bool causesValidation)
+            {
+                this.ToComponent().CausesValidation = causesValidation;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Gets or Sets the Controls ValidationGroup
+			/// </summary>
+            public virtual TBuilder ValidationGroup(string validationGroup)
+            {
+                this.ToComponent().ValidationGroup = validationGroup;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : TabStrip.Builder<TabStrip, TabStrip.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,147 +229,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The position where the tab strip should be rendered (defaults to 'top'). The only other supported value is 'Bottom'. Note that tab scrolling is only supported for position 'top'.
-			/// </summary>
-            public virtual TabStrip.Builder TabPosition(TabPosition tabPosition)
-            {
-                this.ToComponent().TabPosition = tabPosition;
-                return this as TabStrip.Builder;
-            }
-             
- 			/// <summary>
-			/// Items Collection
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TabStrip.Builder</returns>
-            public virtual TabStrip.Builder Items(Action<Tabs> action)
-            {
-                action(this.ToComponent().Items);
-                return this as TabStrip.Builder;
-            }
-			 
- 			/// <summary>
-			/// The ID of the container which has card layout. TabStrip will switch active item automatically beased on the current index.
-			/// </summary>
-            public virtual TabStrip.Builder ActionContainerID(string actionContainerID)
-            {
-                this.ToComponent().ActionContainerID = actionContainerID;
-                return this as TabStrip.Builder;
-            }
-             
- 			/// <summary>
-			/// The container which has card layout. TabStrip will switch active item automatically beased on the current index.
-			/// </summary>
-            public virtual TabStrip.Builder ActionContainer(Container actionContainer)
-            {
-                this.ToComponent().ActionContainer = actionContainer;
-                return this as TabStrip.Builder;
-            }
-             
- 			/// <summary>
-			/// The numeric index of the tab that should be initially activated on render.
-			/// </summary>
-            public virtual TabStrip.Builder ActiveTabIndex(int activeTabIndex)
-            {
-                this.ToComponent().ActiveTabIndex = activeTabIndex;
-                return this as TabStrip.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TabStrip.Builder MinTabWidth(int minTabWidth)
-            {
-                this.ToComponent().MinTabWidth = minTabWidth;
-                return this as TabStrip.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TabStrip.Builder MaxTabWidth(int maxTabWidth)
-            {
-                this.ToComponent().MaxTabWidth = maxTabWidth;
-                return this as TabStrip.Builder;
-            }
-             
- 			/// <summary>
-			/// True to render the tab strip without a background content Container image (defaults to true).
-			/// </summary>
-            public virtual TabStrip.Builder Plain(bool plain)
-            {
-                this.ToComponent().Plain = plain;
-                return this as TabStrip.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TabStrip.Builder</returns>
-            public virtual TabStrip.Builder Listeners(Action<TabStripListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as TabStrip.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TabStrip.Builder</returns>
-            public virtual TabStrip.Builder DirectEvents(Action<TabStripDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as TabStrip.Builder;
-            }
-			 
- 			/// <summary>
-			/// Gets or sets a value indicating whether the control state automatically posts back to the server when tab changed.
-			/// </summary>
-            public virtual TabStrip.Builder AutoPostBack(bool autoPostBack)
-            {
-                this.ToComponent().AutoPostBack = autoPostBack;
-                return this as TabStrip.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TabStrip.Builder PostBackEvent(string postBackEvent)
-            {
-                this.ToComponent().PostBackEvent = postBackEvent;
-                return this as TabStrip.Builder;
-            }
-             
- 			/// <summary>
-			/// Gets or sets a value indicating whether validation is performed when the control is set to validate when a postback occurs.
-			/// </summary>
-            public virtual TabStrip.Builder CausesValidation(bool causesValidation)
-            {
-                this.ToComponent().CausesValidation = causesValidation;
-                return this as TabStrip.Builder;
-            }
-             
- 			/// <summary>
-			/// Gets or Sets the Controls ValidationGroup
-			/// </summary>
-            public virtual TabStrip.Builder ValidationGroup(string validationGroup)
-            {
-                this.ToComponent().ValidationGroup = validationGroup;
-                return this as TabStrip.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -221,6 +237,14 @@ namespace Ext.Net
         public TabStrip.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.TabStrip(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -235,7 +259,11 @@ namespace Ext.Net
         /// </summary>
         public TabStrip.Builder TabStrip()
         {
-            return this.TabStrip(new TabStrip());
+#if MVC
+			return this.TabStrip(new TabStrip { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.TabStrip(new TabStrip());
+#endif			
         }
 
         /// <summary>
@@ -243,7 +271,10 @@ namespace Ext.Net
         /// </summary>
         public TabStrip.Builder TabStrip(TabStrip component)
         {
-            return new TabStrip.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new TabStrip.Builder(component);
         }
 
         /// <summary>
@@ -251,7 +282,11 @@ namespace Ext.Net
         /// </summary>
         public TabStrip.Builder TabStrip(TabStrip.Config config)
         {
-            return new TabStrip.Builder(new TabStrip(config));
+#if MVC
+			return new TabStrip.Builder(new TabStrip(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new TabStrip.Builder(new TabStrip(config));
+#endif			
         }
     }
 }

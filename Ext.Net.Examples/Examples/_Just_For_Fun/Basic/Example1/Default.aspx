@@ -8,7 +8,7 @@
 <head runat="server">
     <title>Ext.NET Examples</title>
     
-    <style type="text/css">
+    <style>
         .cards-conatiner {
             padding:0px;
             margin:0px;
@@ -87,7 +87,7 @@
         }
     </style>
     
-    <script type="text/javascript">
+    <script>
         var setCard = function (t) {
             t.addCls("current");
             var index = parseInt(t.getAttribute("rel"));

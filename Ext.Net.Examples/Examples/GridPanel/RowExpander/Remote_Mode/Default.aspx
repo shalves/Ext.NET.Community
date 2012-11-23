@@ -49,95 +49,73 @@
         this.Store1.DataBind();
     }
 
-    protected void BeforeExpand(object sender, DirectEventArgs e)
+    [DirectMethod]
+    public static object GetData(Dictionary<string, string> parameters)
     {
-        e.ExtraParamsResponse["content"] = string.Format("<span class=\"template\">Company: {0}, Row ¹: {1}, Server Date: {2}</span>", e.ExtraParams["company"], e.ExtraParams["index"], DateTime.Now.ToString());
+        return new { 
+            company = parameters["company"],
+            index = parameters["index"],
+            time = DateTime.Now.ToLongTimeString()
+        };        
     }
 </script>
 
 <html>
 <head runat="server">
-    <title>RowExpander with DirectEvent - Ext.NET Examples</title>
+    <title>Row Expander Plugin with server side data - Ext.NET Examples</title>
     <ext:ResourcePlaceHolder runat="server" Mode="Script" />
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .template {
             color: #fff;
             background-color: gray;
         }
     </style>
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {
             return Ext.String.format(template, (value > 0) ? "green" : "red", value);
-        }
+        };
 
         var pctChange = function (value) {
             return Ext.String.format(template, (value > 0) ? "green" : "red", value + "%");
-        }
-
-        var setRaw = function (response, result, expander, type, action, params) {            
-            expander.bodyContent[params.id] = result.extraParamsResponse.content;
-            
-            var row = expander.getCmp().view.getNode(params.index),
-                body = Ext.DomQuery.selectNode('tr div.x-grid-rowbody', row);
-            body.innerHTML = result.extraParamsResponse.content;
-
-            //For example we will cache rows with an even index
-            if (isEven(params.index)) {
-                expander.getCmp().store.data.get(params.id).cached = true;
-            }             
-        }
-
-        var beforeExpand = function (record, body, expander) {
-            if(!record.cached){
-                delete expander.bodyContent[record.internalId];
-                body.down("div.x-grid-rowbody").dom.innerHTML = "Loading...";
-            }
-            
-            return !record.cached;
         };
-
-        var isEven = function (num) {
-            return !(num % 2);
-        }
     </script>
 
 </head>
 <body>
     <form runat="server">
         <ext:ResourceManager ID="ResourceManager1" runat="server" />
-        <h1>Row Expander Plugin with server side template</h1>
-        <p>For example we will cache rows with an even index</p>
-        
-        <ext:Store ID="Store1" runat="server">
-            <Model>
-                <ext:Model runat="server">
-                    <Fields>
-                        <ext:ModelField Name="company" />
-                        <ext:ModelField Name="price" Type="Float" />
-                        <ext:ModelField Name="change" Type="Float" />
-                        <ext:ModelField Name="pctChange" Type="Float" />
-                        <ext:ModelField Name="lastChange" Type="Date" DateFormat="M/d hh:mmtt" />
-                        <ext:ModelField Name="industry" />
-                    </Fields>
-                </ext:Model>
-            </Model>
-        </ext:Store>
+        <h1>Row Expander Plugin with server side data</h1>        
         
         <ext:GridPanel 
             ID="GridPanel1" 
-            runat="server" 
-            StoreID="Store1" 
-            Title="Expander Rows with server side template, Collapse and Force Fit" 
+            runat="server"             
+            Title="Expander Rows with server side data" 
             Collapsible="true"
             AnimCollapse="true" 
             Icon="Table" 
             Width="600" 
             Height="300">
+            <Store>
+                <ext:Store ID="Store1" runat="server">
+                    <Model>
+                        <ext:Model runat="server">
+                            <Fields>
+                                <ext:ModelField Name="company" />
+                                <ext:ModelField Name="price" Type="Float" />
+                                <ext:ModelField Name="change" Type="Float" />
+                                <ext:ModelField Name="pctChange" Type="Float" />
+                                <ext:ModelField Name="lastChange" Type="Date" DateFormat="M/d hh:mmtt" />
+                                <ext:ModelField Name="industry" />
+                            </Fields>
+                        </ext:Model>
+                    </Model>
+                </ext:Store>
+            </Store>
             <ColumnModel runat="server">
                 <Columns>
                     <ext:Column runat="server" Text="Company" DataIndex="company" Flex="1" />
@@ -152,28 +130,23 @@
                     </ext:Column>
                     <ext:DateColumn runat="server" Text="Last Updated" DataIndex="lastChange" />
                 </Columns>
-            </ColumnModel>
-            <View>
-                <ext:GridView runat="server" TrackOver="true" />
-            </View>
-            <SelectionModel>
-                <ext:RowSelectionModel runat="server" Mode="Multi" />
-            </SelectionModel>
+            </ColumnModel>           
             <Plugins>
                 <ext:RowExpander ID="RowExpander" runat="server">
-                    <DirectEvents>
-                        <BeforeExpand 
-                            OnEvent="BeforeExpand"
-                            Success="setRaw(response, result, el, type, action, extraParams);"
-                            Before="return beforeExpand(record, body, this);">
-                            <EventMask ShowMask="true" MinDelay="1000" Target="CustomTarget" CustomTarget="={#{GridPanel1}.body}" />
-                            <ExtraParams>
-                                <ext:Parameter Name="company" Value="record.data['company']" Mode="Raw" />
-                                <ext:Parameter Name="id" Value="record.internalId" Mode="Raw" />
-                                <ext:Parameter Name="index" Value="rowIndex" Mode="Raw" />
-                            </ExtraParams>
-                        </BeforeExpand>
-                    </DirectEvents>
+                    <Loader Mode="Data" DirectMethod="#{DirectMethods}.GetData">
+                        <LoadMask ShowMask="true" />
+                        <Params>
+                            <ext:Parameter Name="company" Value="this.record.data['company']" Mode="Raw" />
+                            <ext:Parameter Name="index" Value="this.grid.store.indexOf(this.record)" Mode="Raw" />
+                        </Params>
+                    </Loader>
+                    <Template>
+                        <Html>
+                            <span class="template">
+                                Company: {company}, Row ¹: {index}, Server Date: {time}
+                            </span>
+                        </Html>
+                    </Template>
                 </ext:RowExpander>
             </Plugins>
         </ext:GridPanel>

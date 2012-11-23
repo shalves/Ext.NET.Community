@@ -7,12 +7,11 @@
 <html>
 <head runat="server">
     <title>FormLayout Overview - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
-        .blueborder {
-        	border: dotted 1px blue;
-        	padding:1px 0px;
+    <style>
+        .yellowBg {
+        	background-color : yellow;
         }
     </style>
 </head>
@@ -24,22 +23,18 @@
             runat="server" 
             Frame="true" 
             Title="Label Style and Separator" 
-            Width="400"
-            LabelSeparator="-" 
-            LabelWidth="55"
-            Layout="AnchorLayout">
+            Width="400"                        
+            Layout="FormLayout">
             <Defaults>
                 <ext:Parameter Name="LabelStyle" Value="color:red;" Mode="Value" />
             </Defaults>
             <Items>
-                <ext:TextField runat="server" FieldLabel="Label" AnchorHorizontal="95%" />
+                <ext:TextField runat="server" FieldLabel="Label" />
                 <ext:TextField 
                     runat="server" 
                     FieldLabel="Label" 
                     LabelStyle="color:blue;" 
-                    LabelSeparator="+" 
-                    AnchorHorizontal="95%" 
-                    />
+                    LabelSeparator="-" />
             </Items>
         </ext:Panel>
         
@@ -51,13 +46,13 @@
             Frame="true" 
             Title="Without labels" 
             Width="400" 
-            Layout="AnchorLayout">
+            Layout="FormLayout">
             <Defaults>
                 <ext:Parameter Name="HideLabel" Value="true" Mode="Raw" />
             </Defaults>
             <Items>
-                <ext:TextField runat="server" FieldLabel="Label" AnchorHorizontal="95%" />
-                <ext:TextField runat="server" FieldLabel="Label" AnchorHorizontal="95%" />
+                <ext:TextField runat="server" FieldLabel="Label" />
+                <ext:TextField runat="server" FieldLabel="Label" />
             </Items>
         </ext:Panel>
     
@@ -69,13 +64,13 @@
             Frame="true" 
             Title="Item style" 
             Width="400"
-            Layout="AnchorLayout">
+            Layout="FormLayout">
             <Defaults>
-                <ext:Parameter Name="Cls" Value="blueborder" Mode="Value" />
+                <ext:Parameter Name="Cls" Value="yellowBg" Mode="Value" />
             </Defaults>
             <Items>
-                <ext:TextField runat="server" FieldLabel="Label" AnchorHorizontal="95%" />
-                <ext:TextField runat="server" FieldLabel="Label" AnchorHorizontal="95%" />
+                <ext:TextField runat="server" FieldLabel="Label" />
+                <ext:TextField runat="server" FieldLabel="Label" />
             </Items>
         </ext:Panel>
         
@@ -87,10 +82,10 @@
             Frame="true" 
             Title="Label Top Align" 
             Width="400"
-            Layout="AnchorLayout">
+            Layout="FormLayout">
             <Items>
-                <ext:TextField runat="server" FieldLabel="Label" AnchorHorizontal="95%" LabelAlign="Top" />
-                <ext:TextField runat="server" FieldLabel="Label" AnchorHorizontal="95%" LabelAlign="Top" />
+                <ext:TextField runat="server" FieldLabel="Label" LabelAlign="Top" />
+                <ext:TextField runat="server" FieldLabel="Label" LabelAlign="Top" />
             </Items>
         </ext:Panel>
     </form>

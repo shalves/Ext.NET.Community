@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -57,6 +57,7 @@ namespace Ext.Net
                 
                 list.Add("headerItems", new ConfigOption("headerItems", new SerializationOptions("headerItems", typeof(ItemCollectionJsonConverter)), null, this.HeaderItems ));
                 list.Add("hideTitleEl", new ConfigOption("hideTitleEl", null, false, this.HideTitleEl ));
+                list.Add("lockable", new ConfigOption("lockable", null, null, this.Lockable ));
                 list.Add("locked", new ConfigOption("locked", null, null, this.Locked ));
                 list.Add("align", new ConfigOption("align", new SerializationOptions(JsonMode.ToLower), Alignment.Left, this.Align ));
                 list.Add("columns", new ConfigOption("columns", new SerializationOptions("columns", typeof(ItemCollectionJsonConverter)), null, this.Columns ));
@@ -79,6 +80,9 @@ namespace Ext.Net
                 list.Add("tdCls", new ConfigOption("tdCls", null, "", this.TdCls ));
                 list.Add("stopSelectionSelectors", new ConfigOption("stopSelectionSelectors", new SerializationOptions(typeof(StringArrayJsonConverter)), null, this.StopSelectionSelectors ));
                 list.Add("text", new ConfigOption("text", null, "", this.Text ));
+                list.Add("toolTip", new ConfigOption("toolTip", new SerializationOptions("tooltip"), "", this.ToolTip ));
+                list.Add("toolTipType", new ConfigOption("toolTipType", new SerializationOptions("tooltipType"), ToolTipType.Qtip, this.ToolTipType ));
+                list.Add("wrap", new ConfigOption("wrap", null, null, this.Wrap ));
 
                 return list;
             }

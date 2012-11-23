@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,95 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : NumericAxis.Builder<TimeAxis, TimeAxis.Builder>
+        new public abstract partial class Builder<TTimeAxis, TBuilder> : NumericAxis.Builder<TTimeAxis, TBuilder>
+            where TTimeAxis : TimeAxis
+            where TBuilder : Builder<TTimeAxis, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TTimeAxis component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder RoundToDecimal(bool roundToDecimal)
+            {
+                this.ToComponent().RoundToDecimal = roundToDecimal;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// If true, the values of the chart will be rendered only if they belong between the fromDate and toDate. If false, the time axis will adapt to the new values by adding/removing steps. Defaults to: false
+			/// </summary>
+            public virtual TBuilder Constrain(bool constrain)
+            {
+                this.ToComponent().Constrain = constrain;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Indicates the format the date will be rendered on. For example: 'MMM dd' will render the dates as 'Jan 30', etc.
+			/// </summary>
+            public virtual TBuilder DateFormat(string dateFormat)
+            {
+                this.ToComponent().DateFormat = dateFormat;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The starting date for the time axis.
+			/// </summary>
+            public virtual TBuilder FromDate(DateTime fromDate)
+            {
+                this.ToComponent().FromDate = fromDate;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The ending date for the time axis.
+			/// </summary>
+            public virtual TBuilder ToDate(DateTime toDate)
+            {
+                this.ToComponent().ToDate = toDate;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The number of units for the step
+			/// </summary>
+            public virtual TBuilder Step(int step)
+            {
+                this.ToComponent().Step = step;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The unit of the step (day, month, year, etc).
+			/// </summary>
+            public virtual TBuilder StepUnit(DateUnit stepUnit)
+            {
+                this.ToComponent().StepUnit = stepUnit;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : TimeAxis.Builder<TimeAxis, TimeAxis.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,78 +160,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TimeAxis.Builder RoundToDecimal(bool roundToDecimal)
-            {
-                this.ToComponent().RoundToDecimal = roundToDecimal;
-                return this as TimeAxis.Builder;
-            }
-             
- 			/// <summary>
-			/// If true, the values of the chart will be rendered only if they belong between the fromDate and toDate. If false, the time axis will adapt to the new values by adding/removing steps. Defaults to: false
-			/// </summary>
-            public virtual TimeAxis.Builder Constrain(bool constrain)
-            {
-                this.ToComponent().Constrain = constrain;
-                return this as TimeAxis.Builder;
-            }
-             
- 			/// <summary>
-			/// Indicates the format the date will be rendered on. For example: 'MMM dd' will render the dates as 'Jan 30', etc.
-			/// </summary>
-            public virtual TimeAxis.Builder DateFormat(string dateFormat)
-            {
-                this.ToComponent().DateFormat = dateFormat;
-                return this as TimeAxis.Builder;
-            }
-             
- 			/// <summary>
-			/// The starting date for the time axis.
-			/// </summary>
-            public virtual TimeAxis.Builder FromDate(DateTime fromDate)
-            {
-                this.ToComponent().FromDate = fromDate;
-                return this as TimeAxis.Builder;
-            }
-             
- 			/// <summary>
-			/// The ending date for the time axis.
-			/// </summary>
-            public virtual TimeAxis.Builder ToDate(DateTime toDate)
-            {
-                this.ToComponent().ToDate = toDate;
-                return this as TimeAxis.Builder;
-            }
-             
- 			/// <summary>
-			/// The number of units for the step
-			/// </summary>
-            public virtual TimeAxis.Builder Step(int step)
-            {
-                this.ToComponent().Step = step;
-                return this as TimeAxis.Builder;
-            }
-             
- 			/// <summary>
-			/// The unit of the step (day, month, year, etc).
-			/// </summary>
-            public virtual TimeAxis.Builder StepUnit(DateUnit stepUnit)
-            {
-                this.ToComponent().StepUnit = stepUnit;
-                return this as TimeAxis.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -152,6 +168,14 @@ namespace Ext.Net
         public TimeAxis.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.TimeAxis(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -166,7 +190,11 @@ namespace Ext.Net
         /// </summary>
         public TimeAxis.Builder TimeAxis()
         {
-            return this.TimeAxis(new TimeAxis());
+#if MVC
+			return this.TimeAxis(new TimeAxis { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.TimeAxis(new TimeAxis());
+#endif			
         }
 
         /// <summary>
@@ -174,7 +202,10 @@ namespace Ext.Net
         /// </summary>
         public TimeAxis.Builder TimeAxis(TimeAxis component)
         {
-            return new TimeAxis.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new TimeAxis.Builder(component);
         }
 
         /// <summary>
@@ -182,7 +213,11 @@ namespace Ext.Net
         /// </summary>
         public TimeAxis.Builder TimeAxis(TimeAxis.Config config)
         {
-            return new TimeAxis.Builder(new TimeAxis(config));
+#if MVC
+			return new TimeAxis.Builder(new TimeAxis(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new TimeAxis.Builder(new TimeAxis(config));
+#endif			
         }
     }
 }

@@ -49,7 +49,7 @@
 
     protected void ToXml(object sender, EventArgs e)
     {
-        string json = GridData.Value.ToString();
+        string json = this.Hidden1.Value.ToString();
         StoreSubmitDataEventArgs eSubmit = new StoreSubmitDataEventArgs(json, null);
         XmlNode xml = eSubmit.Xml;
 
@@ -65,14 +65,16 @@
 
     protected void ToExcel(object sender, EventArgs e)
     {
-        string json = GridData.Value.ToString();
+        string json = this.Hidden1.Value.ToString();
         StoreSubmitDataEventArgs eSubmit = new StoreSubmitDataEventArgs(json, null);
         XmlNode xml = eSubmit.Xml;
 
         this.Response.Clear();
         this.Response.ContentType = "application/vnd.ms-excel";
         this.Response.AddHeader("Content-Disposition", "attachment; filename=submittedData.xls");
+        
         XslCompiledTransform xtExcel = new XslCompiledTransform();
+        
         xtExcel.Load(Server.MapPath("Excel.xsl"));
         xtExcel.Transform(xml, null, this.Response.OutputStream);
         this.Response.End();
@@ -80,14 +82,16 @@
 
     protected void ToCsv(object sender, EventArgs e)
     {
-        string json = GridData.Value.ToString();
+        string json = this.Hidden1.Value.ToString();
         StoreSubmitDataEventArgs eSubmit = new StoreSubmitDataEventArgs(json, null);
         XmlNode xml = eSubmit.Xml;
 
         this.Response.Clear();
         this.Response.ContentType = "application/octet-stream";
         this.Response.AddHeader("Content-Disposition", "attachment; filename=submittedData.csv");
+        
         XslCompiledTransform xtCsv = new XslCompiledTransform();
+        
         xtCsv.Load(Server.MapPath("Csv.xsl"));
         xtCsv.Transform(xml, null, this.Response.OutputStream);
         this.Response.End();
@@ -99,11 +103,11 @@
 <html>
 <head runat="server">
     <title>Export Data from GridPanel into XML, Excel or CSV using a full PostBack - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
     
-    <script type="text/javascript">
+    <script>
         var saveData = function () {
-            App.GridData.setValue(Ext.encode(App.GridPanel1.getRowsValues({selectedOnly : false})));
+            App.Hidden1.setValue(Ext.encode(App.GridPanel1.getRowsValues({selectedOnly : false})));
         };
     </script>
 </head>
@@ -113,7 +117,7 @@
         
         <h1>Export Data from GridPanel into XML, Excel or CSV using a full PostBack</h1>
         
-        <ext:Hidden ID="GridData" runat="server" />
+        <ext:Hidden ID="Hidden1" runat="server" />
         
         <ext:Store ID="Store1" runat="server">
             <Model>
@@ -155,9 +159,9 @@
                 <ext:GridView runat="server" StripeRows="true" TrackOver="true" />
             </View>
             <TopBar>
-                <ext:Toolbar ID="Toolbar1" runat="server">
+                <ext:Toolbar runat="server">
                     <Items>
-                        <ext:ToolbarFill ID="ToolbarFill1" runat="server" />
+                        <ext:ToolbarFill runat="server" />
                         
                         <ext:Button runat="server" Text="To XML" AutoPostBack="true" OnClick="ToXml" Icon="PageCode">
                             <Listeners>

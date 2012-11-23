@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,6 +36,53 @@ namespace Ext.Net
 	[Description("")]
     public abstract partial class BoxLayoutConfig : LayoutConfig
     {
+        /// <summary>
+        /// If truthy, child Component are animated into position whenever the Container is layed out.
+        /// </summary>
+        [DefaultValue(false)]
+        public virtual bool Animate
+        {
+            get
+            {
+                return this.State.Get<bool>("Animate", false);
+            }
+            set
+            {
+                this.State.Set("Animate", value);
+            }
+        }
+
+        /// <summary>
+        /// Animation duration in milliseconds
+        /// </summary>
+        [DefaultValue(0)]
+        public virtual int AnimateDuration
+        {
+            get
+            {
+                return this.State.Get<int>("AnimateDuration", 0);
+            }
+            set
+            {
+                this.State.Set("AnimateDuration", value);
+            }
+        }
+
+        [ConfigOption("animate", JsonMode.Raw)]
+        [DefaultValue("")]
+        protected string AnimateProxy
+        {
+            get
+            {
+                if (this.AnimateDuration > 0)
+                {
+                    return this.AnimateDuration.ToString();
+                }
+
+                return this.Animate ? "true" : "";
+            }
+        }
+
         /// <summary>
         /// If the individual contained items do not have a margins property specified, the default margins from this property will be applied to each item.
         /// The order of the sides associated with each value matches the way CSS processes margin values:
@@ -133,6 +180,40 @@ namespace Ext.Net
             set
             {
                 this.State.Set("StretchMaxPartner", value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigOption]
+        [DefaultValue(false)]
+        public bool ClearInnerCtOnLayout
+        {
+            get
+            {
+                return this.State.Get<bool>("ClearInnerCtOnLayout", false);
+            }
+            set
+            {
+                this.State.Set("ClearInnerCtOnLayout", value);
+            }
+        }
+
+        /// <summary>
+        /// True (the default) to allow fixed size components to shrink (limited to their minimum size) to avoid overflow. False to preserve fixed sizes even if they cause overflow. Defaults to: true
+        /// </summary>
+        [ConfigOption]
+        [DefaultValue(true)]
+        public bool ShrinkToFit
+        {
+            get
+            {
+                return this.State.Get<bool>("ShrinkToFit", true);
+            }
+            set
+            {
+                this.State.Set("ShrinkToFit", value);
             }
         }
     }

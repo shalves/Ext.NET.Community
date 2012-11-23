@@ -3,7 +3,7 @@
 
 Ext.form.field.Base.override({    
     isRemoteValidation      : false,        
-    remoteValidatingMessage : "Validating...",     
+    remoteValidatingMessage : "Validating...",         
 
     onRender : Ext.Function.createSequence(Ext.form.field.Base.prototype.onRender, function (el) {        
         if (this.inputEl && this.submitValue === false) {
@@ -11,18 +11,13 @@ Ext.form.field.Base.override({
         }
     }),
 
-    afterRender : function () {
+    /*afterRender : function () {
         Ext.form.field.Base.superclass.afterRender.call(this, arguments);
 
-        /*if (this.inputEl) {
+        if (this.inputEl) {
             this.inputEl.selectable();
-        }*/
-
-        if (this.initErrors) {
-            this.markInvalid(this.initErrors);
-            delete this.initErrors;
         }
-    },
+    },*/
 
     onBlur : function () {
         if (this.inEditor && this.surpressBlur) {
@@ -30,6 +25,43 @@ Ext.form.field.Base.override({
         }
 
         this.callParent(arguments);
+    },
+
+    getRawValue: function () {
+        var me = this,
+            v = (me.inputEl ? me.inputEl.getValue() : Ext.value(me.rawValue || me.value, ''));
+        me.rawValue = v;
+        return v;
+    },
+
+    getErrors: function (value) {
+        var me = this,
+            errors = [],
+            validator = me.validator,            
+            vtype = me.vtype,
+            vtypes = Ext.form.field.VTypes,            
+            msg;        
+        
+        value = value || me.getRawValue();
+
+        if (Ext.isFunction(validator)) {
+            msg = validator.call(me, value, me.vtypeParams);
+            if (msg !== true) {
+                errors.push(Ext.isString(msg) ? msg : (me.validatorText || "Value is invalid"));
+            }
+        }
+
+        if (value.length < 1 || (value === me.emptyText && me.valueContainsPlaceholder)) {
+            return errors;
+        }
+
+        if (vtype) {
+            if (!vtypes[vtype](value, me, me.vtypeParams)) {
+                errors.push(me.vtypeText || vtypes[vtype +'Text']);
+            }
+        }
+
+        return errors;
     },
     
     /***Remote validation**********/
@@ -51,6 +83,7 @@ Ext.form.field.Base.override({
             busyIconCls      : "x-loading-indicator",
             busyTip          : "Validating...",
             initValueValidation : "valid",
+            errorMessage     : "Invalid",
             responseFields   : {
                 success      : "valid",
                 message      : "message",
@@ -60,7 +93,19 @@ Ext.form.field.Base.override({
         
         var fn = function () {
             this.rvTask = new Ext.util.DelayedTask(this.remoteValidate, this);
-            (this.rvConfig.eventOwner == "input" ? this.inputEl : this).on(this.rvConfig.validationEvent, this.performRemoteValidation, this);
+
+            if (this.rvConfig.validationEvent && this.rvConfig.validationEvent.indexOf(",") > 0) {
+                this.rvConfig.validationEvent = this.rvConfig.validationEvent.split(","); 
+            }
+
+            if (Ext.isArray(this.rvConfig.validationEvent)) {
+                Ext.each(this.rvConfig.validationEvent, function (event) {
+                    (this.rvConfig.eventOwner == "input" ? this.inputEl : this).on(event, this.performRemoteValidation, this);
+                }, this);
+            }
+            else {
+                (this.rvConfig.eventOwner == "input" ? this.inputEl : this).on(this.rvConfig.validationEvent, this.performRemoteValidation, this);
+            }
         };
         
         if (this.rendered) {
@@ -98,8 +143,15 @@ Ext.form.field.Base.override({
         if (this.rvTask) {
             this.rvTask.cancel();
         }
-        
-        (this.rvConfig.eventOwner == "input" ? this.el : this).un(this.rvConfig.validationEvent, this.performRemoteValidation, this);
+
+        if (Ext.isArray(this.rvConfig.validationEvent)) {
+            Ext.each(this.rvConfig.validationEvent, function (event) {
+                (this.rvConfig.eventOwner == "input" ? this.inputEl : this).un(event, this.performRemoteValidation, this);
+            }, this);
+        }
+        else {
+            (this.rvConfig.eventOwner == "input" ? this.inputEl : this).un(this.rvConfig.validationEvent, this.performRemoteValidation, this);
+        }
         
         delete this.originalIsValid;
         delete this.originalValidate;
@@ -163,8 +215,8 @@ Ext.form.field.Base.override({
         }
 
         if (this.disabled || (clientValid && (!this.rvConfig.remoteValidated || this.rvConfig.remoteValid))) {
-            if (this.rvConfig.lastValue === this.getValue() && this.rvConfig.remoteValid === false) {
-                this.markInvalid(this.rv_response.message || "Invalid");
+            if (!this.rvConfig.ignoreLastValue && this.rvConfig.lastValue === this.getValue() && this.rvConfig.remoteValid === false) {
+                this.markInvalid(this.rv_response.message || this.rvConfig.errorMessage);
                 this.wasValid = false;
                 this.fireEvent('validitychange', this, false); 
             } else {
@@ -179,7 +231,7 @@ Ext.form.field.Base.override({
         if (this.rvConfig.remoteValidated && !this.rvConfig.remoteValid) {
             orgPrevent = this.preventMark;
             this.preventMark = this.rvConfig.validating;
-            this.markInvalid(this.rv_response.message || "Invalid");
+            this.markInvalid(this.rv_response.message || this.rvConfig.errorMessage);
             this.preventMark = orgPrevent;
             this.wasValid = this.rvConfig.validating;
             this.fireEvent('validitychange', this, this.rvConfig.validating); 
@@ -193,7 +245,7 @@ Ext.form.field.Base.override({
         var orgPrevent = this.preventMark;
         this.preventMark = true;
 
-        if (this.rvConfig.lastValue === this.getValue() || !this.originalIsValid(true)) {
+        if ((this.rvConfig.lastValue === this.getValue() && !this.rvConfig.ignoreLastValue) || !this.originalIsValid(true)) {
             this.preventMark = orgPrevent;
             this.rvTask.cancel();
             return;
@@ -230,14 +282,15 @@ Ext.form.field.Base.override({
             dc.action = "remotevalidation";
             
             var o = {
-                id : this.id,
-                name : this.name,
-                value : this.getValue()
-            };
+                    id : this.id,
+                    name : this.name,
+                    value : this.getValue()
+                },
+                directFn = dc.directFn;
             
-            dc.serviceParams = Ext.encode(o);
+            dc.serviceParams = Ext.encode(o);            
             
-            if (dc.url) {
+            if (dc.url && !directFn) {
 		        dc.cleanRequest = true;
 
 		        if (dc.json && Ext.isEmpty(dc.method, false)) {
@@ -267,12 +320,47 @@ Ext.form.field.Base.override({
             if (this.validationId) {
                 this.validationId.abortedByEvent = true;
 
-                try {
+                try{
                     Ext.net.DirectEvent.abort(this.validationId);
-                } catch (e) { }
+                } catch(e) { }
             }
 
-            this.validationId = Ext.net.DirectEvent.request(dc);
+            if (directFn) {                        
+                if (Ext.isString(directFn)) {
+                    directFn = Ext.decode(directFn);
+                }            
+
+                var extraParams = dc.extraParams;
+
+                delete dc.extraParams;
+                delete dc.serviceParams;
+                delete dc.control;
+                delete dc.eventType;
+                delete dc.action;
+
+                dc.successSeq = dc.userSuccess;
+                dc.failureSeq = dc.userFailure;
+
+                delete dc.userSuccess;
+                delete dc.userFailure;
+                dc.showFailureWarning = false;
+
+                if (directFn.length === 2) {
+                    this.validationId = directFn(o.value, dc);
+                }
+                else if (directFn.length === 3) {
+                    this.validationId = directFn(o.value, o.name, dc);
+                }
+                else if (directFn.length === 4) {
+                    this.validationId = directFn(o.value, o.name, o.id);
+                }
+                else {
+                    this.validationId = directFn(o.value, o.name, o.id, extraParams || null, dc);
+                }
+            }
+            else {
+                this.validationId = Ext.net.DirectEvent.request(dc);
+            }
         }        
     },
     
@@ -284,17 +372,38 @@ Ext.form.field.Base.override({
         this.validationId = null;
         
         if (this.rvConfig.showBusy) {
-	        this.clearIndicator();	        
+	        this.preserveIndicatorIcon = false;
+            this.clearIndicator();	        
 	    }
         
         try {
-		    responseObj = result.serviceResponse || result.d || result;
+		    if (this.remoteValidationOptions && this.remoteValidationOptions.directFn) {
+                responseObj = Ext.isEmpty(result.result, true) ? (result.d || result) : result.result;
+                
+                if (Ext.isString(responseObj)) {
+                    result = { 
+                        success : false, 
+                        message : responseObj
+                    };
+                }
+                else if (Ext.isBoolean(responseObj)) {
+                    result = { 
+                        success : responseObj
+                    };
+                }
+                else {
+                    result = responseObj;
+                }
+            }
+            else {            
+                responseObj = result.serviceResponse || result.d || result;
 		    
-            result = { 
-                success : responseObj[this.rvConfig.responseFields.success], 
-                message : responseObj[this.rvConfig.responseFields.message],
-                value   : responseObj[this.rvConfig.responseFields.returnValue]
-            };            
+                result = { 
+                    success : responseObj[this.rvConfig.responseFields.success], 
+                    message : responseObj[this.rvConfig.responseFields.message],
+                    value   : responseObj[this.rvConfig.responseFields.returnValue]
+                };   
+            }         
 	    } catch (ex) {
 		    result = {
 		        success : false,

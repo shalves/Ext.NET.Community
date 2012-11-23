@@ -57,9 +57,9 @@
 <head runat="server">
     <title>Custom GridPanel UI - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var linkClick = function (index) {
             alert("Company: " + App.Store1.getAt(index).get("company"));
         };
@@ -69,7 +69,7 @@
         };
     </script>
     
-    <style type="text/css">          
+    <style>          
         .x-grid-custom .x-grid-row TD {            
             font : 12px/16px "segoe ui",arial,sans-serif;
         }

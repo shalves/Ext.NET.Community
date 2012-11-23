@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -65,6 +65,8 @@ namespace Ext.Net
                 list.Add("titleChange", new ConfigOption("titleChange", new SerializationOptions("titlechange", typeof(DirectEventJsonConverter)), null, this.TitleChange ));
                 list.Add("iconClsChange", new ConfigOption("iconClsChange", new SerializationOptions("iconclschange", typeof(DirectEventJsonConverter)), null, this.IconClsChange ));
                 list.Add("iconChange", new ConfigOption("iconChange", new SerializationOptions("iconchange", typeof(DirectEventJsonConverter)), null, this.IconChange ));
+                list.Add("float", new ConfigOption("float", new SerializationOptions("float", typeof(DirectEventJsonConverter)), null, this.Float ));
+                list.Add("unfloat", new ConfigOption("unfloat", new SerializationOptions("unfloat", typeof(DirectEventJsonConverter)), null, this.Unfloat ));
 
                 return list;
             }

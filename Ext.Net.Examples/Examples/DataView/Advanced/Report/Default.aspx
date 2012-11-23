@@ -45,7 +45,7 @@
 <head runat="server">
     <title>DataView - Ext.NET Examples</title>
     
-    <style type="text/css">
+    <style>
         body  {
             font : normal 11px tahoma, arial, helvetica, sans-serif;
         }
@@ -53,7 +53,7 @@
         #customers-ct table { width : 100% !important; }
         
         #customers-ct th {
-            background  : #F0F4F5 url(/extjs/resources/themes/images/default/toolbar/toolbar-bg-gif/ext.axd) repeat-x scroll left top;            
+            background  : #F0F4F5 url(/extjs/resources/themes/images/default/toolbar/toolbar-default-bg-gif/ext.axd) repeat-x scroll left top;            
             font-weight : bold;
             padding     : 8px 5px;
         }
@@ -103,7 +103,7 @@
     </style>
     
     <ext:XScript runat="server">
-        <script type="text/javascript">
+        <script>
             var itemClick = function (view, record, item, index, e) {
                 var group = e.getTarget("h2.letter-selector");
             
@@ -141,7 +141,7 @@
             <ext:Label ID="CustomerLabel" runat="server" Cls="customer-label" />
             <ext:MenuItem runat="server" Text="Send Mail" Icon="Mail">   
                 <Listeners>
-                    <Click Handler="if (Ext.isEmpty(this.parentMenu.node.email, false)) { Ext.Msg.alert('Error', 'Customer has no email');} else { parent.location = 'mailto:'+this.parentMenu.node.email }" />
+                    <Click Handler="if (Ext.isEmpty(this.parentMenu.node.email, false)) { Ext.Msg.alert('Error', 'Customer has no email');} else { parent.location = 'mailto:'+this.parentMenu.node.email; }" />
                 </Listeners>                
             </ext:MenuItem>
             <ext:MenuItem runat="server" Text="Show Details" Icon="ApplicationFormEdit">
@@ -163,7 +163,7 @@
     
     <ext:DataView 
         runat="server" 
-        SingleSelect="true"
+        DisableSelection="true"
         ItemSelector="td.letter-row"          
         EmptyText="No customers to display">
         <Store>

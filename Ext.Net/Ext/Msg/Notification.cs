@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -302,6 +302,169 @@ namespace Ext.Net
             return new ClientConfig().Serialize(this);
         }
 
+        private ItemsCollection<AbstractComponent> items;
+
+        public virtual ItemsCollection<AbstractComponent> Items
+        {
+            get
+            {
+                if (this.items == null)
+                {
+                    this.items = new ItemsCollection<AbstractComponent>();
+                }
+
+                return this.items;
+            }
+        }
+
+        private ItemsCollection<AbstractComponent> dockedItems;
+
+        public virtual ItemsCollection<AbstractComponent> DockedItems
+        {
+            get
+            {
+                if (this.dockedItems == null)
+                {
+                    this.dockedItems = new ItemsCollection<AbstractComponent>();
+                }
+
+                return this.dockedItems;
+            }
+        }
+
+        /// <summary>
+        /// Items Collection
+        /// </summary>
+        [ConfigOption("items", JsonMode.Raw)]
+        [DefaultValue(null)]
+        protected virtual string ItemsProxy
+        {
+            get
+            {
+                if (this.Items.Count == 0)
+                {
+                    return null;
+                }
+
+                ItemsCollection<AbstractComponent> realItems = new ItemsCollection<AbstractComponent>();
+
+                foreach (AbstractComponent cmp in this.items)
+                {
+                    if (cmp is UserControlLoader)
+                    {
+                        realItems.AddRange(((UserControlLoader)cmp).Components);
+                    }
+                    else
+                    {
+                        realItems.Add(cmp);
+                    }
+                }
+
+                return ComponentLoader.ToConfig(realItems);
+            }
+        }
+
+        /// <summary>
+        /// Items Collection
+        /// </summary>
+        [ConfigOption("dockedItems", JsonMode.Raw)]
+        [DefaultValue(null)]
+        protected virtual string DockedItemsProxy
+        {
+            get
+            {
+                if (this.DockedItems.Count == 0)
+                {
+                    return null;
+                }
+
+                ItemsCollection<AbstractComponent> realItems = new ItemsCollection<AbstractComponent>();
+
+                foreach (AbstractComponent cmp in this.DockedItems)
+                {
+                    if (cmp is UserControlLoader)
+                    {
+                        realItems.AddRange(((UserControlLoader)cmp).Components);
+                    }
+                    else
+                    {
+                        realItems.Add(cmp);
+                    }
+                }
+
+                return ComponentLoader.ToConfig(realItems);
+            }
+        }
+
+        private string layout;
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [DefaultValue(null)]
+        public virtual string Layout
+        {
+            get
+            {
+                return this.layout;
+            }
+            set
+            {
+                this.layout = value;
+            }
+        }
+
+        private LayoutConfigCollection layoutConfig;
+
+        /// <summary>
+        /// This is a config object containing properties specific to the chosen layout
+        /// </summary>
+        [Meta]
+        [ConfigOption("layout>Primary")]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        public virtual LayoutConfigCollection LayoutConfig
+        {
+            get
+            {
+                return this.layoutConfig ?? (this.layoutConfig = new LayoutConfigCollection());
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [ConfigOption("layout")]
+        [DefaultValue("")]
+        [Description("")]
+        protected internal virtual string LayoutProxy
+        {
+            get
+            {
+                if (this.LayoutConfig.Count > 0)
+                {
+                    return "";
+                }
+
+                if (this.Layout.IsNotEmpty())
+                {
+                    string layout = this.Layout.ToLowerInvariant();
+                    string temp = layout.EndsWith("layout") ? layout.LeftOfRightmostOf("layout") : layout;
+
+                    switch (temp)
+                    {
+                        case "auto":
+                            return "";
+                        case "container":
+                            return "auto";
+                        default:
+                            return temp;
+                    }
+                }
+
+                return "";
+            }
+        }
+
         private string id = "";
 
         /// <summary>
@@ -566,7 +729,7 @@ namespace Ext.Net
             }
         }
 
-        private bool preventHeader = false;
+        private bool header = true;
 
         /// <summary>
         /// Prevent a Header from being created and shown.
@@ -576,15 +739,15 @@ namespace Ext.Net
         [DefaultValue(false)]
         [NotifyParentProperty(true)]
         [Description("Prevent a Header from being created and shown.")]
-        public virtual bool PreventHeader
+        public virtual bool Header
         {
             get
             {
-                return this.preventHeader;
+                return this.header;
             }
             set
             {
-                this.preventHeader = value;
+                this.header = value;
             }
         }
 

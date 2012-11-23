@@ -1,6 +1,4 @@
-﻿
-
-Ext.panel.Table.override({     
+﻿Ext.panel.Table.override({     
      processEvent : function (type, view, cell, recordIndex, cellIndex, e) {
         var me = this,
             header;
@@ -20,12 +18,27 @@ Ext.panel.Table.override({
 
             return header.processEvent.apply(header, arguments);
         }
-    },
+    },    
 
     beforeDestroy : function () {
         if (this.editors) {
             Ext.destroy(this.editors);
         }
+
         this.callParent(arguments);
+    },
+
+    hasLockedColumns : function (columns) {
+        var i,
+            len = columns ? columns.length : 0,
+            column;
+
+        for (i = 0; i < len; i++) {
+            column = columns[i];
+
+            if (!column.processed && column.locked) {
+                return true;
+            }
+        }
     }
 });

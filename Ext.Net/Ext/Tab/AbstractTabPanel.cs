@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -546,6 +546,83 @@ namespace Ext.Net
             {
                 this.State.Set("ValidationGroup", value);
             }
+        }
+
+        public void HideTab(string id)
+        {
+            if (id.Contains("."))
+            {
+                this.Call("closeTab", JRawValue.From(id), "hide");
+            }
+            else
+            {
+                this.Call("closeTab", id, "hide");
+            }
+        }
+
+        public void HideTab(AbstractContainer tab)
+        {
+            this.Call("closeTab", JRawValue.From(tab.ClientID), "hide");
+        }
+
+        public void HideTab(int index)
+        {
+            this.Call("closeTab", index, "hide");
+        }
+
+        public void CloseTab(string id, CloseAction action)
+        {
+            this.Call("closeTab", JRawValue.From(id), action.ToString().ToLowerInvariant());
+        }
+
+        public void CloseTab(AbstractContainer tab, CloseAction action)
+        {
+            this.Call("closeTab", JRawValue.From(tab.ClientID), action.ToString().ToLowerInvariant());
+        }
+
+        public void CloseTab(int index, CloseAction action)
+        {
+            this.Call("closeTab", index, action.ToString().ToLowerInvariant());
+        }
+
+        public void ShowTab(string id)
+        {
+            this.Call("addTab", id.Contains(".") ? JRawValue.From(id) : JRawValue.From("Ext.getCmp('" + id + "')"), false);            
+        }
+
+        public void ShowTab(string id, int index)
+        {
+            this.Call("addTab", id.Contains(".") ? JRawValue.From(id) : JRawValue.From("Ext.getCmp('" + id + "')"), index, false);
+        }
+
+        public void ShowTab(string id, int index, bool activate)
+        {
+            this.Call("addTab", id.Contains(".") ? JRawValue.From(id) : JRawValue.From("Ext.getCmp('" + id + "')"), index, activate);
+        }
+
+        public void ShowTab(string id, bool activate)
+        {
+            this.Call("addTab", id.Contains(".") ? JRawValue.From(id) : JRawValue.From("Ext.getCmp('" + id + "')"), activate);
+        }
+
+        public void ShowTab(AbstractContainer tab)
+        {
+            this.Call("addTab", JRawValue.From(tab.ClientID), false);
+        }
+
+        public void ShowTab(AbstractContainer tab, int index)
+        {
+            this.Call("addTab", JRawValue.From(tab.ClientID), index, false);
+        }
+
+        public void ShowTab(AbstractContainer tab, int index, bool activate)
+        {
+            this.Call("addTab", JRawValue.From(tab.ClientID), index, activate);
+        }
+
+        public void ShowTab(AbstractContainer tab, bool activate)
+        {
+            this.Call("addTab", JRawValue.From(tab.ClientID), activate);
         }
     }
 }

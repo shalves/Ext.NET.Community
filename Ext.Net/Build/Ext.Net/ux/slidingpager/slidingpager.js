@@ -21,7 +21,6 @@ If you are unsure which license is appropriate for your use, please contact the 
 * @param {Object} config Configuration options
 */
 Ext.define('Ext.ux.SlidingPager', {
-    extend: 'Object',
     requires: [
         'Ext.slider.Single',
         'Ext.slider.Tip'

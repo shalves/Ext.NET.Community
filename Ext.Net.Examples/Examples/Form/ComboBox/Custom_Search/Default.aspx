@@ -79,7 +79,7 @@
 <html>
 <head runat="server">
     <title>ComboBox with Template - Ext.NET Examples</title>
-    <style type="text/css">
+    <style>
         .search-item {
             font          : normal 11px tahoma, arial, helvetica, sans-serif;
             padding       : 3px 10px 3px 10px;
@@ -110,7 +110,7 @@
         
         .ext-ie .x-form-text { position : static !important; }
     </style>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">

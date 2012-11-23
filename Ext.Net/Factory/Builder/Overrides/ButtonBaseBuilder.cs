@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Linq;
 
 namespace Ext.Net
 {
@@ -56,6 +57,45 @@ namespace Ext.Net
                 action(new MenuCollectionBuilder<TButtonBase, TBuilder>(this.ToComponent(), this as TBuilder));
                 return this as TBuilder;
             }
+            
+            public virtual TBuilder MenuItem(AbstractComponent item)
+            {
+                var cmp = this.ToComponent();
+                if (cmp.Menu.Count == 0)
+                {
+                    cmp.Menu.Add(new Menu());
+                }
+                
+                cmp.Menu[0].Items.Add(item);
+
+                return this as TBuilder;
+            }
+
+            public virtual TBuilder MenuItem(params AbstractComponent[] items)
+            {
+                foreach (var item in items)
+                {
+                    this.MenuItem(item);
+                }
+
+                return this as TBuilder;
+            }
+
+            public virtual TBuilder MenuItem(IEnumerable<AbstractComponent> items)
+            {
+                foreach (var item in items)
+                {
+                    this.MenuItem(item);
+                }
+
+                return this as TBuilder;
+            }
+
+            public virtual TBuilder Menu(MenuBase menu)
+            {
+                this.ToComponent().Menu.Add(menu);
+                return this as TBuilder;
+            }			 
         }        
     }
 }

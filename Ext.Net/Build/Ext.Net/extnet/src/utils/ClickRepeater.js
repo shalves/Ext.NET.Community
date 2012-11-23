@@ -22,12 +22,15 @@ Ext.define("Ext.net.ClickRepeater", {
     enable : function () {
         if (this.disabled) {
             this.el.on("mousedown", this.handleMouseDown, this);
+            
             if (Ext.isIE) {
                 this.el.on('dblclick', this.handleDblClick, this);
             }
+
             if ((this.preventDefault || this.stopDefault) && !this.isButtonIgnored(0)) {
                 this.el.on("click", this.eventOptions, this);
             }
+            
             if ((this.preventDefault || this.stopDefault) && !this.isButtonIgnored(2)) {
                 this.el.on("contextmenu", this.eventOptions, this);
             }
@@ -50,9 +53,11 @@ Ext.define("Ext.net.ClickRepeater", {
     handleMouseDown : function (e) {
         clearTimeout(this.timer);
         this.el.blur();
+
         if (this.pressedCls) {
             this.el.addCls(this.pressedCls);
         }
+        
         this.mousedownTime = new Date();
 
         Ext.getDoc().on("mouseup", this.handleMouseUp, this);
@@ -66,6 +71,7 @@ Ext.define("Ext.net.ClickRepeater", {
         if (this.accelerate) {
             this.delay = 400;
 	    }
+
         e = new Ext.EventObjectImpl(e);
         this.timer = Ext.defer(this.click, this.delay || this.interval, this, [e]);
     },
@@ -74,6 +80,7 @@ Ext.define("Ext.net.ClickRepeater", {
         if (!this.isButtonIgnored(e)) {
             this.fireClick(e);
         }
+
         this.timer =  Ext.defer(this.click, this.accelerate ?
             this.easeOutExpo(Ext.Date.getElapsed(this.mousedownTime),
                 400,
@@ -103,6 +110,7 @@ Ext.define("Ext.net.ClickRepeater", {
         this.el.un("mouseover", this.handleMouseReturn, this);
         this.el.un("mouseout", this.handleMouseOut, this);
         Ext.getDoc().un("mouseup", this.handleMouseUp, this);
+
         if (this.pressedCls) {
             this.el.removeCls(this.pressedCls);
         }

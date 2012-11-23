@@ -6,11 +6,11 @@
 
 <html>
 <head runat="server">
-    <title>TreePanel - Ext.NET Examples</title>
+    <title>TreeGrid - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var formatHours = function (v) {
             if (v < 1) {
                 return Math.round(v * 60) + " mins";
@@ -20,6 +20,10 @@
             } else {
                 return v + " hour" + (v === 1 ? "" : "s");
             }
+        };
+
+        var handler = function(grid, rowIndex, colIndex, actionItem, event, record, row) {
+            Ext.Msg.alert('Editing' + (record.get('done') ? ' completed task' : '') , record.get('task'));
         };
     </script>
 </head>
@@ -65,6 +69,7 @@
                 <ext:ModelField Name="task" />
                 <ext:ModelField Name="user" />
                 <ext:ModelField Name="duration" />
+                <ext:ModelField Name="done" Type="Boolean" />
             </Fields>
             <ColumnModel>
                 <Columns>
@@ -96,7 +101,25 @@
                         Flex="1" 
                         Sortable="true"
                         DataIndex="user" />
+                    <ext:CheckColumn runat="server" 
+                       Text="Done"
+                       DataIndex="done"
+                       Width="40"
+                       Editable="true"
+                       StopSelection="false" />
+                    <ext:ActionColumn runat="server" 
+                        Text="Edit"
+                        Width="40"
+                        MenuDisabled="true"
+                        Align="Center">
+                        <Items>
+                            <ext:ActionItem Tooltip="Edit task" Icon="PageWhiteEdit" Handler="handler">
+                                <IsDisabled Handler="return !record.data.leaf;" />
+                            </ext:ActionItem>
+                        </Items>    
+                    </ext:ActionColumn>
                 </Columns>    
+
             </ColumnModel>
             
             <Root>
@@ -128,6 +151,7 @@
                                                 <ext:ConfigItem Name="task" Value="Groceries" Mode="Value" />
                                                 <ext:ConfigItem Name="duration" Value="0.4" />
                                                 <ext:ConfigItem Name="user" Value="Tommy Maintz" Mode="Value" />
+                                                <ext:ConfigItem Name="done" Value="true" Mode="Raw" />
                                             </CustomAttributes>
                                         </ext:Node>
                                         <ext:Node Leaf="true">
@@ -188,6 +212,7 @@
                                                 <ext:ConfigItem Name="task" Value="Decorate living room" Mode="Value" />
                                                 <ext:ConfigItem Name="duration" Value="2.75" />
                                                 <ext:ConfigItem Name="user" Value="Tommy Maintz" Mode="Value" />
+                                                <ext:ConfigItem Name="done" Value="true" Mode="Raw" />
                                             </CustomAttributes>
                                         </ext:Node>
                                         <ext:Node Leaf="true">
@@ -195,6 +220,7 @@
                                                 <ext:ConfigItem Name="task" Value="Fix lights" Mode="Value" />
                                                 <ext:ConfigItem Name="duration" Value="0.75" />
                                                 <ext:ConfigItem Name="user" Value="Tommy Maintz" Mode="Value" />
+                                                <ext:ConfigItem Name="done" Value="true" Mode="Raw" />
                                             </CustomAttributes>
                                         </ext:Node>
                                         <ext:Node Leaf="true">

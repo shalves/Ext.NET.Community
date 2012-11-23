@@ -94,6 +94,17 @@ Ext.define('Ext.calendar.form.field.DateRange', {
         me.endDate = me.down('#' + me.id + '-end-date');
         me.allDay = me.down('#' + me.id + '-allday');
         me.toLabel = me.down('#' + me.id + '-to-label');
+
+        me.startDate.validateOnChange = me.endDate.validateOnChange = false;
+
+        me.startDate.isValid = me.endDate.isValid = function() {
+                                    var me = this,
+                                        valid = Ext.isDate(me.getValue());
+                                    if (!valid) {
+                                        me.focus();
+                                    }
+                                    return valid;
+                                 };
     },
     
     getFieldConfigs: function() {
@@ -279,10 +290,25 @@ Ext.define('Ext.calendar.form.field.DateRange', {
      * @return {Array} The array of return values
      */
     getValue: function(){
+        var eDate = Ext.calendar.util.Date,
+            start = this.getDT('start'),
+            end = this.getDT('end'),
+            allDay = this.allDay.getValue();
+        
+        if (Ext.isDate(start) && Ext.isDate(end) && start.getTime() !== end.getTime()) {
+            if (!allDay && eDate.isMidnight(start) && eDate.isMidnight(end)) {
+                // 12:00am -> 12:00am over n days, all day event
+                allDay = true;
+                end = eDate.add(end, {
+                    days: -1
+                });
+            }
+        }
+        
         return [
-            this.getDT('start'), 
-            this.getDT('end'),
-            this.allDay.getValue()
+            start, 
+            end,
+            allDay
         ];
     },
     

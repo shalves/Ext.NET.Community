@@ -18,13 +18,15 @@ Ext.net.DirectMethod = {
         
         if (options.params && options.json !== true) {
             for (var key in options.params) {
-                obj = options.params[key];
+                if (options.params.hasOwnProperty(key)) {
+                    obj = options.params[key];
 
-                if (obj === undefined) {
-                    delete options.params[key];
-                }
-                else if (obj && typeof obj === "object") {
-                    options.params[key] = Ext.encode(obj);
+                    if (obj === undefined) {
+                        delete options.params[key];
+                    }
+                    else if (obj && typeof obj === "object") {
+                        options.params[key] = Ext.encode(obj);
+                    }
                 }
             }
         }
@@ -76,6 +78,6 @@ Ext.net.DirectMethod = {
             }
         };
 
-        Ext.net.DirectEvent.request(Ext.apply(options, obj));
+        return Ext.net.DirectEvent.request(Ext.apply(options, obj));
     }
 };

@@ -7,10 +7,10 @@
 <html>
 <head runat="server">
     <title>Drag and Drop with DOM Elements - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <link href="styles.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <link href="styles.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         Ext.ns("App").ddOverrides = {
             // Called the instance the element is dragged.
             b4StartDrag : function() {

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,32 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : WebStorageProxy.Builder<LocalStorageProxy, LocalStorageProxy.Builder>
+        new public abstract partial class Builder<TLocalStorageProxy, TBuilder> : WebStorageProxy.Builder<TLocalStorageProxy, TBuilder>
+            where TLocalStorageProxy : LocalStorageProxy
+            where TBuilder : Builder<TLocalStorageProxy, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TLocalStorageProxy component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : LocalStorageProxy.Builder<LocalStorageProxy, LocalStorageProxy.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,15 +97,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -89,6 +105,14 @@ namespace Ext.Net
         public LocalStorageProxy.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.LocalStorageProxy(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -103,7 +127,11 @@ namespace Ext.Net
         /// </summary>
         public LocalStorageProxy.Builder LocalStorageProxy()
         {
-            return this.LocalStorageProxy(new LocalStorageProxy());
+#if MVC
+			return this.LocalStorageProxy(new LocalStorageProxy { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.LocalStorageProxy(new LocalStorageProxy());
+#endif			
         }
 
         /// <summary>
@@ -111,7 +139,10 @@ namespace Ext.Net
         /// </summary>
         public LocalStorageProxy.Builder LocalStorageProxy(LocalStorageProxy component)
         {
-            return new LocalStorageProxy.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new LocalStorageProxy.Builder(component);
         }
 
         /// <summary>
@@ -119,7 +150,11 @@ namespace Ext.Net
         /// </summary>
         public LocalStorageProxy.Builder LocalStorageProxy(LocalStorageProxy.Config config)
         {
-            return new LocalStorageProxy.Builder(new LocalStorageProxy(config));
+#if MVC
+			return new LocalStorageProxy.Builder(new LocalStorageProxy(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new LocalStorageProxy.Builder(new LocalStorageProxy(config));
+#endif			
         }
     }
 }

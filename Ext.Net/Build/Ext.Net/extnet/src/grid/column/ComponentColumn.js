@@ -28,7 +28,7 @@
         var me = this;                        
         me.callParent(arguments);        
         me.cache = [];                                          
-        this.addEvents("pin", "unpin", "bind", "unbind");
+        this.addEvents("pin", "unpin", "bind", "unbind", "validateedit", "edit");
         me.userRenderer = me.renderer;
         me.renderer = Ext.Function.bind(me.cmpRenderer, me);       
     },
@@ -308,7 +308,7 @@
             if (this.lastComponentDiv.dom) {
                 try {
                     this.lastComponentDiv.down('.row-cmp-placeholder').removeCls("x-hide-display");
-                } catch (e) {                        
+                } catch(e) {                        
                 }
             }
 
@@ -340,7 +340,7 @@
         }
 
         if (!this.overComponent) {
-            this.overComponent = Ext.ComponentManager.create(this.component);               
+            this.overComponent = Ext.ComponentManager.create(Ext.isFunction(this.component) ? this.component.call(this) : this.component);
             this.initCmp(this.overComponent);   
                     
             var evts;
@@ -448,7 +448,7 @@
         }
 
         for (var i = start; i < end; i++) {
-            var cmp = Ext.ComponentManager.create(Ext.clone(this.component)),
+            var cmp = Ext.ComponentManager.create(Ext.isFunction(this.component) ? this.component.call(this) : Ext.clone(this.component)),
                 div;
 
             this.initCmp(cmp);
@@ -519,7 +519,7 @@
     },
 
     initCmp : function (cmp) {
-        cmp.on("resize", this.onComponentResize, this);
+        //cmp.on("resize", this.onComponentResize, this);
         this.on("resize", this.onColumnResize, {column:this, cmp:cmp});
         this.on("show", this.onColumnResize, {column:this, cmp:cmp});
 
@@ -560,9 +560,38 @@
     },
 
     onSaveValue : function (cmp, deferRowRefresh) {
-        var me = this;
+        var me = this,
+            value = cmp.getValue(),
+            ev,
+            headerCt,
+            headers,
+            row,
+            colIndex;
 
-        if (me.settingValue || (cmp.record.get(me.dataIndex) == cmp.getValue())) {
+        if (me.settingValue || (cmp.record.get(me.dataIndex) == value) || !cmp.isValid()) {
+            return;
+        }
+
+        headerCt = this.view.getHeaderCt();
+        headers  = headerCt.getGridColumns();
+        colIndex = Ext.Array.indexOf(headers, this);
+        row = this.view.getNode(cmp.column.rowIndex);
+
+        ev = {
+            grid   : me.panel,
+            cmp    : cmp,
+            record : cmp.record,
+            field  : me.dataIndex,
+            value  : value,
+            originalValue  : cmp.record.get(me.dataIndex),
+            row    : row,
+            column : me,
+            rowIdx : cmp.column.rowIndex,
+            colIdx : colIndex,
+            cancel : false
+        };
+
+        if (this.fireEvent("validateedit", this, ev) === false || ev.cancel === true) {
             return;
         }
 
@@ -575,6 +604,8 @@
         if (me.silentSave !== false) {
             cmp.record.endEdit(true);
         }
+
+        this.fireEvent("edit", this, ev);
 
         if (deferRowRefresh) {
             me.grid.refreshComponents = me.grid.refreshComponents || {};
@@ -700,11 +731,6 @@
         }
     },
 
-    onComponentResize : function (cmp) {
-        this.grid.invalidateScroller();
-        this.grid.determineScrollbars();
-    },
-
     removeComponent : function (view, record, rowIndex) {
         for (var i = 0, l = this.cache.length; i < l; i++) {
             if (this.cache[i].id == record.id) {
@@ -714,7 +740,7 @@
                     this.onUnbind(cmp);
                             
                     cmp.destroy();
-                    this.cache.remove(this.cache[i]);
+                    Ext.Array.remove(this.cache, this.cache[i]);                    
                 } catch (ex) { }
 
                 break;

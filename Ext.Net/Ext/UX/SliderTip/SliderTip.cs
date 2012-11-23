@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -34,12 +34,20 @@ namespace Ext.Net
     /// <summary>
     /// Simple plugin for using an Ext.Tip with a slider to show the slider value.
     /// </summary>
+    [Meta]
     [ToolboxItem(false)]
     [ToolboxBitmap(typeof(SliderTip), "Build.ToolboxIcons.Plugin.bmp")]
     [ToolboxData("<{0}:SliderTip runat=\"server\" />")]
     [Description("Simple plugin for using an Ext.Tip with a slider to show the slider value")]
     public partial class SliderTip : Plugin
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        public SliderTip()
+        {
+        }
+
         /// <summary>
 		/// 
 		/// </summary>
@@ -60,7 +68,6 @@ namespace Ext.Net
         /// </summary>
         [ConfigOption(JsonMode.Raw)]
         [Category("3. SliderTip")]
-        [DefaultValue(null)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [Description("Override this function to apply custom tip text")]

@@ -5,7 +5,7 @@
 <script runat="server">
     protected void ReloadData(object sender, DirectEventArgs e)
     {
-        var store = this.Chart1.GetStore();
+        Store store = this.Chart1.GetStore();
         
         store.DataSource = Ext.Net.Examples.ChartData.GenerateData(5);
         store.DataBind();
@@ -17,9 +17,9 @@
 <html>
 <head runat="server">
     <title>Pie Renderer Chart - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         function segmentRenderer (sprite, record, attr, index, store) {
             var value = (record.get('Data1') >> 0) % 9,
                 color = [ "#94ae0a", "#115fa6","#a61120", "#ff8809", "#ffd13e", "#a61187", "#24ad9a", "#7c7474", "#a66111"][value];

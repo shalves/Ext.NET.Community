@@ -28,42 +28,50 @@ Ext.ComponentLoader.Renderer.Component = function (loader, response, active) {
     //</debug>
 
     try {
-        var text = response.responseText.replace(/{"d":null}$/, "");        
-        items = Ext.decode(text);
+        items = (Ext.isObject(response.responseText) || Ext.isArray(response.responseText)) ? response.responseText : Ext.decode(response.responseText);
     } catch (e) {
         success = false;
     }
 
-    if (success && Ext.isDefined(items.d)) {
-        try {
-            items = Ext.decode(items.d);
-        } catch (e) {
-            success = false;
-        }
-    }
-
-    if (success) {                
+    if (success) {
+        target.suspendLayouts();
         if (active.removeAll) {
             target.removeAll();
         }
-
         target.add(items);
+        target.resumeLayouts(true);
+    }
+    return success;
+}
+
+Ext.ComponentLoader.Renderer.Script = function (loader, response, active) {
+    var success = true;
+
+    try {
+        if (window.execScript) {
+            window.execScript(response.responseText);
+        } else {
+            window.eval.call(window, response.responseText);
+        }
+    } catch (e) {
+        success = false;
     }
 
     return success;
 };
 
-Ext.define('Ext.net.ComponentLoader', { 
-    extend   : 'Ext.ComponentLoader',
-    autoLoad : true,
-    
-    constructor : function (config) {
+Ext.define('Ext.net.ComponentLoader', {
+    extend: 'Ext.ComponentLoader',
+    autoLoad: true,
+    removeD : false,
+
+    constructor: function (config) {
         config = config || {};
         var autoLoad = config.autoLoad;
         config.autoLoad = false;
-        
-        Ext.net.ComponentLoader.superclass.constructor.call(this, config); 
-        
+
+        Ext.net.ComponentLoader.superclass.constructor.call(this, config);
+
         if (autoLoad !== false) {
             this.autoLoad = true;
         }
@@ -71,7 +79,7 @@ Ext.define('Ext.net.ComponentLoader', {
         this.initLoader();
     },
 
-    addMask : function (mask) {
+    addMask: function (mask) {
         if (this.target.floating) {
             if (mask.showMask) {
                 (this.target.body || this.target.el).mask(mask.msg || Ext.LoadMask.prototype.msg, mask.msgCls || "x-mask-loading");
@@ -82,7 +90,7 @@ Ext.define('Ext.net.ComponentLoader', {
         this.callParent(arguments);
     },
 
-    removeMask : function () {
+    removeMask: function () {
         if (this.target.floating) {
             (this.target.body || this.target.el).unmask();
             return;
@@ -90,86 +98,86 @@ Ext.define('Ext.net.ComponentLoader', {
 
         this.callParent(arguments);
     },
-    
-    isIFrame : function (cfg) {
+
+    isIFrame: function (cfg) {
         var frame = false;
-        
+
         if (cfg.renderer == "frame") {
-           return true;
+            return true;
         }
 
         if (typeof cfg == "string" && cfg.indexOf("://") >= 0 && cfg.renderer == "html") {
-            frame = true;          
+            frame = true;
         } else if (cfg.url && cfg.url.indexOf("://") >= 0 && cfg.renderer == "html") {
             frame = true;
-        } 
+        }
 
         return frame;
     },
-    
-    initLoader : function () {
+
+    initLoader: function () {
         if (this.isIFrame(this)) {
             var target = this.getTarget();
-            
+
             if (!target.isContainer) {
-               throw 'IFrame can only be loader to a container';
+                throw 'IFrame can only be loader to a container';
             }
-            
+
             target.layout = "fit";
             this.renderer = "frame";
         }
 
-        var loadConfig = { 
-                delay  : 10, 
-                single : true 
-            },
+        var loadConfig = {
+            delay: 10,
+            single: true
+        },
             triggerCmp,
             triggerControl = this.triggerControl || this.getTarget(),
-            triggerEvent = this.triggerEvent;            
-            
+            triggerEvent = this.triggerEvent;
+
         if (Ext.isFunction(triggerControl)) {
             triggerControl = triggerControl.call(window);
         } else if (Ext.isString(triggerControl)) {
             triggerCmp = Ext.net.ResourceMgr.getCmp(triggerControl);
-            
+
             if (triggerCmp) {
                 triggerControl = triggerCmp;
             } else {
-                triggerControl = Ext.net.getEl(triggerControl);   
-            }            
+                triggerControl = Ext.net.getEl(triggerControl);
+            }
         }
-            
+
         loadConfig.single = !(this.reloadOnEvent || false);
 
         if (this.autoLoad) {
             triggerControl.on(triggerEvent || "render", function () {
-                    this.load({});
+                this.load({});
             }, this, loadConfig);
         }
     },
-    
-    load : function (options) {
+
+    load: function (options) {
         if (Ext.isString(options)) {
-            options = {url : options};
+            options = { url: options };
         }
-        else {        
+        else {
             options = Ext.apply({}, options);
         }
 
         if (this.paramsFn) {
-            this.params = this.paramsFn();
+            this.params = this.paramsFn.call(this.paramsFnScope || this.getTarget());
         }
 
         if (options.paramsFn) {
-            options.params = Ext.apply(options.params || {}, options.paramsFn());
+            options.params = Ext.apply(options.params || {}, options.paramsFn.call(this.paramsFnScope || this.getTarget()));
         }
-        
+
         if (!Ext.isDefined(options.passParentSize) && this.passParentSize) {
             options.params = options.params || {};
-            options.params.width = this.target.body.getWidth(true);
-            options.params.height = this.target.body.getHeight(true);
+            options.params.width = (this.target.body || this.target.el).getWidth(true);
+            options.params.height = (this.target.body || this.target.el).getHeight(true);
         }
-        
+
         if (this.renderer == "frame") {
             this.loadFrame(options);
             return;
@@ -188,9 +196,9 @@ Ext.define('Ext.net.ComponentLoader', {
             Ext.apply(params, me.baseParams);
 
             Ext.apply(options, {
-                scope    : me,
-                params   : params,
-                callback : me.onComplete
+                scope: me,
+                params: params,
+                callback: me.onComplete
             });
 
             if (me.fireEvent('beforeload', me, options) === false) {
@@ -204,8 +212,8 @@ Ext.define('Ext.net.ComponentLoader', {
             method = Ext.decode(this.directMethod);
 
             dmCfg = {
-                complete : function (success, result, response) {
-                    me.onComplete(options, success, {responseText: result});
+                complete: function (success, result, response) {
+                    me.onComplete(options, success, { responseText: result });
                 }
             }
 
@@ -217,25 +225,25 @@ Ext.define('Ext.net.ComponentLoader', {
             }
 
             me.active = {
-                options  : options,
-                mask     : mask,
-                scope    : scope,
-                callback : callback,
-                success  : options.success || me.success,
-                failure  : options.failure || me.failure,
-                renderer : options.renderer || me.renderer,
-                scripts  : Ext.isDefined(options.scripts) ? options.scripts : me.scripts
+                options: options,
+                mask: mask,
+                scope: scope,
+                callback: callback,
+                success: options.success || me.success,
+                failure: options.failure || me.failure,
+                renderer: options.renderer || me.renderer,
+                scripts: Ext.isDefined(options.scripts) ? options.scripts : me.scripts
             };
 
             me.setOptions(me.active, options);
 
-            return; 
+            return;
         }
-        
+
         Ext.net.ComponentLoader.superclass.load.apply(this, arguments);
     },
-    
-    loadFrame : function (options) {
+
+    loadFrame: function (options) {
         options = Ext.apply({}, options);
 
         var me = this,
@@ -252,16 +260,16 @@ Ext.define('Ext.net.ComponentLoader', {
         Ext.apply(params, me.baseParams);
 
         Ext.applyIf(options, {
-            url: me.url            
+            url: me.url
         });
-        
+
         Ext.apply(options, {
-            mask     : mask,
-            monitorComplete : monitorComplete,
-            disableCaching  : disableCaching,
-            params   : params,
-            callback : callback,
-            scope    : scope
+            mask: mask,
+            monitorComplete: monitorComplete,
+            disableCaching: disableCaching,
+            params: params,
+            callback: callback,
+            scope: scope
         });
 
         this.lastOptions = options;
@@ -272,12 +280,12 @@ Ext.define('Ext.net.ComponentLoader', {
 
         if (me.fireEvent('beforeload', me, options) === false) {
             return;
-        }        
-        
+        }
+
         var url = options.url;
 
         if (disableCaching !== false) {
-            url = url + ((url.indexOf("?") > -1) ? "&" : "?") + disableCachingParam +"="+new Date().getTime();
+            url = url + ((url.indexOf("?") > -1) ? "&" : "?") + disableCachingParam + "=" + new Date().getTime();
         }
 
         if (params) {
@@ -302,14 +310,14 @@ Ext.define('Ext.net.ComponentLoader', {
 
         if (Ext.isEmpty(target.iframe)) {
             var iframeObj = {
-                    tag  : "iframe",
-                    id   : target.id + "_IFrame",
-                    name : target.id + "_IFrame",
-                    src  : url,
-                    frameborder : 0
-                }, 
+                tag: "iframe",
+                id: target.id + "_IFrame",
+                name: target.id + "_IFrame",
+                src: url,
+                frameborder: 0
+            },
                 layout = target.getLayout();
-            
+
             if (!target.layout || target.layout.type !== "fit") {
                 target.setLayout(Ext.layout.Layout.create("fit"));
             }
@@ -318,9 +326,9 @@ Ext.define('Ext.net.ComponentLoader', {
 
             var p = target,
                 iframeCt = new Ext.Container({
-                    autoEl    : iframeObj,
-                    listeners : {
-                        afterrender : function () {
+                    autoEl: iframeObj,
+                    listeners: {
+                        afterrender: function () {
                             p.iframe = this.el;
 
                             if (monitorComplete) {
@@ -328,7 +336,7 @@ Ext.define('Ext.net.ComponentLoader', {
                             } else {
                                 this.el.on("load", p.getLoader().afterIFrameLoad, p.getLoader());
                             }
-                            
+
                             p.getLoader().beforeIFrameLoad(options);
                         }
                     }
@@ -340,54 +348,54 @@ Ext.define('Ext.net.ComponentLoader', {
             target.iframe.dom.src = url;
             this.beforeIFrameLoad(options);
         }
-        
-        if (!this.destroyIframeOnUnload) {
-            this.destroyIframeOnUnload = true;            
 
-            Ext.EventManager.on(window, "unload", this.target.destroy, this.target);
-        }        
+        if (!this.destroyIframeOnUnload) {
+            this.destroyIframeOnUnload = true;
+
+            //Ext.EventManager.on(window, "unload", this.target.destroy, this.target);
+        }
     },
-    
-    iframeCompleteCheck : function () {
+
+    iframeCompleteCheck: function () {
         if (this.target.iframe.dom.readyState == "complete") {
             this.stopIframeMonitoring();
             this.afterIFrameLoad();
         }
     },
-    
-    startIframeMonitoring : function () {
+
+    startIframeMonitoring: function () {
         if (this.iframeTask) {
             this.iframeTask.stopAll();
             this.iframeTask = null;
         }
-        
+
         this.iframeTask = new Ext.util.TaskRunner();
         this.iframeTask.start({
-            run      : this.iframeCompleteCheck,
-            interval : 200,
-            scope    : this
+            run: this.iframeCompleteCheck,
+            interval: 200,
+            scope: this
         });
     },
-    
-    stopIframeMonitoring : function () {
+
+    stopIframeMonitoring: function () {
         if (this.iframeTask) {
             this.iframeTask.stopAll();
             this.iframeTask = null;
         }
     },
 
-    beforeIFrameLoad : function () {
+    beforeIFrameLoad: function () {
         try {
             this.target.iframe.dom.contentWindow.parentAutoLoadControl = this.target;
         } catch (e) { }
     },
 
-    afterIFrameLoad : function () {
+    afterIFrameLoad: function () {
         var options = this.lastOptions;
         if (options.mask) {
             this.removeMask();
         }
-        
+
         try {
             this.target.iframe.dom.contentWindow.parentAutoLoadControl = this.target;
         } catch (e) { }
@@ -395,7 +403,7 @@ Ext.define('Ext.net.ComponentLoader', {
         if (options.callback) {
             Ext.callback(options.callback, options.scope, [this, true, null, options]);
         }
-        
+
         if (options.success) {
             Ext.callback(options.success, options.scope, [this, true, null, options]);
         }
@@ -403,5 +411,106 @@ Ext.define('Ext.net.ComponentLoader', {
         this.target.onIFrameLoad();
 
         this.fireEvent("load", this, null, options);
+    },
+
+    getRenderer: function (renderer) {
+        if (Ext.isFunction(renderer)) {
+            return renderer;
+        }
+
+        switch (renderer) {
+            case 'component':
+                return Ext.ComponentLoader.Renderer.Component;
+            case 'data':
+                return Ext.ComponentLoader.Renderer.Data;
+            case 'script':
+                return Ext.ComponentLoader.Renderer.Script;
+            default:
+                return Ext.ElementLoader.Renderer.Html;
+        }
+    },
+
+    onComplete: function (options, success, response, decodedResp) {
+        var me = this,
+            text,
+            cfg,
+            resp,
+            active = me.active,
+            scope = active.scope,
+            renderer = me.getRenderer(active.renderer);
+
+        if (success && !decodedResp && (this.removeD || (active && active.options && active.options.url && active.options.url.indexOf(".asmx") > 0))) {
+            try {
+                text = response.responseText.replace(/{"d":null}$/, "");
+                cfg = Ext.decode(response.responseText, true);
+
+                if (cfg && cfg.d) {
+                    text  = cfg.d;
+                }
+                else if (active.renderer === "component") {
+                    text = cfg;
+                }
+            } catch (e) {
+                success = false;
+            }    
+
+            resp = {responseText : text};
+        }
+        else {
+            resp = response;
+        }
+
+        if (success && !decodedResp && active.renderer === "component")
+        {
+             if (Ext.isObject(resp.responseText)) {
+                cfg = resp.responseText;
+             }
+             else if (Ext.isString(resp.responseText)) {
+                cfg = Ext.decode(resp.responseText);
+                resp.responseText = cfg;
+             }
+             else {
+                cfg = null;
+             }
+             
+             if (cfg && cfg['x.res']) {
+                if (cfg['x.res'].ns) {
+                    Ext.ns.apply(Ext, cfg['x.res'].ns);
+                }
+
+                if (cfg.config) {
+                    resp.responseText = cfg.config;
+                }
+
+                if (cfg['x.res'].res) {
+                    Ext.net.ResourceMgr.load(cfg['x.res'].res, Ext.Function.bind(this.onComplete, this, [options, success, response, resp]));
+                }
+
+                return;
+            }   
+        }
+
+        if (success) {
+            success = renderer.call(me, me, decodedResp || resp, active) !== false;
+        }
+
+        if (success) {
+            Ext.callback(active.success, scope, [me, response, options]);
+            me.fireEvent('load', me, response, options);
+        } else {
+            Ext.callback(active.failure, scope, [me, response, options]);
+            me.fireEvent('exception', me, response, options);
+
+            if (this.showWarningOnFailure !== false && !this.hasListener("exception")) {
+                Ext.net.DirectEvent.showFailure(response, response.responseText);
+            }
+        }
+        Ext.callback(active.callback, scope, [me, success, response, options]);
+
+        if (active.mask) {
+            me.removeMask();
+        }
+
+        delete me.active;
     }
 });

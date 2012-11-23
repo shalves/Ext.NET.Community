@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -72,15 +72,39 @@ namespace Ext.Net
                 {
                     Control item = (Control)items[0];
 
-                    var pnl = item as AbstractPanel;
-
                     if (!item.Visible)
                     {
                         writer.WriteNull();
                         return;
                     }
 
-                    writer.WriteRawValue(this.Format(items[0] as Control));
+                    if (!(item is IProxyContainer))
+                    {
+                        writer.WriteRawValue(this.Format(items[0] as Control));
+                    }
+                    else
+                    {
+                        List<string> ids = ((IProxyContainer)item).GetIDS();
+
+                        if (ids != null && ids.Count > 0)
+                        {
+                            if (ids.Count == 1)
+                            {
+                                writer.WriteRawValue(this.Format(ids[0]));
+                            }
+                            else
+                            {
+                                writer.WriteStartArray();
+
+                                foreach (string id in ids)
+                                {
+                                    writer.WriteRawValue(this.Format(id));
+                                }
+
+                                writer.WriteEndArray();
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -102,7 +126,22 @@ namespace Ext.Net
                         {
                             if (item.Visible)
                             {
-                                writer.WriteRawValue(this.Format(item));
+                                if (!(item is IProxyContainer))
+                                {
+                                    writer.WriteRawValue(this.Format(item));
+                                }
+                                else
+                                {
+                                    List<string> ids = ((IProxyContainer)item).GetIDS();
+
+                                    if (ids != null && ids.Count > 0)
+                                    {
+                                        foreach (string id in ids)
+                                        {
+                                            writer.WriteRawValue(this.Format(id));
+                                        }
+                                    }
+                                }                                
                             }
                         }
 
@@ -116,17 +155,28 @@ namespace Ext.Net
             }
         }
 
-        private string Format(Control control)
+        protected virtual string Format(Control control)
         {
             bool islazy = false;
+            string clientID = control.ClientID;
 
             if (control != null && control is Observable)
             {
-                islazy = (control as Observable).IsLazy;
+                Observable o = (Observable)control;
+                
+                islazy = o.IsLazy;
+                clientID = o.BaseClientID;
             }
 
             return Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{                        
-                            {"id", islazy ? control.ClientID + "_ClientInit" : control.ClientID}                            
+                            {"id", islazy ? clientID + "_ClientInit" : clientID}                            
+                        });
+        }
+
+        protected virtual string Format(string id)
+        {
+            return Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{                        
+                            {"id", id}                            
                         });
         }
 
@@ -152,6 +202,17 @@ namespace Ext.Net
         protected override bool IsSingleItemArray()
         {
             return true;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class FunctionItemCollectionJsonConverter : SingleItemCollectionJsonConverter
+    {
+        protected override string Format(Control control)
+        {
+            return string.Concat("function(){return ", base.Format(control), ";}");
         }
     }
 }

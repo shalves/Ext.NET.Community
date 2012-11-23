@@ -36,7 +36,7 @@
 <head runat="server">
     <title>Ext.NET Examples</title>
     
-    <script type="text/javascript">
+    <script>
         var CountrySelector = {
             add : function (source, destination) {
                 source = source || GridPanel1;
@@ -84,7 +84,7 @@
             }
         };
     </script>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">

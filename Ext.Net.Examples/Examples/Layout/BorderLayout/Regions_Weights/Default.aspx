@@ -7,7 +7,7 @@
 <html>
 <head runat="server">
     <title>Regions Weights - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
     <script runat="server">
         protected void ChangeWeights(object sender, DirectEventArgs e)

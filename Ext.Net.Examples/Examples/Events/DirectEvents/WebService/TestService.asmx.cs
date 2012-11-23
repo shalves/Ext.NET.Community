@@ -16,12 +16,8 @@ namespace Ext.Net.Examples
         [WebMethod]
         public DirectResponse SayHello1(string name)
         {
-            DirectResponse response = new DirectResponse();
-            
-            // Return a script to be executed on the client
-            response.Script = string.Concat("alert('Hello, ", name, "');");
-
-            return response;
+            X.Js.Alert("Hello, " + name);
+            return new DirectResponse();
         }
 
         [WebMethod]

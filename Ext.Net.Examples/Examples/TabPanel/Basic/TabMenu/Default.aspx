@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>TabPanel with MenuTab - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var beforeMenu = function (pnl, tab, menu) {
             menu.items.get(0).setText(tab.title);            
 

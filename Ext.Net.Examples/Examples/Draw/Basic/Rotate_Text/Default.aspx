@@ -6,7 +6,7 @@
 <html>
 <head runat="server">
     <title>Rotate Text - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
 </head>
 <body>
@@ -39,7 +39,7 @@
             Degrees="45"
             Text="With Ext.NET 2.0 Drawing" 
             >
-            <TextStyle Fill="#F00" Font="18px Arial" />
+            <TextStyle Fill="#F00" FontSize="18px" FontFamily="Arial" />
         </ext:DrawText>
        
         <ext:DrawComponent runat="server"
@@ -50,7 +50,8 @@
                     Type="Text" 
                     Text="Creating a rotated Text component" 
                     Fill="#0F0" 
-                    Font="18px Arial">
+                    FontSize="18px" 
+                    FontFamily="Arial">
                     <Rotate Degrees="90" />
                 </ext:Sprite>
             </Items>
@@ -65,7 +66,7 @@
             Degrees="315" 
             Text="Is a snap!" 
             >
-            <TextStyle Fill="#00F" Font="18px Arial" Y="50" />
+            <TextStyle Fill="#00F" FontSize="18px" FontFamily="Arial" Y="50" />
         </ext:DrawText>
     </form>    
 </body>

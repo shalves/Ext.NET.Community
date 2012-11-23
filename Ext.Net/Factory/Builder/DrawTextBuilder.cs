@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,77 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : DrawComponent.Builder<DrawText, DrawText.Builder>
+        new public abstract partial class Builder<TDrawText, TBuilder> : DrawComponent.Builder<TDrawText, TBuilder>
+            where TDrawText : DrawText
+            where TBuilder : Builder<TDrawText, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TDrawText component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Turn on autoSize support which will set the bounding div's size to the natural size of the contents. Defaults to true.
+			/// </summary>
+            public virtual TBuilder AutoSize(bool autoSize)
+            {
+                this.ToComponent().AutoSize = autoSize;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The angle by which to initially rotate the text clockwise. Defaults to zero.
+			/// </summary>
+            public virtual TBuilder Degrees(int degrees)
+            {
+                this.ToComponent().Degrees = degrees;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A CSS selector string which matches a style rule in the document stylesheet from which the text's font properties are read.
+			/// </summary>
+            public virtual TBuilder StyleSelector(string styleSelector)
+            {
+                this.ToComponent().StyleSelector = styleSelector;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The text to display (html tags are not accepted)
+			/// </summary>
+            public virtual TBuilder Text(string text)
+            {
+                this.ToComponent().Text = text;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder TextStyle(SpriteAttributes textStyle)
+            {
+                this.ToComponent().TextStyle = textStyle;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : DrawText.Builder<DrawText, DrawText.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,60 +142,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Turn on autoSize support which will set the bounding div's size to the natural size of the contents. Defaults to true.
-			/// </summary>
-            public virtual DrawText.Builder AutoSize(bool autoSize)
-            {
-                this.ToComponent().AutoSize = autoSize;
-                return this as DrawText.Builder;
-            }
-             
- 			/// <summary>
-			/// The angle by which to initially rotate the text clockwise. Defaults to zero.
-			/// </summary>
-            public virtual DrawText.Builder Degrees(int degrees)
-            {
-                this.ToComponent().Degrees = degrees;
-                return this as DrawText.Builder;
-            }
-             
- 			/// <summary>
-			/// A CSS selector string which matches a style rule in the document stylesheet from which the text's font properties are read.
-			/// </summary>
-            public virtual DrawText.Builder StyleSelector(string styleSelector)
-            {
-                this.ToComponent().StyleSelector = styleSelector;
-                return this as DrawText.Builder;
-            }
-             
- 			/// <summary>
-			/// The text to display (html tags are not accepted)
-			/// </summary>
-            public virtual DrawText.Builder Text(string text)
-            {
-                this.ToComponent().Text = text;
-                return this as DrawText.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual DrawText.Builder TextStyle(SpriteAttributes textStyle)
-            {
-                this.ToComponent().TextStyle = textStyle;
-                return this as DrawText.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -134,6 +150,14 @@ namespace Ext.Net
         public DrawText.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.DrawText(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -148,7 +172,11 @@ namespace Ext.Net
         /// </summary>
         public DrawText.Builder DrawText()
         {
-            return this.DrawText(new DrawText());
+#if MVC
+			return this.DrawText(new DrawText { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.DrawText(new DrawText());
+#endif			
         }
 
         /// <summary>
@@ -156,7 +184,10 @@ namespace Ext.Net
         /// </summary>
         public DrawText.Builder DrawText(DrawText component)
         {
-            return new DrawText.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new DrawText.Builder(component);
         }
 
         /// <summary>
@@ -164,7 +195,11 @@ namespace Ext.Net
         /// </summary>
         public DrawText.Builder DrawText(DrawText.Config config)
         {
-            return new DrawText.Builder(new DrawText(config));
+#if MVC
+			return new DrawText.Builder(new DrawText(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new DrawText.Builder(new DrawText(config));
+#endif			
         }
     }
 }

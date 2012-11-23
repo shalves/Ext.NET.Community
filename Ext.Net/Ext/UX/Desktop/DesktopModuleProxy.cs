@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,8 +41,8 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public DesktopModuleProxy() 
-        { 
+        public DesktopModuleProxy()
+        {
         }
 
         private DesktopModule module;
@@ -65,6 +65,19 @@ namespace Ext.Net
             set
             {
                 this.module = value;
+
+                var desktop = Desktop.GetInstance();
+                if (!this.PreventAdding)
+                {
+                    if (desktop != null)
+                    {
+                        this.AddToDesktop(desktop);
+                    }
+                    else
+                    {
+                        Desktop.DesktopModuleProxyCache.Add(this);
+                    }
+                }
             }
         }
 
@@ -79,31 +92,9 @@ namespace Ext.Net
             get;
             set;
         }
-        
-        protected override void OnInit(EventArgs e)
-        {
-            base.OnInit(e);
-
-            var desktop = Desktop.GetInstance();
-            if (desktop != null && !this.PreventAdding)
-            {
-                this.AddToDesktop(desktop);
-            }
-        }
-
-        protected override void OnPreRender(EventArgs e)
-        {
-            base.OnPreRender(e);
-
-            var desktop = Desktop.GetInstance();
-            if (desktop != null && !this.PreventAdding)
-            {
-                this.AddToDesktop(desktop);
-            }
-        }
 
         bool added = false;
-        private void AddToDesktop(Desktop desktop)
+        internal void AddToDesktop(Desktop desktop)
         {
             if (this.added)
             {
@@ -144,7 +135,9 @@ namespace Ext.Net
 
             if (this.Module.Window.Count > 0)
             {
+                this.Module.Window.Primary.SuspendScripting();
                 this.Module.Window.Primary.AutoRender = false;
+                this.Module.Window.Primary.ResumeScripting();
                 var script = DefaultScriptBuilder.Create(this.Module.Window.Primary).Build(RenderMode.AddTo, "{0}.getModule(\"{1}\")".FormatWith(desktop, this.Module.ModuleID), null, true, false, "setWindow", true);
                 sb.Append(string.Format("{0}.getModule(\"{1}\").addWindow(function(){{{2}}});", desktop, this.Module.ModuleID, script));
             }

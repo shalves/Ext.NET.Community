@@ -25,7 +25,7 @@ Ext.define('Ext.view.plugin.SelectionSubmit', {
 
         this.view.on("selectionchange", this.updateSelection, this, { buffer: 10 });
         
-        this.view.on("render", function () {
+        this.view.on("viewready", function () {
             this.getSelectionModelField().render(this.view.el.parent() || this.view.el);
             this.initSelectionData();
         }, this);
@@ -111,7 +111,7 @@ Ext.define('Ext.view.plugin.SelectionSubmit', {
     },
 
     initSelectionData : function () {
-        if (this.store) {
+        if (this.store && this.viewReady) {
             if (this.store.getCount() > 0) {
                Ext.defer(this.doSelection, 100, this);
             } else {

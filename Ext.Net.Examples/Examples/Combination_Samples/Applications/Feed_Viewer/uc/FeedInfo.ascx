@@ -5,7 +5,7 @@
     [DirectMethod(IDAlias = "FeedInfo", ShowMask = true)]
     public void AddFeed(string container, string title, string url)
     {
-        var config = new UserControlRendrerConfig
+        UserControlRendrerConfig config = new UserControlRendrerConfig
         {
             UserControlPath = "uc/FeedDetail.ascx",
             SingleControl = true,
@@ -15,7 +15,7 @@
         
         config.BeforeRender += delegate(ComponentAddedEventArgs e)
         {
-            var panel = (Ext.Net.Panel)e.Control;
+            Ext.Net.Panel panel = (Ext.Net.Panel)e.Control;
             panel.Title = title;
             panel.Closable = false;
             panel.CustomConfig.Add(new ConfigItem("url", url, ParameterMode.Value));
@@ -27,9 +27,9 @@
     [DirectMethod(IDAlias = "FeedInfo", ShowMask = true)]
     public void OpenTab(string container, string[] titles)
     {
-        foreach (var title in titles)
+        foreach (string title in titles)
         {
-            var config = new UserControlRendrerConfig
+            UserControlRendrerConfig config = new UserControlRendrerConfig
             {
                 UserControlPath = "uc/FeedPost.ascx",
                 SingleControl = true,
@@ -39,14 +39,14 @@
 
             config.BeforeRender += delegate(ComponentAddedEventArgs e)
             {
-                var panel = (Ext.Net.Panel)e.Control;
+                Ext.Net.Panel panel = (Ext.Net.Panel)e.Control;
                 panel.Title = title;
                 panel.Closable = true;
                 
                 panel.CustomConfig.Add(new ConfigItem("active", "FeedViewer.FeedDetail.getRecordByTitle('"+title+"')", ParameterMode.Raw));
                 panel.CustomConfig.Add(new ConfigItem("data", "FeedViewer.FeedDetail.getRecordByTitle('" + title + "').data", ParameterMode.Raw));
 
-                var toolbar = (Toolbar)panel.DockedItems[0];
+                Toolbar toolbar = (Toolbar)panel.DockedItems[0];
                 
                 toolbar.Items[0].Visible = false;
                 toolbar.Items[0].Visible = false;

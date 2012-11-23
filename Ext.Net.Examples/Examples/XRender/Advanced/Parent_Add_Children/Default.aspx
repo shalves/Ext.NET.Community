@@ -23,7 +23,7 @@
     
     protected void Button2_Click(object sender, DirectEventArgs e)
     {
-        var tabPanel = this.BuildTabPanel();
+        TabPanel tabPanel = this.BuildTabPanel();
         
         tabPanel.Items.Add(this.BuildPanel(1));
         tabPanel.Render("App.Window1", RenderMode.AddTo);
@@ -38,7 +38,7 @@
     
     protected void Button3_Click(object sender, DirectEventArgs e)
     {
-        var index = this.GetIndex();
+        int index = this.GetIndex();
 
         this.BuildPanel(index).Render("App.TabPanel1", RenderMode.AddTo);
     }
@@ -79,7 +79,7 @@
 
     private int GetIndex()
     {
-        var index = Convert.ToInt32(this.Hidden1.Text);
+        int index = Convert.ToInt32(this.Hidden1.Text);
         this.Hidden1.Text = (index + 1).ToString();
         return index;
     }
@@ -90,7 +90,7 @@
 <html>
 <head runat="server">
     <title>Dynamic Component creation during an Ajax Request - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">

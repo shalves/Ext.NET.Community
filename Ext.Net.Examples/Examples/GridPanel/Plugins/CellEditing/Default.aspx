@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>Cell Editing - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         function addPlant(btn){
             // Create a model instance
             var r = Ext.create('Plant', {

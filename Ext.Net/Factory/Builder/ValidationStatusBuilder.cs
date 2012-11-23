@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,104 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Plugin.Builder<ValidationStatus, ValidationStatus.Builder>
+        new public abstract partial class Builder<TValidationStatus, TBuilder> : Plugin.Builder<TValidationStatus, TBuilder>
+            where TValidationStatus : ValidationStatus
+            where TBuilder : Builder<TValidationStatus, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TValidationStatus component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The FormPanel to use.
+			/// </summary>
+            public virtual TBuilder FormPanelID(string formPanelID)
+            {
+                this.ToComponent().FormPanelID = formPanelID;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The error icon
+			/// </summary>
+            public virtual TBuilder ErrorIcon(Icon errorIcon)
+            {
+                this.ToComponent().ErrorIcon = errorIcon;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The error icon css class
+			/// </summary>
+            public virtual TBuilder ErrorIconCls(string errorIconCls)
+            {
+                this.ToComponent().ErrorIconCls = errorIconCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The error list css class
+			/// </summary>
+            public virtual TBuilder ErrorListCls(string errorListCls)
+            {
+                this.ToComponent().ErrorListCls = errorListCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The valid icon
+			/// </summary>
+            public virtual TBuilder ValidIcon(Icon validIcon)
+            {
+                this.ToComponent().ValidIcon = validIcon;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The valid icon css class
+			/// </summary>
+            public virtual TBuilder ValidIconCls(string validIconCls)
+            {
+                this.ToComponent().ValidIconCls = validIconCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The text which shown when errors exist
+			/// </summary>
+            public virtual TBuilder ShowText(string showText)
+            {
+                this.ToComponent().ShowText = showText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The text which hide error list when click on it
+			/// </summary>
+            public virtual TBuilder HideText(string hideText)
+            {
+                this.ToComponent().HideText = hideText;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ValidationStatus.Builder<ValidationStatus, ValidationStatus.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,87 +169,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The FormPanel to use.
-			/// </summary>
-            public virtual ValidationStatus.Builder FormPanelID(string formPanelID)
-            {
-                this.ToComponent().FormPanelID = formPanelID;
-                return this as ValidationStatus.Builder;
-            }
-             
- 			/// <summary>
-			/// The error icon
-			/// </summary>
-            public virtual ValidationStatus.Builder ErrorIcon(Icon errorIcon)
-            {
-                this.ToComponent().ErrorIcon = errorIcon;
-                return this as ValidationStatus.Builder;
-            }
-             
- 			/// <summary>
-			/// The error icon css class
-			/// </summary>
-            public virtual ValidationStatus.Builder ErrorIconCls(string errorIconCls)
-            {
-                this.ToComponent().ErrorIconCls = errorIconCls;
-                return this as ValidationStatus.Builder;
-            }
-             
- 			/// <summary>
-			/// The error list css class
-			/// </summary>
-            public virtual ValidationStatus.Builder ErrorListCls(string errorListCls)
-            {
-                this.ToComponent().ErrorListCls = errorListCls;
-                return this as ValidationStatus.Builder;
-            }
-             
- 			/// <summary>
-			/// The valid icon
-			/// </summary>
-            public virtual ValidationStatus.Builder ValidIcon(Icon validIcon)
-            {
-                this.ToComponent().ValidIcon = validIcon;
-                return this as ValidationStatus.Builder;
-            }
-             
- 			/// <summary>
-			/// The valid icon css class
-			/// </summary>
-            public virtual ValidationStatus.Builder ValidIconCls(string validIconCls)
-            {
-                this.ToComponent().ValidIconCls = validIconCls;
-                return this as ValidationStatus.Builder;
-            }
-             
- 			/// <summary>
-			/// The text which shown when errors exist
-			/// </summary>
-            public virtual ValidationStatus.Builder ShowText(string showText)
-            {
-                this.ToComponent().ShowText = showText;
-                return this as ValidationStatus.Builder;
-            }
-             
- 			/// <summary>
-			/// The text which hide error list when click on it
-			/// </summary>
-            public virtual ValidationStatus.Builder HideText(string hideText)
-            {
-                this.ToComponent().HideText = hideText;
-                return this as ValidationStatus.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -161,6 +177,14 @@ namespace Ext.Net
         public ValidationStatus.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ValidationStatus(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -175,7 +199,11 @@ namespace Ext.Net
         /// </summary>
         public ValidationStatus.Builder ValidationStatus()
         {
-            return this.ValidationStatus(new ValidationStatus());
+#if MVC
+			return this.ValidationStatus(new ValidationStatus { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ValidationStatus(new ValidationStatus());
+#endif			
         }
 
         /// <summary>
@@ -183,7 +211,10 @@ namespace Ext.Net
         /// </summary>
         public ValidationStatus.Builder ValidationStatus(ValidationStatus component)
         {
-            return new ValidationStatus.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ValidationStatus.Builder(component);
         }
 
         /// <summary>
@@ -191,7 +222,11 @@ namespace Ext.Net
         /// </summary>
         public ValidationStatus.Builder ValidationStatus(ValidationStatus.Config config)
         {
-            return new ValidationStatus.Builder(new ValidationStatus(config));
+#if MVC
+			return new ValidationStatus.Builder(new ValidationStatus(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ValidationStatus.Builder(new ValidationStatus(config));
+#endif			
         }
     }
 }

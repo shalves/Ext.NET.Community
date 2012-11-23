@@ -7,7 +7,7 @@ public class FiltersTestData
     {
         get
         {
-            var goods = new List<object>
+            List<object> goods = new List<object>
                             {
                                 new
                                     {

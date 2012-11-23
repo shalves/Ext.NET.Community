@@ -98,9 +98,9 @@
 <html>
 <head runat="server">
     <title>Load SiteMap into TreePanel - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var loadPage = function (tabPanel, record) {
             var tab = tabPanel.getComponent(record.getId());
 
@@ -145,10 +145,7 @@
                 <ext:TabPanel 
                     ID="Pages" 
                     runat="server" 
-                    Region="Center" 
-                    EnableTabScroll="true" 
-                    LayoutOnTabChange="true" 
-                    />
+                    Region="Center"/>
                 <ext:TreePanel 
                     ID="TreePanel2" 
                     runat="server" 

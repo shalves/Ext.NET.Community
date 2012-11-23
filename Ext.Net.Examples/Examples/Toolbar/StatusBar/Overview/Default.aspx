@@ -46,9 +46,9 @@
 <html>
 <head runat="server">
     <title>StatusBar - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .word-status .x-status-text {
             color : #777;
         }

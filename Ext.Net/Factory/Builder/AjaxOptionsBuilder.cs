@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,144 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseItem.Builder<AjaxOptions, AjaxOptions.Builder>
+        new public abstract partial class Builder<TAjaxOptions, TBuilder> : BaseItem.Builder<TAjaxOptions, TBuilder>
+            where TAjaxOptions : AjaxOptions
+            where TBuilder : Builder<TAjaxOptions, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TAjaxOptions component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// True to add a unique cache-buster param to GET requests. (defaults to true)
+			/// </summary>
+            public virtual TBuilder DisableCaching(bool disableCaching)
+            {
+                this.ToComponent().DisableCaching = disableCaching;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Change the parameter which is sent went disabling caching through a cache buster. Defaults to '_dc'
+			/// </summary>
+            public virtual TBuilder DisableCachingParam(string disableCachingParam)
+            {
+                this.ToComponent().DisableCachingParam = disableCachingParam;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The timeout in milliseconds to be used for requests. (defaults to 30000)
+			/// </summary>
+            public virtual TBuilder Timeout(int timeout)
+            {
+                this.ToComponent().Timeout = timeout;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The URL to which to send the request, or a function to call which returns a URL string. The scope of the function is specified by the scope option. Defaults to the configured url.
+			/// </summary>
+            public virtual TBuilder Url(string url)
+            {
+                this.ToComponent().Url = url;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The HTTP method to use for the request. Defaults to the configured method, or if no method was configured, \"GET\" if no parameters are being sent, and \"POST\" if parameters are being sent. Note that the method name is case-sensitive and should be all caps.
+			/// </summary>
+            public virtual TBuilder Method(HttpMethod method)
+            {
+                this.ToComponent().Method = method;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True if the form object is a file upload
+			/// </summary>
+            public virtual TBuilder IsUpload(bool isUpload)
+            {
+                this.ToComponent().IsUpload = isUpload;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// JSON data to use as the post. 
+			/// </summary>
+            public virtual TBuilder Json(bool json)
+            {
+                this.ToComponent().Json = json;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// XML document to use for the post.
+			/// </summary>
+            public virtual TBuilder Xml(bool xml)
+            {
+                this.ToComponent().Xml = xml;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The id of the form to submit. If this.ParentForm is not null then this.ParentForm.ClientID is used, else if FormID is empty the Page.Form.ClientID is used, else try to find the form in dom tree hierarchy, otherwise the Url of current page is used.
+			/// </summary>
+            public virtual TBuilder FormID(string formID)
+            {
+                this.ToComponent().FormID = formID;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// An object containing request headers which are added to each request made by this object.
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Headers(Action<ParameterCollection> action)
+            {
+                action(this.ToComponent().Headers);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Params(Action<ParameterCollection> action)
+            {
+                action(this.ToComponent().Params);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Callback(string callback)
+            {
+                this.ToComponent().Callback = callback;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : AjaxOptions.Builder<AjaxOptions, AjaxOptions.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,127 +209,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// True to add a unique cache-buster param to GET requests. (defaults to true)
-			/// </summary>
-            public virtual AjaxOptions.Builder DisableCaching(bool disableCaching)
-            {
-                this.ToComponent().DisableCaching = disableCaching;
-                return this as AjaxOptions.Builder;
-            }
-             
- 			/// <summary>
-			/// Change the parameter which is sent went disabling caching through a cache buster. Defaults to '_dc'
-			/// </summary>
-            public virtual AjaxOptions.Builder DisableCachingParam(string disableCachingParam)
-            {
-                this.ToComponent().DisableCachingParam = disableCachingParam;
-                return this as AjaxOptions.Builder;
-            }
-             
- 			/// <summary>
-			/// The timeout in milliseconds to be used for requests. (defaults to 30000)
-			/// </summary>
-            public virtual AjaxOptions.Builder Timeout(int timeout)
-            {
-                this.ToComponent().Timeout = timeout;
-                return this as AjaxOptions.Builder;
-            }
-             
- 			/// <summary>
-			/// The URL to which to send the request, or a function to call which returns a URL string. The scope of the function is specified by the scope option. Defaults to the configured url.
-			/// </summary>
-            public virtual AjaxOptions.Builder Url(string url)
-            {
-                this.ToComponent().Url = url;
-                return this as AjaxOptions.Builder;
-            }
-             
- 			/// <summary>
-			/// The HTTP method to use for the request. Defaults to the configured method, or if no method was configured, \"GET\" if no parameters are being sent, and \"POST\" if parameters are being sent. Note that the method name is case-sensitive and should be all caps.
-			/// </summary>
-            public virtual AjaxOptions.Builder Method(HttpMethod method)
-            {
-                this.ToComponent().Method = method;
-                return this as AjaxOptions.Builder;
-            }
-             
- 			/// <summary>
-			/// True if the form object is a file upload
-			/// </summary>
-            public virtual AjaxOptions.Builder IsUpload(bool isUpload)
-            {
-                this.ToComponent().IsUpload = isUpload;
-                return this as AjaxOptions.Builder;
-            }
-             
- 			/// <summary>
-			/// JSON data to use as the post. 
-			/// </summary>
-            public virtual AjaxOptions.Builder Json(bool json)
-            {
-                this.ToComponent().Json = json;
-                return this as AjaxOptions.Builder;
-            }
-             
- 			/// <summary>
-			/// XML document to use for the post.
-			/// </summary>
-            public virtual AjaxOptions.Builder Xml(bool xml)
-            {
-                this.ToComponent().Xml = xml;
-                return this as AjaxOptions.Builder;
-            }
-             
- 			/// <summary>
-			/// The id of the form to submit. If this.ParentForm is not null then this.ParentForm.ClientID is used, else if FormID is empty the Page.Form.ClientID is used, else try to find the form in dom tree hierarchy, otherwise the Url of current page is used.
-			/// </summary>
-            public virtual AjaxOptions.Builder FormID(string formID)
-            {
-                this.ToComponent().FormID = formID;
-                return this as AjaxOptions.Builder;
-            }
-             
- 			/// <summary>
-			/// An object containing request headers which are added to each request made by this object.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of AjaxOptions.Builder</returns>
-            public virtual AjaxOptions.Builder Headers(Action<ParameterCollection> action)
-            {
-                action(this.ToComponent().Headers);
-                return this as AjaxOptions.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of AjaxOptions.Builder</returns>
-            public virtual AjaxOptions.Builder Params(Action<ParameterCollection> action)
-            {
-                action(this.ToComponent().Params);
-                return this as AjaxOptions.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual AjaxOptions.Builder Callback(string callback)
-            {
-                this.ToComponent().Callback = callback;
-                return this as AjaxOptions.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -201,6 +217,14 @@ namespace Ext.Net
         public AjaxOptions.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.AjaxOptions(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -215,7 +239,11 @@ namespace Ext.Net
         /// </summary>
         public AjaxOptions.Builder AjaxOptions()
         {
-            return this.AjaxOptions(new AjaxOptions());
+#if MVC
+			return this.AjaxOptions(new AjaxOptions { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.AjaxOptions(new AjaxOptions());
+#endif			
         }
 
         /// <summary>
@@ -223,7 +251,10 @@ namespace Ext.Net
         /// </summary>
         public AjaxOptions.Builder AjaxOptions(AjaxOptions component)
         {
-            return new AjaxOptions.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new AjaxOptions.Builder(component);
         }
 
         /// <summary>
@@ -231,7 +262,11 @@ namespace Ext.Net
         /// </summary>
         public AjaxOptions.Builder AjaxOptions(AjaxOptions.Config config)
         {
-            return new AjaxOptions.Builder(new AjaxOptions(config));
+#if MVC
+			return new AjaxOptions.Builder(new AjaxOptions(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new AjaxOptions.Builder(new AjaxOptions(config));
+#endif			
         }
     }
 }

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -55,6 +55,10 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
+                list.Add("itemsProxy", new ConfigOption("itemsProxy", new SerializationOptions("items", JsonMode.Raw), null, this.ItemsProxy ));
+                list.Add("dockedItemsProxy", new ConfigOption("dockedItemsProxy", new SerializationOptions("dockedItems", JsonMode.Raw), null, this.DockedItemsProxy ));
+                list.Add("layoutConfig", new ConfigOption("layoutConfig", new SerializationOptions("layout>Primary"), null, this.LayoutConfig ));
+                list.Add("layoutProxy", new ConfigOption("layoutProxy", new SerializationOptions("layout"), "", this.LayoutProxy ));
                 list.Add("iD", new ConfigOption("iD", new SerializationOptions("id"), "", this.ID ));
                 list.Add("cls", new ConfigOption("cls", null, "", this.Cls ));
                 list.Add("ctCls", new ConfigOption("ctCls", null, "", this.CtCls ));
@@ -67,7 +71,7 @@ namespace Ext.Net
                 list.Add("autoScroll", new ConfigOption("autoScroll", null, false, this.AutoScroll ));
                 list.Add("closable", new ConfigOption("closable", null, true, this.Closable ));
                 list.Add("shadow", new ConfigOption("shadow", null, false, this.Shadow ));
-                list.Add("preventHeader", new ConfigOption("preventHeader", null, false, this.PreventHeader ));
+                list.Add("header", new ConfigOption("header", null, false, this.Header ));
                 list.Add("plain", new ConfigOption("plain", null, false, this.Plain ));
                 list.Add("resizable", new ConfigOption("resizable", null, false, this.Resizable ));
                 list.Add("draggable", new ConfigOption("draggable", null, false, this.Draggable ));

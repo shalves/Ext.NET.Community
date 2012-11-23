@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,41 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseControl.Builder<DesktopModuleProxy, DesktopModuleProxy.Builder>
+        new public abstract partial class Builder<TDesktopModuleProxy, TBuilder> : BaseControl.Builder<TDesktopModuleProxy, TBuilder>
+            where TDesktopModuleProxy : DesktopModuleProxy
+            where TBuilder : Builder<TDesktopModuleProxy, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TDesktopModuleProxy component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Module(DesktopModule module)
+            {
+                this.ToComponent().Module = module;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : DesktopModuleProxy.Builder<DesktopModuleProxy, DesktopModuleProxy.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,24 +106,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual DesktopModuleProxy.Builder Module(DesktopModule module)
-            {
-                this.ToComponent().Module = module;
-                return this as DesktopModuleProxy.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -98,6 +114,14 @@ namespace Ext.Net
         public DesktopModuleProxy.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.DesktopModuleProxy(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -112,7 +136,11 @@ namespace Ext.Net
         /// </summary>
         public DesktopModuleProxy.Builder DesktopModuleProxy()
         {
-            return this.DesktopModuleProxy(new DesktopModuleProxy());
+#if MVC
+			return this.DesktopModuleProxy(new DesktopModuleProxy { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.DesktopModuleProxy(new DesktopModuleProxy());
+#endif			
         }
 
         /// <summary>
@@ -120,7 +148,10 @@ namespace Ext.Net
         /// </summary>
         public DesktopModuleProxy.Builder DesktopModuleProxy(DesktopModuleProxy component)
         {
-            return new DesktopModuleProxy.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new DesktopModuleProxy.Builder(component);
         }
 
         /// <summary>
@@ -128,7 +159,11 @@ namespace Ext.Net
         /// </summary>
         public DesktopModuleProxy.Builder DesktopModuleProxy(DesktopModuleProxy.Config config)
         {
-            return new DesktopModuleProxy.Builder(new DesktopModuleProxy(config));
+#if MVC
+			return new DesktopModuleProxy.Builder(new DesktopModuleProxy(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new DesktopModuleProxy.Builder(new DesktopModuleProxy(config));
+#endif			
         }
     }
 }

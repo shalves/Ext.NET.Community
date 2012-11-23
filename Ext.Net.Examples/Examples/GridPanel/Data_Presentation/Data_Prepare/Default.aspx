@@ -56,9 +56,9 @@
 <html>
 <head runat="server">
     <title>Data Prepare - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-     <script type="text/javascript">
+     <script>
          var prepareCity = function (value, record) {
              return record.get('Address').City;
          };
@@ -101,12 +101,12 @@
             </Store>
             <ColumnModel runat="server">
                 <Columns>
-                    <ext:Column runat="server" Header="ID" DataIndex="ID" />
-                    <ext:Column runat="server" Header="FirstName" DataIndex="FirstName"  />
-                    <ext:Column runat="server" Header="LastName" DataIndex="LastName" />
-                    <ext:Column runat="server" Header="Company" DataIndex="Company" />            
-                    <ext:Column runat="server" Header="City" DataIndex="City" />            
-                    <ext:Column runat="server" Header="Street" DataIndex="Street" />            
+                    <ext:Column runat="server" Text="ID" DataIndex="ID" />
+                    <ext:Column runat="server" Text="FirstName" DataIndex="FirstName"  />
+                    <ext:Column runat="server" Text="LastName" DataIndex="LastName" />
+                    <ext:Column runat="server" Text="Company" DataIndex="Company" />            
+                    <ext:Column runat="server" Text="City" DataIndex="City" />            
+                    <ext:Column runat="server" Text="Street" DataIndex="Street" />            
                 </Columns>
             </ColumnModel>           
         </ext:GridPanel> 

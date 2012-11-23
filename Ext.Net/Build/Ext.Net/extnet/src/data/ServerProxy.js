@@ -2,6 +2,8 @@
 // @source data/ServerProxy.js
 
 Ext.data.proxy.Server.override({
+    appendAction : true,
+
     constructor : Ext.Function.createSequence(Ext.data.proxy.Server.prototype.constructor, function () {
         this.addEvents("beforerequest", "afterrequest");
     }),
@@ -53,6 +55,11 @@ Ext.data.proxy.Server.override({
         }
         
         request.url = this.buildUrl(request);
+
+        if (this.appendAction && operation.allowWrite)
+        {
+            request.url = Ext.urlAppend(request.url, "action=" + operation.action); 
+        }
         operation.request = request;
         
         return request;

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,68 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : AbstractSeries.Builder<RadarSeries, RadarSeries.Builder>
+        new public abstract partial class Builder<TRadarSeries, TBuilder> : AbstractSeries.Builder<TRadarSeries, TBuilder>
+            where TRadarSeries : RadarSeries
+            where TBuilder : Builder<TRadarSeries, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TRadarSeries component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Style(SpriteAttributes style)
+            {
+                this.ToComponent().Style = style;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Whether markers should be displayed at the data points. If true, then the markerConfig config item will determine the markers' styling.
+			/// </summary>
+            public virtual TBuilder ShowMarkers(bool showMarkers)
+            {
+                this.ToComponent().ShowMarkers = showMarkers;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder MarkerConfig(SpriteAttributes markerConfig)
+            {
+                this.ToComponent().MarkerConfig = markerConfig;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Whether to add the chart elements as legend items. Default's false.
+			/// </summary>
+            public virtual TBuilder ShowInLegend(bool showInLegend)
+            {
+                this.ToComponent().ShowInLegend = showInLegend;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : RadarSeries.Builder<RadarSeries, RadarSeries.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,51 +133,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual RadarSeries.Builder Style(SpriteAttributes style)
-            {
-                this.ToComponent().Style = style;
-                return this as RadarSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// Whether markers should be displayed at the data points. If true, then the markerConfig config item will determine the markers' styling.
-			/// </summary>
-            public virtual RadarSeries.Builder ShowMarkers(bool showMarkers)
-            {
-                this.ToComponent().ShowMarkers = showMarkers;
-                return this as RadarSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual RadarSeries.Builder MarkerConfig(SpriteAttributes markerConfig)
-            {
-                this.ToComponent().MarkerConfig = markerConfig;
-                return this as RadarSeries.Builder;
-            }
-             
- 			/// <summary>
-			/// Whether to add the chart elements as legend items. Default's false.
-			/// </summary>
-            public virtual RadarSeries.Builder ShowInLegend(bool showInLegend)
-            {
-                this.ToComponent().ShowInLegend = showInLegend;
-                return this as RadarSeries.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -125,6 +141,14 @@ namespace Ext.Net
         public RadarSeries.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.RadarSeries(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -139,7 +163,11 @@ namespace Ext.Net
         /// </summary>
         public RadarSeries.Builder RadarSeries()
         {
-            return this.RadarSeries(new RadarSeries());
+#if MVC
+			return this.RadarSeries(new RadarSeries { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.RadarSeries(new RadarSeries());
+#endif			
         }
 
         /// <summary>
@@ -147,7 +175,10 @@ namespace Ext.Net
         /// </summary>
         public RadarSeries.Builder RadarSeries(RadarSeries component)
         {
-            return new RadarSeries.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new RadarSeries.Builder(component);
         }
 
         /// <summary>
@@ -155,7 +186,11 @@ namespace Ext.Net
         /// </summary>
         public RadarSeries.Builder RadarSeries(RadarSeries.Config config)
         {
-            return new RadarSeries.Builder(new RadarSeries(config));
+#if MVC
+			return new RadarSeries.Builder(new RadarSeries(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new RadarSeries.Builder(new RadarSeries(config));
+#endif			
         }
     }
 }

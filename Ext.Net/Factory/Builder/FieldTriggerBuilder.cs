@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,86 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseItem.Builder<FieldTrigger, FieldTrigger.Builder>
+        new public abstract partial class Builder<TFieldTrigger, TBuilder> : BaseItem.Builder<TFieldTrigger, TBuilder>
+            where TFieldTrigger : FieldTrigger
+            where TBuilder : Builder<TFieldTrigger, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TFieldTrigger component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// A trigger tag
+			/// </summary>
+            public virtual TBuilder Tag(string tag)
+            {
+                this.ToComponent().Tag = tag;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to hide the trigger element and display only the base text field (defaults to false).
+			/// </summary>
+            public virtual TBuilder HideTrigger(bool hideTrigger)
+            {
+                this.ToComponent().HideTrigger = hideTrigger;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A CSS class to apply to the trigger.
+			/// </summary>
+            public virtual TBuilder TriggerCls(string triggerCls)
+            {
+                this.ToComponent().TriggerCls = triggerCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The icon to use in the trigger. See also, IconCls to set an icon with a custom Css class.
+			/// </summary>
+            public virtual TBuilder Icon(TriggerIcon icon)
+            {
+                this.ToComponent().Icon = icon;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A css class which sets a background image to be used as the icon for this button.
+			/// </summary>
+            public virtual TBuilder IconCls(string iconCls)
+            {
+                this.ToComponent().IconCls = iconCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Quick tip.
+			/// </summary>
+            public virtual TBuilder Qtip(string qtip)
+            {
+                this.ToComponent().Qtip = qtip;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : FieldTrigger.Builder<FieldTrigger, FieldTrigger.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,69 +151,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// A trigger tag
-			/// </summary>
-            public virtual FieldTrigger.Builder Tag(string tag)
-            {
-                this.ToComponent().Tag = tag;
-                return this as FieldTrigger.Builder;
-            }
-             
- 			/// <summary>
-			/// True to hide the trigger element and display only the base text field (defaults to false).
-			/// </summary>
-            public virtual FieldTrigger.Builder HideTrigger(bool hideTrigger)
-            {
-                this.ToComponent().HideTrigger = hideTrigger;
-                return this as FieldTrigger.Builder;
-            }
-             
- 			/// <summary>
-			/// A CSS class to apply to the trigger.
-			/// </summary>
-            public virtual FieldTrigger.Builder TriggerCls(string triggerCls)
-            {
-                this.ToComponent().TriggerCls = triggerCls;
-                return this as FieldTrigger.Builder;
-            }
-             
- 			/// <summary>
-			/// The icon to use in the trigger. See also, IconCls to set an icon with a custom Css class.
-			/// </summary>
-            public virtual FieldTrigger.Builder Icon(TriggerIcon icon)
-            {
-                this.ToComponent().Icon = icon;
-                return this as FieldTrigger.Builder;
-            }
-             
- 			/// <summary>
-			/// A css class which sets a background image to be used as the icon for this button.
-			/// </summary>
-            public virtual FieldTrigger.Builder IconCls(string iconCls)
-            {
-                this.ToComponent().IconCls = iconCls;
-                return this as FieldTrigger.Builder;
-            }
-             
- 			/// <summary>
-			/// Quick tip.
-			/// </summary>
-            public virtual FieldTrigger.Builder Qtip(string qtip)
-            {
-                this.ToComponent().Qtip = qtip;
-                return this as FieldTrigger.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -143,6 +159,14 @@ namespace Ext.Net
         public FieldTrigger.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.FieldTrigger(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -157,7 +181,11 @@ namespace Ext.Net
         /// </summary>
         public FieldTrigger.Builder FieldTrigger()
         {
-            return this.FieldTrigger(new FieldTrigger());
+#if MVC
+			return this.FieldTrigger(new FieldTrigger { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.FieldTrigger(new FieldTrigger());
+#endif			
         }
 
         /// <summary>
@@ -165,7 +193,10 @@ namespace Ext.Net
         /// </summary>
         public FieldTrigger.Builder FieldTrigger(FieldTrigger component)
         {
-            return new FieldTrigger.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new FieldTrigger.Builder(component);
         }
 
         /// <summary>
@@ -173,7 +204,11 @@ namespace Ext.Net
         /// </summary>
         public FieldTrigger.Builder FieldTrigger(FieldTrigger.Config config)
         {
-            return new FieldTrigger.Builder(new FieldTrigger(config));
+#if MVC
+			return new FieldTrigger.Builder(new FieldTrigger(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new FieldTrigger.Builder(new FieldTrigger(config));
+#endif			
         }
     }
 }

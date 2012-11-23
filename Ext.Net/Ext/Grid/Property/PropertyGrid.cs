@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -85,7 +85,6 @@ namespace Ext.Net
         /// A data object to use as the data source of the grid.
         /// </summary>
         [Meta]
-        [ConfigOption(JsonMode.ArrayToObject)]
         [Category("8. PropertyGrid")]
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -102,6 +101,26 @@ namespace Ext.Net
                 }
 
                 return this.source;
+            }
+        }
+
+        [ConfigOption("source", JsonMode.Raw)]
+        [DefaultValue("")]
+        protected virtual string SourceProxy
+        {
+            get
+            {
+                return this.Source.Source();
+            }
+        }
+
+        [ConfigOption("sourceConfig", JsonMode.Raw)]
+        [DefaultValue("")]
+        protected virtual string SourceConfigProxy
+        {
+            get
+            {
+                return this.Source.Config();
             }
         }
 
@@ -156,116 +175,34 @@ namespace Ext.Net
         /// Sets the source data object containing the property data. The data object can contain one or more name/value pairs representing all of the properties of an object to display in the grid, and this data will automatically be loaded into the grid's store. The values should be supplied in the proper data type if needed, otherwise string type will be assumed. If the grid already contains data, this method will replace any existing data. See also the source config value. 
         /// </summary>
         /// <param name="source">The data object</param>
-        public void SetSource(PropertyGridParameterCollection source)
+        public void SetSource(PropertyGridParameterCollection sourceConfig)
         {
-            this.Call("setSource", new JRawValue(source.ToJsonObject()));
+            this.Call("setSource", JRawValue.From(sourceConfig.Source()), JRawValue.From(sourceConfig.Config()));
         }
 
         /// <summary>
-        /// 
+        /// Sets the source data object containing the property data. The data object can contain one or more name/value pairs representing all of the properties of an object to display in the grid, and this data will automatically be loaded into the grid's store. The values should be supplied in the proper data type if needed, otherwise string type will be assumed. If the grid already contains data, this method will replace any existing data. See also the source config value. 
         /// </summary>
-        [ConfigOption(JsonMode.Raw)]
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [DefaultValue(null)]
-        [Description("")]
-        protected internal string CustomEditors
+        /// <param name="source">The data object</param>
+        public void SetSource(object source, bool clearConfig)
         {
-            get
+            if (clearConfig)
             {
-                int count = 0;
-                StringBuilder sb = new StringBuilder();
-                sb.Append("{");
-
-                foreach (PropertyGridParameter parameter in this.Source)
-                {
-                    if (parameter.Editor.Count > 0)
-                    {
-                        string options = parameter.EditorOptions.Serialize();
-                        options = options.Replace("{", "{{").Replace("}", "}}");
-                        string tpl = "new " + parameter.EditorOptions.InstanceName + "(Ext.apply({{field:{0}}}, " + options + "))";
-                        
-                        sb.AppendFormat("{0}:", JSON.Serialize(parameter.Name));
-                        sb.Append(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{                        
-                            {"id", parameter.Editor[0].ClientID + "_ClientInit"},
-                            {"tpl", tpl}
-                        }));
-
-                        sb.Append(",");
-
-                        count++;
-                    }
-                }
-
-                sb.Remove(sb.Length - 1, 1);
-                sb.Append("}");
-
-                return count > 0 ? sb.ToString() : null;
+                this.Call("setSource", JRawValue.Null);
+            }
+            else
+            {
+                this.Call("setSource", source);
             }
         }
 
         /// <summary>
-        /// 
+        /// Sets the source data object containing the property data. The data object can contain one or more name/value pairs representing all of the properties of an object to display in the grid, and this data will automatically be loaded into the grid's store. The values should be supplied in the proper data type if needed, otherwise string type will be assumed. If the grid already contains data, this method will replace any existing data. See also the source config value. 
         /// </summary>
-        [ConfigOption(JsonMode.Raw)]
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [DefaultValue(null)]
-        [Description("")]
-        protected internal string CustomRenderers
+        /// <param name="source">The data object</param>
+        public void SetSource(object source)
         {
-            get
-            {
-                int count = 0;
-                StringBuilder sb = new StringBuilder();
-                sb.Append("{");
-
-                foreach (PropertyGridParameter parameter in this.Source)
-                {
-                    if (!parameter.Renderer.IsDefault)
-                    {
-                        sb.Append(JSON.Serialize(parameter.Name).ConcatWith(":", parameter.Renderer.ToConfigString(), ","));
-                        count++;
-                    }
-                }
-
-                sb.Remove(sb.Length - 1, 1);
-                sb.Append("}");
-
-                return count > 0 ? sb.ToString() : null;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [ConfigOption(JsonMode.Raw)]
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [DefaultValue(null)]
-        [Description("")]
-        protected internal string PropertyNames 
-        {
-            get
-            {
-                int count = 0;
-                StringBuilder sb = new StringBuilder();
-                sb.Append("{");
-
-                foreach (PropertyGridParameter parameter in this.Source)
-                {
-                    if (parameter.DisplayName.IsNotEmpty() && parameter.Name.IsNotEmpty())
-                    {
-                        sb.Append(JSON.Serialize(parameter.Name).ConcatWith(":", JSON.Serialize(parameter.DisplayName), ","));
-                        count++;
-                    }
-                }
-
-                sb.Remove(sb.Length - 1, 1);
-                sb.Append("}");
-
-                return count > 0 ? sb.ToString() : null;
-            }
+            this.Call("setSource", JRawValue.Null);
         }
 
         /// <summary>
@@ -287,6 +224,27 @@ namespace Ext.Net
             set
             {
                 this.State.Set("Editable", value);
+            }
+        }
+
+        /// <summary>
+        /// True to automatically infer the type based on the initial value passed for each field. This ensures the editor remains the correct type even if the value is blanked and becomes empty. Defaults to: true
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("8. PropertyGrid")]
+        [NotifyParentProperty(true)]
+        [DefaultValue(true)]
+        [Description("True to automatically infer the type based on the initial value passed for each field. This ensures the editor remains the correct type even if the value is blanked and becomes empty. Defaults to: true")]
+        public virtual bool InferTypes
+        {
+            get
+            {
+                return this.State.Get<bool>("InferTypes", true);
+            }
+            set
+            {
+                this.State.Set("InferTypes", value);
             }
         }
 
@@ -322,7 +280,8 @@ namespace Ext.Net
         {
             add
             {
-                this.Events.AddHandler(EventDataChanged, value);
+                this.CheckForceId();
+				this.Events.AddHandler(EventDataChanged, value);
             }
             remove
             {
@@ -416,7 +375,7 @@ namespace Ext.Net
                 }
             }
 
-            return new PropertyGridParameter();
+            return null;
         }
 
         private bool dataChangedEventHandled = false;
@@ -436,29 +395,28 @@ namespace Ext.Net
             {
                 string value = property.Value.Type == JTokenType.String ? (string)property.Value : this.ChopQuotes(property.Value.ToString());
                 PropertyGridParameter newP = new PropertyGridParameter(this.ChopQuotes(property.Name), value);
-                PropertyGridParameter oldP = this.FindParam(property.Name);
-                newP.Mode = oldP.Mode;
-                
-                if (oldP.Editor.Count > 0)
+                PropertyGridParameter param = this.FindParam(property.Name);
+
+                if (param == null)
                 {
-                    newP.Editor.Add(oldP.Editor.Primary);    
+                    param = new PropertyGridParameter(this.ChopQuotes(property.Name), value);
+                    param.IsChanged = true;
+                }
+                else
+                {
+                    param.IsChanged = param.Value != value;
+                    param.Value = value;                    
                 }
 
-                newP.IsChanged = newP.Name.IsEmpty() || oldP.Value != newP.Value;
-
-                if (newP.IsChanged)
+                if (param.IsChanged)
                 {
                     raiseChanged = true;
                 }
-                result.Add(newP);
+                result.Add(param);
             }
 
             this.Source.Clear();
-
-            foreach (PropertyGridParameter parameter in result)
-            {
-                this.Source.Add(parameter);
-            }
+            this.Source.AddRange(result);
 
             this.dataChangedEventHandled = true;
         }
@@ -520,30 +478,14 @@ namespace Ext.Net
         [Description("Adds the property.")]
         public void AddProperty(PropertyGridParameter property)
         {
-            if (property.DisplayName.IsNotEmpty())
+            string config = property.ToConfig(true);
+            
+            if (config.IsNotEmpty())
             {
-                this.Set("propertyNames[{0}]".FormatWith(JSON.Serialize(property.Name)), property.DisplayName);
+                this.AddScript("Ext.apply({0}.sourceConfig, {{{1}}});", this.ClientID, config);
             }
 
-            if (!property.Renderer.IsDefault)
-            {
-                this.Set("customRenderers[{0}]".FormatWith(JSON.Serialize(property.Name)), new JRawValue(property.Renderer.ToConfigString()));
-            }
-
-            if (property.Editor.Count > 0)
-            {
-                string options = property.EditorOptions.Serialize();
-                options = options.Replace("{", "{{").Replace("}", "}}");
-                string tpl = "new Ext.grid.CellEditor(Ext.apply({{field:{0}}}, " + options + "))";
-
-                property.Editor[0].PreventRenderTo = true;
-                property.Editor[0].Visible = true;
-
-                this.Set(string.Concat("customEditors[", JSON.Serialize(property.Name), "]"), new JRawValue(string.Format(tpl,property.Editor[0].ToConfig(LazyMode.Config))));
-                property.Editor[0].Visible = false;
-            }
-
-            this.Call("setProperty", property.Name, property.Mode == ParameterMode.Raw ? (object)new JRawValue(property.Value) : (object)property.Value, true);
+            this.Call("setProperty", property.ToName(), property.ValueToString(), true);
         }
 
         /// <summary>

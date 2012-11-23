@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -66,6 +66,17 @@ namespace Ext.Net
 
                 if (!this.DesignMode)
                 {
+#if MVC
+                    if (this.IsMVC)
+                    {
+                        this.resourceManager = Ext.Net.MVC.MvcResourceManager.GetMvcInstance();
+                        if (this.resourceManager != null)
+                        {
+                            return this.resourceManager;
+                        }
+                    }
+#endif
+                    
                     if (this.Page != null)
                     {
                         this.resourceManager = ResourceManager.GetInstance(this.Page);
@@ -97,6 +108,10 @@ namespace Ext.Net
                 }
 
                 return this.resourceManager;
+            }
+            internal set
+            {
+                this.resourceManager = value;
             }
         }
 
@@ -175,7 +190,7 @@ namespace Ext.Net
                 if (item is T)
                 {
                     // Little "sort" operation to ensure that 'Ext.Net' resources figure at top of partial dependencies list 
-                    if (item.PathEmbedded.Contains(ResourceManager.ASSEMBLYSLUG))
+                    if (item.PathEmbedded.IsNotEmpty() && item.PathEmbedded.Contains(ResourceManager.ASSEMBLYSLUG))
                     {
                         list.Insert(position++, (T)item);
                     }
@@ -271,6 +286,18 @@ namespace Ext.Net
                 {
                     if (item.Theme.Equals(theme))
                     {
+                        if (item.IgnoreResourceMode)
+                        {
+                            if (item.PathEmbedded.IsNotEmpty())
+                            {
+                                this.ResourceManager.RegisterThemeIncludeInternal(item.Type, item.PathEmbedded);
+                            }
+                            else
+                            {
+                                this.ResourceManager.RegisterThemeIncludeInternal(item.Path, item.Path.StartsWith("~") ? this.ResolveUrlLink(item.Path) : item.Path);
+                            }
+                            continue;
+                        }
 
                         var mode = this.DetermineRequiredResourceMode(this.ResourceManager.RenderStyles, item);
                         
@@ -377,6 +404,19 @@ namespace Ext.Net
             {
                 if (item.Theme.Equals(Theme.Default))
                 {
+                    if (item.IgnoreResourceMode)
+                    {
+                        if (item.PathEmbedded.IsNotEmpty())
+                        {
+                            this.ResourceManager.RegisterClientStyleIncludeInternal(item.Type, item.PathEmbedded);
+                        }
+                        else
+                        {
+                            this.ResourceManager.RegisterClientStyleIncludeInternal(item.Path, item.Path.StartsWith("~") ? this.ResolveUrlLink(item.Path) : item.Path);
+                        }
+                        continue;
+                    }
+                    
                     var mode = this.DetermineRequiredResourceMode(rm.RenderStyles, item);
 
                     switch (mode)
@@ -433,6 +473,20 @@ namespace Ext.Net
 
             foreach (ClientScriptItem item in scripts)
             {
+                if (item.IgnoreResourceMode)
+                {
+                    if (item.PathEmbedded.IsNotEmpty())
+                    {
+                        this.ResourceManager.RegisterClientScriptIncludeInternal(item.Type, (rm.ScriptMode == ScriptMode.Release || item.PathEmbeddedDebug.IsEmpty()) ? item.PathEmbedded : item.PathEmbeddedDebug);
+                    }
+                    else
+                    {
+                        bool isDebug = !(rm.ScriptMode == ScriptMode.Release || item.PathDebug.IsEmpty());
+                        this.ResourceManager.RegisterClientScriptIncludeInternal(item.Path, (isDebug ? item.PathDebug : item.Path).StartsWith("~") ? this.ResolveUrlLink(isDebug ? item.PathDebug : item.Path) : (isDebug ? item.PathDebug : item.Path));
+                    }
+                    continue;
+                }
+
                 var mode = this.DetermineRequiredResourceMode(rm.RenderScripts, item);
 
                 if (mode == ResourceLocationType.Embedded)

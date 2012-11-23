@@ -9,11 +9,11 @@
         {
             this.GridPanel1.Store.Primary.DataSource = new object[]
             {
-                new object[] {true, DateTime.Now, 1},
-                new object[] {false, DateTime.Now.AddDays(-1), 2},
-                new object[] {true, DateTime.Now.AddDays(-2), 3},
-                new object[] {false, DateTime.Now.AddDays(-3), 4},
-                new object[] {true, DateTime.Now.AddDays(-4), 5}
+                new object[] { true, DateTime.Now, 1 },
+                new object[] { false, DateTime.Now.AddDays(-1), 2 },
+                new object[] { true, DateTime.Now.AddDays(-2), 3 },
+                new object[] { false, DateTime.Now.AddDays(-3), 4 },
+                new object[] { true, DateTime.Now.AddDays(-4), 5 }
             };
 
             this.GridPanel1.Store.Primary.DataBind();
@@ -26,7 +26,7 @@
 <html>
 <head runat="server">
     <title>Columns Variations - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 </head>
 <body>
     <form runat="server">

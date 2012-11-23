@@ -14,9 +14,9 @@
 <html>
 <head runat="server">
     <title>DropDownField ValueText Mode - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
             var getValues = function (tree) {
                 var msg = [], 
                     selNodes = tree.getChecked();
@@ -52,7 +52,7 @@
                 var ids = value.split(",");
                 tree.setChecked({ids: ids, silent: true});
                    
-                tree.getSelectionModel().clearSelections();
+                tree.getSelectionModel().deselectAll();
                 Ext.each(ids, function (id) {
                     var node = tree.store.getNodeById(id);      
                        

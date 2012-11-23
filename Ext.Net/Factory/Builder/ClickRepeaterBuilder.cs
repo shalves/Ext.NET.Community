@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,153 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Observable.Builder<ClickRepeater, ClickRepeater.Builder>
+        new public abstract partial class Builder<TClickRepeater, TBuilder> : Observable.Builder<TClickRepeater, TBuilder>
+            where TClickRepeater : ClickRepeater
+            where TBuilder : Builder<TClickRepeater, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TClickRepeater component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// True if autorepeating should start slowly and accelerate. Interval and Delay are ignored.
+			/// </summary>
+            public virtual TBuilder Accelerate(bool accelerate)
+            {
+                this.ToComponent().Accelerate = accelerate;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The initial delay before the repeating event begins firing. Similar to an autorepeat key delay.
+			/// </summary>
+            public virtual TBuilder Delay(int delay)
+            {
+                this.ToComponent().Delay = delay;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The element to act as a button.
+			/// </summary>
+            public virtual TBuilder Target(string target)
+            {
+                this.ToComponent().Target = target;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The interval between firings of the \"click\" event. Default 20 ms.
+			/// </summary>
+            public virtual TBuilder Interval(int interval)
+            {
+                this.ToComponent().Interval = interval;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A CSS class name to be applied to the element while pressed.
+			/// </summary>
+            public virtual TBuilder PressedCls(string pressedCls)
+            {
+                this.ToComponent().PressedCls = pressedCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to prevent the default click event.
+			/// </summary>
+            public virtual TBuilder PreventDefault(bool preventDefault)
+            {
+                this.ToComponent().PreventDefault = preventDefault;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to stop the default click event
+			/// </summary>
+            public virtual TBuilder StopDefault(bool stopDefault)
+            {
+                this.ToComponent().StopDefault = stopDefault;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A function called when the traget is clicked (can be used instead of click event).
+			/// </summary>
+            public virtual TBuilder Handler(string handler)
+            {
+                this.ToComponent().Handler = handler;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to ignore the left button
+			/// </summary>
+            public virtual TBuilder IgnoreLeftButton(bool ignoreLeftButton)
+            {
+                this.ToComponent().IgnoreLeftButton = ignoreLeftButton;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to ignore the right button
+			/// </summary>
+            public virtual TBuilder IgnoreRightButton(bool ignoreRightButton)
+            {
+                this.ToComponent().IgnoreRightButton = ignoreRightButton;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to ignore the middle button
+			/// </summary>
+            public virtual TBuilder IgnoreMiddleButton(bool ignoreMiddleButton)
+            {
+                this.ToComponent().IgnoreMiddleButton = ignoreMiddleButton;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<ClickRepeaterListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side DirectEventHandlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<ClickRepeaterDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ClickRepeater.Builder<ClickRepeater, ClickRepeater.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,136 +218,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// True if autorepeating should start slowly and accelerate. Interval and Delay are ignored.
-			/// </summary>
-            public virtual ClickRepeater.Builder Accelerate(bool accelerate)
-            {
-                this.ToComponent().Accelerate = accelerate;
-                return this as ClickRepeater.Builder;
-            }
-             
- 			/// <summary>
-			/// The initial delay before the repeating event begins firing. Similar to an autorepeat key delay.
-			/// </summary>
-            public virtual ClickRepeater.Builder Delay(int delay)
-            {
-                this.ToComponent().Delay = delay;
-                return this as ClickRepeater.Builder;
-            }
-             
- 			/// <summary>
-			/// The element to act as a button.
-			/// </summary>
-            public virtual ClickRepeater.Builder Target(string target)
-            {
-                this.ToComponent().Target = target;
-                return this as ClickRepeater.Builder;
-            }
-             
- 			/// <summary>
-			/// The interval between firings of the \"click\" event. Default 20 ms.
-			/// </summary>
-            public virtual ClickRepeater.Builder Interval(int interval)
-            {
-                this.ToComponent().Interval = interval;
-                return this as ClickRepeater.Builder;
-            }
-             
- 			/// <summary>
-			/// A CSS class name to be applied to the element while pressed.
-			/// </summary>
-            public virtual ClickRepeater.Builder PressedCls(string pressedCls)
-            {
-                this.ToComponent().PressedCls = pressedCls;
-                return this as ClickRepeater.Builder;
-            }
-             
- 			/// <summary>
-			/// True to prevent the default click event.
-			/// </summary>
-            public virtual ClickRepeater.Builder PreventDefault(bool preventDefault)
-            {
-                this.ToComponent().PreventDefault = preventDefault;
-                return this as ClickRepeater.Builder;
-            }
-             
- 			/// <summary>
-			/// True to stop the default click event
-			/// </summary>
-            public virtual ClickRepeater.Builder StopDefault(bool stopDefault)
-            {
-                this.ToComponent().StopDefault = stopDefault;
-                return this as ClickRepeater.Builder;
-            }
-             
- 			/// <summary>
-			/// A function called when the traget is clicked (can be used instead of click event).
-			/// </summary>
-            public virtual ClickRepeater.Builder Handler(string handler)
-            {
-                this.ToComponent().Handler = handler;
-                return this as ClickRepeater.Builder;
-            }
-             
- 			/// <summary>
-			/// True to ignore the left button
-			/// </summary>
-            public virtual ClickRepeater.Builder IgnoreLeftButton(bool ignoreLeftButton)
-            {
-                this.ToComponent().IgnoreLeftButton = ignoreLeftButton;
-                return this as ClickRepeater.Builder;
-            }
-             
- 			/// <summary>
-			/// True to ignore the right button
-			/// </summary>
-            public virtual ClickRepeater.Builder IgnoreRightButton(bool ignoreRightButton)
-            {
-                this.ToComponent().IgnoreRightButton = ignoreRightButton;
-                return this as ClickRepeater.Builder;
-            }
-             
- 			/// <summary>
-			/// True to ignore the middle button
-			/// </summary>
-            public virtual ClickRepeater.Builder IgnoreMiddleButton(bool ignoreMiddleButton)
-            {
-                this.ToComponent().IgnoreMiddleButton = ignoreMiddleButton;
-                return this as ClickRepeater.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ClickRepeater.Builder</returns>
-            public virtual ClickRepeater.Builder Listeners(Action<ClickRepeaterListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as ClickRepeater.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEventHandlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ClickRepeater.Builder</returns>
-            public virtual ClickRepeater.Builder DirectEvents(Action<ClickRepeaterDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as ClickRepeater.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -210,6 +226,14 @@ namespace Ext.Net
         public ClickRepeater.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ClickRepeater(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -224,7 +248,11 @@ namespace Ext.Net
         /// </summary>
         public ClickRepeater.Builder ClickRepeater()
         {
-            return this.ClickRepeater(new ClickRepeater());
+#if MVC
+			return this.ClickRepeater(new ClickRepeater { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ClickRepeater(new ClickRepeater());
+#endif			
         }
 
         /// <summary>
@@ -232,7 +260,10 @@ namespace Ext.Net
         /// </summary>
         public ClickRepeater.Builder ClickRepeater(ClickRepeater component)
         {
-            return new ClickRepeater.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ClickRepeater.Builder(component);
         }
 
         /// <summary>
@@ -240,7 +271,11 @@ namespace Ext.Net
         /// </summary>
         public ClickRepeater.Builder ClickRepeater(ClickRepeater.Config config)
         {
-            return new ClickRepeater.Builder(new ClickRepeater(config));
+#if MVC
+			return new ClickRepeater.Builder(new ClickRepeater(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ClickRepeater.Builder(new ClickRepeater(config));
+#endif			
         }
     }
 }

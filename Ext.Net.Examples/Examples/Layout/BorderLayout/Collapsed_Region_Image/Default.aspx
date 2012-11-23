@@ -8,9 +8,9 @@
 <head runat="server">
     <title>Image on Collapsed BorderLayout Region - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         #WestPanel-placeholder_hd {
             background : url(collapsed-west.png) no-repeat center;
         }

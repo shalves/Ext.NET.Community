@@ -1,27 +1,21 @@
-﻿<%@ Control Language="C#" Inherits="Ext.Net.Examples.BaseUserControl" %>
-
-<%@ Import Namespace="System.Collections.Generic"%>
-
-<%@ Register Assembly="Ext.Net" Namespace="Ext.Net" TagPrefix="ext" %>
+﻿<%@ Control Language="C#" %>
 
 <script runat="server">
-    public override List<string> ControlsToDestroy
+    protected void HelloFromServer(object sender, DirectEventArgs e)
     {
-        get
-        {
-            // we should return none lazy controls only because lazy controls will be autodestroyed by parent container
-            return new List<string>
-                       {
-                            Label1.ConfigID,
-                            Button1.ConfigID
-                       };
-        }
-    }
+        X.Msg.Alert("Server", "Hello from server - UserControl №1").Show();
+    }        
 </script>
+
+<ext:ResourcesRegistrator runat="server">
+    <ResourceItems>
+        <ext:ClientResourceItem Path="script.js" />
+    </ResourceItems>
+</ext:ResourcesRegistrator>
 
 <h1>№1</h1>
 <ext:Label ID="Label1" runat="server" Text="I am User control №1" />
 <br />
-<ext:Button ID="Button1" runat="server" Text="User control №1: Ext.Net button" />
+<ext:Button ID="Button1" runat="server" Text="User control №1: Ext.Net button" OnDirectClick="HelloFromServer" />
 <br />
-<asp:Button runat="server" Text="User control №1: ASP.NET button" OnClientClick="return false;" />
+<asp:Button runat="server" Text="User control №1: ASP.NET button" OnClientClick="helloFromClient('UserControl №1');return false;" />

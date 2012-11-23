@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>MenuPanel - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var menuItemClick = function (menu, item) {
             App.PnlCenter.body.update(Ext.String.format("Clicked: {0}", item.text)).highlight();       
         };

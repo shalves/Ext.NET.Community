@@ -1,0 +1,20 @@
+﻿@(Html.X().Panel()
+    .Header(false)
+    .Region(Region.North)
+    .Border(false)
+    .Height(69)
+    .Content(
+        @<text>
+            <div id="titlebar">
+			    <div id="left">
+				    <div class="minor">Ext.NET</div>				    <div class="title">MVC Examples Explorer <span class="title-sub">(Version 2.1)</span></div>
+				    <div class="badge">built with Ext.NET</div>
+			    </div>
+			    <div id="right"><a href="http://www.ext.net/"></a></div>
+			    <div id="v1-samples">
+				    <a href="http://examples.ext.net" title="Click to open WebForm examples">WebForm &#187;</a>
+			    </div>
+		    </div>
+        </text>
+    )
+)

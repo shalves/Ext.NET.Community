@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,117 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : SplitButtonBase.Builder<CycleButton, CycleButton.Builder>
+        new public abstract partial class Builder<TCycleButton, TBuilder> : SplitButtonBase.Builder<TCycleButton, TBuilder>
+            where TCycleButton : CycleButton
+            where TBuilder : Builder<TCycleButton, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TCycleButton component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// A callback function that will be invoked each time the active menu items in the button's menu has changed. If this callback is not supplied, the SplitButton will instead fire the change event on active items change. The changeHandler function will be called with the following argument list: (SplitButton this, Ext.menu.CheckItem items).
+			/// </summary>
+            public virtual TBuilder ChangeHandler(string changeHandler)
+            {
+                this.ToComponent().ChangeHandler = changeHandler;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A css class which sets an image to be used as the static icon for this button. This icon will always be displayed regardless of which item is selected in the dropdown list. This overrides the default behavior of changing the button's icon to match the selected item's icon on change.
+			/// </summary>
+            public virtual TBuilder ForceIcon(string forceIcon)
+            {
+                this.ToComponent().ForceIcon = forceIcon;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A static string to prepend before the active items's text when displayed as the button's text (only applies when showText = true, defaults to '')
+			/// </summary>
+            public virtual TBuilder PrependText(string prependText)
+            {
+                this.ToComponent().PrependText = prependText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// True to display the active item's text as the button text. The Button will show its configured text if this config is omitted (defaults to false).
+			/// </summary>
+            public virtual TBuilder ShowText(bool showText)
+            {
+                this.ToComponent().ShowText = showText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// False to prevent change active item after button click (defaults to true).
+			/// </summary>
+            public virtual TBuilder ToggleOnClick(bool toggleOnClick)
+            {
+                this.ToComponent().ToggleOnClick = toggleOnClick;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<CycleButtonListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<CycleButtonDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder DirectChangeUrl(string directChangeUrl)
+            {
+                this.ToComponent().DirectChangeUrl = directChangeUrl;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+ 			/// <summary>
+			/// This is normally called internally on button click, but can be called externally to advance the button's active item programmatically to the next one in the menu. If the current item is the last one in the menu the active item will be set to the first item in the menu.
+			/// </summary>
+            public virtual TBuilder ToggleSelected()
+            {
+                this.ToComponent().ToggleSelected();
+                return this as TBuilder;
+            }
+            
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : CycleButton.Builder<CycleButton, CycleButton.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,91 +182,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// A callback function that will be invoked each time the active menu items in the button's menu has changed. If this callback is not supplied, the SplitButton will instead fire the change event on active items change. The changeHandler function will be called with the following argument list: (SplitButton this, Ext.menu.CheckItem items).
-			/// </summary>
-            public virtual CycleButton.Builder ChangeHandler(string changeHandler)
-            {
-                this.ToComponent().ChangeHandler = changeHandler;
-                return this as CycleButton.Builder;
-            }
-             
- 			/// <summary>
-			/// A css class which sets an image to be used as the static icon for this button. This icon will always be displayed regardless of which item is selected in the dropdown list. This overrides the default behavior of changing the button's icon to match the selected item's icon on change.
-			/// </summary>
-            public virtual CycleButton.Builder ForceIcon(string forceIcon)
-            {
-                this.ToComponent().ForceIcon = forceIcon;
-                return this as CycleButton.Builder;
-            }
-             
- 			/// <summary>
-			/// A static string to prepend before the active items's text when displayed as the button's text (only applies when showText = true, defaults to '')
-			/// </summary>
-            public virtual CycleButton.Builder PrependText(string prependText)
-            {
-                this.ToComponent().PrependText = prependText;
-                return this as CycleButton.Builder;
-            }
-             
- 			/// <summary>
-			/// True to display the active item's text as the button text. The Button will show its configured text if this config is omitted (defaults to false).
-			/// </summary>
-            public virtual CycleButton.Builder ShowText(bool showText)
-            {
-                this.ToComponent().ShowText = showText;
-                return this as CycleButton.Builder;
-            }
-             
- 			/// <summary>
-			/// False to prevent change active item after button click (defaults to true).
-			/// </summary>
-            public virtual CycleButton.Builder ToggleOnClick(bool toggleOnClick)
-            {
-                this.ToComponent().ToggleOnClick = toggleOnClick;
-                return this as CycleButton.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CycleButton.Builder</returns>
-            public virtual CycleButton.Builder Listeners(Action<CycleButtonListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as CycleButton.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CycleButton.Builder</returns>
-            public virtual CycleButton.Builder DirectEvents(Action<CycleButtonDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as CycleButton.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
- 			/// <summary>
-			/// This is normally called internally on button click, but can be called externally to advance the button's active item programmatically to the next one in the menu. If the current item is the last one in the menu the active item will be set to the first item in the menu.
-			/// </summary>
-            public virtual CycleButton.Builder ToggleSelected()
-            {
-                this.ToComponent().ToggleSelected();
-                return this;
-            }
-            
         }
 
         /// <summary>
@@ -165,6 +190,14 @@ namespace Ext.Net
         public CycleButton.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.CycleButton(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -179,7 +212,11 @@ namespace Ext.Net
         /// </summary>
         public CycleButton.Builder CycleButton()
         {
-            return this.CycleButton(new CycleButton());
+#if MVC
+			return this.CycleButton(new CycleButton { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.CycleButton(new CycleButton());
+#endif			
         }
 
         /// <summary>
@@ -187,7 +224,10 @@ namespace Ext.Net
         /// </summary>
         public CycleButton.Builder CycleButton(CycleButton component)
         {
-            return new CycleButton.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new CycleButton.Builder(component);
         }
 
         /// <summary>
@@ -195,7 +235,11 @@ namespace Ext.Net
         /// </summary>
         public CycleButton.Builder CycleButton(CycleButton.Config config)
         {
-            return new CycleButton.Builder(new CycleButton(config));
+#if MVC
+			return new CycleButton.Builder(new CycleButton(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new CycleButton.Builder(new CycleButton(config));
+#endif			
         }
     }
 }

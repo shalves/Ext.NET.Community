@@ -11,7 +11,7 @@ public static class EnumerableExtension
         where TEntity : class, new()
         where TSerializableEntity : SerializableEntity<TEntity>, new()
     {
-        var serializable = new TSerializableEntity {Entity = entity};
+        TSerializableEntity serializable = new TSerializableEntity { Entity = entity };
         return serializable;
     }
 
@@ -63,7 +63,7 @@ public static class EnumerableExtension
         where TSource : class, new()
         where TSerializableEntity : SerializableEntity<TSource>, new()
     {
-        var list = new List<TSerializableEntity>();
+        List<TSerializableEntity> list = new List<TSerializableEntity>();
 
         foreach (TSource entity in source)
         {

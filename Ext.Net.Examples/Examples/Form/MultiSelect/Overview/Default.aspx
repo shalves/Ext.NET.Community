@@ -29,9 +29,9 @@
 <html>
 <head runat="server">
     <title>Overview of MultiSelect - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .label {
             font    : bold 11px tahoma,arial,sans-serif;
             width   : 300px;

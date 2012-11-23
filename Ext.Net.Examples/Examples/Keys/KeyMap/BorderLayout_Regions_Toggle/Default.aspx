@@ -7,7 +7,7 @@
 <html>
 <head runat="server">
     <title>KeyMap Toggling BorderLayout Regions - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" /> 
+    <link href="/resources/css/examples.css" rel="stylesheet" /> 
 </head>
 <body>
     <ext:ResourceManager runat="server" />
@@ -64,42 +64,32 @@
         </Items>
     </ext:Viewport>
     
-    <ext:KeyMap runat="server" Target="={Ext.isGecko ? Ext.getDoc() : Ext.getBody()}">
-        <ext:KeyBinding>
-            <Keys>
-                <ext:Key Code="N" />
-            </Keys>
-            <Listeners>
-                <Event Handler="#{North}.toggleCollapse();" />
-            </Listeners>
-        </ext:KeyBinding>    
+    <ext:KeyMap runat="server" Target="={Ext.isGecko ? Ext.getDoc() : Ext.getBody()}">        
+        <Binding>
+                <ext:KeyBinding Handler="#{North}.toggleCollapse();">
+                <Keys>
+                    <ext:Key Code="N" />
+                </Keys>
+            </ext:KeyBinding>    
         
-        <ext:KeyBinding>
-            <Keys>
-                <ext:Key Code="W" />
-            </Keys>
-            <Listeners>
-                <Event Handler="#{West}.toggleCollapse();" />
-            </Listeners>
-        </ext:KeyBinding>
+            <ext:KeyBinding Handler="#{West}.toggleCollapse();">
+                <Keys>
+                    <ext:Key Code="W" />
+                </Keys>
+            </ext:KeyBinding>
         
-        <ext:KeyBinding>
-            <Keys>
-                <ext:Key Code="E" />
-            </Keys>
-            <Listeners>
-                <Event Handler="#{East}.toggleCollapse();" />
-            </Listeners>
-        </ext:KeyBinding>
+            <ext:KeyBinding Handler="#{East}.toggleCollapse();">
+                <Keys>
+                    <ext:Key Code="E" />
+                </Keys>
+            </ext:KeyBinding>
         
-        <ext:KeyBinding>
-            <Keys>
-                <ext:Key Code="S" />
-            </Keys>
-            <Listeners>
-                <Event Handler="#{South}.toggleCollapse();" />
-            </Listeners>
-        </ext:KeyBinding>
+            <ext:KeyBinding Handler="#{South}.toggleCollapse();">
+                <Keys>
+                    <ext:Key Code="S" />
+                </Keys>
+            </ext:KeyBinding>
+        </Binding>        
     </ext:KeyMap>
 </body>
 </html>

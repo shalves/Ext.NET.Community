@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,54 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : CheckboxGroupBase.Builder<CheckboxGroup, CheckboxGroup.Builder>
+        new public abstract partial class Builder<TCheckboxGroup, TBuilder> : CheckboxGroupBase.Builder<TCheckboxGroup, TBuilder>
+            where TCheckboxGroup : CheckboxGroup
+            where TBuilder : Builder<TCheckboxGroup, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TCheckboxGroup component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<CheckboxGroupListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<CheckboxGroupDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : CheckboxGroup.Builder<CheckboxGroup, CheckboxGroup.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,37 +119,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CheckboxGroup.Builder</returns>
-            public virtual CheckboxGroup.Builder Listeners(Action<CheckboxGroupListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as CheckboxGroup.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of CheckboxGroup.Builder</returns>
-            public virtual CheckboxGroup.Builder DirectEvents(Action<CheckboxGroupDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as CheckboxGroup.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -111,6 +127,14 @@ namespace Ext.Net
         public CheckboxGroup.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.CheckboxGroup(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -125,7 +149,11 @@ namespace Ext.Net
         /// </summary>
         public CheckboxGroup.Builder CheckboxGroup()
         {
-            return this.CheckboxGroup(new CheckboxGroup());
+#if MVC
+			return this.CheckboxGroup(new CheckboxGroup { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.CheckboxGroup(new CheckboxGroup());
+#endif			
         }
 
         /// <summary>
@@ -133,7 +161,10 @@ namespace Ext.Net
         /// </summary>
         public CheckboxGroup.Builder CheckboxGroup(CheckboxGroup component)
         {
-            return new CheckboxGroup.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new CheckboxGroup.Builder(component);
         }
 
         /// <summary>
@@ -141,7 +172,11 @@ namespace Ext.Net
         /// </summary>
         public CheckboxGroup.Builder CheckboxGroup(CheckboxGroup.Config config)
         {
-            return new CheckboxGroup.Builder(new CheckboxGroup(config));
+#if MVC
+			return new CheckboxGroup.Builder(new CheckboxGroup(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new CheckboxGroup.Builder(new CheckboxGroup(config));
+#endif			
         }
     }
 }

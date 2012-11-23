@@ -17,14 +17,14 @@
 <html>
 <head runat="server">
     <title>Summary of Client-Side Notification Options - Ext.NET Examples</title>  
-    <style type="text/css">
+    <style>
         .menu-label {
             border-bottom : dotted 1px;
             margin-left   : 25px;
         }
     </style> 
     
-    <script type="text/javascript">
+    <script>
         var stub = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ...";
     </script>
 </head>
@@ -429,10 +429,9 @@
                                                         title   : 'Help'
                                                     });
                                                 },
-                                                id : 'help'
+                                                type : 'help'
                                             }
-                                        ],
-                                        pinEvent : 'click',
+                                        ],                                        
                                         html     : stub,
                                         title    : 'Title'
                                     });" />
@@ -451,7 +450,7 @@
                                     Ext.net.Notification.show({
                                         pinEvent : 'none',
                                         html     : stub,
-                                        preventHeader : true,
+                                        header   : false,
                                         plain    : true
                                     });" />
                             </Listeners>
@@ -463,9 +462,9 @@
     </ext:Window>
     
     <div id="customEl" class="x-hide-offsets">
-        <ext:Panel ID="CustomEl1" runat="server" Border="false" BodyPadding="2" Html="={stub}" Height="113" Width="180">
+        <ext:Panel runat="server" Border="false" BodyPadding="2" Html="={stub}" Height="113" Width="180">
             <BottomBar>
-                <ext:Toolbar ID="Toolb1" runat="server">
+                <ext:Toolbar runat="server">
                     <Items>
                         <ext:ToolbarTextItem ID="BarLabel" runat="server" />
                         <ext:ToolbarFill runat="server" />

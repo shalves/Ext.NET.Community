@@ -41,7 +41,7 @@ Ext.define('Ext.ux.DataView.LabelEditor', {
 
     constructor: function(config) {
         config.field = config.field || Ext.create('Ext.form.field.Text', {
-            allowBlank: false,
+            allowOnlyWhitespace: false,
             selectOnFocus:true
         });
         this.callParent([config]);

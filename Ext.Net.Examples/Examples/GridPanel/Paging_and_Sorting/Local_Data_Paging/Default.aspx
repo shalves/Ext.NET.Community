@@ -150,9 +150,9 @@
 <html>
 <head runat="server">
     <title>Local Data Paging - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
+    <script>
         var exportData = function (selectedOnly) {                        
             App.GridPanel1.submitData({selectedOnly : selectedOnly}, {isUpload:true});
         };
@@ -236,9 +236,9 @@
                 <ext:PagingToolbar runat="server" />
             </BottomBar>
             <TopBar>
-                <ext:Toolbar ID="Toolbar1" runat="server">
+                <ext:Toolbar runat="server">
                     <Items>                        
-                        <ext:Button ID="Button1" runat="server" Text="Add record" Icon="Add">
+                        <ext:Button runat="server" Text="Add record" Icon="Add">
                             <Listeners>
                                 <Click Handler="var grid = #{GridPanel1},
                                                     store = grid.store;
@@ -255,23 +255,23 @@
                                                 store.load(true);" />
                             </Listeners>
                         </ext:Button>            
-                        <ext:ToolbarFill ID="ToolbarFill1" runat="server" />            
-                        <ext:Button ID="Button3" runat="server" Text="Find 'Government Motors'" Icon="Find">
+                        <ext:ToolbarFill runat="server" />            
+                        <ext:Button runat="server" Text="Find 'Government Motors'" Icon="Find">
                             <Listeners>
                                 <Click Handler="selectRecord('Government Motors Corporation');" />
                             </Listeners>
                         </ext:Button>
-                        <ext:Button ID="Button4" runat="server" Text="To XML" Icon="PageCode">
+                        <ext:Button runat="server" Text="To XML" Icon="PageCode">
                             <Listeners>
                                 <Click Handler="exportData();" />
                             </Listeners>
                         </ext:Button>
-                        <ext:Button ID="Button5" runat="server" Text="Selection To XML" Icon="PageCode">
+                        <ext:Button runat="server" Text="Selection To XML" Icon="PageCode">
                             <Listeners>
                                 <Click Handler="exportData(true);" />
                             </Listeners>
                         </ext:Button>
-                        <ext:Button ID="Button6" runat="server"  Text="Save" Icon="Disk">
+                        <ext:Button runat="server"  Text="Save" Icon="Disk">
                             <Listeners>
                                 <Click Handler="#{GridPanel1}.store.sync();" />
                             </Listeners>

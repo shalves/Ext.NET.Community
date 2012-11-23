@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -64,12 +64,17 @@ namespace Ext.Net
         }
 
         private static Regex warningRegex = new Regex("<Ext.Net.InitScript.Warning>.*?</Ext.Net.InitScript.Warning>", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline);
-        private static Regex removeViewstateRegex = new Regex("<div>[\\r|\\t|\\s]*<input.*name=\"__EVENTVALIDATION\"[^>].*/>[\\r|\\t|\\s]*</div>|<input(?:[^>]*)name=\"__(VIEWSTATE|VIEWSTATEENCRYPTED)\".*?/>", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline);
+        //private static Regex removeViewstateRegex = new Regex("<div>[\\r|\\t|\\s]*<input.*name=\"__EVENTVALIDATION\"[^>].*/>[\\r|\\t|\\s]*</div>|<input(?:[^>]*)name=\"__(VIEWSTATE|VIEWSTATEENCRYPTED)\".*?/>", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline);
+        private static Regex removeViewstateRegex = new Regex("<input(?:[^>]*)name=\"__(VIEWSTATE|VIEWSTATEENCRYPTED)\".*?/>", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline);
         private static Regex inputsVSRegex = new Regex("<input(?:[^>]*)name=\"__(VIEWSTATE|VIEWSTATEENCRYPTED|EVENTTARGET|EVENTARGUMENT|LASTFOCUS|EVENTVALIDATION)\".*?/>", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline);
         private static Regex inputsRegex = new Regex("<input(?:[^>]*)name=\"__(EVENTTARGET|EVENTARGUMENT|LASTFOCUS)\".*?/>", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline);
         private static Regex postbackRegex = new Regex("<script(?:(?!</script>).)*function __doPostBack\\(eventTarget, eventArgument\\).*?</script>", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
-        private static Regex removeInputsBlockRegex = new Regex("<div(?:(?!</div>).)*<input(?:[^>]*)name=\"__(EVENTTARGET|EVENTVALIDATION)\".*?</div>", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
-
+        //private static Regex removeInputsBlockRegex = new Regex("<div(?:(?!</div>).)*<input(?:[^>]*)name=\"__(EVENTTARGET|EVENTVALIDATION)\".*?</div>", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
+        private static Regex removeInputsBlockRegex = new Regex("<input(?:[^>]*)name=\"__(EVENTTARGET|EVENTARGUMENT|EVENTVALIDATION).*?/>", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
+        private static Regex titleRegex = new Regex("<title>.*?</title>", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
+        private static Regex removeLeadingEmptyLines = new Regex(@"^(\r?\n\s*){2,}", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
+        private static Regex removeLeadingEmptyLinesAfterForm = new Regex(@"(?<=\<form(?:[^>]*)\>\s*)(\r?\n\s*){2,}", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
+        
         /// <summary>
         /// 
         /// </summary>
@@ -82,6 +87,9 @@ namespace Ext.Net
             selectors.Add("inputs", new TokenSelector { Regex = inputsRegex, Position = SelectorPosition.After, Pseudo = "all" });
             selectors.Add("postback", new TokenSelector { Regex = postbackRegex, Position = SelectorPosition.Replace });
             selectors.Add("removeblocks", new TokenSelector { Regex = removeInputsBlockRegex, Position = SelectorPosition.Replace, Pseudo="all" });
+            selectors.Add("fixTitle", new TokenSelector { Regex = titleRegex, Position = SelectorPosition.Replace, Pseudo = "first" });
+            selectors.Add("removeLeadingEmptyLines", new TokenSelector { Regex = removeLeadingEmptyLines, Position = SelectorPosition.Replace, Pseudo = "first" });
+            selectors.Add("removeLeadingEmptyLinesAfterForm", new TokenSelector { Regex = removeLeadingEmptyLinesAfterForm, Position = SelectorPosition.Replace, Pseudo = "first" });
         }
 
         /// <summary>
@@ -106,7 +114,19 @@ namespace Ext.Net
         /// <returns></returns>
         new public static string Transform(string text)
         {
-            return new ExtNetTransformer(ExtNetTransformer.PrepareText(text)).Transform();
+            try
+            {
+                return new ExtNetTransformer(ExtNetTransformer.PrepareText(text)).Transform();
+            }
+            catch(System.Exception e)
+            {
+                if (e.Message.Contains("Reference token (init_script) was not found"))
+                {
+                    throw new Exception("Probably ResourceManager is not defined in the View");
+                }
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -159,17 +179,15 @@ namespace Ext.Net
             StringBuilder sb = new StringBuilder();
             sb.Append(text);
 
-            var config = MVC.MvcResourceManager.SharedConfig;
-
-            if (config.RenderStyles != ResourceLocationType.None)
+            if (ExtNetTransformer.RenderStyles != ResourceLocationType.None)
             {
                 ExtNetTransformer.ShareIcons(sb);
-                ExtNetTransformer.ShareStyles(sb, config);
+                ExtNetTransformer.ShareStyles(sb);
             }
 
-            if (config.RenderScripts != ResourceLocationType.None)
+            if (ExtNetTransformer.RenderScripts != ResourceLocationType.None)
             {
-                ExtNetTransformer.ShareScripts(sb, config);
+                ExtNetTransformer.ShareScripts(sb);
             }
 
             ExtNetTransformer.ShareBeforeAfterScripts(sb);
@@ -182,26 +200,40 @@ namespace Ext.Net
             return sb.ToString();
         }
 
-        private static void ShareStyles(StringBuilder sb, MVC.MvcResourceManagerConfig config)
+        private static void ShareStyles(StringBuilder sb)
         {
             if (HttpContext.Current.Items[Ext.Net.ResourceManager.GLOBAL_RESOURCES] != null)            
             {
 
-                var placeholder = HttpContext.Current.Items["Ext.Net.InitStyle"] != null;
+                bool placeholder = HttpContext.Current.Items["Ext.Net.InitStyle"] != null;
+                
                 sb.AppendFormat("<#:item {0}='{1}' index='11'>", placeholder ? "ref" : "selector", placeholder ? "ext.net.initstyle" : "headstart");
                 
                 List<ResourceItem> styles = (List<ResourceItem>)HttpContext.Current.Items[Ext.Net.ResourceManager.GLOBAL_RESOURCES];
 
-                foreach (var item in styles)
+                foreach (ResourceItem item in styles)
                 {
                     if (item is ClientStyleItem)
                     {
-                        var styleItem = (ClientStyleItem)item;
+                        if (item.IgnoreResourceMode)
+                        {
+                            if (item.PathEmbedded.IsNotEmpty())
+                            {
+                                sb.AppendFormat(ResourceManager.StyleIncludeTemplate, ExtNetTransformer.GetWebResourceUrl(item.Type, item.PathEmbedded));
+                            }
+                            else
+                            {
+                                sb.AppendFormat(ResourceManager.StyleIncludeTemplate, item.Path.StartsWith("~") ? ExtNetTransformer.ResolveUrl(item.Path) : item.Path);
+                            }
+                            continue;
+                        }
 
-                        switch (config.RenderStyles)
+                        ClientStyleItem styleItem = (ClientStyleItem)item;
+
+                        switch (ExtNetTransformer.RenderStyles)
                         {                            
                             case ResourceLocationType.File:
-                                sb.AppendFormat(ResourceManager.StyleIncludeTemplate, config.ResourcePath.ConcatWith(styleItem.Path));
+                                sb.AppendFormat(ResourceManager.StyleIncludeTemplate, styleItem.Path.StartsWith("~") ? ExtNetTransformer.ResolveUrl(styleItem.Path) : ExtNetTransformer.ResourcePath.ConcatWith(styleItem.Path));
                                 break;
 #if ISPRO                      
                             case ResourceLocationType.CDN:
@@ -210,8 +242,28 @@ namespace Ext.Net
 #endif
                             default :
                             case ResourceLocationType.Embedded:
-                                sb.AppendFormat(ResourceManager.StyleIncludeTemplate, ExtNetTransformer.GetWebResourceUrl(styleItem.Type, styleItem.PathEmbedded, config));
+                                sb.AppendFormat(ResourceManager.StyleIncludeTemplate, ExtNetTransformer.GetWebResourceUrl(styleItem.Type, styleItem.PathEmbedded));
                                 break;
+                        }
+                    }
+                }
+
+                List<ClientResourceItem> gbStyles = (List<ClientResourceItem>)HttpContext.Current.Items[ResourceManager.GLOBAL_CLIENT_RESOURCES];
+               
+                if (gbStyles != null)
+                {
+                    foreach (ClientResourceItem item in gbStyles)
+                    {
+                        if (item.IsCss)
+                        {
+                            if (item.Path.IsNotEmpty())
+                            {
+                                sb.AppendFormat(ResourceManager.StyleIncludeTemplate, item.Path.StartsWith("~") ? ExtNetTransformer.ResolveUrl(item.Path) : item.Path);
+                            }
+                            else if (item.PathEmbedded.IsNotEmpty())
+                            {
+                                sb.AppendFormat(ResourceManager.StyleIncludeTemplate, HttpUtility.HtmlAttributeEncode(CachedPageInstance.ClientScript.GetWebResourceUrl(item.Type, item.PathEmbedded)));
+                            }
                         }
                     }
                 }
@@ -220,48 +272,73 @@ namespace Ext.Net
             }
         }
 
-        private static void ShareScripts(StringBuilder sb, MVC.MvcResourceManagerConfig config)
+        public static string ResolveUrl(string url)
+        {            
+#if MVC            
+            return System.Web.Mvc.UrlHelper.GenerateContentUrl(url, new HttpContextWrapper(HttpContext.Current));
+#else
+            return VirtualPathUtility.IsAppRelative(url) ? VirtualPathUtility.ToAbsolute(url) : url;
+#endif
+        }
+
+        private static void ShareScripts(StringBuilder sb)
         {
             if (HttpContext.Current.Items[Ext.Net.ResourceManager.GLOBAL_RESOURCES] != null)            
             {
-                var placeholder = HttpContext.Current.Items["Ext.Net.InitScriptFiles"] != null;
+                bool placeholder = HttpContext.Current.Items["Ext.Net.InitScriptFiles"] != null;
+                
                 sb.AppendFormat("<#:item {0}='{1}' index='21'>", placeholder ? "ref" : "selector", placeholder ? "ext.net.initscriptfiles" : "headstart");
 
                 List<ResourceItem> scripts = (List<ResourceItem>)HttpContext.Current.Items[Ext.Net.ResourceManager.GLOBAL_RESOURCES];                
 
-                foreach (var item in scripts)
+                foreach (ResourceItem item in scripts)
                 {
                     if (item is ClientScriptItem)
                     {
-                        var scriptItem = (ClientScriptItem)item;
+                        ClientScriptItem scriptItem = (ClientScriptItem)item;
 
-                        if (config.RenderScripts == ResourceLocationType.Embedded)
+                        if (scriptItem.IgnoreResourceMode)
                         {
-                            
-                            if (config.ScriptMode == ScriptMode.Release || scriptItem.PathEmbeddedDebug.IsEmpty())
+                            if (scriptItem.PathEmbedded.IsNotEmpty())
                             {
-                                sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, ExtNetTransformer.GetWebResourceUrl(scriptItem.Type, scriptItem.PathEmbedded, config));
+                                sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, (ExtNetTransformer.ScriptMode == ScriptMode.Release || scriptItem.PathEmbeddedDebug.IsEmpty()) ? scriptItem.PathEmbedded : scriptItem.PathEmbeddedDebug);
                             }
                             else
                             {
-                                sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, ExtNetTransformer.GetWebResourceUrl(scriptItem.Type, scriptItem.PathEmbeddedDebug, config));                                
+                                bool isDebug = !(ExtNetTransformer.ScriptMode == ScriptMode.Release || scriptItem.PathEmbeddedDebug.IsEmpty());
+                                sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, (isDebug ? scriptItem.PathDebug : scriptItem.Path).StartsWith("~") ? ExtNetTransformer.ResolveUrl(isDebug ? scriptItem.PathDebug : scriptItem.Path) : (isDebug ? scriptItem.PathDebug : scriptItem.Path));
+                            }
+                            
+                            continue;
+                        }
+
+                        if (ExtNetTransformer.RenderScripts == ResourceLocationType.Embedded)
+                        {
+
+                            if (ExtNetTransformer.ScriptMode == ScriptMode.Release || scriptItem.PathEmbeddedDebug.IsEmpty())
+                            {
+                                sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, ExtNetTransformer.GetWebResourceUrl(scriptItem.Type, scriptItem.PathEmbedded));
+                            }
+                            else
+                            {
+                                sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, ExtNetTransformer.GetWebResourceUrl(scriptItem.Type, scriptItem.PathEmbeddedDebug));                                
                             }
                         }
-                        else if (config.RenderScripts == ResourceLocationType.File)
+                        else if (ExtNetTransformer.RenderScripts == ResourceLocationType.File)
                         {
-                            if (config.ScriptMode == ScriptMode.Release || scriptItem.PathDebug.IsEmpty())
+                            if (ExtNetTransformer.ScriptMode == ScriptMode.Release || scriptItem.PathDebug.IsEmpty())
                             {
-                                sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, config.ResourcePath.ConcatWith(scriptItem.Path));
+                                sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, scriptItem.Path.StartsWith("~") ? ExtNetTransformer.ResolveUrl(scriptItem.Path) : ExtNetTransformer.ResourcePath.ConcatWith(scriptItem.Path));
                             }
                             else
                             {
-                                sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, config.ResourcePath.ConcatWith(scriptItem.PathDebug));                             
+                                sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, scriptItem.PathDebug.StartsWith("~") ? ExtNetTransformer.ResolveUrl(scriptItem.PathDebug) : ExtNetTransformer.ResourcePath.ConcatWith(scriptItem.PathDebug));                             
                             }
                         }
 #if ISPRO                        
-                        else if (config.RenderScripts == ResourceLocationType.CDN)
+                        else if (ExtNetTransformer.RenderScripts == ResourceLocationType.CDN)
                         {
-                            if (config.ScriptMode == ScriptMode.Release || scriptItem.PathDebug.IsEmpty())
+                            if (ExtNetTransformer.ScriptMode == ScriptMode.Release || scriptItem.PathDebug.IsEmpty())
                             {
                                 sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, ResourceManager.CDNPath.ConcatWith(scriptItem.Path));
                             }
@@ -271,6 +348,26 @@ namespace Ext.Net
                             }
                         }
 #endif
+                    }
+                }
+
+                List<ClientResourceItem> gbScripts = (List<ClientResourceItem>)HttpContext.Current.Items[ResourceManager.GLOBAL_CLIENT_RESOURCES];
+                
+                if (gbScripts != null)
+                {
+                    foreach (ClientResourceItem item in gbScripts)
+                    {
+                        if (!item.IsCss)
+                        {
+                            if (item.Path.IsNotEmpty())
+                            {
+                                sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, item.Path.StartsWith("~") ? ExtNetTransformer.ResolveUrl(item.Path) : item.Path);
+                            }
+                            else if (item.PathEmbedded.IsNotEmpty())
+                            {
+                                sb.AppendFormat(ResourceManager.ScriptIncludeTemplate, HttpUtility.HtmlAttributeEncode(CachedPageInstance.ClientScript.GetWebResourceUrl(item.Type, item.PathEmbedded)));
+                            }
+                        }
                     }
                 }
 
@@ -300,6 +397,66 @@ namespace Ext.Net
             }
         }
 
+        private static bool CleanResourceUrl
+        {
+            get
+            {
+#if MVC
+                return MVC.MvcResourceManager.SharedConfig.CleanResourceUrl;
+#else
+                return GlobalConfig.Settings.CleanResourceUrl;
+#endif
+            }
+        }
+
+        private static ScriptMode ScriptMode
+        {
+            get
+            {
+#if MVC
+                return MVC.MvcResourceManager.SharedConfig.ScriptMode;
+#else
+                return GlobalConfig.Settings.ScriptMode;
+#endif
+            }
+        }
+
+        private static ResourceLocationType RenderStyles
+        {
+            get
+            {
+#if MVC
+                return MVC.MvcResourceManager.SharedConfig.RenderStyles;
+#else
+                return GlobalConfig.Settings.RenderStyles;
+#endif
+            }
+        }
+
+        private static ResourceLocationType RenderScripts
+        {
+            get
+            {
+#if MVC
+                return MVC.MvcResourceManager.SharedConfig.RenderScripts;
+#else
+                return GlobalConfig.Settings.RenderScripts;
+#endif
+            }
+        }
+
+        private static string ResourcePath
+        {
+            get
+            {
+#if MVC
+                return MVC.MvcResourceManager.SharedConfig.ResourcePath;
+#else
+                return GlobalConfig.Settings.ResourcePath;
+#endif
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -307,14 +464,15 @@ namespace Ext.Net
         /// <param name="resourceName"></param>
         /// <param name="config"></param>
         /// <returns></returns>
-        public static string GetWebResourceUrl(Type type, string resourceName, MVC.MvcResourceManagerConfig config)
+        public static string GetWebResourceUrl(Type type, string resourceName)
         {
-            if (resourceName.StartsWith(ResourceManager.ASSEMBLYSLUG) && config.CleanResourceUrl && ResourceHandler.HasHandler())
+            if (resourceName.StartsWith(ResourceManager.ASSEMBLYSLUG) && ExtNetTransformer.CleanResourceUrl && ResourceHandler.HasHandler())
             {
                 string buster = (resourceName.EndsWith(".js") || resourceName.EndsWith(".css")) ? "?v=".ConcatWith(ResourceManager.CacheBuster) : "";
 
-                var url = "~{0}/ext.axd{1}".FormatWith(resourceName.Replace(ResourceManager.ASSEMBLYSLUG, "").Replace('.', '/').ReplaceLastInstanceOf("/", "-"), buster);
-                return System.Web.Mvc.UrlHelper.GenerateContentUrl(url, new HttpContextWrapper(HttpContext.Current));
+                string url = "~{0}/ext.axd{1}".FormatWith(resourceName.Replace(ResourceManager.ASSEMBLYSLUG, "").Replace('.', '/').ReplaceLastInstanceOf("/", "-"), buster);                
+                
+                return ExtNetTransformer.ResolveUrl(url);
             }
 
             return HttpUtility.HtmlAttributeEncode(CachedPageInstance.ClientScript.GetWebResourceUrl(type, resourceName));
@@ -347,13 +505,16 @@ namespace Ext.Net
             {
                 List<string> scripts = (List<string>)HttpContext.Current.Items["Ext.Net.GlobalScriptBeforeClientInit"];
                 HttpContext.Current.Items.Remove("Ext.Net.GlobalScriptBeforeClientInit");
+
                 if (scripts.Count > 0)
                 {
                     sb.Append("<#:item ref='ext.net.global.script.before'>");
-                    foreach (var item in scripts)
+                
+                    foreach (string item in scripts)
                     {
                         sb.Append(item);
                     }                  
+                    
                     sb.Append("</#:item>");
                 }
             }
@@ -362,13 +523,16 @@ namespace Ext.Net
             {
                 List<string> scripts = (List<string>)HttpContext.Current.Items["Ext.Net.GlobalScriptAfterClientInit"];
                 HttpContext.Current.Items.Remove("Ext.Net.GlobalScriptAfterClientInit");
+
                 if (scripts.Count > 0)
                 {
                     sb.Append("<#:item ref='ext.net.global.script.after'>");
-                    foreach (var item in scripts)
+
+                    foreach (string item in scripts)
                     {
                         sb.Append(item);
                     }
+                    
                     sb.Append("</#:item>");
                 }
             }
@@ -376,7 +540,7 @@ namespace Ext.Net
 
         protected override Token CreateToken(string tagName, Match match)
         {
-            if(tagName == "item")
+            if (tagName == "item")
             {
                 string attrsStr = match.Groups["attrs"].Value;
 
@@ -482,12 +646,15 @@ namespace Ext.Net
                 }
 
                 StringBuilder sb = new StringBuilder("Ext.net.ResourceMgr.initAspInputs({");
-                var presented = false;
+                
+                bool presented = false;
+
                 foreach (string match in list)
                 {
                     if (match != null && match.Length > 0)
                     {
                         Dictionary<string, string> attrs = this.BuildAttributes(match);
+
                         if (!(attrs["value"].IsEmpty() && (attrs["name"] == "__EVENTTARGET" || attrs["name"] == "__EVENTARGUMENT")))
                         {
                             sb.Append(JSON.Serialize(attrs["name"])).Append(":").Append(JSON.Serialize(attrs["value"])).Append(",");
@@ -504,6 +671,7 @@ namespace Ext.Net
                 sb.Remove(sb.Length - 1, 1);
                 
                 sb.Append("});");
+
                 return sb.ToString();
             }
         }

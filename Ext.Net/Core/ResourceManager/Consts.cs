@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -36,18 +36,6 @@ namespace Ext.Net
         /// </summary>
         [Description("")]
         public const string OnReadyTemplate = "Ext.onReady(function(){{{0}}});";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Description("")]
-        public const string OnTextResizeTemplate = "Ext.EventManager.onTextResize({0});";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [Description("")]
-        public const string OnWindowResizeTemplate = "Ext.EventManager.onWindowResize({0});";
 
         /// <summary>
         /// 
@@ -121,6 +109,7 @@ namespace Ext.Net
         public const string INSTANCESCRIPT = "Ext.Net.ResourceMgr.InstanceScript";
 
         public const string GLOBAL_RESOURCES = "Ext.Net.GlobalResources";
+        public const string GLOBAL_CLIENT_RESOURCES = "Ext.Net.GlobalClientResources";
 
         /// <summary>
         /// 
@@ -141,6 +130,16 @@ namespace Ext.Net
         /// 
         /// </summary>
         public readonly static string RemoveBlocksToken = Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string> { { "selector", "removeblocks" } }, "");
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public readonly static string RemoveLeadingEmptyLines = Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string> { { "selector", "removeLeadingEmptyLines" } }, "");
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public readonly static string RemoveLeadingEmptyLinesAfterForm = Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string> { { "selector", "removeLeadingEmptyLinesAfterForm" } }, "");
 
         /// <summary>
         /// 

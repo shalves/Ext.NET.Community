@@ -24,7 +24,7 @@
                                lastmod = file.LastAccessTime });
             }
 
-            var store = this.GridPanel1.GetStore();
+            Store store = this.GridPanel1.GetStore();
             
             store.DataSource = data;
             store.DataBind();
@@ -60,7 +60,7 @@
         Dictionary<string, string>[] images = JSON.Deserialize<Dictionary<string, string>[]>(json);
 
         StringBuilder sb = new StringBuilder();
-        sb.Append("<table cellspacing=\"15\">");
+        sb.Append("<table width='100%' cellspacing=\"15\">");
         bool addText = true;
 
         foreach (Dictionary<string, string> row in images)
@@ -99,9 +99,9 @@
 <html>
 <head runat="server">
     <title>GridPanel - Ext.NET Examples</title>    
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var selectionChanged = function (selModel, selected) {
 			var count = selected.length, s = count != 1 ? "s" : "";
 			App.Panel1.setTitle("Simple GridPanel (" + count + " item" + s + " selected)");
@@ -204,7 +204,7 @@
             </Buttons>
         </ext:Panel>
         
-        <div style="width:640px; border:1px solid gray; padding:5px;">
+        <div style="width:650px; border:1px solid gray; padding:5px;">
             <ext:Label ID="Label1" runat="server" />
         </div>
     </form>

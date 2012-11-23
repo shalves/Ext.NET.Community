@@ -1,23 +1,13 @@
 <%@ Page Language="C#" %>
 
-<%@ Import Namespace="Ext.Net.Examples"%>
-<%@ Import Namespace="Ext.Net.Examples.Northwind" %>
-
 <%@ Register Assembly="Ext.Net" Namespace="Ext.Net" TagPrefix="ext" %>
-
-<script runat="server">
-    protected void RowSelect(object sender, DirectEventArgs e)
-    {
-       
-    }
-</script>
 
 <!DOCTYPE html>
 
 <html>
 <head runat="server">
-    <title>GridPanel with Form Details - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <title>Master-Detail Data Binding - Ext.NET Examples</title>
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -35,14 +25,16 @@
             </Html>
         </ext:XTemplate>
         
-        <ext:Panel runat="server"
+        <ext:Panel 
+            runat="server"
             Frame="true"
             Title="Book List"
             Width="540"
             Height="400"
             Layout="BorderLayout">
             <Items>
-                <ext:GridPanel runat="server"
+                <ext:GridPanel 
+                   runat="server"
                    Region="North"
                    Split="true"
                    Height="210">
@@ -62,8 +54,7 @@
                             <Proxy>
                                 <ext:AjaxProxy Url="sheldon.xml">
                                     <Reader>
-                                        <ext:XmlReader Record="Item">
-                                        </ext:XmlReader>
+                                        <ext:XmlReader Record="Item" />
                                     </Reader>
                                 </ext:AjaxProxy>
                             </Proxy>
@@ -71,10 +62,25 @@
                    </Store>                   
                    <ColumnModel>
                        <Columns>
-                            <ext:Column runat="server" Text="Author" Width="120" DataIndex="Author" Sortable="true" />
-                            <ext:Column runat="server" Text="Title" Flex="1" DataIndex="Title" Sortable="true" />
-                            <ext:Column runat="server" Text="Manufacturer" Width="115" DataIndex="Manufacturer" Sortable="true" />
-                            <ext:Column runat="server" Text="Product Group" Width="100" DataIndex="ProductGroup" Sortable="true" />
+                            <ext:Column 
+                                runat="server" 
+                                Text="Author" 
+                                Width="120" 
+                                DataIndex="Author" />
+                            <ext:Column 
+                                runat="server" 
+                                Text="Title" 
+                                Flex="1" 
+                                DataIndex="Title" />
+                            <ext:Column 
+                                runat="server" 
+                                Text="Manufacturer" 
+                                Width="115" 
+                                DataIndex="Manufacturer" />
+                            <ext:Column 
+                                runat="server" 
+                                Text="Product Group" 
+                                DataIndex="ProductGroup" />
                        </Columns>
                    </ColumnModel>
                    <Listeners>
@@ -82,7 +88,9 @@
                    </Listeners>
                 </ext:GridPanel>
 
-                <ext:Panel ID="DetailPanel" runat="server"
+                <ext:Panel 
+                    ID="DetailPanel" 
+                    runat="server"
                     Region="Center"
                     BodyPadding="7"
                     BodyStyle="background: #ffffff;"

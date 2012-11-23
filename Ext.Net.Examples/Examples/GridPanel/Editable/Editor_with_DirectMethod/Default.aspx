@@ -25,8 +25,9 @@
 
     private void BindData()
     {
-        this.GridPanel1.Store.Primary.DataSource = this.GetData();
-        this.GridPanel1.Store.Primary.DataBind();
+        Store store = this.GridPanel1.GetStore();
+        store.DataSource = this.GetData();
+        store.DataBind();
     }
 
     private List<Company> GetData()
@@ -81,10 +82,10 @@
 
 <html>
 <head runat="server">
-    <title>Simple Array Grid - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <title>Editor with DirectMethod - Ext.NET Examples</title>
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
+    <script>
         var template = 'color:{0};';
 
         var change = function (value, meta) {
@@ -150,7 +151,7 @@
             <ColumnModel runat="server">
                 <Columns>
                     <ext:Column runat="server" Text="ID" DataIndex="ID" Width="35" />
-                    <ext:Column runat="server" Text="NAME" DataIndex="Name" Flex="1">
+                    <ext:Column runat="server" Text="Name" DataIndex="Name" Flex="1">
                         <Editor>
                             <ext:TextField runat="server" />
                         </Editor>
@@ -173,21 +174,22 @@
                             <ext:NumberField runat="server" />
                         </Editor>
                     </ext:Column>
-                    <ext:DateColumn runat="server" Text="Last Updated" DataIndex="LastChange" Format="yyyy-MM-dd">
+                    <ext:DateColumn 
+                        runat="server" 
+                        Text="Last Updated" 
+                        DataIndex="LastChange" 
+                        Format="yyyy-MM-dd">
                         <Editor>
-                            <ext:DateField runat="server" />
+                            <ext:DateField runat="server" Format="yyyy-MM-dd" />
                         </Editor>
                     </ext:DateColumn>
                 </Columns>
             </ColumnModel>
-            <View>
-                <ext:GridView runat="server" />
-            </View>
             <SelectionModel>
                 <ext:CellSelectionModel runat="server" />
             </SelectionModel>
             <Plugins>
-                <ext:CellEditing ID="CellEditing1" runat="server">
+                <ext:CellEditing runat="server">
                     <Listeners>
                         <Edit Fn="edit" />
                     </Listeners>

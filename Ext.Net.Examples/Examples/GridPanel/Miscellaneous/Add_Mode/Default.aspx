@@ -19,8 +19,8 @@
 
     private void BindData(int count)
     {
-        var store = this.GridPanel1.GetStore();
-        var data = this.Data;
+        Store store = this.GridPanel1.GetStore();
+        List<object> data = this.Data;
 
         store.DataSource = data.Skip(count).Take(5);
         store.DataBind();
@@ -78,7 +78,7 @@
 <head runat="server">
     <title>Add mode of Store - Ext.NET Examples</title>
     <ext:ResourcePlaceHolder runat="server" Mode="Script" />
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -109,7 +109,7 @@
                 <ext:GridView runat="server" ScrollOffset="0" />
             </View>
             <BottomBar>
-                <ext:Toolbar ID="Toolbar1" runat="server">
+                <ext:Toolbar runat="server">
                     <Items>
                         <ext:Button ID="MoreButton" runat="server" Text="More" Icon="Add">
                             <Listeners>

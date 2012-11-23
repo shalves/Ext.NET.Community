@@ -7,16 +7,15 @@
 <html>
 <head runat="server">
     <title>Toolbar Switcher - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var toogle = function (toolbar) {
             Ext.select('.toolbar-switch').each(function (t) {
                 Ext.getCmp(t.dom.id).hide();
             });
             
             toolbar.show();
-            //MainToolbar.doLayout();
         };
     </script>
 </head>
@@ -29,7 +28,7 @@
     
     <ext:Panel ID="Panel1" runat="server" Title="Regions" Height="250" Width="550">
         <TopBar>
-            <ext:Toolbar ID="MainToolbar" runat="server">
+            <ext:Toolbar runat="server">
                 <Items>                        
                     <ext:Button runat="server" Icon="FlagBlue" ToggleGroup="region" Pressed="true">
                         <ToolTips>

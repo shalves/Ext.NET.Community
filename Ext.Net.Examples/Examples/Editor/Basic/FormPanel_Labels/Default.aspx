@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>FormPanel Labels with Editor - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var bodyInit = function () {
             this.body.on("dblclick", function (e, t) {
                 App.Editor1.startEdit(t);

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,425 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseItem.Builder<SpriteAttributes, SpriteAttributes.Builder>
+        new public abstract partial class Builder<TSpriteAttributes, TBuilder> : BaseItem.Builder<TSpriteAttributes, TBuilder>
+            where TSpriteAttributes : SpriteAttributes
+            where TBuilder : Builder<TSpriteAttributes, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TSpriteAttributes component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The type of the sprite. Possible options are 'circle', 'path', 'rect', 'text', 'square', 'image'
+			/// </summary>
+            public virtual TBuilder Type(SpriteType type)
+            {
+                this.ToComponent().Type = type;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The fill color
+			/// </summary>
+            public virtual TBuilder Fill(string fill)
+            {
+                this.ToComponent().Fill = fill;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Used with text type sprites. The full font description. Uses the same syntax as the CSS font parameter
+			/// </summary>
+            public virtual TBuilder Font(string font)
+            {
+                this.ToComponent().Font = font;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Used in rectangle sprites, the height of the rectangle
+			/// </summary>
+            public virtual TBuilder Height(int? height)
+            {
+                this.ToComponent().Height = height;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The opacity of the sprite. A number between 0 and 1.
+			/// </summary>
+            public virtual TBuilder Opacity(double opacity)
+            {
+                this.ToComponent().Opacity = opacity;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Used in path sprites, the path of the sprite written in SVG-like path syntax
+			/// </summary>
+            public virtual TBuilder Path(string path)
+            {
+                this.ToComponent().Path = path;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Used in circle sprites, the radius of the circle
+			/// </summary>
+            public virtual TBuilder Radius(int radius)
+            {
+                this.ToComponent().Radius = radius;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Used in square sprites, the dimension of the square
+			/// </summary>
+            public virtual TBuilder Size(int size)
+            {
+                this.ToComponent().Size = size;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The stroke color
+			/// </summary>
+            public virtual TBuilder Stroke(string stroke)
+            {
+                this.ToComponent().Stroke = stroke;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Used with text type sprites. The text itself
+			/// </summary>
+            public virtual TBuilder Text(string text)
+            {
+                this.ToComponent().Text = text;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Used in rectangle sprites, the width of the rectangle
+			/// </summary>
+            public virtual TBuilder Width(int? width)
+            {
+                this.ToComponent().Width = width;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The position along the x-axis
+			/// </summary>
+            public virtual TBuilder X(int? x)
+            {
+                this.ToComponent().X = x;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The position along the y-axis
+			/// </summary>
+            public virtual TBuilder Y(int? y)
+            {
+                this.ToComponent().Y = y;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Src(string src)
+            {
+                this.ToComponent().Src = src;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Blur(int? blur)
+            {
+                this.ToComponent().Blur = blur;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder ClipRect(string clipRect)
+            {
+                this.ToComponent().ClipRect = clipRect;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Cursor(string cursor)
+            {
+                this.ToComponent().Cursor = cursor;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder CX(int? cX)
+            {
+                this.ToComponent().CX = cX;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder CY(int? cY)
+            {
+                this.ToComponent().CY = cY;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder DominantBaseline(DominantBaseline dominantBaseline)
+            {
+                this.ToComponent().DominantBaseline = dominantBaseline;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder FillOpacity(double? fillOpacity)
+            {
+                this.ToComponent().FillOpacity = fillOpacity;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder FontFamily(string fontFamily)
+            {
+                this.ToComponent().FontFamily = fontFamily;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder FontSize(string fontSize)
+            {
+                this.ToComponent().FontSize = fontSize;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder FontStyle(string fontStyle)
+            {
+                this.ToComponent().FontStyle = fontStyle;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder FontWeight(string fontWeight)
+            {
+                this.ToComponent().FontWeight = fontWeight;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Gradient(string gradient)
+            {
+                this.ToComponent().Gradient = gradient;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Hidden(bool? hidden)
+            {
+                this.ToComponent().Hidden = hidden;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Href(string href)
+            {
+                this.ToComponent().Href = href;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder RX(int? rX)
+            {
+                this.ToComponent().RX = rX;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder RY(int? rY)
+            {
+                this.ToComponent().RY = rY;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder StrokeDashArray(string strokeDashArray)
+            {
+                this.ToComponent().StrokeDashArray = strokeDashArray;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder StrokeLinecap(StrokeLinecap strokeLinecap)
+            {
+                this.ToComponent().StrokeLinecap = strokeLinecap;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder StrokeLinejoin(StrokeLinejoin strokeLinejoin)
+            {
+                this.ToComponent().StrokeLinejoin = strokeLinejoin;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder StrokeMiterLimit(int? strokeMiterLimit)
+            {
+                this.ToComponent().StrokeMiterLimit = strokeMiterLimit;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Specifies the opacity of the painting operation used to stroke the current object
+			/// </summary>
+            public virtual TBuilder StrokeOpacity(double strokeOpacity)
+            {
+                this.ToComponent().StrokeOpacity = strokeOpacity;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// This property specifies the width of the stroke on the current object.
+			/// </summary>
+            public virtual TBuilder StrokeWidth(double? strokeWidth)
+            {
+                this.ToComponent().StrokeWidth = strokeWidth;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Target(string target)
+            {
+                this.ToComponent().Target = target;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder TextAnchor(string textAnchor)
+            {
+                this.ToComponent().TextAnchor = textAnchor;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Title(string title)
+            {
+                this.ToComponent().Title = title;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder ZIndex(int? zIndex)
+            {
+                this.ToComponent().ZIndex = zIndex;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Translate(Action<TranslateAttribute> action)
+            {
+                action(this.ToComponent().Translate);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Rotate(Action<RotateAttribute> action)
+            {
+                action(this.ToComponent().Rotate);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Scale(Action<ScaleAttribute> action)
+            {
+                action(this.ToComponent().Scale);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : SpriteAttributes.Builder<SpriteAttributes, SpriteAttributes.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,408 +490,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The type of the sprite. Possible options are 'circle', 'path', 'rect', 'text', 'square', 'image'
-			/// </summary>
-            public virtual SpriteAttributes.Builder Type(SpriteType type)
-            {
-                this.ToComponent().Type = type;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// The fill color
-			/// </summary>
-            public virtual SpriteAttributes.Builder Fill(string fill)
-            {
-                this.ToComponent().Fill = fill;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// Used with text type sprites. The full font description. Uses the same syntax as the CSS font parameter
-			/// </summary>
-            public virtual SpriteAttributes.Builder Font(string font)
-            {
-                this.ToComponent().Font = font;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// Used in rectangle sprites, the height of the rectangle
-			/// </summary>
-            public virtual SpriteAttributes.Builder Height(int? height)
-            {
-                this.ToComponent().Height = height;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// The opacity of the sprite. A number between 0 and 1.
-			/// </summary>
-            public virtual SpriteAttributes.Builder Opacity(double opacity)
-            {
-                this.ToComponent().Opacity = opacity;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// Used in path sprites, the path of the sprite written in SVG-like path syntax
-			/// </summary>
-            public virtual SpriteAttributes.Builder Path(string path)
-            {
-                this.ToComponent().Path = path;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// Used in circle sprites, the radius of the circle
-			/// </summary>
-            public virtual SpriteAttributes.Builder Radius(int radius)
-            {
-                this.ToComponent().Radius = radius;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// Used in square sprites, the dimension of the square
-			/// </summary>
-            public virtual SpriteAttributes.Builder Size(int size)
-            {
-                this.ToComponent().Size = size;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// The stroke color
-			/// </summary>
-            public virtual SpriteAttributes.Builder Stroke(string stroke)
-            {
-                this.ToComponent().Stroke = stroke;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// Used with text type sprites. The text itself
-			/// </summary>
-            public virtual SpriteAttributes.Builder Text(string text)
-            {
-                this.ToComponent().Text = text;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// Used in rectangle sprites, the width of the rectangle
-			/// </summary>
-            public virtual SpriteAttributes.Builder Width(int? width)
-            {
-                this.ToComponent().Width = width;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// The position along the x-axis
-			/// </summary>
-            public virtual SpriteAttributes.Builder X(int? x)
-            {
-                this.ToComponent().X = x;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// The position along the y-axis
-			/// </summary>
-            public virtual SpriteAttributes.Builder Y(int? y)
-            {
-                this.ToComponent().Y = y;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder Src(string src)
-            {
-                this.ToComponent().Src = src;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder Blur(int? blur)
-            {
-                this.ToComponent().Blur = blur;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder ClipRect(string clipRect)
-            {
-                this.ToComponent().ClipRect = clipRect;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder Cursor(string cursor)
-            {
-                this.ToComponent().Cursor = cursor;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder CX(int? cX)
-            {
-                this.ToComponent().CX = cX;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder CY(int? cY)
-            {
-                this.ToComponent().CY = cY;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder DominantBaseline(DominantBaseline dominantBaseline)
-            {
-                this.ToComponent().DominantBaseline = dominantBaseline;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder FillOpacity(double? fillOpacity)
-            {
-                this.ToComponent().FillOpacity = fillOpacity;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder FontFamily(string fontFamily)
-            {
-                this.ToComponent().FontFamily = fontFamily;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder FontSize(string fontSize)
-            {
-                this.ToComponent().FontSize = fontSize;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder FontStyle(string fontStyle)
-            {
-                this.ToComponent().FontStyle = fontStyle;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder FontWeight(string fontWeight)
-            {
-                this.ToComponent().FontWeight = fontWeight;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder Gradient(string gradient)
-            {
-                this.ToComponent().Gradient = gradient;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder Hidden(bool? hidden)
-            {
-                this.ToComponent().Hidden = hidden;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder Href(string href)
-            {
-                this.ToComponent().Href = href;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder RX(int? rX)
-            {
-                this.ToComponent().RX = rX;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder RY(int? rY)
-            {
-                this.ToComponent().RY = rY;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder StrokeDashArray(string strokeDashArray)
-            {
-                this.ToComponent().StrokeDashArray = strokeDashArray;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder StrokeLinecap(StrokeLinecap strokeLinecap)
-            {
-                this.ToComponent().StrokeLinecap = strokeLinecap;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder StrokeLinejoin(StrokeLinejoin strokeLinejoin)
-            {
-                this.ToComponent().StrokeLinejoin = strokeLinejoin;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder StrokeMiterLimit(int? strokeMiterLimit)
-            {
-                this.ToComponent().StrokeMiterLimit = strokeMiterLimit;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// Specifies the opacity of the painting operation used to stroke the current object
-			/// </summary>
-            public virtual SpriteAttributes.Builder StrokeOpacity(double strokeOpacity)
-            {
-                this.ToComponent().StrokeOpacity = strokeOpacity;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// This property specifies the width of the stroke on the current object.
-			/// </summary>
-            public virtual SpriteAttributes.Builder StrokeWidth(double? strokeWidth)
-            {
-                this.ToComponent().StrokeWidth = strokeWidth;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder Target(string target)
-            {
-                this.ToComponent().Target = target;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder TextAnchor(string textAnchor)
-            {
-                this.ToComponent().TextAnchor = textAnchor;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder Title(string title)
-            {
-                this.ToComponent().Title = title;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual SpriteAttributes.Builder ZIndex(int? zIndex)
-            {
-                this.ToComponent().ZIndex = zIndex;
-                return this as SpriteAttributes.Builder;
-            }
-             
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of SpriteAttributes.Builder</returns>
-            public virtual SpriteAttributes.Builder Translate(Action<TranslateAttribute> action)
-            {
-                action(this.ToComponent().Translate);
-                return this as SpriteAttributes.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of SpriteAttributes.Builder</returns>
-            public virtual SpriteAttributes.Builder Rotate(Action<RotateAttribute> action)
-            {
-                action(this.ToComponent().Rotate);
-                return this as SpriteAttributes.Builder;
-            }
-			 
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of SpriteAttributes.Builder</returns>
-            public virtual SpriteAttributes.Builder Scale(Action<ScaleAttribute> action)
-            {
-                action(this.ToComponent().Scale);
-                return this as SpriteAttributes.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -482,6 +498,14 @@ namespace Ext.Net
         public SpriteAttributes.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.SpriteAttributes(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -496,7 +520,11 @@ namespace Ext.Net
         /// </summary>
         public SpriteAttributes.Builder SpriteAttributes()
         {
-            return this.SpriteAttributes(new SpriteAttributes());
+#if MVC
+			return this.SpriteAttributes(new SpriteAttributes { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.SpriteAttributes(new SpriteAttributes());
+#endif			
         }
 
         /// <summary>
@@ -504,7 +532,10 @@ namespace Ext.Net
         /// </summary>
         public SpriteAttributes.Builder SpriteAttributes(SpriteAttributes component)
         {
-            return new SpriteAttributes.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new SpriteAttributes.Builder(component);
         }
 
         /// <summary>
@@ -512,7 +543,11 @@ namespace Ext.Net
         /// </summary>
         public SpriteAttributes.Builder SpriteAttributes(SpriteAttributes.Config config)
         {
-            return new SpriteAttributes.Builder(new SpriteAttributes(config));
+#if MVC
+			return new SpriteAttributes.Builder(new SpriteAttributes(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new SpriteAttributes.Builder(new SpriteAttributes(config));
+#endif			
         }
     }
 }

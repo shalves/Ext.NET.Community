@@ -33,9 +33,9 @@
 <html>
 <head runat="server">
     <title>Marking Changed GridPanel - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .dirty-row .x-grid-cell, .dirty-row .x-grid-rowwrap-div {
 	        background-color: #FFFDD8 !important;
         }
@@ -48,7 +48,7 @@
 <body>    
     <form runat="server">
         
-        <script type="text/javascript">
+        <script>
             var getRowClass = function (record) {
                 if (record.phantom) {
                     return "new-row";

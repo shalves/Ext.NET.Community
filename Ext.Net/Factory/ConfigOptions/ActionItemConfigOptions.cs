@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -55,10 +55,13 @@ namespace Ext.Net
             {
                 ConfigOptionsCollection list = base.ConfigOptions;
                 
+                list.Add("iconProxy", new ConfigOption("iconProxy", new SerializationOptions("iconCls", JsonMode.Raw), "", this.IconProxy ));
                 list.Add("iconCls", new ConfigOption("iconCls", null, "", this.IconCls ));
                 list.Add("iconUrlProxy", new ConfigOption("iconUrlProxy", new SerializationOptions("icon"), "", this.IconUrlProxy ));
                 list.Add("getClass", new ConfigOption("getClass", new SerializationOptions(JsonMode.Raw), null, this.GetClass ));
-                list.Add("handler", new ConfigOption("handler", new SerializationOptions(JsonMode.Raw), "", this.Handler ));
+                list.Add("getTip", new ConfigOption("getTip", new SerializationOptions(JsonMode.Raw), null, this.GetTip ));
+                list.Add("isDisabled", new ConfigOption("isDisabled", new SerializationOptions(JsonMode.Raw), null, this.IsDisabled ));
+                list.Add("handler", new ConfigOption("handler", new SerializationOptions(typeof(FunctionJsonConverter)), "", this.Handler ));
                 list.Add("scope", new ConfigOption("scope", new SerializationOptions(JsonMode.Raw), null, this.Scope ));
                 list.Add("tooltip", new ConfigOption("tooltip", null, null, this.Tooltip ));
                 list.Add("disabled", new ConfigOption("disabled", null, false, this.Disabled ));

@@ -9,7 +9,7 @@
             return;
         }
         
-        var panel = (Ext.Net.Panel)e.Control;
+        Ext.Net.Panel panel = (Ext.Net.Panel)e.Control;
         panel.Region = Region.West;
         panel.Collapsible = true;
         panel.Width = 225;
@@ -26,7 +26,7 @@
             return;
         }
         
-        var tab = (Ext.Net.TabPanel)e.Control;
+        TabPanel tab = (TabPanel)e.Control;
         tab.Region = Region.Center;
         tab.MinWidth = 300;
     }
@@ -38,8 +38,8 @@
 <head runat="server">
     <title>FeedViewer - Ext.NET Examples</title>    
     
-    <link href="resources/FeedViewer.css" rel="stylesheet" type="text/css" />
-    <script src="resources/FeedViewer.js" type="text/javascript"></script>
+    <link href="resources/FeedViewer.css" rel="stylesheet" />
+    <script src="resources/FeedViewer.js"></script>
 </head>
 <body>
     <form runat="server">

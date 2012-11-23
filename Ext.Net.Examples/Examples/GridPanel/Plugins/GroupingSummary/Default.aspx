@@ -1,6 +1,4 @@
 <%@ Page Language="C#" %>
-
-<%@ Import Namespace="System.Globalization" %>
 <%@ Import Namespace="System.Collections.Generic" %>
 
 <%@ Register Assembly="Ext.Net" Namespace="Ext.Net" TagPrefix="ext" %>
@@ -10,25 +8,24 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
      {
-         CultureInfo ci = new CultureInfo("en-US");
          this.Store1.DataSource = new List<Project> 
          { 
-            new Project(100, "Ext Forms: Field Anchoring", 112, "Integrate 2.0 Forms with 2.0 Layouts", 6, 150, 0, DateTime.Parse("06/24/2007",ci)),
-            new Project(100, "Ext Forms: Field Anchoring", 113, "Implement AnchorLayout", 4, 150, 0, DateTime.Parse("06/25/2007",ci)),
-            new Project(100, "Ext Forms: Field Anchoring", 114, "Add support for multiple types of anchors", 4, 150, 0, DateTime.Parse("06/27/2007",ci)),
-            new Project(100, "Ext Forms: Field Anchoring", 115, "Testing and debugging", 8, 0, 0, DateTime.Parse("06/29/2007",ci)),
-            new Project(101, "Ext Grid: Single-level Grouping", 101, "Add required rendering \"hooks\" to GridView", 6, 100, 0, DateTime.Parse("07/01/2007",ci)),
-            new Project(101, "Ext Grid: Single-level Grouping", 102, "Extend GridView and override rendering functions", 6, 100, 0, DateTime.Parse("07/03/2007",ci)),
-            new Project(101, "Ext Grid: Single-level Grouping", 103, "Extend Store with grouping functionality", 4, 100, 0, DateTime.Parse("07/04/2007",ci)),
-            new Project(101, "Ext Grid: Single-level Grouping", 121, "Default CSS Styling", 2, 100, 0, DateTime.Parse("07/05/2007",ci)),
-            new Project(101, "Ext Grid: Single-level Grouping", 104, "Testing and debugging", 6, 100, 0, DateTime.Parse("07/06/2007",ci)),
-            new Project(102, "Ext Grid: Summary Rows", 105, "Ext Grid plugin integration", 4, 125, 0, DateTime.Parse("07/01/2007",ci)),
-            new Project(102, "Ext Grid: Summary Rows", 106, "Summary creation during rendering phase", 4, 125, 0, DateTime.Parse("07/02/2007",ci)),
-            new Project(102, "Ext Grid: Summary Rows", 107, "Dynamic summary updates in editor grids", 6, 125, 0, DateTime.Parse("07/05/2007",ci)),
-            new Project(102, "Ext Grid: Summary Rows", 108, "Remote summary integration", 4, 125, 0, DateTime.Parse("07/05/2007",ci)),
-            new Project(102, "Ext Grid: Summary Rows", 109, "Summary renderers and calculators", 4, 125, 0, DateTime.Parse("07/06/2007",ci)),
-            new Project(102, "Ext Grid: Summary Rows", 110, "Integrate summaries with GroupingView", 10, 125, 0, DateTime.Parse("07/11/2007",ci)),
-            new Project(102, "Ext Grid: Summary Rows", 111, "Testing and debugging", 8, 125, 0, DateTime.Parse("07/15/2007",ci))
+            new Project(100, "Ext Forms: Field Anchoring", 112, "Integrate 2.0 Forms with 2.0 Layouts", 6, 150, 0, new DateTime(2007, 06, 24)),
+            new Project(100, "Ext Forms: Field Anchoring", 113, "Implement AnchorLayout", 4, 150, 0, new DateTime(2007, 06, 25)),
+            new Project(100, "Ext Forms: Field Anchoring", 114, "Add support for multiple types of anchors", 4, 150, 0, new DateTime(2007, 06, 27)),
+            new Project(100, "Ext Forms: Field Anchoring", 115, "Testing and debugging", 8, 0, 0, new DateTime(2007, 06, 29)),
+            new Project(101, "Ext Grid: Single-level Grouping", 101, "Add required rendering \"hooks\" to GridView", 6, 100, 0, new DateTime(2007, 07, 01)),
+            new Project(101, "Ext Grid: Single-level Grouping", 102, "Extend GridView and override rendering functions", 6, 100, 0, new DateTime(2007, 07, 03)),
+            new Project(101, "Ext Grid: Single-level Grouping", 103, "Extend Store with grouping functionality", 4, 100, 0, new DateTime(2007, 07, 04)),
+            new Project(101, "Ext Grid: Single-level Grouping", 121, "Default CSS Styling", 2, 100, 0, new DateTime(2007, 07, 05)),
+            new Project(101, "Ext Grid: Single-level Grouping", 104, "Testing and debugging", 6, 100, 0, new DateTime(2007, 07, 06)),
+            new Project(102, "Ext Grid: Summary Rows", 105, "Ext Grid plugin integration", 4, 125, 0, new DateTime(2007, 07, 01)),
+            new Project(102, "Ext Grid: Summary Rows", 106, "Summary creation during rendering phase", 4, 125, 0, new DateTime(2007, 07, 02)),
+            new Project(102, "Ext Grid: Summary Rows", 107, "Dynamic summary updates in editor grids", 6, 125, 0, new DateTime(2007, 07, 05)),
+            new Project(102, "Ext Grid: Summary Rows", 108, "Remote summary integration", 4, 125, 0, new DateTime(2007, 07, 05)),
+            new Project(102, "Ext Grid: Summary Rows", 109, "Summary renderers and calculators", 4, 125, 0, new DateTime(2007, 07, 06)),
+            new Project(102, "Ext Grid: Summary Rows", 110, "Integrate summaries with GroupingView", 10, 125, 0, new DateTime(2007, 07, 11)),
+            new Project(102, "Ext Grid: Summary Rows", 111, "Testing and debugging", 8, 125, 0, new DateTime(2007, 07, 15))
          };
 
         this.Store1.DataBind();
@@ -62,9 +59,9 @@
 <head runat="server">
     <title>GroupingSummary Plugin - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
    
-    <style type="text/css">
+    <style>
         .x-grid-body .x-grid-cell-Cost {
             background-color : #f1f2f4;
         }
@@ -84,7 +81,7 @@
         } 
     </style>
 
-    <script type="text/javascript">
+    <script>
         var totalCost = function(records) {
             var i = 0,
                 length = records.length,
@@ -181,7 +178,7 @@
                         <Renderer Handler="return value +' hours';" />
                         <SummaryRenderer Handler="return value +' hours';" />
                         <Editor>
-                            <ext:NumberField runat="server" AllowBlank="false" AllowNegative="false" StyleSpec="text-align:left" />
+                            <ext:NumberField runat="server" AllowBlank="false" MinValue="0" StyleSpec="text-align:left" />
                         </Editor>
                     </ext:SummaryColumn>
                      
@@ -195,7 +192,7 @@
                         <Renderer Format="UsMoney" />
                         <SummaryRenderer Fn="Ext.util.Format.usMoney" />
                          <Editor>
-                            <ext:NumberField runat="server" AllowBlank="false" AllowNegative="false" StyleSpec="text-align:left" />
+                            <ext:NumberField runat="server" AllowBlank="false" MinValue="0" StyleSpec="text-align:left" />
                         </Editor>
                     </ext:SummaryColumn>
                      

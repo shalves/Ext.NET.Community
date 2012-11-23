@@ -302,8 +302,62 @@
         {
             PinEvent = "none",
             Plain = true,
-            PreventHeader = true,
+            Header = false,
             Html = stub
+        });
+    }
+
+    protected void Option21_Click(object sender, DirectEventArgs e)
+    {
+        Notification.Show(new NotificationConfig
+        {
+            Title = "Items",
+            Height = 200,
+            Width = 200,
+            HideDelay = 7000,
+            Layout = LayoutType.Border.ToString(),
+            ShowPin = true,
+            Items = 
+            { 
+                new Ext.Net.Panel 
+                { 
+                    Region = Region.West,
+                    Collapsible = true,
+                    Title = "West",
+                    Width = 100,
+                    Icon = Icon.Add
+                },
+                
+                new Ext.Net.Panel 
+                { 
+                    Title = "Center",
+                    Region = Region.Center,                    
+                    Icon = Icon.PageWhiteEdit
+                }
+            },
+            DockedItems = 
+            { 
+                new Toolbar
+                {
+                    Dock = Dock.Bottom,
+                    Items = 
+                    {
+                        new TextField 
+                        {
+                            Flex = 1,
+                            EmptyText = "Focus to pin",
+                            Listeners = 
+                            {
+                                Focus =
+                                {
+                                    Handler = "this.up('window').pin();"
+                                }
+                            }
+                        },
+                        new Ext.Net.Button { Icon = Icon.Magnifier }
+                    }
+                }
+            }
         });
     }
 </script>
@@ -313,7 +367,7 @@
 <html>
 <head runat="server">
     <title>Summary of Notification options - Ext.NET Examples</title>  
-    <style type="text/css">
+    <style>
         .menu-label {
             border-bottom : dotted 1px;
             margin-left   : 25px;
@@ -443,6 +497,12 @@
             <ext:MenuPanel runat="server" Title="Content Functionality" SaveSelection="false">
                 <Menu runat="server">
                     <Items>
+                        <ext:MenuItem runat="server" Text="Show with Items">
+                            <DirectEvents>
+                                <Click OnEvent="Option21_Click" />
+                            </DirectEvents>
+                        </ext:MenuItem>
+
                         <ext:MenuItem runat="server" Text="Show with AutoLoad">
                             <DirectEvents>
                                 <Click OnEvent="Option15_Click" />

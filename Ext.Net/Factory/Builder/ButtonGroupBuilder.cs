@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,41 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Panel.Builder<ButtonGroup, ButtonGroup.Builder>
+        new public abstract partial class Builder<TButtonGroup, TBuilder> : Panel.Builder<TButtonGroup, TBuilder>
+            where TButtonGroup : ButtonGroup
+            where TBuilder : Builder<TButtonGroup, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TButtonGroup component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The columns configuration property passed to the configured layout manager. See Ext.layout.TableLayout.columns.
+			/// </summary>
+            public virtual TBuilder Columns(int columns)
+            {
+                this.ToComponent().Columns = columns;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ButtonGroup.Builder<ButtonGroup, ButtonGroup.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,24 +106,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The columns configuration property passed to the configured layout manager. See Ext.layout.TableLayout.columns.
-			/// </summary>
-            public virtual ButtonGroup.Builder Columns(int columns)
-            {
-                this.ToComponent().Columns = columns;
-                return this as ButtonGroup.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -98,6 +114,14 @@ namespace Ext.Net
         public ButtonGroup.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ButtonGroup(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -112,7 +136,11 @@ namespace Ext.Net
         /// </summary>
         public ButtonGroup.Builder ButtonGroup()
         {
-            return this.ButtonGroup(new ButtonGroup());
+#if MVC
+			return this.ButtonGroup(new ButtonGroup { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ButtonGroup(new ButtonGroup());
+#endif			
         }
 
         /// <summary>
@@ -120,7 +148,10 @@ namespace Ext.Net
         /// </summary>
         public ButtonGroup.Builder ButtonGroup(ButtonGroup component)
         {
-            return new ButtonGroup.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ButtonGroup.Builder(component);
         }
 
         /// <summary>
@@ -128,7 +159,11 @@ namespace Ext.Net
         /// </summary>
         public ButtonGroup.Builder ButtonGroup(ButtonGroup.Config config)
         {
-            return new ButtonGroup.Builder(new ButtonGroup(config));
+#if MVC
+			return new ButtonGroup.Builder(new ButtonGroup(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ButtonGroup.Builder(new ButtonGroup(config));
+#endif			
         }
     }
 }

@@ -15,18 +15,19 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
+using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Web;
-using System;
 
 namespace Ext.Net.MVC
 {
@@ -249,6 +250,54 @@ namespace Ext.Net.MVC
                 this.customDirectEvents = value;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public StartupMask StartupMask
+        {
+            get;
+            set;
+        }
+
+        private bool showWarningOnAjaxFailure = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool ShowWarningOnAjaxFailure
+        {
+            get
+            {
+                return this.showWarningOnAjaxFailure;
+            }
+            set
+            {
+                this.showWarningOnAjaxFailure = value;
+            }
+        }
+
+        private ClientProxy directMethodProxy = ClientProxy.Default;
+        public virtual ClientProxy DirectMethodProxy
+        {
+            get
+            {
+                return this.directMethodProxy;
+            }
+            set
+            {
+                this.directMethodProxy = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string DirectMethodNamespace
+        {
+            get;
+            set;
+        }
     }
 
     /// <summary>
@@ -256,14 +305,34 @@ namespace Ext.Net.MVC
     /// </summary>
     public class MvcResourceManager : ResourceManager
     {
+        private static ResourceManager defaultManager = new ResourceManager();
+        
+        private static ResourceManager Default
+        {
+            get
+            {
+                return MvcResourceManager.defaultManager;
+            }
+        }
+
+        public static MvcResourceManager GetMvcInstance()
+        {
+            if (HttpContext.Current == null)
+            {
+                return null;
+            }
+
+            return HttpContext.Current.Items[typeof(MvcResourceManager)] as MvcResourceManager;
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="onready"></param>
         protected override void AddInitAchorTag(StringBuilder onready)
-        {
-            onready.Append("<#:anchor id='ext.net.global.script.before' />");
-
+        {            
+            onready.Append("<#:anchor id='ext.net.global.script.before' />");            
+            
             base.AddInitAchorTag(onready);
 
             if (this.RenderStyles != ResourceLocationType.None)
@@ -312,12 +381,29 @@ namespace Ext.Net.MVC
             get
             {
                 var config = HttpContext.Current.Items["Ext.Net.GlobalManagerConfig"];
+
                 return config == null ? new MvcResourceManagerConfig() : (MvcResourceManagerConfig)config;
             }
             set
             {
                 HttpContext.Current.Items["Ext.Net.GlobalManagerConfig"] = value;
             }
+        }
+
+        public static void RegisterLocale(string localeCode)
+        {
+            MvcResourceManager.Default.RegisterLocale(localeCode);
+        }
+
+        public static string GetThemeUrl(Theme theme)
+        {
+            return MvcResourceManager.Default.GetThemeUrl(theme);
+        }
+        
+        public static void SetTheme(Theme theme)
+        {
+            string themeName = theme == Ext.Net.Theme.Default ? "blue" : theme.ToString().ToLowerInvariant();
+            ResourceManager.AddInstanceScript("Ext.net.ResourceMgr.setTheme(\"{0}\", \"{1}\");", MvcResourceManager.GetThemeUrl(theme), themeName);
         }
 
         /// <summary>
@@ -344,6 +430,23 @@ namespace Ext.Net.MVC
                 CustomDirectEvents = this.CustomDirectEvents
             };
         }
+
+        public static void MarkAsMVC()
+        {
+            if (HttpContext.Current.Application["Ext.Net.MVC.IsMVC"] == null)
+            {
+                HttpContext.Current.Application["Ext.Net.MVC.IsMVC"] = new object();
+            }
+        }
+
+        public static bool IsMVC
+        {
+            get
+            {
+                return HttpContext.Current.Application["Ext.Net.MVC.IsMVC"] != null;
+            }
+        }
+
     }
 
     /// <summary>
@@ -352,14 +455,14 @@ namespace Ext.Net.MVC
     public class MvcResourceManagerBuilder : IHtmlString
     {
         private MvcResourceManagerConfig config;
+        private MvcResourceManager mgr;
 
         /// <summary>
         /// 
         /// </summary>
-        public MvcResourceManagerBuilder()
-        {
-            this.config = new MvcResourceManagerConfig();
-        }
+        public MvcResourceManagerBuilder() : this(null)
+        {            
+        }        
 
         /// <summary>
         /// 
@@ -367,7 +470,20 @@ namespace Ext.Net.MVC
         /// <param name="config"></param>
         public MvcResourceManagerBuilder(MvcResourceManagerConfig config)
         {
-            this.config = config;
+            MvcResourceManager.MarkAsMVC();
+            this.config = config ?? new MvcResourceManagerConfig();
+            this.mgr = new MvcResourceManager();
+            this.mgr.IsSelfRender = true;
+
+            if(HttpContext.Current != null)
+            {
+                HttpContext.Current.Items[typeof(MvcResourceManager)] = this.mgr;
+            }
+
+            this.config.Listeners = this.mgr.Listeners;
+            this.config.CustomListeners = this.mgr.CustomListeners;
+            this.config.DirectEvents = this.mgr.DirectEvents;
+            this.config.CustomDirectEvents = this.mgr.CustomDirectEvents;
         }
 
         /// <summary>
@@ -378,6 +494,7 @@ namespace Ext.Net.MVC
         public MvcResourceManagerBuilder CleanResourceUrl(bool cleanResourceUrl)
         {
             this.config.CleanResourceUrl = cleanResourceUrl;
+            this.mgr.CleanResourceUrl = cleanResourceUrl;
             return this;
         }
 
@@ -389,6 +506,7 @@ namespace Ext.Net.MVC
         public MvcResourceManagerBuilder ResourcePath(string resourcePath)
         {
             this.config.ResourcePath = resourcePath;
+            this.mgr.ResourcePath = resourcePath;
             return this;
         }
 
@@ -400,6 +518,7 @@ namespace Ext.Net.MVC
         public MvcResourceManagerBuilder ScriptMode(ScriptMode scriptMode)
         {
             this.config.ScriptMode = scriptMode;
+            this.mgr.ScriptMode = scriptMode;
             return this;
         }
 
@@ -411,6 +530,7 @@ namespace Ext.Net.MVC
         public MvcResourceManagerBuilder RenderScripts(ResourceLocationType renderScripts)
         {
             this.config.RenderScripts = renderScripts;
+            this.mgr.RenderScripts = renderScripts;
             return this;
         }
 
@@ -422,6 +542,7 @@ namespace Ext.Net.MVC
         public MvcResourceManagerBuilder RenderStyles(ResourceLocationType renderStyles)
         {
             this.config.RenderStyles = renderStyles;
+            this.mgr.RenderStyles = renderStyles;
             return this;
         }
 
@@ -433,6 +554,7 @@ namespace Ext.Net.MVC
         public MvcResourceManagerBuilder Theme(Theme theme)
         {
             this.config.Theme = theme;
+            this.mgr.Theme = theme;
             return this;
         }
 
@@ -444,6 +566,7 @@ namespace Ext.Net.MVC
         public MvcResourceManagerBuilder QuickTips(bool quickTips)
         {
             this.config.QuickTips = quickTips;
+            this.mgr.QuickTips = quickTips;
             return this;
         }
 
@@ -455,6 +578,7 @@ namespace Ext.Net.MVC
         public MvcResourceManagerBuilder Locale(string locale)
         {
             this.config.Locale = locale;
+            this.mgr.Locale = locale;
             return this;
         }
 
@@ -466,6 +590,7 @@ namespace Ext.Net.MVC
         public MvcResourceManagerBuilder IDMode(IDMode idMode)
         {
             this.config.IDMode = idMode;
+            this.mgr.IDMode = idMode;
             return this;
         }
 
@@ -477,6 +602,7 @@ namespace Ext.Net.MVC
         public MvcResourceManagerBuilder Namespace(string ns)
         {
             this.config.Namespace = ns;
+            this.mgr.Namespace = ns;
             return this;
         }
 
@@ -488,6 +614,7 @@ namespace Ext.Net.MVC
         public MvcResourceManagerBuilder FormID(string formID)
         {
             this.config.FormID = formID;
+            this.mgr.FormID = formID;
             return this;
         }
 
@@ -503,6 +630,24 @@ namespace Ext.Net.MVC
             return this;
         }
 
+        public virtual MvcResourceManagerBuilder CustomListeners(Listener listener)
+        {
+            this.config.CustomListeners.Add(listener);
+            return this;
+        }
+
+        public virtual MvcResourceManagerBuilder CustomListeners(IEnumerable<Listener> listeners)
+        {
+            this.config.CustomListeners.AddRange(listeners);
+            return this;
+        }
+
+        public virtual MvcResourceManagerBuilder CustomListeners(params Listener[] listeners)
+        {
+            this.config.CustomListeners.AddRange(listeners);
+            return this;
+        }
+
         public virtual MvcResourceManagerBuilder DirectEvents(Action<ResourceManagerDirectEvents> action)
         {
             action(this.config.DirectEvents);
@@ -515,6 +660,52 @@ namespace Ext.Net.MVC
             return this;
         }
 
+        public virtual MvcResourceManagerBuilder CustomDirectEvents(DirectEvent directEvent)
+        {
+            this.config.CustomDirectEvents.Add(directEvent);
+            return this;
+        }
+
+        public virtual MvcResourceManagerBuilder CustomDirectEvents(IEnumerable<DirectEvent> directEvents)
+        {
+            this.config.CustomDirectEvents.AddRange(directEvents);
+            return this;
+        }
+
+        public virtual MvcResourceManagerBuilder CustomDirectEvents(params DirectEvent[] directEvents)
+        {
+            this.config.CustomDirectEvents.AddRange(directEvents);
+            return this;
+        }
+
+        public virtual MvcResourceManagerBuilder StartupMask(StartupMask mask)
+        {
+            this.config.StartupMask = mask;
+            this.mgr.StartupMask = mask;
+            return this;
+        }
+
+        public virtual MvcResourceManagerBuilder ShowWarningOnAjaxFailure(bool value)
+        {
+            this.config.ShowWarningOnAjaxFailure = value;
+            this.mgr.ShowWarningOnAjaxFailure = value;
+            return this;
+        }
+
+        public virtual MvcResourceManagerBuilder DirectMethodProxy(ClientProxy value)
+        {
+            this.config.DirectMethodProxy = value;
+            this.mgr.DirectMethodProxy = value;
+            return this;
+        }
+
+        public virtual MvcResourceManagerBuilder DirectMethodNamespace(string value)
+        {
+            this.config.DirectMethodNamespace = value;
+            this.mgr.DirectMethodNamespace = value;
+            return this;
+        }
+
         #region IHtmlString
 
         /// <summary>
@@ -523,50 +714,7 @@ namespace Ext.Net.MVC
         /// <returns></returns>
         public string ToHtmlString()
         {
-            var mgr = new MvcResourceManager
-            {
-                CleanResourceUrl = config.CleanResourceUrl,
-                ResourcePath = config.ResourcePath,
-                Locale = config.Locale,
-                FormID = config.FormID,
-                Namespace = config.Namespace
-            };
-
-            if (config.ScriptMode != Ext.Net.ScriptMode.Release)
-            {
-                mgr.ScriptMode = config.ScriptMode;
-            }
-
-            if (config.RenderScripts != ResourceLocationType.Embedded)
-            {
-                mgr.RenderScripts = config.RenderScripts;
-            }
-
-            if (config.RenderStyles != ResourceLocationType.Embedded)
-            {
-                mgr.RenderStyles = config.RenderStyles;
-            }
-
-            if (config.Theme != Ext.Net.Theme.Default)
-            {
-                mgr.Theme = config.Theme;
-            }
-
-            if (!config.QuickTips)
-            {
-                mgr.QuickTips = config.QuickTips;
-            }
-
-            if (config.IDMode != Ext.Net.IDMode.Explicit)
-            {
-                mgr.IDMode = config.IDMode;
-            }
-
-            mgr.Listeners = config.Listeners;
-            mgr.CustomListeners = config.CustomListeners;
-            mgr.DirectEvents = config.DirectEvents;
-            mgr.CustomDirectEvents = config.CustomDirectEvents;
-
+            mgr.ViewContext = Ext.Net.X.Builder.HtmlHelper.ViewContext;
             return mgr.SelfRender();
         }
 

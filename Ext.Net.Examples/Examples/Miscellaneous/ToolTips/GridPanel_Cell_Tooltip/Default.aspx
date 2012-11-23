@@ -50,9 +50,9 @@
 <html>
 <head runat="server">
     <title>GridPanel Cell with ToolTip - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {
@@ -125,14 +125,11 @@
         
         <ext:ToolTip 
             runat="server" 
-            XTarget="={#{GridPanel1}.getView().el}"
+            Target="={#{GridPanel1}.getView().el}"
             Delegate=".x-grid-cell"
             TrackMouse="true">
             <Listeners>
-                <BeforeShow Handler="onBeforeShow(this, #{GridPanel1});" />
-
-                <%-- Workaround to avoid empty ToolTip at first appearance--%>
-                <Show Handler="onBeforeShow(this, #{GridPanel1});" Single="true" /> 
+                <Show Handler="onBeforeShow(this, #{GridPanel1});" /> 
             </Listeners>
         </ext:ToolTip>     
     </form>

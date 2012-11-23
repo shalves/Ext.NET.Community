@@ -5,7 +5,7 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        var win = new Window()
+        Window win = new Window()
         {
             ID = "Window1",
             Title = "Ext.NET",
@@ -36,7 +36,7 @@
 <html>
 <head runat="server">
     <title>Load External Website into Window - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">

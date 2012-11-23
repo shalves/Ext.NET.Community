@@ -63,13 +63,11 @@
                 }
             }
         });
-        PropertyGrid1.DoLayout();
     }
 
     protected void RemovePropertyClick(object sender, DirectEventArgs e)
     {
         PropertyGrid1.RemoveProperty("dynProp1");
-        PropertyGrid1.DoLayout();
     }
 </script>
 
@@ -78,10 +76,8 @@
 <html>
 <head runat="server">
     <title>PropertyGrid with Button DirectEvent - Ext.NET Examples</title>
-
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <style>
         .data th {
         	font-weight : bold;
         }
@@ -109,8 +105,8 @@
         <ext:PropertyGrid 
             ID="PropertyGrid1" 
             runat="server" 
-            Width="300" 
-            AutoHeight="true"
+            Width="300"
+            SortableColumns="false"
             ForceFit="true">
             <Source>
                 <ext:PropertyGridParameter Name="(name)" Value="Properties Grid" />
@@ -119,17 +115,29 @@
                 <ext:PropertyGridParameter Name="productionQuality" Value="false" Mode="Raw" />
                 <ext:PropertyGridParameter Name="created" Value="10/15/2006">
                     <Editor>
-                        <ext:DateField runat="server" />
+                        <ext:DateField runat="server" Format="MM/dd/yyyy" />
                     </Editor>
                 </ext:PropertyGridParameter>
                 <ext:PropertyGridParameter Name="tested" Value="false" Mode="Raw">
                     <Renderer Handler="metadata.tdCls = 'red-label'; return value;" />
                 </ext:PropertyGridParameter>
-                <ext:PropertyGridParameter Name="version" Value="0.01" />
+                <ext:PropertyGridParameter Name="version" Value="0.01" EditorType="Number" />
                 <ext:PropertyGridParameter Name="borderWidth" Value="5" Mode="Raw">
                     <Editor>
                         <ext:NumberField runat="server" />
                     </Editor>
+                </ext:PropertyGridParameter>
+                <ext:PropertyGridParameter Name="color" DisplayName="Color" Value="Red">
+                    <Editor>
+                        <ext:ComboBox runat="server" ForceSelection="true">
+                            <Items>
+                                <ext:ListItem Text="Red" /> 
+                                <ext:ListItem Text="Green" /> 
+                                <ext:ListItem Text="Blue" /> 
+                            </Items>
+                        </ext:ComboBox>
+                    </Editor>
+                    <Renderer Handler="return Ext.String.format('<span style=\'color: {0};\'>{1}</span>', value.toLowerCase(), value);" />
                 </ext:PropertyGridParameter>
                 <ext:PropertyGridParameter Name="trigger" Value="TriggerField" DisplayName="Trigger Field">
                     <Renderer Handler="metadata.tdCls = 'blue-label'; 

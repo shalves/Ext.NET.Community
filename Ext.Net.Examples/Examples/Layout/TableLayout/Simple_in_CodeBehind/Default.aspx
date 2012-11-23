@@ -8,7 +8,7 @@
         // Build all the Panels which will fill the Table Cells.
         Ext.Net.Panel panel1 = new Ext.Net.Panel();
         panel1.Title = "Lots of Spanning";
-        panel1.BodyStyle = "padding:15px;";
+        panel1.BodyPadding = 15;
         panel1.Height = 320;
         panel1.Html = "<p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p>";
 
@@ -19,6 +19,7 @@
         panel2.Html = "<p>Basic panel in a table cell.</p>";
 
         Ext.Net.Panel panel3 = new Ext.Net.Panel();
+        panel3.Header = false;
         panel3.BodyStyle = "padding:15px;";
         panel3.Height = 105;
         panel3.Html = "<p>Plain panel</p>";
@@ -30,7 +31,7 @@
         panel4.BodyStyle = "padding:15px;";
         panel4.Html = "<p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p><br /><p>Row spanning.</p>";
 
-        Ext.Net.Panel panel5 = new Ext.Net.Panel();
+        Ext.Net.Panel panel5 = new Ext.Net.Panel();        
         panel5.BodyStyle = "padding:15px;";
         panel5.Height = 100;
         panel5.Html = "Plain cell spanning two columns";
@@ -56,7 +57,7 @@
         pnlTableLayout.ID = "pnlTableLayout";
         pnlTableLayout.Region = Region.Center;
         pnlTableLayout.Title = "Table Layout";
-        pnlTableLayout.BodyStyle = "padding:15px;";
+        pnlTableLayout.BodyPadding = 15;
         pnlTableLayout.Border = false;
         pnlTableLayout.Layout = LayoutType.Table.ToString();
 
@@ -78,7 +79,6 @@
         viewPort1.Layout = "BorderLayout";
         viewPort1.Items.Add(pnlTableLayout);
         
-        // Add Window to Form
         this.PlaceHolder1.Controls.Add(viewPort1);
     }
 </script>
@@ -88,8 +88,8 @@
 <html>
 <head runat="server">
     <title>Simple TableLayout - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <style>
         #pnlTableLayout .x-table-layout {
             padding : 5px;
         }

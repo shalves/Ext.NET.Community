@@ -5,7 +5,7 @@
 <script runat="server">
     protected void ReloadData(object sender, DirectEventArgs e)
     {
-        var store = this.Chart1.GetStore();
+        Store store = this.Chart1.GetStore();
         
         store.DataSource = Ext.Net.Examples.ChartData.GenerateData();
         store.DataBind();
@@ -17,9 +17,9 @@
 <html>
 <head runat="server">
     <title>Bar Renderer - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         function barRenderer(sprite, record, attr, index, store) {
             var fieldValue = Math.random() * 20 + 10,
                 value = (record.get('Data1') >> 0) % 5,

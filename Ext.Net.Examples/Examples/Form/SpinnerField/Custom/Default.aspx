@@ -7,15 +7,13 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        var data = new List<object> { 
-            new { FirstName = "Bill", LastName = "Foot"},
-            new { FirstName = "Bill", LastName = "Little"},
-            new { FirstName = "Bob", LastName = "Jones"},
-            new { FirstName = "Bob", LastName = "Train"},
-            new { FirstName = "Chris", LastName = "Johnson"}
+        List<object> data = new List<object> { 
+            new { FirstName = "Bill", LastName = "Foot" },
+            new { FirstName = "Bill", LastName = "Little" },
+            new { FirstName = "Bob", LastName = "Jones" },
+            new { FirstName = "Bob", LastName = "Train" },
+            new { FirstName = "Chris", LastName = "Johnson" }
         };
-
-        var count = data.Count;
 
         this.Store1.DataSource = data;            
         this.Store1.DataBind();
@@ -27,9 +25,9 @@
 <html>
 <head runat="server">
     <title>Spinner Plugin - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var onSpin = function (spinner, direction) {
             var step = 0,
                 minValue = 0,

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -319,7 +319,7 @@ namespace Ext.Net
         [Meta]
         [ConfigOption]
         [Category("4. DatePicker")]
-        [DefaultValue("")]
+        [DefaultValue("Disabled")]
         [Localizable(true)]
         [Description("The tooltip to display when the date falls on a disabled day. Defaults to: \"Disabled\"")]
         public virtual string DisabledDaysText
@@ -397,7 +397,7 @@ namespace Ext.Net
         ///     The selected date.
         /// </summary>
         [Meta]
-        [ConfigOption(JsonMode.Raw)]
+        [ConfigOption(typeof(FunctionJsonConverter))]
         [Category("4. DatePicker")]
         [DefaultValue("")]
         [Description("A function that will handle the select event of this picker.")]
@@ -1119,7 +1119,8 @@ namespace Ext.Net
         {
             add
             {
-                Events.AddHandler(DatePicker.EventSelectionChanged, value);
+                this.CheckForceId();
+				Events.AddHandler(DatePicker.EventSelectionChanged, value);
             }
             remove
             {
@@ -1245,10 +1246,30 @@ namespace Ext.Net
             add
             {
                 this.DirectEvents.Select.Event += value;
+                this.CheckForceId();
             }
             remove
             {
                 this.DirectEvents.Select.Event -= value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [DefaultValue("")]
+        [Description("")]
+        public virtual string DirectSelectUrl
+        {
+            get
+            {
+
+                return this.DirectEvents.Select.Url;
+            }
+            set
+            {
+                this.DirectEvents.Select.Url = value;
             }
         }
 

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TAbstractStore, TBuilder> : Observable.Builder<TAbstractStore, TBuilder>
+        new public abstract partial class Builder<TAbstractStore, TBuilder> : Observable.Builder<TAbstractStore, TBuilder>
             where TAbstractStore : AbstractStore
             where TBuilder : Builder<TAbstractStore, TBuilder>
         {
@@ -125,6 +125,26 @@ namespace Ext.Net
             public virtual TBuilder Proxy(Action<ProxyCollection> action)
             {
                 action(this.ToComponent().Proxy);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder SyncUrl(string syncUrl)
+            {
+                this.ToComponent().SyncUrl = syncUrl;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The Proxy to use for this Store.
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder ServerProxy(Action<ProxyCollection> action)
+            {
+                action(this.ToComponent().ServerProxy);
                 return this as TBuilder;
             }
 			 

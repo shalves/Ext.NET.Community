@@ -46,9 +46,9 @@
 <html>
 <head runat="server">
     <title>Tree Filter - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var filterTree = function (tf, e) {
             var tree = App.TreePanel1,
                 text = tf.getRawValue();            
@@ -91,8 +91,7 @@
             runat="server" 
             Height="300" 
             Width="250"
-            UseArrows="true"
-            Animate="true">           
+            UseArrows="true">           
             <TopBar>
                 <ext:Toolbar runat="server">
                     <Items>

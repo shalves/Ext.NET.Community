@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -99,13 +99,13 @@ namespace Ext.Net
 				}
 			}
 
-			private int? maximum = null;
+			private double? maximum = null;
 
 			/// <summary>
 			/// The maximum value of the interval to be displayed in the axis (REQUIRED).
 			/// </summary>
 			[DefaultValue(null)]
-			public virtual int? Maximum 
+			public virtual double? Maximum 
 			{ 
 				get
 				{
@@ -117,13 +117,13 @@ namespace Ext.Net
 				}
 			}
 
-			private int? minimum = null;
+			private double? minimum = null;
 
 			/// <summary>
 			/// The minimum value of the interval to be displayed in the axis (REQUIRED).
 			/// </summary>
 			[DefaultValue(null)]
-			public virtual int? Minimum 
+			public virtual double? Minimum 
 			{ 
 				get
 				{
@@ -135,13 +135,13 @@ namespace Ext.Net
 				}
 			}
 
-			private int? steps = null;
+			private double? steps = null;
 
 			/// <summary>
 			/// The number of steps and tick marks to add to the interval. (REQUIRED).
 			/// </summary>
 			[DefaultValue(null)]
-			public virtual int? Steps 
+			public virtual double? Steps 
 			{ 
 				get
 				{

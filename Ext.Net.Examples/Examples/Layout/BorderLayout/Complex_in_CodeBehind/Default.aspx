@@ -176,7 +176,7 @@
 <html>
 <head runat="server">
     <title>Complex BorderLayout - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <ext:ResourceManager runat="server" />

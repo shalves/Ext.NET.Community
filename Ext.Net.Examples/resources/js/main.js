@@ -370,41 +370,41 @@ var filter = function (field) {
     
     var re = new RegExp(".*" + text + ".*", "i");
         
-    tree.clearFilter(true);
+        tree.clearFilter(true);
         
-    tree.filterBy(function (node) {
-        var match = re.test(node.data.text.replace(/<span>&nbsp;<\/span>/g, "")),
-            pn = node.parentNode;
+        tree.filterBy(function (node) {
+            var match = re.test(node.data.text.replace(/<span>&nbsp;<\/span>/g, "")),
+                pn = node.parentNode;
                 
-        if (match && node.isLeaf()) {
-            pn.hasMatchNode = true;
-        }
-            
-        if (pn != null && pn.fixed) {
-            if (node.isLeaf() === false) {
-                node.fixed = true;
+            if (match && node.isLeaf()) {
+               pn.hasMatchNode = true;
             }
-            return true;
-        }            
+            
+            if (pn != null && pn.fixed) {
+                if (node.isLeaf() === false) {
+                    node.fixed = true;
+                }
+                return true;
+            }            
                 
-        if (node.isLeaf() === false) {
-            node.fixed = match;
-            return match;
-        }            
+            if (node.isLeaf() === false) {
+                node.fixed = match;
+                return match;
+            }            
             
-        return (pn != null && pn.fixed) || match;
-    }, { expandNodes : false });
+            return (pn != null && pn.fixed) || match;
+        }, { expandNodes : false });
 
-    tree.getView().animate = false;
-    tree.getRootNode().cascadeBy(function (node) {
-        if (node.isRoot()) {
-            return;
-        }            
+        tree.getView().animate = false;
+        tree.getRootNode().cascadeBy(function (node) {
+            if (node.isRoot()) {
+               return;
+            }            
             
-        if ((node.getDepth() === 1) || 
-            (node.getDepth() === 2 && node.hasMatchNode)) {
-            node.expand(false);
-        }
+            if ((node.getDepth() === 1) || 
+               (node.getDepth() === 2 && node.hasMatchNode)) {
+               node.expand(false);
+            }
             
         delete node.fixed;
         delete node.hasMatchNode;
@@ -438,7 +438,7 @@ var clearFilter = function (field, trigger, index, e) {
     field.setValue("");
     changeFilterHash("");
     field.getTrigger(0).hide();
-    tree.clearFilter(true);
+    tree.clearFilter(true);     
     field.focus(false, 100);        
 };
 

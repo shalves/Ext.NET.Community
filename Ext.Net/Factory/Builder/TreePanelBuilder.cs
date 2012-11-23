@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,99 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : TreePanelBase.Builder<TreePanel, TreePanel.Builder>
+        new public abstract partial class Builder<TTreePanel, TBuilder> : TreePanelBase.Builder<TTreePanel, TBuilder>
+            where TTreePanel : TreePanel
+            where TBuilder : Builder<TTreePanel, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TTreePanel component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder RemoteEditUrl(string remoteEditUrl)
+            {
+                this.ToComponent().RemoteEditUrl = remoteEditUrl;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder RemoteRemoveUrl(string remoteRemoveUrl)
+            {
+                this.ToComponent().RemoteRemoveUrl = remoteRemoveUrl;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder RemoteAppendUrl(string remoteAppendUrl)
+            {
+                this.ToComponent().RemoteAppendUrl = remoteAppendUrl;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder RemoteInsertUrl(string remoteInsertUrl)
+            {
+                this.ToComponent().RemoteInsertUrl = remoteInsertUrl;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder RemoteMoveUrl(string remoteMoveUrl)
+            {
+                this.ToComponent().RemoteMoveUrl = remoteMoveUrl;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<TreePanelListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side DirectEventHandlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<TreePanelDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : TreePanel.Builder<TreePanel, TreePanel.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,82 +164,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TreePanel.Builder RemoteEditUrl(string remoteEditUrl)
-            {
-                this.ToComponent().RemoteEditUrl = remoteEditUrl;
-                return this as TreePanel.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TreePanel.Builder RemoteRemoveUrl(string remoteRemoveUrl)
-            {
-                this.ToComponent().RemoteRemoveUrl = remoteRemoveUrl;
-                return this as TreePanel.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TreePanel.Builder RemoteAppendUrl(string remoteAppendUrl)
-            {
-                this.ToComponent().RemoteAppendUrl = remoteAppendUrl;
-                return this as TreePanel.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TreePanel.Builder RemoteInsertUrl(string remoteInsertUrl)
-            {
-                this.ToComponent().RemoteInsertUrl = remoteInsertUrl;
-                return this as TreePanel.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TreePanel.Builder RemoteMoveUrl(string remoteMoveUrl)
-            {
-                this.ToComponent().RemoteMoveUrl = remoteMoveUrl;
-                return this as TreePanel.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TreePanel.Builder</returns>
-            public virtual TreePanel.Builder Listeners(Action<TreePanelListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as TreePanel.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEventHandlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TreePanel.Builder</returns>
-            public virtual TreePanel.Builder DirectEvents(Action<TreePanelDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as TreePanel.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -156,6 +172,14 @@ namespace Ext.Net
         public TreePanel.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.TreePanel(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -170,7 +194,11 @@ namespace Ext.Net
         /// </summary>
         public TreePanel.Builder TreePanel()
         {
-            return this.TreePanel(new TreePanel());
+#if MVC
+			return this.TreePanel(new TreePanel { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.TreePanel(new TreePanel());
+#endif			
         }
 
         /// <summary>
@@ -178,7 +206,10 @@ namespace Ext.Net
         /// </summary>
         public TreePanel.Builder TreePanel(TreePanel component)
         {
-            return new TreePanel.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new TreePanel.Builder(component);
         }
 
         /// <summary>
@@ -186,7 +217,11 @@ namespace Ext.Net
         /// </summary>
         public TreePanel.Builder TreePanel(TreePanel.Config config)
         {
-            return new TreePanel.Builder(new TreePanel(config));
+#if MVC
+			return new TreePanel.Builder(new TreePanel(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new TreePanel.Builder(new TreePanel(config));
+#endif			
         }
     }
 }

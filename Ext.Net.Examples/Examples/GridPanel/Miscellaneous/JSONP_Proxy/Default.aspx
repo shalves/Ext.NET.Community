@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>ScriptTag Proxy</title>    
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .x-grid-cell-topic b {
             font-family : tahoma, verdana;
             display     : block;
@@ -39,7 +39,7 @@
         }
     </style>
     
-    <script type="text/javascript">
+    <script>
         var template = function (value, metadata, record, rowIndex, colIndex, store) {
             return Ext.String.format(
                 '<b><a href="http://sencha.com/forum/showthread.php?t={2}" target="_blank">{0}</a></b><a href="http://sencha.com/forum/forumdisplay.php?f={3}" target="_blank">{1} Forum</a>',

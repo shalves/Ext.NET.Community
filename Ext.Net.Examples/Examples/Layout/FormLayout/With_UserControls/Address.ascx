@@ -89,7 +89,7 @@
 <ext:Panel 
     ID="Panel1" 
     runat="server" 
-    AutoHeight="true" 
+    BodyPadding="5"
     Layout="AnchorLayout">
     <Items>
         <ext:Panel 
@@ -98,12 +98,12 @@
             Border="false" 
             Header="false" 
             AnchorHorizontal="100%" 
-            Layout="AnchorLayout">
+            Layout="FormLayout">
             <Items>
-                <ext:TextField ID="txtStreet" runat="server" FieldLabel="Street" AnchorHorizontal="100%" />
-                <ext:TextField ID="txtZipPostalCode" runat="server" FieldLabel="Zip/Postal Code" AnchorHorizontal="100%" />
-                <ext:TextField ID="txtCity" runat="server" FieldLabel="City" AnchorHorizontal="100%" />
-                <ext:ComboBox ID="cbxCountry" runat="server" FieldLabel="Country" AnchorHorizontal="100%">
+                <ext:TextField ID="txtStreet" runat="server" FieldLabel="Street" />
+                <ext:TextField ID="txtZipPostalCode" runat="server" FieldLabel="Zip/Postal Code" />
+                <ext:TextField ID="txtCity" runat="server" FieldLabel="City" />
+                <ext:ComboBox ID="cbxCountry" runat="server" FieldLabel="Country">
                     <Items>
                         <ext:ListItem Text="Australia" Value="AU" />
                         <ext:ListItem Text="Canada" Value="CA" />

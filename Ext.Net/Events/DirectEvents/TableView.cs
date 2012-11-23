@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -640,6 +640,137 @@ namespace Ext.Net
             get
             {
                 return this.drop ?? (this.drop = new ComponentDirectEvent(this));
+            }
+        }
+
+        private ComponentDirectEvent groupclick;
+
+        /// <summary>
+        /// Parameters
+        /// item : Ext.view.Table
+        /// node : HTMLElement
+        /// group : String
+        ///     The name of the group
+        /// e : Ext.EventObject
+        /// </summary>
+        [ListenerArgument(0, "item")]
+        [ListenerArgument(1, "node")]
+        [ListenerArgument(2, "group")]
+        [ListenerArgument(3, "e")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("groupclick", typeof(DirectEventJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("")]
+        public virtual ComponentDirectEvent GroupClick
+        {
+            get
+            {
+                return this.groupclick ?? (this.groupclick = new ComponentDirectEvent(this));
+            }
+        }
+
+        private ComponentDirectEvent groupcollapse;
+
+        /// <summary>
+        /// Parameters
+        /// item : Ext.view.Table
+        /// node : HTMLElement
+        /// group : String
+        ///     The name of the group
+        /// </summary>
+        [ListenerArgument(0, "item")]
+        [ListenerArgument(1, "node")]
+        [ListenerArgument(2, "group")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("groupcollapse", typeof(DirectEventJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("")]
+        public virtual ComponentDirectEvent GroupCollapse
+        {
+            get
+            {
+                return this.groupcollapse ?? (this.groupcollapse = new ComponentDirectEvent(this));
+            }
+        }
+
+        private ComponentDirectEvent groupcontextmenu;
+
+        /// <summary>
+        /// Parameters
+        /// item : Ext.view.Table
+        /// node : HTMLElement
+        /// group : String
+        ///     The name of the group
+        /// e : Ext.EventObject
+        /// </summary>
+        [ListenerArgument(0, "item")]
+        [ListenerArgument(1, "node")]
+        [ListenerArgument(2, "group")]
+        [ListenerArgument(3, "e")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("groupcontextmenu", typeof(DirectEventJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("")]
+        public virtual ComponentDirectEvent GroupContextMenu
+        {
+            get
+            {
+                return this.groupcontextmenu ?? (this.groupcontextmenu = new ComponentDirectEvent(this));
+            }
+        }
+
+        private ComponentDirectEvent groupdblclick;
+
+        /// <summary>
+        /// Parameters
+        /// item : Ext.view.Table
+        /// node : HTMLElement
+        /// group : String
+        ///     The name of the group
+        /// e : Ext.EventObject
+        /// </summary>
+        [ListenerArgument(0, "item")]
+        [ListenerArgument(1, "node")]
+        [ListenerArgument(2, "group")]
+        [ListenerArgument(3, "e")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("groupdblclick", typeof(DirectEventJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("")]
+        public virtual ComponentDirectEvent GroupDblClick
+        {
+            get
+            {
+                return this.groupdblclick ?? (this.groupdblclick = new ComponentDirectEvent(this));
+            }
+        }
+
+        private ComponentDirectEvent groupexpand;
+
+        /// <summary>
+        /// Parameters
+        /// item : Ext.view.Table
+        /// node : HTMLElement
+        /// group : String
+        ///     The name of the group
+        /// </summary>
+        [ListenerArgument(0, "item")]
+        [ListenerArgument(1, "node")]
+        [ListenerArgument(2, "group")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("groupexpand", typeof(DirectEventJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("")]
+        public virtual ComponentDirectEvent GroupExpand
+        {
+            get
+            {
+                return this.groupexpand ?? (this.groupexpand = new ComponentDirectEvent(this));
             }
         }
     }

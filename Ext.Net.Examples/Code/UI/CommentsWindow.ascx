@@ -2,7 +2,7 @@
 <%@ Register Assembly="Ext.Net" Namespace="Ext.Net" TagPrefix="ext" %>
 
 <ext:XScript runat="server">
-    <script type="text/javascript">
+    <script>
         var submitComment = function () {
             #{CommentForm}.getForm().submit({
                 clientValidation: true,

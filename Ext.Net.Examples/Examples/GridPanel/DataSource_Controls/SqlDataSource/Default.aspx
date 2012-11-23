@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>GridPanel with SqlDataSource - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <style type="text/css">
+    <style>
         .x-grid-cell-fullName .x-grid-cell-inner {
             font-family : tahoma, verdana;
             display     : block;
@@ -30,7 +30,7 @@
         }
     </style>
 
-    <script type="text/javascript">
+    <script>
         var fullName = function (value, metadata, record, rowIndex, colIndex, store) {
             return "<b>" + record.data.LastName + " " + record.data.FirstName + "</b>";
         };

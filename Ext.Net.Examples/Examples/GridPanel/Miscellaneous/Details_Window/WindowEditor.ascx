@@ -12,7 +12,7 @@
     }
 </script>
 <ext:XScript runat="server">
-    <script type="text/javascript">
+    <script>
         Ext.applyIf(CompanyX, {
             open : function () {
                 rec = this.getRecord();

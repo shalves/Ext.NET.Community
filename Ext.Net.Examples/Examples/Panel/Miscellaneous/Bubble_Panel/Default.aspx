@@ -7,10 +7,10 @@
 <html>
 <head runat="server">
     <title>Bubble Panel</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <link href="resources/css/bubble.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <link href="resources/css/bubble.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
 	    body {
 	        background-color : #4E79B2 !important;
 	    }

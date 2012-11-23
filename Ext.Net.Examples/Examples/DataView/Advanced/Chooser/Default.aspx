@@ -10,10 +10,10 @@
 <head runat="server">
     <title>Advanced DataView - Ext.NET Example</title>
 
-    <link href="chooser.css" rel="stylesheet" type="text/css" />
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="chooser.css" rel="stylesheet" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
+    <script>
         function beforeCreate(){
             var dialog = Ext.getCmp("ImgChooserDlg");
             if(dialog){

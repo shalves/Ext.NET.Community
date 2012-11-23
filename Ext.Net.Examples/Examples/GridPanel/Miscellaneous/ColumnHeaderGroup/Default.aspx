@@ -57,16 +57,16 @@
 <html>
 <head runat="server">
     <title>Grouped Header Example - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
     
-    <style type="text/css">
+    <style>
         /* style rows on mouseover */
         .x-grid-row-over .x-grid-cell-inner {
             font-weight: bold;
         }
     </style>
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {

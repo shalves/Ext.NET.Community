@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -98,6 +98,7 @@ namespace Ext.Net
                 list.Add("renderSelectors", new ConfigOption("renderSelectors", new SerializationOptions(JsonMode.ArrayToObject), null, this.RenderSelectors ));
                 list.Add("renderToProxy", new ConfigOption("renderToProxy", new SerializationOptions("renderTo"), "", this.RenderToProxy ));
                 list.Add("renderTpl", new ConfigOption("renderTpl", new SerializationOptions("renderTpl", typeof(LazyControlJsonConverter)), null, this.RenderTpl ));
+                list.Add("shrinkWrap", new ConfigOption("shrinkWrap", new SerializationOptions(typeof(EnumToIntConverter)), ShrinkWrap.Height, this.ShrinkWrap ));
                 list.Add("styleSpec", new ConfigOption("styleSpec", new SerializationOptions("style"), "", this.StyleSpec ));
                 list.Add("styleHtmlCls", new ConfigOption("styleHtmlCls", null, "x-html", this.StyleHtmlCls ));
                 list.Add("styleHtmlContent", new ConfigOption("styleHtmlContent", null, false, this.StyleHtmlContent ));
@@ -107,6 +108,8 @@ namespace Ext.Net
                 list.Add("width", new ConfigOption("width", null, Unit.Empty, this.Width ));
                 list.Add("xTypeProxy", new ConfigOption("xTypeProxy", new SerializationOptions("xtype"), "", this.XTypeProxy ));
                 list.Add("preInit", new ConfigOption("preInit", new SerializationOptions("preinitFn", JsonMode.Raw), null, this.PreInit ));
+                list.Add("keyMap", new ConfigOption("keyMap", new SerializationOptions("keyMap", typeof(LazyControlJsonConverter)), null, this.KeyMap ));
+                list.Add("keyNav", new ConfigOption("keyNav", new SerializationOptions("keyNav", typeof(LazyControlJsonConverter)), null, this.KeyNav ));
                 list.Add("defaultAnchor", new ConfigOption("defaultAnchor", null, null, this.DefaultAnchor ));
                 list.Add("anchorProxy", new ConfigOption("anchorProxy", new SerializationOptions("anchor"), null, this.AnchorProxy ));
                 list.Add("margins", new ConfigOption("margins", null, "", this.Margins ));
@@ -134,7 +137,6 @@ namespace Ext.Net
                 list.Add("autoFocus", new ConfigOption("autoFocus", null, false, this.AutoFocus ));
                 list.Add("autoFocusDelay", new ConfigOption("autoFocusDelay", null, 10, this.AutoFocusDelay ));
                 list.Add("selectable", new ConfigOption("selectable", null, true, this.Selectable ));
-                list.Add("autoHeight", new ConfigOption("autoHeight", null, false, this.AutoHeight ));
                 list.Add("pageX", new ConfigOption("pageX", null, Unit.Empty, this.PageX ));
                 list.Add("pageY", new ConfigOption("pageY", null, Unit.Empty, this.PageY ));
                 list.Add("x", new ConfigOption("x", new SerializationOptions(JsonMode.Raw), 0, this.X ));

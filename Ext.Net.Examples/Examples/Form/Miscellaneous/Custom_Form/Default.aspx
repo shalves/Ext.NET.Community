@@ -56,7 +56,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        var field = new SearchField 
+        SearchField field = new SearchField 
         { 
             Width = 400,
             FieldLabel = "Search",
@@ -73,9 +73,9 @@
 <html>
 <head runat="server">
     <title>Custom Form Fields - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />       
-    <link href="styles.css" rel="stylesheet" type="text/css" />
-    <script src="SearchField.js" type="text/javascript"></script>
+    <link href="/resources/css/examples.css" rel="stylesheet" />       
+    <link href="styles.css" rel="stylesheet" />
+    <script src="SearchField.js"></script>
 
 </head>
 <body>

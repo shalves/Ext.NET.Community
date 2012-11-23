@@ -6,9 +6,9 @@
 <html>
 <head runat="server">
     <title>Rotate Image - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         function onMouseOver(surface, group) {
             surface.getGroup(group).items[1].animate({to:{fill: '#fc0'}, duration:300});
         }

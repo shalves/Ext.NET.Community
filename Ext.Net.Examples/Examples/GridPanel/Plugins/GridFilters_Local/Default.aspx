@@ -28,7 +28,7 @@
 <html>
 <head runat="server">
     <title>GridPanel with Local Filtering, Sorting and Paging - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <ext:ResourceManager ID="ResourceManager1" runat="server" DirectEventUrl="default.aspx" />
@@ -104,6 +104,8 @@
                                     <Click OnEvent="SetFilter" />
                                 </DirectEvents>
                             </ext:Button>
+                            <ext:Button runat="server" Text="All Filters" ToolTip="Get Filters of Grid" Handler="var filters = Ext.encode(this.up('grid').filters.getFilterData()); Ext.Msg.alert('Filters', filters);" />
+                            <ext:Button runat="server" Text="Clear Filters" Handler="this.up('grid').filters.clearFilters();" />
                         </Items>
                     </ext:PagingToolbar>
                 </BottomBar>                   

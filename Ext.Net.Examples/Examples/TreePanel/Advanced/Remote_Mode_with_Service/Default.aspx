@@ -6,9 +6,9 @@
 <html>
 <head runat="server">
     <title>Remote mode - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .bold-text{
             font-weight:bold;
             padding-left: 32px;
@@ -17,7 +17,7 @@
         }
     </style>
     
-    <script type="text/javascript">
+    <script>
         var showMenu = function (view, node, item, index, e) {            
             var menu = App.TreeContextMenu;
             
@@ -91,11 +91,9 @@
             Width="250"
             UseArrows="true"
             AutoScroll="true"
-            Animate="true"
             Mode="Remote"
             RootVisible="false"
             RemoteJson="true"
-            ContainerScroll="true"        
             RemoteEditUrl="RemoteTree.asmx/RemoteEdit"
             RemoteRemoveUrl="RemoteTree.asmx/RemoteRemove"
             RemoteAppendUrl="RemoteTree.asmx/RemoteAppend"
@@ -131,7 +129,7 @@
             <View>
                 <ext:TreeView runat="server">
                     <Plugins>
-                        <ext:TreeViewDragDrop runat="server" AllowLeafDrop="true" />
+                        <ext:TreeViewDragDrop runat="server" AllowLeafDrop="true" ContainerScroll="true" />
                     </Plugins>
                 </ext:TreeView>
             </View>

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -81,6 +81,168 @@ namespace Ext.Net
 			/*  ConfigOptions
 				-----------------------------------------------------------------------------------------------*/
 			
+			private bool componentEvent = false;
+
+			/// <summary>
+			/// True to listen component event instead underlying element
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool ComponentEvent 
+			{ 
+				get
+				{
+					return this.componentEvent;
+				}
+				set
+				{
+					this.componentEvent = value;
+				}
+			}
+
+			private EventAction defaultEventAction = EventAction.StopEvent;
+
+			/// <summary>
+			/// The method to call on the Ext.EventObject after this KeyNav intercepts a key. Valid values are Ext.EventObject.stopEvent, Ext.EventObject.preventDefault and Ext.EventObject.stopPropagation.
+			/// </summary>
+			[DefaultValue(EventAction.StopEvent)]
+			public virtual EventAction DefaultEventAction 
+			{ 
+				get
+				{
+					return this.defaultEventAction;
+				}
+				set
+				{
+					this.defaultEventAction = value;
+				}
+			}
+
+			private bool disabled = false;
+
+			/// <summary>
+			/// True to disable this KeyNav instance (defaults to false)
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool Disabled 
+			{ 
+				get
+				{
+					return this.disabled;
+				}
+				set
+				{
+					this.disabled = value;
+				}
+			}
+
+			private string eventName = "";
+
+			/// <summary>
+			/// The event to listen for to pick up key events. Defaults to: \"keypress\"
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string EventName 
+			{ 
+				get
+				{
+					return this.eventName;
+				}
+				set
+				{
+					this.eventName = value;
+				}
+			}
+
+			private bool forceKeyDown = false;
+
+			/// <summary>
+			/// Handle the keydown event instead of keypress. KeyNav automatically does this for IE since IE does not propagate special keys on keypress, but setting this to true will force other browsers to also handle keydown instead of keypress. Defaults to: false
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool ForceKeyDown 
+			{ 
+				get
+				{
+					return this.forceKeyDown;
+				}
+				set
+				{
+					this.forceKeyDown = value;
+				}
+			}
+
+			private string componentElement = "";
+
+			/// <summary>
+			/// Element name of target component (can be used if KeyNav belongs to a component)
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string ComponentElement 
+			{ 
+				get
+				{
+					return this.componentElement;
+				}
+				set
+				{
+					this.componentElement = value;
+				}
+			}
+
+			private bool ignoreInputFields = false;
+
+			/// <summary>
+			/// Configure this as true if there are any input fields within the target, and this KeyNav should not process events from input fields, (&lt;input>, &lt;textarea> and elements withcontentEditable=\"true\"). Defaults to: false
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool IgnoreInputFields 
+			{ 
+				get
+				{
+					return this.ignoreInputFields;
+				}
+				set
+				{
+					this.ignoreInputFields = value;
+				}
+			}
+        
+			private JFunction processEvent = null;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			public JFunction ProcessEvent
+			{
+				get
+				{
+					if (this.processEvent == null)
+					{
+						this.processEvent = new JFunction();
+					}
+			
+					return this.processEvent;
+				}
+			}
+			
+			private string processEventScope = "";
+
+			/// <summary>
+			/// The scope (this context) in which the processEvent method is executed.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string ProcessEventScope 
+			{ 
+				get
+				{
+					return this.processEventScope;
+				}
+				set
+				{
+					this.processEventScope = value;
+				}
+			}
+
 			private string target = "";
 
 			/// <summary>
@@ -99,6 +261,24 @@ namespace Ext.Net
 				}
 			}
         
+			private JFunction space = null;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			public JFunction Space
+			{
+				get
+				{
+					if (this.space == null)
+					{
+						this.space = new JFunction();
+					}
+			
+					return this.space;
+				}
+			}
+			        
 			private JFunction left = null;
 
 			/// <summary>
@@ -315,78 +495,6 @@ namespace Ext.Net
 				}
 			}
 			
-			private KeyEventAction defaultEventAction = KeyEventAction.StopEvent;
-
-			/// <summary>
-			/// The method to call on the Ext.EventObject after this KeyNav intercepts a key. Valid values are Ext.EventObject.stopEvent, Ext.EventObject.preventDefault and Ext.EventObject.stopPropagation (defaults to 'stopEvent')
-			/// </summary>
-			[DefaultValue(KeyEventAction.StopEvent)]
-			public virtual KeyEventAction DefaultEventAction 
-			{ 
-				get
-				{
-					return this.defaultEventAction;
-				}
-				set
-				{
-					this.defaultEventAction = value;
-				}
-			}
-
-			private bool disabled = false;
-
-			/// <summary>
-			/// True to disable this KeyNav instance (defaults to false)
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool Disabled 
-			{ 
-				get
-				{
-					return this.disabled;
-				}
-				set
-				{
-					this.disabled = value;
-				}
-			}
-
-			private bool forceKeyDown = false;
-
-			/// <summary>
-			/// Handle the keydown event instead of keypress (defaults to false). KeyNav automatically does this for IE since IE does not propagate special keys on keypress, but setting this to true will force other browsers to also handle keydown instead of keypress.
-			/// </summary>
-			[DefaultValue(false)]
-			public virtual bool ForceKeyDown 
-			{ 
-				get
-				{
-					return this.forceKeyDown;
-				}
-				set
-				{
-					this.forceKeyDown = value;
-				}
-			}
-
-			private string scope = "";
-
-			/// <summary>
-			/// The scope of the callback function
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string Scope 
-			{ 
-				get
-				{
-					return this.scope;
-				}
-				set
-				{
-					this.scope = value;
-				}
-			}
-
         }
     }
 }

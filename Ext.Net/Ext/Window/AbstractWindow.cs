@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -538,6 +538,26 @@ namespace Ext.Net
         }
 
         /// <summary>
+        /// Set to false to disable the ghost panel during dragging the window.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. AbstractWindow")]
+        [DefaultValue(true)]
+        [Description("Set to false to disable the ghost panel during dragging the window.")]
+        public virtual bool Ghost
+        {
+            get
+            {
+                return this.State.Get<bool>("Ghost", true);
+            }
+            set
+            {
+                this.State.Set("Ghost", value);
+            }
+        }
+
+        /// <summary>
         /// Specify as true to allow user resizing at each edge and corner of the window, false to disable resizing (defaults to true).
         ///
         /// This may also be specified as a config object to
@@ -589,26 +609,7 @@ namespace Ext.Net
             {
                 this.State.Set("Width", value);
             }
-        }
-        /// <summary>
-        /// The height of this component in pixels.
-        /// </summary>
-        [ConfigOption]
-        [DirectEventUpdate(MethodName = "SetHeight")]
-        [Category("3. AbstractComponent")]
-        [DefaultValue(typeof(Unit), "")]
-        [Description("The height of this component in pixels.")]
-        public override Unit Height
-        {
-            get
-            {
-                return this.UnitPixelTypeCheck(this.State.Get<Unit>("Height", Unit.Pixel(100)), Unit.Empty, "Height");
-            }
-            set
-            {
-                this.State.Set("Height", value);
-            }
-        }
+        }       
 
 
         /*  Overrides
@@ -656,7 +657,7 @@ namespace Ext.Net
                 {
                     string formId = this.ClientForm;
 
-                    return formId.IsNotEmpty() ? "={Ext.get(\"".ConcatWith(formId, "\")}") : "={Ext.getBody()}";
+                    return TokenUtils.RawWrap(formId.IsNotEmpty() ? "Ext.get(\"".ConcatWith(formId, "\")") : "Ext.getBody()");
                 } 
                 
                 return base.RenderToProxy;

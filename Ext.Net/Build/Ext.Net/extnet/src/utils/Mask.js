@@ -1,6 +1,26 @@
 
 // @source core/utils/Mask.js
 
+Ext.LoadMask.override({
+    setZIndex : function (index) {
+        var me = this,
+            tmpIndex,
+            owner = me.activeOwner;
+            
+        if (owner) {           
+            tmpIndex = parseInt(owner.el.getStyle('zIndex'), 10) + 1;
+
+            if (Ext.isNumber(tmpIndex)) {
+                index = tmpIndex;
+            }
+        }
+
+        me.getMaskEl().setStyle('zIndex', index - 1);
+
+        return me.mixins.floating.setZIndex.apply(me, arguments);
+    }
+});
+
 Ext.net.Mask = function () {
     var instance, 
         bmask, 
@@ -27,7 +47,7 @@ Ext.net.Mask = function () {
             this.hide();
 
             cfg = Ext.apply({
-                msg    : Ext.LoadMask.prototype.msg,
+                msg    : Ext.view.AbstractView.prototype.msg /* TODO: review after new ExtJS release */,
                 msgCls : "x-mask-loading",
                 el     : Ext.getBody()
             }, cfg || {});

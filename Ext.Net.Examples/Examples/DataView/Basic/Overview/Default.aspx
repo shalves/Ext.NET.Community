@@ -54,7 +54,7 @@
         Dictionary<string, string>[] images = JSON.Deserialize<Dictionary<string, string>[]>(json);
 
         StringBuilder sb = new StringBuilder();
-        sb.Append("<table  cellspacing='15'>");
+        sb.Append("<table width='100%' cellspacing='15'>");
         bool addHeader = true;
 
         foreach (Dictionary<string, string> row in images)
@@ -97,11 +97,11 @@
 <head runat="server">
     <title>Ext.Net Examples - DataView</title>    
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <link href="data-view.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <link href="data-view.css" rel="stylesheet" />
     
     <ext:XScript runat="server">
-        <script type="text/javascript">
+        <script>
             var prepareData = function (data) {
                 data.shortName = Ext.util.Format.ellipsis(data.name, 15);
                 data.sizeString = Ext.util.Format.fileSize(data.size);
@@ -143,7 +143,7 @@
             runat="server" 
             Cls="images-view" 
             Frame="true" 
-            Width="535" 
+            Width="600" 
             Collapsible="true" 
             Layout="FitLayout"
             Title="Simple DataView (0 items selected)">
@@ -216,7 +216,7 @@
             </Buttons>
         </ext:Panel>
         
-        <div style="width:535px; border:1px solid gray; padding:5px;">
+        <div style="width:600px; border:1px solid gray; padding:5px;">
             <ext:Label ID="Label1" runat="server" />
         </div>
     </form>

@@ -5,9 +5,9 @@
 <script runat="server">
     protected void ReloadData(object sender, DirectEventArgs e)
     {
-        var store1 = this.Chart1.GetStore();
-        var store2 = this.Chart2.GetStore();
-        var store3 = this.Chart3.GetStore();
+        Store store1 = this.Chart1.GetStore();
+        Store store2 = this.Chart2.GetStore();
+        Store store3 = this.Chart3.GetStore();
         
         store1.DataSource = Ext.Net.Examples.ChartData.GenerateData();
         store1.DataBind();
@@ -25,9 +25,9 @@
 <html>
 <head runat="server">
     <title>Gauge Chart - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         function saveChart (btn) {
             Ext.MessageBox.confirm('Confirm Download', 'Would you like to download the chart as an image?', function(choice){
                 if(choice == 'yes'){

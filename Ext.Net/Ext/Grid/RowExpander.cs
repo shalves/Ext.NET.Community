@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -83,6 +83,16 @@ namespace Ext.Net
             }
         }
 
+        protected override void OnBeforeClientInit(Observable sender)
+        {
+            if (this.Component.Count > 0 && this.SingleExpand.HasValue && !this.SingleExpand.Value)
+            {
+                this.Component[0].IDMode = Ext.Net.IDMode.Ignore;
+            }
+
+            base.OnBeforeClientInit(sender);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -91,6 +101,42 @@ namespace Ext.Net
         protected override string ConfigIDProxy
         {
             get { return base.ConfigIDProxy; }
+        }
+
+        private ComponentLoader loader;
+
+        /// <summary>
+        /// A configuration object or an instance of a Ext.ComponentLoader to load remote content.
+        /// </summary>
+        [Meta]
+        [DefaultValue(null)]
+        [ConfigOption("loader", typeof(FunctionLazyControlJsonConverter))]
+        [NotifyParentProperty(true)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("A configuration object or an instance of a Ext.ComponentLoader to load remote content.")]
+        public virtual ComponentLoader Loader
+        {
+            get
+            {
+                return this.loader;
+            }
+            set
+            {
+                if (this.loader != null && this.PluginOwner != null)
+                {
+                    this.PluginOwner.Controls.Remove(this.loader);
+                    this.PluginOwner.LazyItems.Remove(this.loader);
+                }
+
+                this.loader = value;
+
+                if (this.loader != null && this.PluginOwner != null)
+                {
+                    this.loader.EnableViewState = this.DesignMode;
+                    this.PluginOwner.Controls.Add(this.loader);
+                    this.PluginOwner.LazyItems.Add(this.loader);
+                }
+            }
         }
 
         private XTemplate template;
@@ -127,7 +173,7 @@ namespace Ext.Net
         [NotifyParentProperty(true)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        [ConfigOption("component", typeof(SingleItemCollectionJsonConverter))]
+        [ConfigOption("component", typeof(FunctionItemCollectionJsonConverter))]
         [Description("")]
         public virtual ItemsCollection<AbstractComponent> Component
         {
@@ -137,9 +183,19 @@ namespace Ext.Net
                 {
                     this.component = new ItemsCollection<AbstractComponent>();
                     this.component.SingleItemMode = true;
+                    this.Component.AfterItemAdd += Component_AfterItemAdd;
                 }
 
                 return this.component;
+            }
+        }
+
+        void Component_AfterItemAdd(AbstractComponent item)
+        {
+            if (this.PluginOwner != null)
+            {                
+                this.PluginOwner.Controls.Add(item);
+                this.PluginOwner.LazyItems.Add(item);
             }
         }
 
@@ -231,6 +287,27 @@ namespace Ext.Net
         /// 
         /// </summary>
         [Meta]
+        [DefaultValue(0)]
+        [ConfigOption]
+        [Category("3. RowExpander")]
+        [NotifyParentProperty(true)]
+        [Description("")]
+        public virtual int ScrollOffset
+        {
+            get
+            {
+                return this.State.Get<int>("ScrollOffset", 0);
+            }
+            set
+            {
+                this.State.Set("ScrollOffset", value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
         [DefaultValue(true)]
         [ConfigOption]
         [Category("3. RowExpander")]
@@ -278,15 +355,101 @@ namespace Ext.Net
         [Category("3. RowExpander")]
         [NotifyParentProperty(true)]
         [Description("")]
-        public virtual bool SingleExpand
+        public virtual bool InvalidateComponentsOnRefresh
         {
             get
             {
-                return this.State.Get<bool>("SingleExpand", false);
+                return this.State.Get<bool>("InvalidateComponentsOnRefresh", false);
+            }
+            set
+            {
+                this.State.Set("InvalidateComponentsOnRefresh", value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [DefaultValue(null)]
+        [Category("3. RowExpander")]
+        [NotifyParentProperty(true)]
+        [Description("")]
+        public virtual bool? SingleExpand
+        {
+            get
+            {
+                return this.State.Get<bool?>("SingleExpand", null);
             }
             set
             {
                 this.State.Set("SingleExpand", value);
+            }
+        }
+
+        [ConfigOption("singleExpand", JsonMode.Raw)]
+        [DefaultValue("")]
+        protected virtual string SingleExpandProxy
+        {
+            get
+            {
+                if (this.Component.Count > 0 && !this.SingleExpand.HasValue)
+                {
+                    return "true";
+                }
+
+                return this.SingleExpand.HasValue ? JSON.Serialize(this.SingleExpand.Value) : "";
+            }
+        }
+
+        private Renderer renderer;
+
+        /// <summary>
+        /// A renderer is an 'interceptor' method which can be used transform data (value, appearance, etc.) before it is rendered.
+        /// 
+        /// See Ext.util.Format for some default formatting functions.
+        ///
+        /// The render function is called with the following parameters:
+        ///     value : Object
+        ///         The data value for the cell.
+        ///     metadata : Object
+        ///         A collection of metadata about the current cell; can be used or modified by the renderer. Recognized properties are: tdCls, tdAttr, and style.
+        ///         
+        ///         tdCls : String
+        ///             A CSS class name to add to the cell's TD element.
+        ///         tdAttr : String
+        ///             An HTML attribute definition string to apply to the data container element
+        ///              within the table cell (e.g. 'style="color:red;"').
+        ///         style : String
+        ///     
+        ///     record : Ext.data.record
+        ///         The record for the current row
+        ///     rowIndex : Number
+        ///         The index of the current row
+        ///     colIndex : Number
+        ///         The index of the current column
+        ///     store : Ext.data.Store
+        ///         The index of the current column
+        ///     view : Ext.grid.View
+        ///         The current view
+        /// Returns:
+        ///     The HTML string to be rendered.
+        /// </summary>
+        [Meta]
+        [ConfigOption(typeof(RendererJsonConverter))]
+        [DefaultValue(null)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [Description("A renderer is an 'interceptor' method which can be used transform data (value, appearance, etc.) before it is rendered.")]
+        public virtual Renderer Renderer
+        {
+            get
+            {
+                return this.renderer;
+            }
+            set
+            {
+                this.renderer = value;
             }
         }
 
@@ -327,6 +490,13 @@ namespace Ext.Net
                     this.PluginOwner.LazyItems.Add(this.Component[0]);
                 }
             }
+
+            if (this.Loader != null && this.PluginOwner != null)
+            {
+                this.Loader.EnableViewState = this.DesignMode;
+                this.PluginOwner.Controls.Add(this.Loader);
+                this.PluginOwner.LazyItems.Add(this.Loader);
+            }
         }
 
         /// <summary>
@@ -358,6 +528,12 @@ namespace Ext.Net
                 {
                     this.PluginOwner.LazyItems.Remove(this.Component[0]);
                 }
+            }
+
+            if (this.Loader != null && this.PluginOwner != null)
+            {
+                this.PluginOwner.Controls.Remove(this.Loader);
+                this.PluginOwner.LazyItems.Remove(this.Loader);
             }
         }
 

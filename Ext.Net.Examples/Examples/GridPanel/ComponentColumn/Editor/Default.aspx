@@ -30,7 +30,7 @@
 <html>
 <head runat="server">
     <title>ComponentColumn Editor - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 </head>
 <body>
     <form runat="server">
@@ -39,9 +39,8 @@
         <h1>ComponentColumn as Editor</h1>
 
         <ext:GridPanel 
-            ID="GridPanel1" 
             runat="server" 
-            Title="ComponentColumn Over Editor" 
+            Title="ComponentColumn Editor" 
             Width="600" 
             Height="300">
             <Store>

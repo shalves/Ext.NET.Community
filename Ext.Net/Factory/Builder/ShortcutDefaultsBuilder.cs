@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,95 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseItem.Builder<ShortcutDefaults, ShortcutDefaults.Builder>
+        new public abstract partial class Builder<TShortcutDefaults, TBuilder> : BaseItem.Builder<TShortcutDefaults, TBuilder>
+            where TShortcutDefaults : ShortcutDefaults
+            where TBuilder : Builder<TShortcutDefaults, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TShortcutDefaults component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder IconCls(string iconCls)
+            {
+                this.ToComponent().IconCls = iconCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Name(string name)
+            {
+                this.ToComponent().Name = name;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder TextCls(string textCls)
+            {
+                this.ToComponent().TextCls = textCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Handler(string handler)
+            {
+                this.ToComponent().Handler = handler;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Hidden(bool hidden)
+            {
+                this.ToComponent().Hidden = hidden;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder QTitle(string qTitle)
+            {
+                this.ToComponent().QTitle = qTitle;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder QTip(string qTip)
+            {
+                this.ToComponent().QTip = qTip;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ShortcutDefaults.Builder<ShortcutDefaults, ShortcutDefaults.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,78 +160,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ShortcutDefaults.Builder IconCls(string iconCls)
-            {
-                this.ToComponent().IconCls = iconCls;
-                return this as ShortcutDefaults.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ShortcutDefaults.Builder Name(string name)
-            {
-                this.ToComponent().Name = name;
-                return this as ShortcutDefaults.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ShortcutDefaults.Builder TextCls(string textCls)
-            {
-                this.ToComponent().TextCls = textCls;
-                return this as ShortcutDefaults.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ShortcutDefaults.Builder Handler(string handler)
-            {
-                this.ToComponent().Handler = handler;
-                return this as ShortcutDefaults.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ShortcutDefaults.Builder Hidden(bool hidden)
-            {
-                this.ToComponent().Hidden = hidden;
-                return this as ShortcutDefaults.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ShortcutDefaults.Builder QTitle(string qTitle)
-            {
-                this.ToComponent().QTitle = qTitle;
-                return this as ShortcutDefaults.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ShortcutDefaults.Builder QTip(string qTip)
-            {
-                this.ToComponent().QTip = qTip;
-                return this as ShortcutDefaults.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -152,6 +168,14 @@ namespace Ext.Net
         public ShortcutDefaults.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ShortcutDefaults(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -166,7 +190,11 @@ namespace Ext.Net
         /// </summary>
         public ShortcutDefaults.Builder ShortcutDefaults()
         {
-            return this.ShortcutDefaults(new ShortcutDefaults());
+#if MVC
+			return this.ShortcutDefaults(new ShortcutDefaults { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ShortcutDefaults(new ShortcutDefaults());
+#endif			
         }
 
         /// <summary>
@@ -174,7 +202,10 @@ namespace Ext.Net
         /// </summary>
         public ShortcutDefaults.Builder ShortcutDefaults(ShortcutDefaults component)
         {
-            return new ShortcutDefaults.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ShortcutDefaults.Builder(component);
         }
 
         /// <summary>
@@ -182,7 +213,11 @@ namespace Ext.Net
         /// </summary>
         public ShortcutDefaults.Builder ShortcutDefaults(ShortcutDefaults.Config config)
         {
-            return new ShortcutDefaults.Builder(new ShortcutDefaults(config));
+#if MVC
+			return new ShortcutDefaults.Builder(new ShortcutDefaults(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ShortcutDefaults.Builder(new ShortcutDefaults(config));
+#endif			
         }
     }
 }

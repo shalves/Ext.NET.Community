@@ -19,7 +19,7 @@
 <html>
 <head runat="server">
     <title>Simple Login Form with Ajax Submit - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -51,7 +51,7 @@
             Width="350"
             Modal="true"
             BodyPadding="5"
-            Layout="AnchorLayout">
+            Layout="FormLayout">
             <Items>
                 <ext:TextField 
                     ID="txtUsername" 
@@ -59,9 +59,7 @@
                     FieldLabel="Username" 
                     AllowBlank="false"
                     BlankText="Your username is required."
-                    Text="Demo"
-                    AnchorHorizontal="100%"
-                    />
+                    Text="Demo" />
                 <ext:TextField 
                     ID="txtPassword" 
                     runat="server" 
@@ -69,9 +67,7 @@
                     FieldLabel="Password" 
                     AllowBlank="false" 
                     BlankText="Your password is required."
-                    Text="Demo"
-                    AnchorHorizontal="100%"
-                    />
+                    Text="Demo" />
             </Items>
             <Buttons>
                 <ext:Button ID="btnLogin" runat="server" Text="Login" Icon="Accept">

@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Database Name="Northwind" EntityNamespace="Ext.Net.Examples.Northwind" ContextNamespace="Ext.Net.Examples.Northwind" Class="NorthwindDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Northwind" EntityNamespace="Ext.Net.Examples.Northwind" ContextNamespace="Ext.Net.Examples.Northwind" Class="NorthwindDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="WebSettings" ConnectionString="Data Source=.\SQLEXPRESS;AttachDbFilename=|DataDirectory|\Northwind.mdf;Integrated Security=True;User Instance=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="NorthwindConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="Territories">
     <Type Name="Territory">
@@ -136,22 +135,22 @@
   </Table>
   <Table Name="Suppliers">
     <Type Name="Supplier">
-      <Column Name="SupplierID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="CompanyName" Type="System.String" DbType="NVarChar(40) NOT NULL" CanBeNull="false" />
-      <Column Name="ContactName" Type="System.String" DbType="NVarChar(30)" CanBeNull="true" />
-      <Column Name="ContactTitle" Type="System.String" DbType="NVarChar(30)" CanBeNull="true" />
-      <Column Name="Address" Type="System.String" DbType="NVarChar(60)" CanBeNull="true" />
-      <Column Name="City" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
-      <Column Name="Region" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
-      <Column Name="PostalCode" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
-      <Column Name="Country" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
-      <Column Name="Phone" Type="System.String" DbType="NVarChar(24)" CanBeNull="true" />
-      <Column Name="Fax" Type="System.String" DbType="NVarChar(24)" CanBeNull="true" />
+      <Column Name="SupplierID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="CompanyName" Type="System.String" DbType="NVarChar(40) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+      <Column Name="ContactName" Type="System.String" DbType="NVarChar(30)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="ContactTitle" Type="System.String" DbType="NVarChar(30)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="Address" Type="System.String" DbType="NVarChar(60)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="City" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="Region" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="PostalCode" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="Country" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="Phone" Type="System.String" DbType="NVarChar(24)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="Fax" Type="System.String" DbType="NVarChar(24)" CanBeNull="true" UpdateCheck="Never" />
       <Column Name="HomePage" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
       <Association Name="Supplier_Product" Member="Products" ThisKey="SupplierID" OtherKey="SupplierID" Type="Product" />
     </Type>
   </Table>
-  <Function Name="Reset" Method="Reset">
+  <Function Name="Reset">
     <Return Type="System.Int32" />
   </Function>
 </Database>

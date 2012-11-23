@@ -9,9 +9,9 @@
 <html>
 <head runat="server">
     <title>Custom Window with Record Details - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var CompanyX = {               
             _index : 0,
             

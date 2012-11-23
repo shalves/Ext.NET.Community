@@ -6,16 +6,16 @@
 
 <html>
 <head runat="server">
-    <title>Infinite Scroll Grid Tuner - Ext.NET Examples</title>
+    <title>Infinite Scrolling Tuner - Ext.NET Examples</title>
 
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script src="ajax/SimXhr.js" type="text/javascript"></script>
-    <script src="ajax/Simlet.js" type="text/javascript"></script>
-    <script src="ajax/JsonSimlet.js" type="text/javascript"></script>
-    <script src="ajax/SimManager.js" type="text/javascript"></script>
+    <script src="ajax/SimXhr.js"></script>
+    <script src="ajax/Simlet.js"></script>
+    <script src="ajax/JsonSimlet.js"></script>
+    <script src="ajax/SimManager.js"></script>
 
-    <script type="text/javascript">
+    <script>
         Ext.define('BigDataSimlet', {
             extend: 'Ext.ux.ajax.JsonSimlet',
 
@@ -33,7 +33,9 @@
 
                     data.length = 0;
                     for (var r = 0, k = me.numRecords; r < k; r++) {
-                        var rec = {};
+                        var rec = {
+                            id: 'rec-' + r
+                        };
                         for (var i = 0; i < me.numFields; i++) {
                             rec['field' + i] = 'row' + (r + 1) + '/col' + (i+1);
                         }
@@ -85,16 +87,17 @@
             </LayoutConfig>
 
             <Items>
-                <ext:Panel runat="server"
-                    Border="false"
-                    Title="Configuration"
-                    Collapsible="true"
-                    Layout="BorderLayout"
+                <ext:Panel 
+                    runat="server"
                     Region="West"
+                    Title="Configuration"
+                    Border="false"
                     BodyBorder="0"
-                    Width="270"
+                    Collapsible="true"
                     Split="true"
-                    MinWidth="270">
+                    Width="270"
+                    MinWidth="270"
+                    Layout="BorderLayout">
                     <Items>
                         <ext:UserControlLoader runat="server" Path="Controls.ascx" />
 
@@ -107,13 +110,19 @@
                             <TopBar>
                                 <ext:Toolbar runat="server">
                                     <Items>
-                                        <ext:Button runat="server" Text="Clear" Handler="function(){this.up('panel').body.update('');}" />
+                                        <ext:Button 
+                                            runat="server" 
+                                            Text="Clear" 
+                                            Handler="function(){ this.up('panel').body.update(''); }" />
                                     </Items>
                                 </ext:Toolbar>
                             </TopBar>
 
                             <CustomConfig>
-                                <ext:ConfigItem Name="log" Value="function(m){this.body.createChild({html: m});this.body.dom.scrollTop = 1000000;}" Mode="Raw" />
+                                <ext:ConfigItem 
+                                    Name="log" 
+                                    Value="function (m) { this.body.createChild({html: m}); this.body.dom.scrollTop = 1000000; }" 
+                                    Mode="Raw" />
                             </CustomConfig>
                         </ext:Panel>
                     </Items>
@@ -123,16 +132,7 @@
                     ID="TestGrid"
                     runat="server"
                     Region="Center"
-                    LoadMask="true"
                     Title="Random data (50000 records)">
-                    <SelectionModel>
-                        <ext:RowSelectionModel runat="server" PruneRemoved="false" Mode="Multi" />
-                    </SelectionModel>
-                    <ColumnModel>
-                        <Columns>
-                            <ext:RowNumbererColumn runat="server" Width="50" Sortable="false" />
-                        </Columns>
-                    </ColumnModel>
                     <Store>
                         <ext:Store runat="server" Buffered="true">
                             <Model>
@@ -144,6 +144,14 @@
                             </Model>
                         </ext:Store>
                     </Store>
+                    <ColumnModel>
+                        <Columns>
+                            <ext:RowNumbererColumn runat="server" Width="50" Sortable="false" />
+                        </Columns>
+                    </ColumnModel>
+                    <SelectionModel>
+                        <ext:RowSelectionModel runat="server" PruneRemoved="false" Mode="Multi" />
+                    </SelectionModel>
                 </ext:GridPanel>
             </Items>
         </ext:Viewport>

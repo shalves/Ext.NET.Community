@@ -7,10 +7,10 @@
 <html>
 <head runat="server">
     <title>Resizable - Ext.NET Examples</title>    
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
-    <link href="resources/css/basic.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
+    <link href="resources/css/basic.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var hideImage = function () {
             var customEl = App.CustomResizer.getEl();            
             document.body.insertBefore(customEl.dom, document.body.firstChild);

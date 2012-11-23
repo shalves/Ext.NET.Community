@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -34,6 +34,10 @@ namespace Ext.Net
     public partial class StoreRequestParameters
     {
         Dictionary<string, object> extraParams;
+
+        public StoreRequestParameters() : this(HttpContext.Current)
+        {
+        }
 
         public StoreRequestParameters(Dictionary<string, object> extraParams)
         {
@@ -62,7 +66,7 @@ namespace Ext.Net
         {
             get
             {                
-                if (this.extraParams.ContainsKey("page") && this.extraParams["page"] != null)
+                if (this.ContainsKeyAndNotNull("page"))
                 {
                     return Convert.ToInt32(this.extraParams["page"]);
                 }
@@ -78,7 +82,7 @@ namespace Ext.Net
         {
             get
             {
-                if (this.extraParams.ContainsKey("start") && this.extraParams["start"] != null)
+                if (this.ContainsKeyAndNotNull("start"))
                 {
                     return Convert.ToInt32(this.extraParams["start"]);
                 }
@@ -94,7 +98,7 @@ namespace Ext.Net
         {
             get
             {
-                if (this.extraParams.ContainsKey("limit") && this.extraParams["limit"] != null)
+                if (this.ContainsKeyAndNotNull("limit"))
                 {
                     return Convert.ToInt32(this.extraParams["limit"]);
                 }
@@ -110,12 +114,42 @@ namespace Ext.Net
         {
             get
             {
-                if (this.extraParams.ContainsKey("sort") && this.extraParams["sort"] != null)
+                string sort = this.ContainsKeyAndNotNull("sort") ? this.extraParams["sort"].ToString() : "";
+                if (sort.IsNotEmpty() &&  sort.StartsWith("[") && sort.EndsWith("]"))
                 {
                     return JSON.Deserialize<DataSorter[]>(this.extraParams["sort"].ToString(), new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver());
                 }
 
                 return new DataSorter[0];
+            }
+        }
+
+        public string SimpleSort
+        {
+            get
+            {
+                var sort = this.Sort;
+                if (sort.Length > 0)
+                {
+                    return sort[0].Property;
+                }
+
+                return this.ContainsKeyAndNotNull("sort") ? this.extraParams["sort"].ToString() : null;
+            }
+        }
+
+        public SortDirection SimpleSortDirection
+        {
+            get
+            {
+                var sort = this.Sort;
+                if (sort.Length > 0)
+                {
+                    return sort[0].Direction;
+                }
+
+                string dir = this.ContainsKeyAndNotNull("dir") ? this.extraParams["dir"].ToString() : null;
+                return dir.IsNotEmpty() ? (SortDirection)Enum.Parse(typeof(SortDirection), dir, true) : SortDirection.Default;
             }
         }
 
@@ -126,13 +160,80 @@ namespace Ext.Net
         {
             get
             {
-                if (this.extraParams.ContainsKey("filter") && this.extraParams["filter"] != null)
+                if (this.ContainsKeyAndNotNull("filter"))
                 {
                     return JSON.Deserialize<DataFilter[]>(this.extraParams["filter"].ToString(), new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver());
                 }
 
                 return new DataFilter[0];
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public FilterConditions GridFilters
+        {
+            get
+            {
+                if (this.ContainsKeyAndNotNull("filter"))
+                {
+                    return new FilterConditions(this.extraParams["filter"].ToString());
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DataSorter[] Group
+        {
+            get
+            {
+                string group = this.ContainsKeyAndNotNull("group") ? this.extraParams["group"].ToString() : "";
+                if (group.IsNotEmpty() && group.StartsWith("[") && group.EndsWith("]"))
+                {
+                    return JSON.Deserialize<DataSorter[]>(this.extraParams["group"].ToString(), new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver());
+                }
+
+                return new DataSorter[0];
+            }
+        }
+
+        public string SimpleGroup
+        {
+            get
+            {
+                var group = this.Group;
+                if (group.Length > 0)
+                {
+                    return group[0].Property;
+                }
+
+                return this.ContainsKeyAndNotNull("group") ? this.extraParams["group"].ToString() : null;
+            }
+        }
+
+        public SortDirection SimpleGroupDirection
+        {
+            get
+            {
+                var group = this.Group;
+                if (group.Length > 0)
+                {
+                    return group[0].Direction;
+                }
+
+                string dir = this.ContainsKeyAndNotNull("groupDir") ? this.extraParams["groupDir"].ToString() : null;
+                return dir.IsNotEmpty() ? (SortDirection)Enum.Parse(typeof(SortDirection), dir, true) : SortDirection.Default;
+            }
+        }
+
+        private bool ContainsKeyAndNotNull(string key)
+        {
+            return this.extraParams.ContainsKey(key) && this.extraParams[key] != null;
         }
     }
 }

@@ -9,15 +9,21 @@
 
         if (!me.editor) {
             me.editor = me.initEditor();
-            me.editor.on("render", me.setHandlers, me, {single:true});
+            if (me.editor.rendered) {
+                me.setHandlers();
+            }
+            else {
+                me.editor.on("render", me.setHandlers, me, {single:true});
+            }
         }
-
         return me.editor;
     },
 
     setHandlers : function () {
         if (this.saveHandler) {
-            this.editor.down("#update").handler = this.saveHandler;
+            var btn = this.editor.getFloatingButtons().down("#update");
+            btn.handler = this.saveHandler;
+            btn.scope = this.editor;
         }
     }
 });

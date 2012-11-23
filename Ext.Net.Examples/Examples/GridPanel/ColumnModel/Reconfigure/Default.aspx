@@ -66,50 +66,51 @@
         
         this.GridPanel1.ColumnModel.Columns.RemoveAt(1);
         this.GridPanel1.ColumnModel.Columns.RemoveAt(1);
-        this.GridPanel1.Reconfigure();        
+        this.GridPanel1.Reconfigure();
+        this.GridPanel1.Refresh();
     }
 
     private void BindData()
     {
-        this.Store1.DataSource = this.data;
+        this.Store1.DataSource = this.Data;
         this.Store1.DataBind();
     }
     
-    private object[] data
+    private object Data
     {
         get
         {
-            return new object[]
+            return new List<object>
             {
-               new object[] { "3m Co", 71.72, 0.02, 0.03, "9/1 12:00am" },
-               new object[] { "Alcoa Inc", 29.01, 0.42, 1.47, "9/1 12:00am" },
-               new object[] { "Altria Group Inc", 83.81, 0.28, 0.34, "9/1 12:00am" },
-               new object[] { "American Express Company", 52.55, 0.01, 0.02, "9/1 12:00am" },
-               new object[] { "American International Group, Inc.", 64.13, 0.31, 0.49, "9/1 12:00am" },
-               new object[] { "AT&T Inc.", 31.61, -0.48, -1.54, "9/1 12:00am" },
-               new object[] { "Boeing Co.", 75.43, 0.53, 0.71, "9/1 12:00am" },
-               new object[] { "Caterpillar Inc.", 67.27, 0.92, 1.39, "9/1 12:00am" },
-               new object[] { "Citigroup, Inc.", 49.37, 0.02, 0.04, "9/1 12:00am" },
-               new object[] { "E.I. du Pont de Nemours and Company", 40.48, 0.51, 1.28, "9/1 12:00am" },
-               new object[] { "Exxon Mobil Corp", 68.1, -0.43, -0.64, "9/1 12:00am" },
-               new object[] { "General Electric Company", 34.14, -0.08, -0.23, "9/1 12:00am" },
-               new object[] { "General Motors Corporation", 30.27, 1.09, 3.74, "9/1 12:00am" },
-               new object[] { "Hewlett-Packard Co.", 36.53, -0.03, -0.08, "9/1 12:00am" },
-               new object[] { "Honeywell Intl Inc", 38.77, 0.05, 0.13, "9/1 12:00am" },
-               new object[] { "Intel Corporation", 19.88, 0.31, 1.58, "9/1 12:00am" },
-               new object[] { "International Business Machines", 81.41, 0.44, 0.54, "9/1 12:00am" },
-               new object[] { "Johnson & Johnson", 64.72, 0.06, 0.09, "9/1 12:00am" },
-               new object[] { "JP Morgan & Chase & Co", 45.73, 0.07, 0.15, "9/1 12:00am" },
-               new object[] { "McDonald\"s Corporation", 36.76, 0.86, 2.40, "9/1 12:00am" },
-               new object[] { "Merck & Co., Inc.", 40.96, 0.41, 1.01, "9/1 12:00am" },
-               new object[] { "Microsoft Corporation", 25.84, 0.14, 0.54, "9/1 12:00am" },
-               new object[] { "Pfizer Inc", 27.96, 0.4, 1.45, "9/1 12:00am" },
-               new object[] { "The Coca-Cola Company", 45.07, 0.26, 0.58, "9/1 12:00am" },
-               new object[] { "The Home Depot, Inc.", 34.64, 0.35, 1.02, "9/1 12:00am" },
-               new object[] { "The Procter & Gamble Company", 61.91, 0.01, 0.02, "9/1 12:00am" },
-               new object[] { "United Technologies Corporation", 63.26, 0.55, 0.88, "9/1 12:00am" },
-               new object[] { "Verizon Communications", 35.57, 0.39, 1.11, "9/1 12:00am" },
-               new object[] { "Wal-Mart Stores, Inc.", 45.45, 0.73, 1.63, "9/1 12:00am" }
+               new { company = "3m Co", price = 71.72, change = 0.02, pctChange = 0.03, lastChange = "9/1 12:00am" },
+               new { company = "Alcoa Inc", price = 29.01, change = 0.42, pctChange = 1.47, lastChange = "9/1 12:00am" },
+               new { company = "Altria Group Inc", price = 83.81, change = 0.28, pctChange = 0.34, lastChange = "9/1 12:00am" },
+               new { company = "American Express Company", price = 52.55, change = 0.01, pctChange = 0.02, lastChange = "9/1 12:00am" },
+               new { company = "American International Group, Inc.", price = 64.13, change = 0.31, pctChange = 0.49, lastChange = "9/1 12:00am" },
+               new { company = "AT&T Inc.", price = 31.61, change = -0.48, pctChange = -1.54, lastChange = "9/1 12:00am" },
+               new { company = "Boeing Co.", price = 75.43, change = 0.53, pctChange = 0.71, lastChange = "9/1 12:00am" },
+               new { company = "Caterpillar Inc.", price = 67.27, change = 0.92, pctChange = 1.39, lastChange = "9/1 12:00am" },
+               new { company = "Citigroup, Inc.", price = 49.37, change = 0.02, pctChange = 0.04, lastChange = "9/1 12:00am" },
+               new { company = "E.I. du Pont de Nemours and Company", price = 40.48, change = 0.51, pctChange = 1.28, lastChange = "9/1 12:00am" },
+               new { company = "Exxon Mobil Corp", price = 68.1, change = -0.43, pctChange = -0.64, lastChange = "9/1 12:00am" },
+               new { company = "General Electric Company", price = 34.14, change = -0.08, pctChange = -0.23, lastChange = "9/1 12:00am" },
+               new { company = "General Motors Corporation", price = 30.27, change = 1.09, pctChange = 3.74, lastChange = "9/1 12:00am" },
+               new { company = "Hewlett-Packard Co.",  price = 36.53, change = -0.03, pctChange = -0.08, lastChange = "9/1 12:00am" },
+               new { company = "Honeywell Intl Inc",  price = 38.77, change = 0.05, pctChange = 0.13, lastChange = "9/1 12:00am" },
+               new { company = "Intel Corporation",  price = 19.88, change = 0.31, pctChange = 1.58, lastChange = "9/1 12:00am" },
+               new { company = "International Business Machines",  price = 81.41, change = 0.44, pctChange = 0.54, lastChange = "9/1 12:00am" },
+               new { company = "Johnson & Johnson",  price = 64.72, change = 0.06, pctChange = 0.09, lastChange = "9/1 12:00am" },
+               new { company = "JP Morgan & Chase & Co",  price = 45.73, change = 0.07, pctChange = 0.15, lastChange = "9/1 12:00am" },
+               new { company = "McDonald\"s Corporation",  price = 36.76, change = 0.86, pctChange = 2.40, lastChange = "9/1 12:00am" },
+               new { company = "Merck & Co., Inc.",  price = 40.96, change = 0.41, pctChange = 1.01, lastChange = "9/1 12:00am" },
+               new { company = "Microsoft Corporation",  price = 25.84, change = 0.14, pctChange = 0.54, lastChange = "9/1 12:00am" },
+               new { company = "Pfizer Inc",  price = 27.96, change = 0.4, pctChange = 1.45, lastChange = "9/1 12:00am" },
+               new { company = "The Coca-Cola Company",  price = 45.07, change = 0.26, pctChange = 0.58, lastChange = "9/1 12:00am" },
+               new { company = "The Home Depot, Inc.",  price = 34.64, change = 0.35, pctChange = 1.02, lastChange = "9/1 12:00am" },
+               new { company = "The Procter & Gamble Company",  price = 61.91, change = 0.01, pctChange = 0.02, lastChange = "9/1 12:00am" },
+               new { company = "United Technologies Corporation",  price = 63.26, change = 0.55, pctChange = 0.88, lastChange = "9/1 12:00am" },
+               new { company = "Verizon Communications",  price = 35.57, change = 0.39, pctChange = 1.11, lastChange = "9/1 12:00am" },
+               new { company = "Wal-Mart Stores, Inc.",  price = 45.45, change = 0.73, pctChange = 1.63, lastChange = "9/1 12:00am" }
             };
         }
     }
@@ -120,9 +121,9 @@
 <html>
 <head runat="server">
     <title>Simple Array Grid - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {
@@ -153,7 +154,7 @@
                             <Fields>
                                 <ext:ModelField Name="company" />
                                 <ext:ModelField Name="price" Type="Float" />
-                                <ext:ModelField Name="change" Type="Float" />                        
+                                <ext:ModelField Name="change" Type="Float" />
                                 <ext:ModelField Name="lastChange" Type="Date" DateFormat="M/d hh:mmtt" />
                             </Fields>
                         </ext:Model>
@@ -162,7 +163,7 @@
             </Store>
             <ColumnModel runat="server">
                 <Columns>
-                    <ext:Column runat="server" Text="Company" Width="160" DataIndex="company" Flex="1" />
+                    <ext:Column runat="server" Text="Company" DataIndex="company" Flex="1" />
                     <ext:Column runat="server" Text="Price" Width="75" DataIndex="price">
                         <Renderer Format="UsMoney" />
                     </ext:Column>

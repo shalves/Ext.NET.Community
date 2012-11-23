@@ -67,9 +67,9 @@
 <html>
 <head runat="server">
     <title>XTemplate - Ext.NET Examples</title>    
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
     
-    <style type="text/css">
+    <style>
         .x-panel-body p {
             margin    : 5px;
             font-size : 11px;
@@ -86,7 +86,7 @@
         }
     </style>
     
-    <script type="text/javascript">
+    <script>
          var isFemale = function (name) {
              return name == 'Name1';
          };

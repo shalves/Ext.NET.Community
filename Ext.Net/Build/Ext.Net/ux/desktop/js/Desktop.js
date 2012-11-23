@@ -805,22 +805,7 @@ Ext.define('Ext.ux.desktop.Desktop', {
     },
 
     //------------------------------------------------------
-    // Window management methods
-
-    cascadeWindows: function() {
-        var x = 0, y = 0,
-            zmgr = this.getDesktopZIndexManager();
-
-        if(zmgr){
-            zmgr.eachBottomUp(function(win) {
-                if (win.isWindow && win.isVisible() && !win.maximized) {
-                    win.setPosition(x, y);
-                    x += 20;
-                    y += 20;
-                }
-            });
-        }
-    },
+    // Window management methods    
 
     showWindow : function (config, cls) {
         var w = this.createWindow(config, cls);
@@ -874,6 +859,8 @@ Ext.define('Ext.ux.desktop.Desktop', {
     createWindow : function (config, cls) {
         var me = this, 
             win, 
+            availWidth,
+            availHeight,
             cfg = Ext.applyIf(config || {}, {
                 stateful: false,
                 isWindow: true,
@@ -881,7 +868,7 @@ Ext.define('Ext.ux.desktop.Desktop', {
                 //constrainHeader: true,
                 minimizable: true,
                 maximizable: true,
-                center: me.centerWindow,
+                center: me.centerWindow,                
                 //afterFirstLayout : me.afterWindowFirstLayout,
                 desktop: me
             });
@@ -945,6 +932,17 @@ Ext.define('Ext.ux.desktop.Desktop', {
             };
         }
 
+        availWidth = me.body.getWidth(true);
+        availHeight = me.body.getHeight(true);
+
+        if (win.height > availHeight) {
+            win.height = availHeight;
+        }
+
+        if (win.width > availWidth) {
+            win.width = availWidth;
+        }
+
         return win;
     },
 
@@ -1006,8 +1004,11 @@ Ext.define('Ext.ux.desktop.Desktop', {
     },
 
     tileWindows : function () {
-        var me = this, availWidth = me.body.getWidth(true);
-        var x = me.xTickSize, y = me.yTickSize, nextY = y;
+        var me = this, 
+            availWidth = me.body.getWidth(true),
+            x = me.xTickSize, 
+            y = me.yTickSize, 
+            nextY = y;
 
         me.windows.each(function (win) {
             if (win.isVisible() && !win.maximized) {
@@ -1026,6 +1027,127 @@ Ext.define('Ext.ux.desktop.Desktop', {
             }
         });
     },
+
+    cascadeWindows: function() {
+        var x = 0, 
+            y = 0,
+            zmgr = this.getDesktopZIndexManager();
+
+        if(zmgr){
+            zmgr.eachBottomUp(function(win) {
+                if (win.isWindow && win.isVisible() && !win.maximized) {
+                    win.setPosition(x, y);
+                    x += 20;
+                    y += 20;
+                }
+            });
+        }
+    },
+
+    checkerboardWindows : function() {
+      var me = this, 
+          availWidth = me.body.getWidth(true),
+          availHeight = me.body.getHeight(true),
+          x = 0, 
+          y = 0,
+          lastx = 0, 
+          lasty = 0,
+          square = 400;
+
+      me.windows.each(function(win) {         
+         if (win.isVisible()) {            
+            win.setWidth(square);
+            win.setHeight(square);
+
+            win.setPosition(x, y);
+            x += square;
+
+            if (x + square > availWidth) {
+               x = lastx;
+               y += square;
+
+               if (y > availHeight) {
+                  lastx += 20;
+                  lasty += 20;
+                  x = lastx;
+                  y = lasty;
+               }
+            }
+         }
+      }, me);
+   },
+
+   snapFitWindows : function() {
+       var me = this, 
+          availWidth = me.body.getWidth(true),
+          availHeight = me.body.getHeight(true),
+          x = 0, 
+          y = 0,
+          snapCount = 0,
+          snapSize;
+
+      me.windows.each(function(win) {
+         if (win.isVisible()) {
+            snapCount++;
+         }
+      });
+
+      snapSize = parseInt(availWidth / snapCount);
+
+      if (snapSize > 0) {
+         me.windows.each(function(win) {
+            if (win.isVisible()) {          
+               win.setWidth(snapSize);
+               win.setHeight(availHeight);
+
+               win.setPosition(x, y);
+               x += snapSize;
+            }
+         });
+      }
+   },
+
+   snapFitVWindows : function(){
+      var me = this, 
+          availWidth = me.body.getWidth(true),
+          availHeight = me.body.getHeight(true),
+          x = 0, 
+          y = 0,
+          snapCount = 0,
+          snapSize;
+
+      me.windows.each(function(win) {
+         if (win.isVisible()) {
+            snapCount++;
+         }
+      });
+
+      snapSize = parseInt(availHeight / snapCount);
+
+      if (snapSize > 0) {
+         me.windows.each(function(win) {
+            if (win.isVisible()) {           
+               win.setWidth(availWidth);
+               win.setHeight(snapSize);
+
+               win.setPosition(x, y);
+               y += snapSize;
+            }
+         });
+      }
+   },
+
+   closeWindows : function() {
+      this.windows.each(function(win) {
+         win.close();
+      });
+   },
+
+   minimizeWindows : function() {
+      this.windows.each(function(win) {
+         this.minimizeWindow(win);
+      }, this);
+   },
 
     updateActiveWindow : function () {
         var me = this, activeWindow = me.getActiveWindow(), last = me.lastActiveWindow;

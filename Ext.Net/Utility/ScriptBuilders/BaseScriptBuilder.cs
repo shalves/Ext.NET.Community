@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -293,7 +293,8 @@ namespace Ext.Net
         {
             if (resourceName.StartsWith(ResourceManager.ASSEMBLYSLUG))
             {
-                var buster = "?v=" + ResourceManager.CacheBuster;
+                string buster = "?v=" + ResourceManager.CacheBuster;
+
                 return VirtualPathUtility.ToAbsolute(("~{0}/ext.axd".FormatWith(resourceName.Replace(ResourceManager.ASSEMBLYSLUG, "").Replace('.', '/').ReplaceLastInstanceOf("/", "-")))) + buster;
             }
             return HttpUtility.HtmlAttributeEncode(CachedPageInstance.ClientScript.GetWebResourceUrl(type, resourceName));
@@ -312,7 +313,8 @@ namespace Ext.Net
 
             foreach (ClientScriptItem item in control.GetScripts())
             {
-                var resourcePath = manager != null && manager.ScriptMode == ScriptMode.Debug && item.PathEmbeddedDebug.IsNotEmpty() ? item.PathEmbeddedDebug : item.PathEmbedded;
+                string resourcePath = manager != null && manager.ScriptMode == ScriptMode.Debug && item.PathEmbeddedDebug.IsNotEmpty() ? item.PathEmbeddedDebug : item.PathEmbedded;
+                
                 if (!scriptsResources.ContainsKey(resourcePath))
                 {
                     scriptsResources.Add(resourcePath, GetWebResourceUrl(item.Type, resourcePath));
@@ -403,8 +405,7 @@ namespace Ext.Net
                 {
                     ctrl.CallOnPreRender();
 
-                    ctrl.RegisterStyles(manager);
-                    ctrl.RegisterScripts(manager);
+                    this.RegisterControlResourcesInManager(manager, ctrl);
                 }
             }
 
@@ -417,7 +418,7 @@ namespace Ext.Net
                     continue;
                 }
 
-                var isBaseControl = ReflectionUtils.IsTypeOf(control, typeof(BaseControl), false);
+                bool isBaseControl = ReflectionUtils.IsTypeOf(control, typeof(BaseControl), false);
 
                 if (!isBaseControl && (control.ID.IsEmpty() || BaseScriptBuilder.autoIDRegEx.IsMatch(control.ID)))
                 {
@@ -440,8 +441,7 @@ namespace Ext.Net
                     {
                         ctrl.CallOnPreRender();
 
-                        ctrl.RegisterStyles(manager);
-                        ctrl.RegisterScripts(manager);
+                        this.RegisterControlResourcesInManager(manager, ctrl);
                     }
                 }
 
@@ -453,36 +453,32 @@ namespace Ext.Net
 
             if (sb != null && !searchOnly)
             {
-                /*if (icons.Count > 0)
-                {
-                    string[] arr = new string[icons.Count];
-
-                    for (int i = 0; i < icons.Count; i++)
-                    {
-                        arr[i] = icons[i].ToString();
-                    }
-
-                    sb.Append("Ext.net.ResourceMgr.registerIcon(");
-                    sb.Append(JSON.Serialize(arr));
-                    sb.Append(");");
-                    sb.Append(script);
-                }*/
-
-                if (ns.Count > 0)
-                {
-                    sb.Append("Ext.ns(");
-
-                    foreach (var n in ns)
-                    {
-                        sb.Append("\"").Append(n).Append("\",");
-                    }
-
-                    sb.Remove(sb.Length - 1, 1);
-                    sb.Append(");");
-                }
+                this.RegisterNS(sb, ns);
             }
 
             return foundControls;
+        }
+
+        protected virtual void RegisterControlResourcesInManager(ResourceManager manager, BaseControl ctrl)
+        {
+            ctrl.RegisterStyles(manager);
+            ctrl.RegisterScripts(manager);
+        }
+
+        protected virtual void RegisterNS(StringBuilder sb, List<string> ns)
+        {
+            if (ns.Count > 0)
+            {
+                sb.Append("Ext.ns(");
+
+                foreach (string n in ns)
+                {
+                    sb.Append("\"").Append(n).Append("\",");
+                }
+
+                sb.Remove(sb.Length - 1, 1);
+                sb.Append(");");
+            }
         }
 
         /// <summary>

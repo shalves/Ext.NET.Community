@@ -7,7 +7,7 @@
 <script runat="server">
     protected void ApplyClick(object sender, DirectEventArgs e)
     {
-        var tpl = new XTemplate { ID = "Template1" };
+        XTemplate tpl = new XTemplate { ID = "Template1" };
         
         tpl.Html = @"<p>Name: {Name}</p>
                    <p>Company: {Company}</p>
@@ -42,9 +42,9 @@
 <html>
 <head runat="server">
     <title>Dynamic Template - Ext.NET Examples</title>    
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
     
-    <style type="text/css">
+    <style>
         .x-panel {
             margin : 15px;
         }

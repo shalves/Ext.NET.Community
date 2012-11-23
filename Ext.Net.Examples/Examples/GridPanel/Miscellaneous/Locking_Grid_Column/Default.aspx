@@ -50,9 +50,9 @@
 <html>
 <head runat="server">
     <title>GridPanel with Locking GridView - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {
@@ -69,7 +69,9 @@
     
     <h1>GridPanel with Locking Columns</h1>
     
-    <p>Demonstrates how to achieve "freeze pane" locking functionality similar to Excel in a GridPanel.</p>
+    <p>This example shows how to achieve "freeze pane" locking functionality similar to Excel.</p>
+    <p>Columns may be locked or unlocked by dragging them across into the opposite side, or by using the column's header menu.</p>
+    <p>The "Price" column is not lockable, and may not be dragged into the locked side, or locked using the header menu.</p>
     
     <ext:GridPanel 
         ID="GridPanel1"
@@ -94,8 +96,9 @@
         </Store>
         <ColumnModel runat="server">
             <Columns>
+                <ext:RowNumbererColumn runat="server" />
                 <ext:Column runat="server" Text="Company<br>Name" DataIndex="company" Width="200" Locked="true" Sortable="false" />
-                <ext:Column runat="server" Text="Price" DataIndex="price" Width="125">
+                <ext:Column runat="server" Text="Price" DataIndex="price" Width="125" Lockable="false">
                     <Renderer Format="UsMoney" />
                 </ext:Column>
                 <ext:Column runat="server" Text="Change" DataIndex="change" Width="125">

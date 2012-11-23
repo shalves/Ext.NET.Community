@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,32 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Plugin.Builder<DataViewDragSelector, DataViewDragSelector.Builder>
+        new public abstract partial class Builder<TDataViewDragSelector, TBuilder> : Plugin.Builder<TDataViewDragSelector, TBuilder>
+            where TDataViewDragSelector : DataViewDragSelector
+            where TBuilder : Builder<TDataViewDragSelector, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TDataViewDragSelector component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : DataViewDragSelector.Builder<DataViewDragSelector, DataViewDragSelector.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,15 +97,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -89,6 +105,14 @@ namespace Ext.Net
         public DataViewDragSelector.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.DataViewDragSelector(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -103,7 +127,11 @@ namespace Ext.Net
         /// </summary>
         public DataViewDragSelector.Builder DataViewDragSelector()
         {
-            return this.DataViewDragSelector(new DataViewDragSelector());
+#if MVC
+			return this.DataViewDragSelector(new DataViewDragSelector { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.DataViewDragSelector(new DataViewDragSelector());
+#endif			
         }
 
         /// <summary>
@@ -111,7 +139,10 @@ namespace Ext.Net
         /// </summary>
         public DataViewDragSelector.Builder DataViewDragSelector(DataViewDragSelector component)
         {
-            return new DataViewDragSelector.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new DataViewDragSelector.Builder(component);
         }
 
         /// <summary>
@@ -119,7 +150,11 @@ namespace Ext.Net
         /// </summary>
         public DataViewDragSelector.Builder DataViewDragSelector(DataViewDragSelector.Config config)
         {
-            return new DataViewDragSelector.Builder(new DataViewDragSelector(config));
+#if MVC
+			return new DataViewDragSelector.Builder(new DataViewDragSelector(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new DataViewDragSelector.Builder(new DataViewDragSelector(config));
+#endif			
         }
     }
 }

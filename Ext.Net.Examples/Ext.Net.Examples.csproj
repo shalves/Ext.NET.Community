@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -34,12 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ext.Net.Utilities">
-      <HintPath>..\packages\Ext.NET.Utilities.2.0.1\lib\Ext.Net.Utilities.dll</HintPath>
+    <Reference Include="Ext.Net.Utilities, Version=2.1.0.0, Culture=neutral, PublicKeyToken=2c34ac34702a3c23, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ext.NET.Utilities.2.1.0\lib\Ext.Net.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.7\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -59,8 +60,8 @@
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web.Mobile" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Transformer.NET">
-      <HintPath>..\packages\Transformer.NET.2.0.0\lib\Transformer.NET.dll</HintPath>
+    <Reference Include="Transformer.NET, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e274d618e7c603a7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Transformer.NET.2.1.0\lib\Transformer.NET.dll</HintPath>
     </Reference>
     <Reference Include="Wilco.SyntaxHighlighter, Version=0.5.0.0, Culture=neutral, PublicKeyToken=fb87150479c2990b, processorArchitecture=MSIL" />
   </ItemGroup>
@@ -106,14 +107,30 @@
     <Compile Include="Examples\Combination_Samples\Applications\Feed_Viewer\FeedProxy.ashx.cs">
       <DependentUpon>FeedProxy.ashx</DependentUpon>
     </Compile>
-    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\Logic\TasksGrid.cs" />
-    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\Logic\TasksTopBar.cs" />
-    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\Logic\TasksTree.cs" />
-    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\Logic\TaskWindow.cs" />
-    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\UI\TasksGrid.cs" />
-    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\UI\TasksTree.cs" />
-    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\UI\TasksTopBar.cs" />
-    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\UI\TaskWindow.cs" />
+    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\Logic\TasksGrid.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\Logic\TasksTopBar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\Logic\TasksTree.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\Logic\TaskWindow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\UI\TasksGrid.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\UI\TasksTopBar.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\UI\TasksTree.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Examples\Combination_Samples\Applications\Simple_Tasks\Classes\UI\TaskWindow.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Examples\DataView\Advanced\Multi_sort\SortButton.cs" />
     <Compile Include="Examples\Events\DirectEvents\WebService\TestService.asmx.cs">
       <DependentUpon>TestService.asmx</DependentUpon>
@@ -223,9 +240,6 @@
       <DependentUpon>TreeXmlService.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Examples\XRender\UserControl\UpdateContent\BaseUserControl.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="GenerateSource.ashx.cs">
       <DependentUpon>GenerateSource.ashx</DependentUpon>
     </Compile>
@@ -233,17 +247,80 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Readme\Ext.NET.Utilities.LICENSE.txt" />
-    <Content Include="App_Readme\Ext.NET.Utilities.README.txt" />
-    <Content Include="App_Readme\Transformer.NET.LICENSE.txt" />
-    <Content Include="App_Readme\Transformer.NET.README.txt" />
     <Content Include="BREAKING_CHANGES.txt" />
     <Content Include="CHANGELOG.txt" />
     <Content Include="Code\SerializableEntity\ReadMe.txt" />
-    <Content Include="Examples\Getting_Started\Introduction\BREAKING_CHANGES\Default.aspx" />
+    <Content Include="Examples\Associations\HasMany\Nested_Loading\images\books\extnet-2.jpg" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\config.xml" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\Default.aspx" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\Reset.aspx" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\bell.png" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\check.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\delete.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\edit.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\hd-check.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\hrow.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-active.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-all.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-by-category.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-by-date.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-complete.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-delete-task.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-filter.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-folder-delete.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-folder-new.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-folder.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-list-delete.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-list-new.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-list.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-mark-active.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-mark-complete.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-multi-list.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-no-group.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-paste-new.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-show-active.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-show-all.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-show-complete.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\loading.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\my-lists.png" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\panel-header.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\rbtn.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\reminder-hd.png" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\s.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\save.gif" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\main.css" />
+    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\main.js" />
+    <Content Include="Examples\Events\Listeners\Arguments\config.xml" />
+    <Content Include="Examples\Events\Listeners\Arguments\Default.aspx" />
+    <Content Include="Examples\Form\TextField\InputMask\config.xml" />
+    <Content Include="Examples\Form\TextField\InputMask\Default.aspx" />
+    <Content Include="Examples\Form\TextField\Password_Mask\config.xml" />
+    <Content Include="Examples\Form\TextField\Password_Mask\Default.aspx" />
     <Content Include="Examples\Getting_Started\Introduction\SVN_Log\Default.aspx" />
+    <Content Include="Examples\GridPanel\Infinite_Scrolling\Remote_Filter\config.xml" />
+    <Content Include="Examples\GridPanel\Infinite_Scrolling\Remote_Filter\Default.aspx" />
+    <Content Include="Examples\GridPanel\Paging_and_Sorting\DirectMethod\config.xml" />
+    <Content Include="Examples\GridPanel\Paging_and_Sorting\DirectMethod\Default.aspx" />
+    <Content Include="Examples\GridPanel\Plugins\RowEditor_Remote\config.xml" />
+    <Content Include="Examples\GridPanel\Plugins\RowEditor_Remote\Default.aspx" />
+    <Content Include="Examples\Layout\VBoxLayout\Rows\config.xml" />
+    <Content Include="Examples\Layout\VBoxLayout\Rows\Default.aspx" />
+    <Content Include="Examples\Miscellaneous\Bin_HtmlBin\Overview\config.xml" />
+    <Content Include="Examples\Miscellaneous\Bin_HtmlBin\Overview\Default.aspx" />
+    <Content Include="Examples\Miscellaneous\Bin_HtmlBin\UserControl\config.xml" />
+    <Content Include="Examples\Miscellaneous\Bin_HtmlBin\UserControl\UserControl.ascx" />
+    <Content Include="Examples\Miscellaneous\Bin_HtmlBin\UserControl\Default.aspx" />
+    <Content Include="Examples\Toolbar\Menu\Dynamic_Items\config.xml" />
+    <Content Include="Examples\Toolbar\Menu\Dynamic_Items\Default.aspx" />
     <Content Include="Examples\Toolbar\Menu\Horizontal_Menu\config.xml" />
     <Content Include="Examples\Toolbar\Menu\Horizontal_Menu\Default.aspx" />
+    <Content Include="Examples\TreePanel\Basic\Custom_Drop_Logic\config.xml" />
+    <Content Include="Examples\TreePanel\Basic\Custom_Drop_Logic\Default.aspx" />
+    <Content Include="Examples\XRender\UserControl\Lazy_Load\config.xml" />
+    <Content Include="Examples\XRender\UserControl\Lazy_Load\Default.aspx" />
+    <Content Include="Examples\XRender\UserControl\Lazy_Load\RegionUserControl.ascx" />
+    <Content Include="Examples\Getting_Started\Introduction\BREAKING_CHANGES\Default.aspx" />
+    <Content Include="Examples\XRender\UserControl\UpdateContent\script.js" />
     <Content Include="README.txt" />
     <Content Include="Examples\Associations\HasMany\Lazy_Load\config.xml" />
     <Content Include="Examples\Associations\HasMany\Lazy_Load\CustomerGrid.ascx" />
@@ -429,7 +506,7 @@
     <Content Include="Examples\DragDrop\Basic\Dom\images\tacoma.jpg" />
     <Content Include="Examples\DragDrop\Basic\Dom\images\tahoe.jpg" />
     <Content Include="Examples\DragDrop\Basic\Dom\styles.css" />
-    <Content Include="Examples\DragDrop\Grid\Grid_to_Grid2\Default.aspx" />
+    <Content Include="Examples\DragDrop\Grid\Grid_to_Grid\Default.aspx" />
     <Content Include="Examples\DragDrop\Grid\Rows_Reordering\config.xml" />
     <Content Include="Examples\DragDrop\Grid\Rows_Reordering\Default.aspx" />
     <Content Include="Examples\Draw\Basic\Actions\config.xml" />
@@ -682,7 +759,6 @@
     <Content Include="Examples\Loaders\Component\Http_Handler\ComponentHandler.ashx" />
     <Content Include="Examples\Loaders\Data\Overview\DataHandler.ashx" />
     <Content Include="Examples\MessageBus\Basic\Complex\MasterPage.Master" />
-    <Content Include="packages.config" />
     <None Include="resources\fonts\TitilliumText22L002-webfont.eot" />
     <None Include="resources\fonts\TitilliumText22L002-webfont.ttf" />
     <None Include="resources\fonts\TitilliumText22L002-webfont.woff" />
@@ -703,48 +779,8 @@
     </None>
     <Content Include="Code\SharpZipLib\ICSharpCode.SharpZipLib.dll" />
     <Content Include="Code\SharpZipLib\ReadMe.txt" />
-    <Content Include="Examples\ASP.NET_MVC\Applications\Northwind\Default.aspx" />
-    <Content Include="Examples\ASP.NET_MVC\config.xml" />
     <Content Include="Examples\Combination_Samples\Applications\Feed_Viewer\config.xml" />
     <Content Include="Examples\Combination_Samples\Applications\Feed_Viewer\Default.aspx" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\config.xml" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\Default.aspx" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\bell.png" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\check.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\delete.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\edit.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\hd-check.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\hrow.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-active.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-all.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-by-category.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-by-date.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-complete.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-delete-task.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-filter.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-folder-delete.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-folder-new.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-folder.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-list-delete.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-list-new.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-list.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-mark-active.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-mark-complete.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-multi-list.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-no-group.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-paste-new.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-show-active.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-show-all.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\icon-show-complete.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\loading.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\my-lists.png" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\panel-header.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\rbtn.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\reminder-hd.png" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\s.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\images\save.gif" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\main.css" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\resources\main.js" />
     <Content Include="Examples\Combination_Samples\config.xml" />
     <Content Include="Examples\DragDrop\Advanced\Checkbox_Selector\config.xml" />
     <Content Include="Examples\DragDrop\Advanced\Checkbox_Selector\Default.aspx" />
@@ -816,9 +852,7 @@
     <Content Include="Examples\DragDrop\Grid\Field_to_Grid\Default.aspx" />
     <Content Include="Examples\DragDrop\Grid\Grid_to_FormPanel\config.xml" />
     <Content Include="Examples\DragDrop\Grid\Grid_to_FormPanel\Default.aspx" />
-    <Content Include="Examples\DragDrop\Grid\Grid_to_Grid2\config.xml" />
-    <Content Include="Examples\DragDrop\Grid\Grid_to_Grid1\config.xml" />
-    <Content Include="Examples\DragDrop\Grid\Grid_to_Grid1\Default.aspx" />
+    <Content Include="Examples\DragDrop\Grid\Grid_to_Grid\config.xml" />
     <Content Include="Examples\DragDrop\Grid\Grid_to_Tree\config.xml" />
     <Content Include="Examples\DragDrop\Grid\Grid_to_Tree\Default.aspx" />
     <Content Include="Examples\DragDrop\Panel\Swap_Dropable_Panel\config.xml" />
@@ -1376,8 +1410,6 @@
     <Content Include="Examples\Layout\config.xml" />
     <Content Include="Examples\Layout\FormLayout\Login\config.xml" />
     <Content Include="Examples\Layout\FormLayout\Login\Default.aspx" />
-    <Content Include="Examples\Layout\RowLayout\Basic\config.xml" />
-    <Content Include="Examples\Layout\RowLayout\Basic\Default.aspx" />
     <Content Include="Examples\Layout\TableLayout\Simple_in_CodeBehind\config.xml" />
     <Content Include="Examples\Layout\TableLayout\Simple_in_CodeBehind\Default.aspx" />
     <Content Include="Examples\Layout\TableLayout\Simple_in_Markup\config.xml" />
@@ -1461,7 +1493,6 @@
     <Content Include="Examples\Calendar\Overview\Remote_Data\override.js" />
     <Content Include="Examples\Calendar\Overview\Shared\resources\css\main.css" />
     <Content Include="Examples\Calendar\Overview\Shared\resources\js\common.js" />
-    <Content Include="Examples\Combination_Samples\Applications\Simple_Tasks\Reset.aspx" />
     <Content Include="Examples\Form\ComboBox\Custom_Search\Plants.ashx" />
     <Content Include="404.aspx" />
     <Content Include="Code\UI\CommentsWindow.ascx" />
@@ -1626,6 +1657,10 @@
       <Name>Ext.Net</Name>
     </ProjectReference>
   </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -1640,7 +1675,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>49954</DevelopmentServerPort>
+          <DevelopmentServerPort>51335</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost/Ext.Net.Examples</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
@@ -1652,12 +1687,15 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="'$(Solutions.VSVersion)' == '10.0'" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="'$(Solutions.VSVersion)' == '9.0'" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <PropertyGroup>
-    <PreBuildEvent>xcopy "$(SolutionDir)Ext.Net\Build\Ext.Net\CHANGELOG.txt" "$(ProjectDir)" /y
-xcopy "$(SolutionDir)Ext.Net\Build\Ext.Net\README.txt" "$(ProjectDir)" /y
-xcopy "$(SolutionDir)Ext.Net\Build\Ext.Net\BREAKING_CHANGES.txt" "$(ProjectDir)" /y</PreBuildEvent>
+    <PreBuildEvent>xcopy "$(SolutionDir)Ext.Net\Build\Ext.Net\README.txt" "$(ProjectDir)" /y
+xcopy "$(SolutionDir)Ext.Net\Build\Ext.Net\CHANGELOG.txt" "$(ProjectDir)" /y
+xcopy "$(SolutionDir)Ext.Net\Build\Ext.Net\BREAKING_CHANGES.txt" "$(ProjectDir)" /y
+xcopy "$(SolutionDir)Ext.Net\Build\Ext.Net\Sample.Web.config" "$(ProjectDir)" /y</PreBuildEvent>
   </PropertyGroup>
   <!--<Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />-->
 </Project>

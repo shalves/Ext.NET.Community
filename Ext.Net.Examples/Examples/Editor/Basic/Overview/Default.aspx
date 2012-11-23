@@ -14,9 +14,9 @@
 <html>
 <head runat="server">
     <title>Editor Overview - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .editable {
             font    : 14px Tahoma;
             padding : 3px 5px;
@@ -222,7 +222,8 @@
                                 <ext:Editor 
                                     ID="PanelEditor" 
                                     runat="server"
-                                    HtmlDecode="true"                                    
+                                    HtmlDecode="true"
+                                    UseHtml="true"                                     
                                     AutoSize="true"     
                                     Alignment="tl-tl?"                    
                                     AllowBlur="false"           

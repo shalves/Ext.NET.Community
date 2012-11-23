@@ -5,6 +5,16 @@ Ext.window.Window.override({
     closeAction     : "hide",    
     defaultRenderTo : "body",
 
+    initComponent : function () {
+        this.callParent(arguments);
+
+        if (Ext.isIE && this.modal) {
+            this.on("show", function () {
+                this.zIndexManager._onContainerResize();
+            }, this, { delay : 10 });
+        }
+    },
+
     initContainer : function (container) {
         var me = this;
 
@@ -43,6 +53,8 @@ Ext.window.Window.override({
             nextSibling;
 
         Ext.suspendLayouts();
+
+        container = container.dom ? container : Ext.get(container);
 
         var newcontainer = me.initContainer(container);
 
@@ -105,55 +117,6 @@ Ext.window.Window.override({
                 me.render(Ext.isBoolean(me.autoRender) ? ct : me.autoRender);
             }
         }
-    },
-
-    maximize : function () {
-        var me = this;
-
-        if (!me.maximized) {
-            me.expand(false);
-
-            if (!me.hasSavedRestore) {
-                me.restoreSize = me.getSize();
-                me.restorePos = me.getPosition(true);
-
-                if (me.isContainedFloater()) {
-                    var floatParentBox = me.floatParent.getTargetEl().getViewRegion();
-                    me.restorePos[0] -= floatParentBox.left;
-                    me.restorePos[1] -= floatParentBox.top;
-                }
-            }
-
-            if (me.maximizable) {
-                me.tools.maximize.hide();
-                me.tools.restore.show();
-            }
-
-            me.maximized = true;
-            me.el.disableShadow();
-
-            if (me.dd) {
-                me.dd.disable();
-            }
-
-            if (me.resizer) {
-                me.resizer.disable();
-            }
-
-            if (me.collapseTool) {
-                me.collapseTool.hide();
-            }
-
-            me.el.addCls(Ext.baseCSSPrefix + 'window-maximized');
-            me.container.addCls(Ext.baseCSSPrefix + 'window-maximized-ct');
-
-            me.syncMonitorWindowResize();
-            me.setPosition(0, 0);
-            me.fitContainer();
-            me.fireEvent('maximize', me);
-        }
-
-        return me;
     }
 });
 

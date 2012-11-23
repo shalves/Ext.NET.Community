@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -38,9 +38,12 @@ namespace Ext.Net
 	/// <summary>
 	/// 
 	/// </summary>
-	[Description("")]
+    [Meta]
+    [Description("")]
     public partial class DateFilter : GridFilter
     {
+        public DateFilter() { }
+
         /// <summary>
         /// 
         /// </summary>
@@ -60,6 +63,7 @@ namespace Ext.Net
         /// <summary>
         /// The text displayed for the 'Before' menu item
         /// </summary>
+        [Meta]
         [ConfigOption]
         [Category("3. DateFilter")]
         [DefaultValue("Before")]
@@ -80,6 +84,7 @@ namespace Ext.Net
         /// <summary>
         /// The text displayed for the 'After' menu item
         /// </summary>
+        [Meta]
         [ConfigOption]
         [Category("3. DateFilter")]
         [DefaultValue("After")]
@@ -100,6 +105,7 @@ namespace Ext.Net
         /// <summary>
         /// The text displayed for the 'On' menu item
         /// </summary>
+        [Meta]
         [ConfigOption]
         [Category("3. DateFilter")]
         [DefaultValue("On")]
@@ -156,6 +162,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
+        [Meta]
         [ConfigOption("pickerOpts", JsonMode.Object)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
         [NotifyParentProperty(true)]
@@ -223,6 +230,7 @@ namespace Ext.Net
         /// <summary>
         /// Predefined filter value
         /// </summary>
+        [Meta]
         [Category("3. DateFilter")]
         [DefaultValue(null)]
         [Description("Predefined filter value")]
@@ -241,6 +249,7 @@ namespace Ext.Net
         /// <summary>
         /// Predefined filter value
         /// </summary>
+        [Meta]
         [Category("3. DateFilter")]
         [DefaultValue(null)]
         [Description("Predefined filter value")]
@@ -259,6 +268,7 @@ namespace Ext.Net
         /// <summary>
         /// Predefined filter value
         /// </summary>
+        [Meta]
         [Category("3. DateFilter")]
         [DefaultValue(null)]
         [Description("Predefined filter value")]
@@ -284,8 +294,8 @@ namespace Ext.Net
 
             if (this.Plugin != null)
             {
-                string value = "{before:".ConcatWith(beforeValue.HasValue ? DateTimeUtils.DateNetToJs(beforeValue.Value) : "undefined",
-                    ",after:", afterValue.HasValue ? DateTimeUtils.DateNetToJs(afterValue.Value) : "undefined", "}");
+                string value = "{before:".ConcatWith(beforeValue.HasValue ? JSON.Serialize(beforeValue.Value, JSON.ScriptConverters) : "undefined",
+                    ",after:", afterValue.HasValue ? JSON.Serialize(afterValue.Value, JSON.ScriptConverters) : "undefined", "}");
 
                 this.ParentGrid.AddScript("{0}.getFilter({1}).setValue({2});", this.Plugin.ClientID, JSON.Serialize(this.DataIndex), value);
             }
@@ -301,7 +311,7 @@ namespace Ext.Net
 
             if (this.Plugin != null)
             {
-                string value = "{on:".ConcatWith(onValue.HasValue ? DateTimeUtils.DateNetToJs(onValue.Value) : "undefined", "}");
+                string value = "{on:".ConcatWith(onValue.HasValue ? JSON.Serialize(onValue.Value, JSON.ScriptConverters) : "undefined", "}");
 
                 this.Plugin.AddScript("{0}.getFilter({1}).setValue({2});", this.Plugin.ClientID, JSON.Serialize(this.DataIndex), value);
             }
@@ -325,19 +335,19 @@ namespace Ext.Net
                     if (this.BeforeValue.HasValue)
                     {
                         jw.WritePropertyName("before");
-                        jw.WriteRawValue(DateTimeUtils.DateNetToJs(this.BeforeValue.Value));
+                        jw.WriteRawValue(JSON.Serialize(this.BeforeValue.Value, JSON.ScriptConverters));
                     }
 
                     if (this.AfterValue.HasValue)
                     {
                         jw.WritePropertyName("after");
-                        jw.WriteRawValue(DateTimeUtils.DateNetToJs(this.AfterValue.Value));
+                        jw.WriteRawValue(JSON.Serialize(this.AfterValue.Value, JSON.ScriptConverters));
                     }
 
                     if (this.OnValue.HasValue)
                     {
                         jw.WritePropertyName("on");
-                        jw.WriteRawValue(DateTimeUtils.DateNetToJs(this.OnValue.Value));
+                        jw.WriteRawValue(JSON.Serialize(this.OnValue.Value, JSON.ScriptConverters));
                     }
                     
                     jw.WriteEndObject();

@@ -16,7 +16,7 @@
 <html>
 <head runat="server">
     <title>CHANGELOG.txt - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css"  rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css"  rel="stylesheet" />
 </head>
 <body>
     <pre runat="server" id="pre1">

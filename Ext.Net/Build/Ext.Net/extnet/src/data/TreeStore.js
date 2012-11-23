@@ -50,4 +50,42 @@ Ext.data.NodeInterface.applyFields = Ext.Function.createInterceptor(Ext.data.Nod
     addFields.push({name: 'dataPath', type: 'string',  defaultValue: null, persist: false});    
     addFields.push({name: 'selected', type: 'bool',  defaultValue: false, persist: false});
     addFields.push({name: 'hidden', type: 'bool',  defaultValue: false, persist: false});
+
+    modelClass.override({
+        copy : Ext.data.NodeInterface.fixCopy,
+
+        reload : function (options) {
+            var me = this;
+
+            options = options || {};
+            treeStore = me.store && me.store.treeStore;
+            if (treeStore) {
+                options = Ext.apply({
+                    node:this,
+                    callback : function (records, operation, success) {
+                        if (success) {
+                            me.expand();
+                        }
+                    }
+                }, options);
+
+                treeStore.load(options);
+            } 
+        }
+    });
 });
+
+Ext.data.NodeInterface.fixCopy = function (newId, deep) {
+    var me = this,
+        result = new me.self(me.raw, newId !== false ? [Ext.data.Model.id(me)] : me.id, null, Ext.apply({}, me[me.persistenceProperty])),        
+        len = me.childNodes ? me.childNodes.length : 0,
+        i;
+
+    // Move child nodes across to the copy if required
+    if (deep) {
+        for (i = 0; i < len; i++) {
+            result.appendChild(me.childNodes[i].copy(newId));
+        }
+    }
+    return result;
+};

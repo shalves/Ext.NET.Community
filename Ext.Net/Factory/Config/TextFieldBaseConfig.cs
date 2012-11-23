@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -97,6 +97,24 @@ namespace Ext.Net
 				set
 				{
 					this.allowBlank = value;
+				}
+			}
+
+			private bool allowOnlyWhitespace = true;
+
+			/// <summary>
+			/// Specify false to automatically trim the value before validating the whether the value is blank. Setting this to false automatically sets AllowBlank to false.
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool AllowOnlyWhitespace 
+			{ 
+				get
+				{
+					return this.allowOnlyWhitespace;
+				}
+				set
+				{
+					this.allowOnlyWhitespace = value;
 				}
 			}
 
@@ -244,13 +262,13 @@ namespace Ext.Net
 				}
 			}
 
-			private Unit growMax = Unit.Pixel(800);
+			private int growMax = 800;
 
 			/// <summary>
 			/// The maximum width to allow when grow = true (defaults to 800).
 			/// </summary>
-			[DefaultValue(typeof(Unit), "800")]
-			public virtual Unit GrowMax 
+			[DefaultValue(800)]
+			public virtual int GrowMax 
 			{ 
 				get
 				{
@@ -262,13 +280,13 @@ namespace Ext.Net
 				}
 			}
 
-			private Unit growMin = Unit.Pixel(30);
+			private int growMin = 30;
 
 			/// <summary>
 			/// The minimum width to allow when grow = true (defaults to 30).
 			/// </summary>
-			[DefaultValue(typeof(Unit), "30")]
-			public virtual Unit GrowMin 
+			[DefaultValue(30)]
+			public virtual int GrowMin 
 			{ 
 				get
 				{
@@ -457,60 +475,6 @@ namespace Ext.Net
 				set
 				{
 					this.stripCharsRe = value;
-				}
-			}
-        
-			private JFunction validator = null;
-
-			/// <summary>
-			/// A custom validation function to be called during field validation (getErrors) (defaults to undefined). If specified, this function will be called first, allowing the developer to override the default validation process.
-			/// </summary>
-			public JFunction Validator
-			{
-				get
-				{
-					if (this.validator == null)
-					{
-						this.validator = new JFunction();
-					}
-			
-					return this.validator;
-				}
-			}
-			
-			private string vtype = "";
-
-			/// <summary>
-			/// A validation type name as defined in Ext.form.VTypes (defaults to null).
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string Vtype 
-			{ 
-				get
-				{
-					return this.vtype;
-				}
-				set
-				{
-					this.vtype = value;
-				}
-			}
-
-			private string vtypeText = "";
-
-			/// <summary>
-			/// A custom error message to display in place of the default message provided for the vtype currently set for this field (defaults to ''). Only applies if vtype is set, else ignored.
-			/// </summary>
-			[DefaultValue("")]
-			public virtual string VtypeText 
-			{ 
-				get
-				{
-					return this.vtypeText;
-				}
-				set
-				{
-					this.vtypeText = value;
 				}
 			}
 

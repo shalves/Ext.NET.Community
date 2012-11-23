@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -64,7 +64,7 @@ namespace Ext.Net
                 list.Add("expandable", new ConfigOption("expandable", null, false, this.Expandable ));
                 list.Add("expanded", new ConfigOption("expanded", null, false, this.Expanded ));
                 list.Add("emptyChildrenProxy", new ConfigOption("emptyChildrenProxy", new SerializationOptions("children", JsonMode.Raw), "", this.EmptyChildrenProxy ));
-                list.Add("href", new ConfigOption("href", null, "#", this.Href ));
+                list.Add("href", new ConfigOption("href", new SerializationOptions(JsonMode.Url), "#", this.Href ));
                 list.Add("hrefTarget", new ConfigOption("hrefTarget", null, "", this.HrefTarget ));
                 list.Add("iconFile", new ConfigOption("iconFile", new SerializationOptions("icon"), "", this.IconFile ));
                 list.Add("iconClsProxy", new ConfigOption("iconClsProxy", new SerializationOptions("iconCls"), "", this.IconClsProxy ));
@@ -74,7 +74,7 @@ namespace Ext.Net
                 list.Add("children", new ConfigOption("children", new SerializationOptions(JsonMode.AlwaysArray), null, this.Children ));
                 list.Add("dataPath", new ConfigOption("dataPath", null, "", this.DataPath ));
                 list.Add("customAttributes", new ConfigOption("customAttributes", new SerializationOptions("-", typeof(CustomConfigJsonConverter)), null, this.CustomAttributes ));
-                list.Add("attributesObject", new ConfigOption("attributesObject", new SerializationOptions(JsonMode.UnrollObject), null, this.AttributesObject ));
+                list.Add("attributesObject", new ConfigOption("attributesObject", new SerializationOptions(JsonMode.Reflection), null, this.AttributesObject ));
                 list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
 
                 return list;

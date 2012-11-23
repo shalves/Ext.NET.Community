@@ -30,7 +30,7 @@
 <html>
 <head runat="server">
     <title>ComponentColumn Over Editor - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 </head>
 <body>
     <form runat="server">
@@ -39,9 +39,8 @@
         <h1>ComponentColumn as Over Editor</h1>        
 
         <ext:GridPanel 
-            ID="GridPanel1" 
             runat="server" 
-            Title="ComponentColumn Editor" 
+            Title="ComponentColumn Over Editor" 
             Width="600" 
             Height="300">
             <Store>
@@ -121,7 +120,7 @@
                         Text="Date">
                         <Renderer Format="Date" FormatArgs="'d/m/Y'" />                            
                         <Component>
-                            <ext:DateField runat="server" />
+                            <ext:DateField runat="server" Format="dd/MM/yyyy" />
                         </Component>
                     </ext:ComponentColumn>
                 </Columns>

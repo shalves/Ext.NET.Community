@@ -53,9 +53,9 @@
 <html>
 <head runat="server">
     <title>Droppable Toolbars - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var createItem = function (data) {
             var record = data.draggedRecord;
                     
@@ -86,7 +86,7 @@
         };
     </script>
     
-    <style type="text/css">
+    <style>
         .company {
           float   : left;
           width   : 179px;

@@ -3,8 +3,9 @@ Ext.define('Ext.net.Viewport', {
     alias: 'widget.netviewport',
     requires: ['Ext.EventManager'],
     isViewPort: true,
-
+    preserveElOnDestroy: true,
     ariaRole: 'application',
+
     initComponent : function () {
         var me = this,
             html = Ext.get(document.body.parentNode),

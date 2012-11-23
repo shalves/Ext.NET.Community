@@ -5,7 +5,7 @@
 <script runat="server">
     protected void ReloadData(object sender, DirectEventArgs e)
     {
-        var store = this.Chart1.GetStore();
+        Store store = this.Chart1.GetStore();
         
         store.DataSource = Ext.Net.Examples.ChartData.GenerateData(6);
         store.DataBind();
@@ -17,9 +17,9 @@
 <html>
 <head runat="server">
     <title>Pie Chart - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         function tipRenderer(storeItem, item) {
             //calculate percentage.
             var total = 0;

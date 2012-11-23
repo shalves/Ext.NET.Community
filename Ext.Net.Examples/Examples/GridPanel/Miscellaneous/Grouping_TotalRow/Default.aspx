@@ -10,7 +10,7 @@
     {
         CultureInfo ci = new CultureInfo("en-US");
 
-        var store = this.GridPanel1.GetStore();
+        Store store = this.GridPanel1.GetStore();
         
         store.DataSource = new List<Project> 
         { 
@@ -65,9 +65,9 @@
 <head runat="server">
     <title>GroupingSummary Plugin with Summary row - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">       
+    <style>       
                  
         .x-grid-body .x-grid-cell-Cost {
             background-color : #f1f2f4;
@@ -99,11 +99,12 @@
             font-weight      : bold !important;                       
             font-size        : 11px;
             font-family      : tahoma, arial, verdana, sans-serif;
-            color            : #000;            
+            color            : #000;         
+            padding          : 3px 0px 2px 5px;
         } 
     </style>
      
-    <script type="text/javascript">
+    <script>
         var updateTotal = function (grid, container) {
             if (!grid.view.rendered) {
                 return;
@@ -302,7 +303,10 @@
                 </ext:GroupingSummary>
             </Features>
             <DockedItems>
-                <ext:Container ID="Container1" runat="server" Layout="HBoxLayout" Dock="Bottom" StyleSpec="margin-top:2px;">
+                <ext:Container ID="Container1" runat="server" Layout="HBoxLayout" Dock="Bottom" StyleSpec="margin-top:2px;">                    
+                    <Defaults>
+                        <ext:Parameter Name="height" Value="22" />
+                    </Defaults>
                     <Items>
                         <ext:DisplayField ID="ColumnField1" runat="server" Name="Description" Cls="total-field" Text="-" />
                         <ext:DisplayField ID="ColumnField2" runat="server" Name="Due" Cls="total-field" Text="-"  />

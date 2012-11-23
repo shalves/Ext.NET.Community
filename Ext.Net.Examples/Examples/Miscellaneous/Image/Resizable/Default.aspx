@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>Resizable Image - Ext.NET Examples</title>    
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
     
-    <script type="text/javascript">
+    <script>
         var resize = function (image, factor) {
             if (!factor || !image.complete) {
                 return;

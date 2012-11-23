@@ -15,20 +15,16 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
  *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
  ********/
 
-using System;
-using System.ComponentModel;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Dynamic;
+using System.Reflection;
 
 namespace Ext.Net
 {
@@ -41,12 +37,25 @@ namespace Ext.Net
             where TObservable : Observable
             where TBuilder : Builder<TObservable, TBuilder>
         {
+#if NET40
             public virtual TBuilder Config(string name, object value)
             {
-                ((DynamicConfigDictionary)this.ToComponent().Configs).SetDynamicValue(name, value);
-                
+                ((DynamicConfigDictionary)this.ToComponent().Configs).SetDynamicValue(name, value);                
                 return this as TBuilder;
-            }  
+            }
+
+            public virtual TBuilder Config(object configs)
+            {
+                if (configs != null)
+                {
+                    foreach (PropertyInfo x in configs.GetType().GetProperties())
+	                {
+                        ((DynamicConfigDictionary)this.ToComponent().Configs).SetDynamicValue(x.Name, x.GetValue(configs, null));
+	                }                    
+                }
+                return this as TBuilder;
+            }
+#endif
         }
     }
 }

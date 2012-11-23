@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project path="" name="Ext.Net" author="Ext.NET, Inc." version="2.0.0" copyright="@version   : 2.0.0 - Community Edition (AGPLv3 License)&#xD;&#xA;@author    : Ext.NET, Inc. http://www.ext.net/&#xD;&#xA;@date      : 2012-07-24&#xD;&#xA;@copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.&#xD;&#xA;@license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.&#xD;&#xA;@website   : http://www.ext.net/" output="$project" source="False" source-dir="$output\source" minify="False" min-dir="$output" doc="False" doc-dir="$output\docs" master="true" master-file="$output\yui-ext.js" zip="true" zip-file="$output\yuo-ext.$version.zip">
+<project path="" name="Ext.Net" author="Ext.NET, Inc." version="2.0.0.rc1" copyright="@version   : 2.1.0 - Ext.NET Pro License&#xD;&#xA;@author    : Ext.NET, Inc. http://www.ext.net/&#xD;&#xA;@date      : 2012-11-21&#xD;&#xA;@copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.&#xD;&#xA;@license   : See license.txt and http://www.ext.net/license/." output="$project" source="False" source-dir="$output\source" minify="False" min-dir="$output" doc="False" doc-dir="$output\docs" master="true" master-file="$output\yui-ext.js" zip="true" zip-file="$output\yuo-ext.$version.zip">
   <directory name="css" />
   <file name="css\init\Start.css" path="init" />
   <file name="css\commands\commandcolumn.css" path="commands" />
   <file name="css\commands\imagecommandcolumn.css" path="commands" />
   <file name="css\commands\cellcommand.css" path="commands" />
-  <file name="css\grid\componentcolumn.css" path="grid" />
   <file name="css\grid\checkheader.css" path="grid" />
+  <file name="css\grid\column.css" path="grid" />
+  <file name="css\grid\actioncolumn.css" path="grid" />
+  <file name="css\grid\componentcolumn.css" path="grid" />
   <file name="css\tree\tree.css" path="tree" />
   <file name="css\multicombo\multicombo.css" path="multicombo" />
   <file name="css\label\label.css" path="label" />
@@ -16,8 +18,10 @@
     <include name="css\commands\commandcolumn.css" />
     <include name="css\commands\imagecommandcolumn.css" />
     <include name="css\commands\cellcommand.css" />
-    <include name="css\grid\componentcolumn.css" />
     <include name="css\grid\checkheader.css" />
+    <include name="css\grid\column.css" />
+    <include name="css\grid\actioncolumn.css" />
+    <include name="css\grid\componentcolumn.css" />
     <include name="css\tree\tree.css" />
     <include name="css\multicombo\multicombo.css" />
     <include name="css\label\label.css" />

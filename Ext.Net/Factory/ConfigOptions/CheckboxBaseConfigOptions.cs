@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -60,12 +60,12 @@ namespace Ext.Net
                 list.Add("beforeBoxLabelTextTpl", new ConfigOption("beforeBoxLabelTextTpl", new SerializationOptions("beforeBoxLabelTextTpl", typeof(LazyControlJsonConverter)), null, this.BeforeBoxLabelTextTpl ));
                 list.Add("beforeBoxLabelTpl", new ConfigOption("beforeBoxLabelTpl", new SerializationOptions("beforeBoxLabelTpl", typeof(LazyControlJsonConverter)), null, this.BeforeBoxLabelTpl ));
                 list.Add("boxLabel", new ConfigOption("boxLabel", null, "", this.BoxLabel ));
-                list.Add("boxLabelAlign", new ConfigOption("boxLabelAlign", null, BoxLabelAlign.After, this.BoxLabelAlign ));
+                list.Add("boxLabelAlign", new ConfigOption("boxLabelAlign", new SerializationOptions(JsonMode.ToLower), BoxLabelAlign.After, this.BoxLabelAlign ));
                 list.Add("boxLabelStyle", new ConfigOption("boxLabelStyle", null, "", this.BoxLabelStyle ));
                 list.Add("boxLabelAttrTpl", new ConfigOption("boxLabelAttrTpl", new SerializationOptions("boxLabelAttrTpl", typeof(LazyControlJsonConverter)), null, this.BoxLabelAttrTpl ));
                 list.Add("boxLabelCls", new ConfigOption("boxLabelCls", new SerializationOptions("boxLabelClsExtra"), "", this.BoxLabelCls ));
                 list.Add("checkedCls", new ConfigOption("checkedCls", null, "", this.CheckedCls ));
-                list.Add("handler", new ConfigOption("handler", new SerializationOptions(JsonMode.Raw), "", this.Handler ));
+                list.Add("handler", new ConfigOption("handler", new SerializationOptions(typeof(FunctionJsonConverter)), "", this.Handler ));
                 list.Add("inputValue", new ConfigOption("inputValue", null, "", this.InputValue ));
                 list.Add("scope", new ConfigOption("scope", new SerializationOptions(JsonMode.Raw), null, this.Scope ));
                 list.Add("uncheckedValue", new ConfigOption("uncheckedValue", null, null, this.UncheckedValue ));

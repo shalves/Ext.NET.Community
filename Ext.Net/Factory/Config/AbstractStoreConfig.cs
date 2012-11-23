@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -169,6 +169,42 @@ namespace Ext.Net
 					}
 			
 					return this.proxy;
+				}
+			}
+			
+			private string syncUrl = "";
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string SyncUrl 
+			{ 
+				get
+				{
+					return this.syncUrl;
+				}
+				set
+				{
+					this.syncUrl = value;
+				}
+			}
+        
+			private ProxyCollection serverProxy = null;
+
+			/// <summary>
+			/// The Proxy to use for this Store.
+			/// </summary>
+			public ProxyCollection ServerProxy
+			{
+				get
+				{
+					if (this.serverProxy == null)
+					{
+						this.serverProxy = new ProxyCollection();
+					}
+			
+					return this.serverProxy;
 				}
 			}
 			

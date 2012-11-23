@@ -8,9 +8,9 @@
 <head runat="server">
     <title>Infinite Scrolling - Ext.NET Examples</title>
 
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var renderTopic = function(value, p, record) {
             return Ext.String.format(
                 '<a href="http://sencha.com/forum/showthread.php?t={2}" target="_blank">{0}</a>',
@@ -19,6 +19,25 @@
                 record.getId(),
                 record.data.forumid
             );
+        };
+
+        var groupchange = function(store, groupers) {
+            var sortable = !store.isGrouped(),
+                grid = App.GridPanel1,
+                headers = grid.headerCt.getVisibleGridColumns(),
+                i, 
+                len = headers.length;
+                
+            for (i = 0; i < len; i++) {
+                headers[i].sortable = (headers[i].sortable !== undefined) ? headers[i].sortable : sortable;
+            }
+        };
+
+        // This particular service cannot sort on more than one field, so if grouped, disable sorting
+        var beforeprefetch = function(store, operation) {
+            if (operation.groupers && operation.groupers.length) {
+                delete operation.sorters;
+            }
         };
     </script>
 </head>
@@ -33,19 +52,26 @@
         <p>The new grid uses a virtualized scrolling system to handle potentially infinite data sets without any impact on client side performance.</p>
         
         <ext:GridPanel 
+            ID="GridPanel1"
             runat="server" 
             Width="700" 
-            Height="500"
-            
-            Title="ExtJS.com - Browse Forums">
+            Height="500"            
+            Title="Sencha.com - Browse Forums">
             <Store>
                 <ext:Store 
                     runat="server" 
                     RemoteSort="true" 
-                    Buffered="true" 
+                    Buffered="true"
+                    RemoteGroup="true"
+                    LeadingBufferZone="300" 
                     PageSize="100">
                     <Proxy>
-                        <ext:JsonPProxy Url="http://www.sencha.com/forum/remote_topics/index.php" SimpleSortMode="true">
+                        <ext:JsonPProxy 
+                            Url="http://www.sencha.com/forum/remote_topics/index.php" 
+                            SimpleSortMode="true" 
+                            SimpleGroupMode="true" 
+                            GroupParam="sort"
+                            GroupDirectionParam="dir">
                             <Reader>
                                 <ext:JsonReader Root="topics" TotalProperty="totalCount" />
                             </Reader>
@@ -59,7 +85,7 @@
                                 <ext:ModelField Name="forumid" />
                                 <ext:ModelField Name="author" />
                                 <ext:ModelField Name="replycount" Type="Int" />
-                                <ext:ModelField Name="lastpost" Mapping="lastpost" Type="Date" DateFormat="timestamp" /> 
+                                <ext:ModelField Name="lastpost" Type="Date" DateFormat="timestamp" /> 
                                 <ext:ModelField Name="lastposter" />
                                 <ext:ModelField Name="excerpt" />
                                 <ext:ModelField Name="threadid" />
@@ -67,30 +93,58 @@
                         </ext:Model>
                     </Model>
                     <Sorters>
-                        <ext:DataSorter Property="lastpost" Direction="DESC" />
+                        <ext:DataSorter Property="threadid" Direction="ASC" />
                     </Sorters>
+                    <Listeners>
+                        <GroupChange Fn="groupchange" />
+                        <BeforePrefetch Fn="beforeprefetch" />
+                    </Listeners>
                 </ext:Store>
             </Store>           
             <ColumnModel runat="server">
 		        <Columns>
-                    <ext:RowNumbererColumn runat="server" Width="50" Sortable="false" />
-                    <ext:Column ID="topic" runat="server" Text="Topic" DataIndex="title" Flex="1" Sortable="false">
+                    <ext:RowNumbererColumn runat="server" Width="50" />
+                    <ext:Column 
+                        runat="server" 
+                        Text="Topic" 
+                        DataIndex="title" 
+                        Flex="1">
                         <Renderer Fn="renderTopic" />
                     </ext:Column>
-                    <ext:Column runat="server" Text="Author" DataIndex="author" Width="100" Hidden="true" Sortable="true" />
-                    <ext:Column runat="server" Text="Replies" DataIndex="replycount" Width="70" Align="Center" Sortable="false" />
-                    <ext:Column runat="server" Text="Last Post" DataIndex="lastpost" Width="130" Sortable="true">
+                    <ext:Column 
+                        runat="server" 
+                        Text="Author" 
+                        DataIndex="author" 
+                        Hidden="true" />
+                    <ext:Column 
+                        runat="server" 
+                        Text="Replies" 
+                        DataIndex="replycount" 
+                        Width="70" 
+                        Align="Center" 
+                        Sortable="false" />
+                    <ext:Column 
+                        runat="server" 
+                        Text="Last Post" 
+                        DataIndex="lastpost" 
+                        Width="130" 
+                        Groupable="false">
                         <Renderer Format="Date" FormatArgs="'n/j/Y g:i A'" />
                     </ext:Column>
 		        </Columns>
             </ColumnModel>           
             <View>
-                <ext:GridView runat="server" TrackOver="false">                    
-                </ext:GridView>
+                <ext:GridView runat="server" TrackOver="false" />                    
             </View> 
             <SelectionModel>
                 <ext:RowSelectionModel runat="server" PruneRemoved="false" Mode="Multi" />
-            </SelectionModel>                       
+            </SelectionModel> 
+            <Features>
+                <ext:Grouping runat="server" HideGroupedHeader="false" />
+            </Features>                      
+            <VerticalScroller>
+                <ext:GridPagingScroller runat="server" VariableRowHeight="true" />
+            </VerticalScroller>
         </ext:GridPanel>
     </form>
 </body>

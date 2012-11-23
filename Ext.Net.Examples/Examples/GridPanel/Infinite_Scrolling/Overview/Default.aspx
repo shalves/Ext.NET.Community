@@ -41,7 +41,7 @@
 <html>
 <head runat="server">
     <title>Infinite Scrolling - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -63,7 +63,9 @@
                 <ext:Store 
                     runat="server" 
                     Buffered="true" 
-                    PageSize="100"
+                    PageSize="200" 
+                    TrailingBufferZone="10"
+                    LeadingBufferZone="10"
                     OnReadData="Store_ReadData">
                     <Proxy>
                         <ext:PageProxy>
@@ -87,8 +89,7 @@
 		        <Columns>
                     <ext:RowNumbererColumn 
                         runat="server" 
-                        Width="50" 
-                        Sortable="false" />
+                        Width="50" />
                     <ext:Column 
                         runat="server" 
                         Text="Company" 

@@ -71,7 +71,7 @@
     {
         get
         {
-            var persons = this.Session["TestPersons"];
+            object persons = this.Session["TestPersons"];
             
             if (persons == null)
             {
@@ -87,7 +87,7 @@
     {
         lock (lockObj)
         {
-            var persons = this.CurrentData;
+            List<TestPerson> persons = this.CurrentData;
             person.Id = this.NewId;
             persons.Add(person);
             this.Session["TestPersons"] = persons;
@@ -100,7 +100,7 @@
     {
         lock (lockObj)
         {
-            var persons = this.CurrentData;
+            List<TestPerson> persons = this.CurrentData;
             TestPerson person = null;
             
             foreach (TestPerson p in persons)
@@ -131,8 +131,8 @@
             {
                 throw new Exception("SIMULATED ERROR: ODD-numbered id");
             }
-            
-            var persons = this.CurrentData;
+
+            List<TestPerson> persons = this.CurrentData;
             TestPerson updatingPerson = null;
             
             foreach (TestPerson p in persons)
@@ -207,8 +207,8 @@
 <html>
 <head runat="server">
     <title>Grid with AutoSave - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
-    <script type="text/javascript">
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
+    <script>
        var updateRecord = function (form) {
             if (form.getForm()._record == null) {
                 return;
@@ -265,9 +265,9 @@
                         <ext:ModelField Name="Last" />
                     </Fields>
                     <Validations>
-                        <ext:LengthValidation Field="Email" Min="1" />
-                        <ext:LengthValidation Field="First" Min="1" />
-                        <ext:LengthValidation Field="Last" Min="1" />                                
+                        <ext:PresenceValidation Field="Email" />
+                        <ext:PresenceValidation Field="First" />
+                        <ext:PresenceValidation Field="Last" />                                
                     </Validations>
                 </ext:Model>
             </Model>
@@ -293,31 +293,26 @@
             ID="UserForm" 
             runat="server"
             Icon="User"
-            Frame="true"
-            LabelAlign="Right"
+            Frame="true"            
             Title="User -- All fields are required"
+            DefaultAnchor="100%"
             Width="500">
+            <FieldDefaults LabelAlign="Right" AllowBlank="false" />
             <Items>
                 <ext:TextField runat="server"
                     FieldLabel="Email"
                     Name="Email"
-                    AllowBlank="false"
                     Vtype="email"
-                    AnchorHorizontal="100%"
                     />
                 
                 <ext:TextField runat="server"
                     FieldLabel="First"
                     Name="First"
-                    AllowBlank="false"
-                    AnchorHorizontal="100%"
                     />
                 
                 <ext:TextField runat="server"
                     FieldLabel="Last"
                     Name="Last"
-                    AllowBlank="false"
-                    AnchorHorizontal="100%"
                     />
             </Items>            
             
@@ -405,11 +400,7 @@
                         
                         <ext:Button runat="server" Text="Delete" Icon="Exclamation">
                             <Listeners>
-                                <Click Handler="var selection = #{GridPanel1}.getView().getSelectionModel().getSelection()[0];
-                                                if (selection) {
-                                                    #{GridPanel1}.store.remove(selection);
-                                                    #{UserForm}.getForm().reset();
-                                                }" />
+                                <Click Handler="#{GridPanel1}.deleteSelected(); #{UserForm}.getForm().reset();" />
                             </Listeners>
                         </ext:Button>
                         

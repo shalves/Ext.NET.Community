@@ -15,7 +15,7 @@
 
     void EventStore_SubmitData(object sender, StoreSubmitDataEventArgs e)
     {
-        var events = e.Object<EventModel>();
+        List<EventModel> events = e.Object<EventModel>();
         ((EventsViewer)this.Page.LoadControl("../Shared/Common/EventsViewer.ascx")).Render(events);
     }
     
@@ -39,10 +39,10 @@
 <html>
 <head runat="server">
     <title>Calendar - Ext.NET Examples</title>    
-    <link rel="stylesheet" type="text/css" href="../Shared/resources/css/main.css" />        
-    <script type="text/javascript" src="../Shared/resources/js/common.js"></script>
+    <link rel="stylesheet" href="../Shared/resources/css/main.css" />        
+    <script src="../Shared/resources/js/common.js"></script>
     
-    <style type="text/css">
+    <style>
         .ext-color-4,
         .ext-ie .ext-color-4-ad,
         .ext-opera .ext-color-4-ad {
@@ -166,7 +166,7 @@
                 </ext:Panel>
             </Items>
         </ext:Viewport>
-
+        
         <ext:EventWindow 
             ID="EventEditWindow1" 
             runat="server"

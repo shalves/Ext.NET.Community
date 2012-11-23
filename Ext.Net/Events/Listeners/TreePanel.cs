@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -522,10 +522,12 @@ namespace Ext.Net
         /// options : Object
         ///     The options object passed to Ext.util.Observable.addListener.
         /// </summary>
+        
         [ListenerArgument(0, "item")]
-        [ListenerArgument(1, "records")]
-        [ListenerArgument(2, "successful")]
-        [ListenerArgument(3, "options")]
+        [ListenerArgument(1, "node")]
+        [ListenerArgument(2, "records")]
+        [ListenerArgument(3, "successful")]
+        [ListenerArgument(4, "options")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         [ConfigOption("load", typeof(ListenerJsonConverter))]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -756,6 +758,129 @@ namespace Ext.Net
             get
             {
                 return this.beforeRemoteAppend ?? (this.beforeRemoteAppend = new ComponentListener());
+            }
+        }
+
+        private ComponentListener remoteEditSuccess;
+
+        /// <summary>
+        /// Fires when remote edit successful
+        /// </summary>
+        [ListenerArgument(0, "tree")]
+        [ListenerArgument(1, "node")]
+        [ListenerArgument(2, "action")]
+        [ListenerArgument(3, "o")]
+        [ListenerArgument(4, "responseParams")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("remoteeditsuccess", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when remote edit successful")]
+        public virtual ComponentListener RemoteEditSuccess
+        {
+            get
+            {
+                return this.remoteEditSuccess ?? (this.remoteEditSuccess = new ComponentListener());
+            }
+        }
+
+        private ComponentListener remoteRemoveSuccess;
+
+        /// <summary>
+        /// Fires when remote remove successful
+        /// </summary>
+        [ListenerArgument(0, "tree")]
+        [ListenerArgument(1, "node")]
+        [ListenerArgument(2, "action")]
+        [ListenerArgument(3, "o")]
+        [ListenerArgument(4, "responseParams")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("remoteremovesuccess", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when remote remove successful")]
+        public virtual ComponentListener RemoteRemoveSuccess
+        {
+            get
+            {
+                return this.remoteRemoveSuccess ?? (this.remoteRemoveSuccess = new ComponentListener());
+            }
+        }
+
+        private ComponentListener remoteMoveSuccess;
+
+        /// <summary>
+        /// Fires when remote move successful
+        /// </summary>
+        [ListenerArgument(0, "tree")]
+        [ListenerArgument(1, "node")]
+        [ListenerArgument(2, "action")]
+        [ListenerArgument(3, "o")]
+        [ListenerArgument(4, "responseParams")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("remotemovesuccess", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when remote move successful")]
+        public virtual ComponentListener RemoteMoveSuccess
+        {
+            get
+            {
+                return this.remoteMoveSuccess ?? (this.remoteMoveSuccess = new ComponentListener());
+            }
+        }
+
+        private ComponentListener remoteAppendSuccess;
+
+        /// <summary>
+        /// Fires when remote append/insert successful
+        /// </summary>
+        [ListenerArgument(0, "tree")]
+        [ListenerArgument(1, "node")]
+        [ListenerArgument(2, "action")]
+        [ListenerArgument(3, "o")]
+        [ListenerArgument(4, "responseParams")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("remoteappendsuccess", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when remote append/insert successful")]
+        public virtual ComponentListener RemoteAppendSuccess
+        {
+            get
+            {
+                return this.remoteAppendSuccess ?? (this.remoteAppendSuccess = new ComponentListener());
+            }
+        }
+
+        private ComponentListener nodedragover;
+
+        /// <summary>
+        /// Fires when a tree node is being targeted for a drag drop, return false to signal drop not allowed.
+        /// Parameters
+        /// targetNode : Ext.data.NodeInterface
+        ///     The target node
+        /// position : String
+        ///     The drop position, "before", "after" or "append",
+        /// dragData : Object
+        ///     Data relating to the drag operation
+        /// e : Ext.EventObject
+        ///     The event object for the drag
+        /// </summary>
+        [ListenerArgument(0, "targetNode")]
+        [ListenerArgument(1, "position")]
+        [ListenerArgument(2, "dragData")]
+        [ListenerArgument(3, "e")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("nodedragover", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires when a tree node is being targeted for a drag drop, return false to signal drop not allowed.")]
+        public virtual ComponentListener NodeDragOver
+        {
+            get
+            {
+                return this.nodedragover ?? (this.nodedragover = new ComponentListener());
             }
         }
     }

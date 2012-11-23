@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -155,6 +155,46 @@ namespace Ext.Net
         }
 
         /// <summary>
+        /// The name of the direction parameter to send in a request. This is only used when simpleGroupMode is set to true. Defaults to 'groupDir'.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue("groupDir")]
+        [NotifyParentProperty(true)]
+        [Description("The name of the direction parameter to send in a request. This is only used when simpleGroupMode is set to true. Defaults to 'groupDir'.")]
+        public virtual string GroupDirectionParam
+        {
+            get
+            {
+                return this.State.Get<string>("GroupDirectionParam", "groupDir");
+            }
+            set
+            {
+                this.State.Set("GroupDirectionParam", value);
+            }
+        }
+
+        /// <summary>
+        /// The name of the parameter which carries the id of the entity being operated upon. Defaults to: "id"
+        /// </summary>
+        [Meta]
+        [ConfigOption("idParam")]
+        [DefaultValue("id")]
+        [NotifyParentProperty(true)]
+        [Description("The name of the parameter which carries the id of the entity being operated upon. Defaults to: \"id\"")]
+        public virtual string IDParam
+        {
+            get
+            {
+                return this.State.Get<string>("IDParam", "id");
+            }
+            set
+            {
+                this.State.Set("IDParam", value);
+            }
+        }
+
+        /// <summary>
         /// The name of the 'limit' parameter to send in a request. Defaults to 'limit'. Set this to undefined if you don't want to send a limit parameter
         /// </summary>
         [Meta]
@@ -191,6 +231,25 @@ namespace Ext.Net
             set
             {
                 this.State.Set("NoCache", value);
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue(true)]
+        [NotifyParentProperty(true)]
+        [Description("")]
+        public virtual bool AppendAction
+        {
+            get
+            {
+                return this.State.Get<bool>("AppendAction", true);
+            }
+            set
+            {
+                this.State.Set("AppendAction", value);
             }
         }
 
@@ -249,6 +308,26 @@ namespace Ext.Net
             set
             {
                 this.State.Set("SimpleSortMode", value);
+            }
+        }
+
+        /// <summary>
+        /// Enabling simpleGroupMode in conjunction with remoteGroup will only send one group property and a direction when a remote group is requested. The groupDirectionParam and groupParam will be sent with the property name and either 'ASC' or 'DESC'. Defaults to: false
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue(false)]
+        [NotifyParentProperty(true)]
+        [Description("Enabling simpleGroupMode in conjunction with remoteGroup will only send one group property and a direction when a remote group is requested. The groupDirectionParam and groupParam will be sent with the property name and either 'ASC' or 'DESC'. Defaults to: false")]
+        public virtual bool SimpleGroupMode
+        {
+            get
+            {
+                return this.State.Get<bool>("SimpleGroupMode", false);
+            }
+            set
+            {
+                this.State.Set("SimpleGroupMode", value);
             }
         }
 

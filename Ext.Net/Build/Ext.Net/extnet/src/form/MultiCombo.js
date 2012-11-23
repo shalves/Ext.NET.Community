@@ -7,6 +7,7 @@ Ext.define("Ext.net.MultiCombo", {
     wrapBySquareBrackets : false,    
     selectionMode : "checkbox",
     multiSelect : true,
+    sortByDisplayField : false,
 
     assertValue : function () {
         this.collapse();
@@ -58,10 +59,18 @@ Ext.define("Ext.net.MultiCombo", {
 	                this.picker.overItemCls = "x-multi-selected";	                           
                 }, this);
             }        
+
+            this.picker.on("viewready", this.onViewReady, this, {single:true});
 	    }
 	    
 	    return this.picker;
 	},	
+
+    onViewReady : function () {
+        Ext.each(this.valueModels, function (r) {
+            this.selectRecord(r);
+        }, this);
+    },
 
     onListSelect : function (model, record) {
         this.selectRecord(record);
@@ -243,5 +252,48 @@ Ext.define("Ext.net.MultiCombo", {
 		}, this);
 		
 		return selection;
-	}
+	},
+
+    setValue : function (value, doSelect) {
+        var me = this,
+            matchedRecords,
+            nonRecords;
+
+        if (me.sortByDisplayField) {
+            value = Ext.Array.from(value);
+            matchedRecords = [];
+            nonRecords = [];
+            Ext.each(value, function (v) {
+                record = v;
+                if (!record || !record.isModel) {
+                    record = me.findRecordByValue(record);
+                }
+
+                if (record) {
+                    matchedRecords.push(record);
+                } else {
+                    nonRecords.push(v);
+                }
+            });
+
+            Ext.Array.sort(matchedRecords, function (r1, r2) {
+                var v1 = r1.get(me.displayField),
+                    v2 = r2.get(me.displayField);
+                            
+                if (v1 === v2) {
+                    return 0;
+                }
+                        
+                return v1 > v2 ? 1 : -1;
+            });
+
+            value = matchedRecords.concat(nonRecords);
+        }
+
+        me.callParent(arguments);
+
+        Ext.each(this.valueModels, function (r) {
+            this.selectRecord(r);
+        }, this);
+    }
 });

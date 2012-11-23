@@ -4,7 +4,7 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        var view = Ext.Net.Utilities.ControlUtils.FindControl<DataView>(this);
+        DataView view = Ext.Net.Utilities.ControlUtils.FindControl<DataView>(this);
         view.Store.Primary.DataSource = new List<object> { 
             new {name = "1"},
             new {name = "2"},

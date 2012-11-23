@@ -4,46 +4,61 @@
 
 <!DOCTYPE html>
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Group Commands - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript">
-        var prepareCommand = function (grid, command, record, row) {
-            // you can prepare group command
-            if (command.command == 'Delete' && record.data.Price < 5) {
-                command.hidden = true;
-                command.hideMode = 'visibility'; //you can try 'display' also                 
-            }
+
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+
+    <script>
+        var prepareGroupToolbar = function (grid, toolbar, groupId, records) {
+            // you can prepare ready toolbar
         };
-        
-        var prepareGroupCommand = function (grid, command, groupId, group) {
-            // you can prepare group command
+
+        var onGroupCommand = function (column, command, group) {
+            if (command === 'SelectGroup') { 
+                column.grid.getSelectionModel().select(group.children, true); 
+                return;
+            } 
+            
+            Ext.Msg.alert(command, 'Group name: ' + group.name + '<br/>Count - ' + group.children.length);
+        };
+
+        var getAdditionalData = function (data, idx, record, orig) {
+            var o = Ext.grid.feature.RowBody.prototype.getAdditionalData.apply(this, arguments),
+                d = data;
+
+            Ext.apply(o, {
+                rowBodyColspan : record.fields.getCount(),
+                rowBody: Ext.String.format('<div style=\'padding:0 5px 5px 5px;\'>The {0} [{1}] requires light conditions of <i>{2}</i>.<br /><b>Price: {3}</b></div>', d.Common, d.Botanical, d.Light, Ext.util.Format.usMoney(d.Price)),
+                rowBodyCls: ""
+            });
+
+            return o;
         };
     </script>
 </head>
 <body>
     <form runat="server">
         <ext:ResourceManager runat="server" />
-        
-        <h1>ImageCommandColumn is a simpler and faster version of CommanColumn</h1>
 
         <ext:GridPanel
             runat="server" 
-            Collapsible="true"          
+            Collapsible="true" 
             Width="600" 
-            Height="350"
+            Height="350" 
             Title="Plants" 
-            Frame="true">
+            Frame="true"
+            ForceFit="true">
             <Store>
-                <ext:Store ID="Store1" runat="server" GroupField="Light">
+                <ext:Store runat="server" GroupField="Light">
                     <Proxy>
                         <ext:AjaxProxy Url="../../Shared/PlantService.asmx/Plants">
                             <ActionMethods Read="POST" />
                             <Reader>
                                 <ext:XmlReader Record="Plant" />
                             </Reader>
-                        </ext:AjaxProxy> 
+                        </ext:AjaxProxy>
                     </Proxy>
                     <Model>
                         <ext:Model runat="server">
@@ -60,8 +75,8 @@
                         </ext:Model>
                     </Model>
                     <Sorters>
-                        <ext:DataSorter Property="Common" Direction="ASC" />
-                    </Sorters>            
+                        <ext:DataSorter Property="Common" Direction="ASC"  />
+                    </Sorters>
                 </ext:Store>
             </Store>
             <ColumnModel runat="server">
@@ -70,7 +85,7 @@
                         runat="server" 
                         Text="Common Name" 
                         DataIndex="Common" 
-                        Flex="1" 
+                        Width="220" 
                         />
                     <ext:Column 
                         runat="server" 
@@ -101,59 +116,43 @@
                         DataIndex="Indoor" 
                         Width="55" 
                         />
-                    <ext:ImageCommandColumn runat="server" Width="110">
-                        <Commands>
-                            <ext:ImageCommand CommandName="Delete" Icon="Delete" Text="Delete">
-                                <ToolTip Text="Delete" />
-                            </ext:ImageCommand>
-                            <ext:ImageCommand CommandName="Edit" Icon="TableEdit" Text="Edit">
-                                <ToolTip Text="Edit" />
-                            </ext:ImageCommand>
-                        </Commands>
-                        
+                    <ext:CommandColumn runat="server" Hidden="true">
                         <GroupCommands>
-                            <ext:GroupImageCommand CommandName="Delete" Icon="Delete" Text="Delete">
-                                <ToolTip Text="Delete" />
-                            </ext:GroupImageCommand>
-                            <ext:GroupImageCommand CommandName="Edit" Icon="TableEdit" Text="Edit">
-                                <ToolTip Text="Edit" />
-                            </ext:GroupImageCommand>
-                            <ext:GroupImageCommand CommandName="Chart" Icon="ChartBar" RightAlign="true">
-                                <ToolTip Text="Chart" />
-                            </ext:GroupImageCommand>
+                            <ext:GridCommand Icon="TableRow" CommandName="SelectGroup">
+                                <ToolTip Title="Select" Text="Select all rows of the group" />
+                            </ext:GridCommand>
+                            <ext:CommandFill />
+                            <ext:GridCommand Text="Menu" StandOut="true">
+                                <Menu>
+                                    <Items>
+                                        <ext:MenuCommand CommandName="ItemCommand" Text="Item" />
+                                        <ext:MenuCommand CommandName="ItemCommand" Text="Item" />
+                                    </Items>
+                                </Menu>
+                            </ext:GridCommand>
                         </GroupCommands>
-                        
-                        <PrepareCommand Fn="prepareCommand" />
-                        <PrepareGroupCommand Fn="prepareGroupCommand" />
-                        
+                        <PrepareGroupToolbar Fn="prepareGroupToolbar" />
                         <Listeners>
-                            <Command Handler="Ext.Msg.alert(command, record.data.Common);" />
-                            <GroupCommand Handler="Ext.Msg.alert(command, 'Group name: '+ group.name +'<br/>Count - ' + group.children.length);" />
+                            <GroupCommand Fn="onGroupCommand" />
                         </Listeners>
-                    </ext:ImageCommandColumn>
+                    </ext:CommandColumn>
                 </Columns>
-            </ColumnModel>                   
+            </ColumnModel>
             
-            <View>
-                <ext:GridView runat="server" StripeRows="false" TrackOver="false">                   
-                </ext:GridView>
-            </View>
+            <SelectionModel>
+                <ext:CheckboxSelectionModel runat="server" RowSpan="2" />
+            </SelectionModel>
+
             <Features>
                 <ext:Grouping 
                     runat="server" 
                     HideGroupedHeader="true" 
-                    GroupHeaderTplString='{text} ({[values.rows.length]} {[values.rows.length > 1 ? "Items" : "Item"]})' />
+                    GroupHeaderTplString='{columnName}: {name} ({[values.rows.length]} {[values.rows.length > 1 ? "Items" : "Item"]})' />
+
                 <ext:RowBody runat="server">
-                    <GetAdditionalData 
-                        Handler="var d = data;
-                                 return {
-                                    rowBodyCls: this.rowBodyCls,
-                                    rowBodyColspan : this.view.headerCt.getColumnCount(),
-                                    rowBody : Ext.String.format('<div style=\'padding:0 5px 5px 5px;\'>The {0} [{1}] requires light conditions of <i>{2}</i>.<br /><b>Price: {3}</b><hr/></div>', d.Common, d.Botanical, d.Light, Ext.util.Format.usMoney(d.Price))
-                                 };">
-                    </GetAdditionalData>
+                    <GetAdditionalData Fn="getAdditionalData" />
                 </ext:RowBody>
-            </Features>         
+            </Features>      
         </ext:GridPanel>
     </form>
 </body>

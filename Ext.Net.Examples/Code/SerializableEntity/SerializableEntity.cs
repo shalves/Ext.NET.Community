@@ -101,8 +101,8 @@ public class SerializableEntity<T> : IXmlSerializable, ISerializable where T : c
         {
             reader.MoveToContent();
             string inn = reader.ReadOuterXml();
-            var sr = new StringReader(inn);
-            var tr = new XmlTextReader(sr);
+            StringReader sr = new StringReader(inn);
+            XmlTextReader tr = new XmlTextReader(sr);
             tr.Read();
             while (tr.Read())
             {
@@ -153,9 +153,9 @@ public class SerializableEntity<T> : IXmlSerializable, ISerializable where T : c
     public static XmlQualifiedName MySchema(XmlSchemaSet xs)
     {
         // This method is called by the framework to get the schema for this type.
-        var sb = new StringBuilder();
-        var sw = new StringWriter(sb);
-        var xw = new XmlTextWriter(sw);
+        StringBuilder sb = new StringBuilder();
+        StringWriter sw = new StringWriter(sb);
+        XmlTextWriter xw = new XmlTextWriter(sw);
 
         // generate the schema for type T
         xw.WriteStartDocument();
@@ -203,9 +203,9 @@ public class SerializableEntity<T> : IXmlSerializable, ISerializable where T : c
         xw.WriteEndDocument();
         xw.Close();
 
-        var schemaSerializer = new XmlSerializer(typeof (XmlSchema));
-        var sr = new StringReader(sb.ToString());
-        var s = (XmlSchema) schemaSerializer.Deserialize(sr);
+        XmlSerializer schemaSerializer = new XmlSerializer(typeof(XmlSchema));
+        StringReader sr = new StringReader(sb.ToString());
+        XmlSchema s = (XmlSchema)schemaSerializer.Deserialize(sr);
         xs.XmlResolver = new XmlUrlResolver();
         xs.Add(s);
 
@@ -214,7 +214,7 @@ public class SerializableEntity<T> : IXmlSerializable, ISerializable where T : c
 
     private static string GetXsdType(string nativeType)
     {
-        var xsdTypes = new[]
+        string[] xsdTypes = new[]
                            {
                                "boolean",
                                "unsignedByte",
@@ -232,7 +232,7 @@ public class SerializableEntity<T> : IXmlSerializable, ISerializable where T : c
                                "unsignedLong",
                                "anyURI"
                            };
-        var nativeTypes = new[]
+        string[] nativeTypes = new[]
                               {
                                   "System.Boolean",
                                   "System.Byte",

@@ -330,7 +330,7 @@
                         </ext:Button>
                         <ext:Button ID="btnRefresh" runat="server"  Text="Refresh" Icon="ArrowRefresh">
                             <Listeners>
-                                <Click Handler="#{Store1}.reload();" />
+                                <Click Handler="#{Store1}.reload({params:{EmulateError: 0}});" />
                             </Listeners>
                         </ext:Button>
                         <ext:Button ID="btnEmulError" runat="server"  Text="Refresh with Emulated error" Icon="Exclamation">

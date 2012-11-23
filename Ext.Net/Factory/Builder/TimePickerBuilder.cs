@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,135 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BoundListBase.Builder<TimePicker, TimePicker.Builder>
+        new public abstract partial class Builder<TTimePicker, TBuilder> : BoundListBase.Builder<TTimePicker, TBuilder>
+            where TTimePicker : TimePicker
+            where TBuilder : Builder<TTimePicker, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TTimePicker component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder PostBackEvent(string postBackEvent)
+            {
+                this.ToComponent().PostBackEvent = postBackEvent;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// AutoPostBack
+			/// </summary>
+            public virtual TBuilder AutoPostBack(bool autoPostBack)
+            {
+                this.ToComponent().AutoPostBack = autoPostBack;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Gets or sets a value indicating whether validation is performed when the control is set to validate when a postback occurs.
+			/// </summary>
+            public virtual TBuilder CausesValidation(bool causesValidation)
+            {
+                this.ToComponent().CausesValidation = causesValidation;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Gets or Sets the Controls ValidationGroup
+			/// </summary>
+            public virtual TBuilder ValidationGroup(string validationGroup)
+            {
+                this.ToComponent().ValidationGroup = validationGroup;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder SelectedTime(TimeSpan selectedTime)
+            {
+                this.ToComponent().SelectedTime = selectedTime;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The default time format string which can be overriden for localization support. The format must be valid according to Ext.Date.parse (defaults to 'g:i A', e.g., '3:15 PM'). For 24-hour time format try 'H:i' instead.
+			/// </summary>
+            public virtual TBuilder Format(string format)
+            {
+                this.ToComponent().Format = format;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The number of minutes between each time value in the list (defaults to 15).
+			/// </summary>
+            public virtual TBuilder Increment(int increment)
+            {
+                this.ToComponent().Increment = increment;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The maximum allowed time. Can be either a Javascript date object with a valid time value or a string time in a valid format -- see format and altFormats (defaults to undefined).
+			/// </summary>
+            public virtual TBuilder MaxTime(TimeSpan maxTime)
+            {
+                this.ToComponent().MaxTime = maxTime;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The minimum allowed time. Can be either a Javascript date object with a valid time value or a string time in a valid format -- see format and altFormats (defaults to undefined).
+			/// </summary>
+            public virtual TBuilder MinTime(TimeSpan minTime)
+            {
+                this.ToComponent().MinTime = minTime;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<DataViewListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<DataViewDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : TimePicker.Builder<TimePicker, TimePicker.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,118 +200,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TimePicker.Builder PostBackEvent(string postBackEvent)
-            {
-                this.ToComponent().PostBackEvent = postBackEvent;
-                return this as TimePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// AutoPostBack
-			/// </summary>
-            public virtual TimePicker.Builder AutoPostBack(bool autoPostBack)
-            {
-                this.ToComponent().AutoPostBack = autoPostBack;
-                return this as TimePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Gets or sets a value indicating whether validation is performed when the control is set to validate when a postback occurs.
-			/// </summary>
-            public virtual TimePicker.Builder CausesValidation(bool causesValidation)
-            {
-                this.ToComponent().CausesValidation = causesValidation;
-                return this as TimePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Gets or Sets the Controls ValidationGroup
-			/// </summary>
-            public virtual TimePicker.Builder ValidationGroup(string validationGroup)
-            {
-                this.ToComponent().ValidationGroup = validationGroup;
-                return this as TimePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TimePicker.Builder SelectedTime(TimeSpan selectedTime)
-            {
-                this.ToComponent().SelectedTime = selectedTime;
-                return this as TimePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The default time format string which can be overriden for localization support. The format must be valid according to Ext.Date.parse (defaults to 'g:i A', e.g., '3:15 PM'). For 24-hour time format try 'H:i' instead.
-			/// </summary>
-            public virtual TimePicker.Builder Format(string format)
-            {
-                this.ToComponent().Format = format;
-                return this as TimePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The number of minutes between each time value in the list (defaults to 15).
-			/// </summary>
-            public virtual TimePicker.Builder Increment(int increment)
-            {
-                this.ToComponent().Increment = increment;
-                return this as TimePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The maximum allowed time. Can be either a Javascript date object with a valid time value or a string time in a valid format -- see format and altFormats (defaults to undefined).
-			/// </summary>
-            public virtual TimePicker.Builder MaxTime(TimeSpan maxTime)
-            {
-                this.ToComponent().MaxTime = maxTime;
-                return this as TimePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The minimum allowed time. Can be either a Javascript date object with a valid time value or a string time in a valid format -- see format and altFormats (defaults to undefined).
-			/// </summary>
-            public virtual TimePicker.Builder MinTime(TimeSpan minTime)
-            {
-                this.ToComponent().MinTime = minTime;
-                return this as TimePicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TimePicker.Builder</returns>
-            public virtual TimePicker.Builder Listeners(Action<DataViewListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as TimePicker.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TimePicker.Builder</returns>
-            public virtual TimePicker.Builder DirectEvents(Action<DataViewDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as TimePicker.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -192,6 +208,14 @@ namespace Ext.Net
         public TimePicker.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.TimePicker(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -206,7 +230,11 @@ namespace Ext.Net
         /// </summary>
         public TimePicker.Builder TimePicker()
         {
-            return this.TimePicker(new TimePicker());
+#if MVC
+			return this.TimePicker(new TimePicker { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.TimePicker(new TimePicker());
+#endif			
         }
 
         /// <summary>
@@ -214,7 +242,10 @@ namespace Ext.Net
         /// </summary>
         public TimePicker.Builder TimePicker(TimePicker component)
         {
-            return new TimePicker.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new TimePicker.Builder(component);
         }
 
         /// <summary>
@@ -222,7 +253,11 @@ namespace Ext.Net
         /// </summary>
         public TimePicker.Builder TimePicker(TimePicker.Config config)
         {
-            return new TimePicker.Builder(new TimePicker(config));
+#if MVC
+			return new TimePicker.Builder(new TimePicker(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new TimePicker.Builder(new TimePicker(config));
+#endif			
         }
     }
 }

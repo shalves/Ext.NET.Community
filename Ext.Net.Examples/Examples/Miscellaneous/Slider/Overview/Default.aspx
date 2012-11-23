@@ -8,9 +8,9 @@
 <head runat="server">
     <title>Slider - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <style type="text/css">
+    <style>
         #custom-slider {
             width       : 214px;
             padding-top : 6px;

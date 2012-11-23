@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -58,8 +58,8 @@ namespace Ext.Net
                 list.Add("cols", new ConfigOption("cols", null, 20, this.Cols ));
                 list.Add("enterIsSpecial", new ConfigOption("enterIsSpecial", null, false, this.EnterIsSpecial ));
                 list.Add("growAppend", new ConfigOption("growAppend", null, "", this.GrowAppend ));
-                list.Add("growMax", new ConfigOption("growMax", null, Unit.Pixel(1000), this.GrowMax ));
-                list.Add("growMin", new ConfigOption("growMin", null, Unit.Pixel(60), this.GrowMin ));
+                list.Add("growMax", new ConfigOption("growMax", null, 1000, this.GrowMax ));
+                list.Add("growMin", new ConfigOption("growMin", null, 60, this.GrowMin ));
                 list.Add("preventScrollbars", new ConfigOption("preventScrollbars", null, false, this.PreventScrollbars ));
                 list.Add("rows", new ConfigOption("rows", null, 4, this.Rows ));
                 list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));

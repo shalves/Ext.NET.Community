@@ -17,9 +17,9 @@
 <html>
 <head runat="server">
     <title>DirectEvents Summary - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .box {
         	width  : 100px;
         	height : 50px;

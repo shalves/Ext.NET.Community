@@ -57,15 +57,8 @@
     protected void Store1_RecordUpdated(object sender, AfterRecordUpdatedEventArgs e)
     {
         // This event is fired once for each Record that is Updated.
-
-        var company = new { 
-            Name = e.Values["company"],
-            Price = e.Values["price"],
-            LastChange = e.Values["lastChange"] 
-        };
-
         string tpl = "Name: {0}, Price: {1}, LastChange: {2}<br />";
-        this.Label1.Html += string.Format(tpl, company.Name, company.Price, company.LastChange);
+        this.Label1.Html += string.Format(tpl, e.Values["company"], e.Values["price"], e.Values["lastChange"]);
     }
 
     protected void Store1_Submit(object sender, StoreSubmitDataEventArgs e)
@@ -113,9 +106,9 @@
 <html>
 <head runat="server">
     <title>Export Data from GridPanel into XML, Excel or CSV using an AjaxRequest - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
     
-    <script type="text/javascript">
+    <script>
         var submitValue = function (grid, hiddenFormat, format) {
             hiddenFormat.setValue(format);
             grid.submitData(false, {isUpload:true});
@@ -179,9 +172,9 @@
             Width="600" 
             Height="290">
             <TopBar>
-                <ext:Toolbar ID="Toolbar1" runat="server">
+                <ext:Toolbar runat="server">
                     <Items>
-                        <ext:ToolbarFill ID="ToolbarFill1" runat="server" />
+                        <ext:ToolbarFill runat="server" />
                         <ext:Button ID="Button2" runat="server" Text="To XML" Icon="PageCode">
                             <Listeners>
                                 <Click Handler="submitValue(#{GridPanel1}, #{FormatType}, 'xml');" />

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,187 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : LazyObservable.Builder<XTemplate, XTemplate.Builder>
+        new public abstract partial class Builder<TXTemplate, TBuilder> : LazyObservable.Builder<TXTemplate, TBuilder>
+            where TXTemplate : XTemplate
+            where TBuilder : Builder<TXTemplate, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TXTemplate component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Inline functions
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Functions(Action<List<JFunction>> action)
+            {
+                action(this.ToComponent().Functions);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Template text
+			/// </summary>
+            public virtual TBuilder Html(string html)
+            {
+                this.ToComponent().Html = html;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+ 			/// <summary>
+			/// Applies the supplied values to the template and appends the new node(s) to el.
+			/// </summary>
+            public virtual TBuilder Append(string target, object data)
+            {
+                this.ToComponent().Append(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and appends the new node(s) to el.
+			/// </summary>
+            public virtual TBuilder Append(AbstractComponent target, object data)
+            {
+                this.ToComponent().Append(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and appends the new node(s) to el.
+			/// </summary>
+            public virtual TBuilder Append(Element target, object data)
+            {
+                this.ToComponent().Append(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and inserts the new node(s) after el.
+			/// </summary>
+            public virtual TBuilder InsertAfter(string target, object data)
+            {
+                this.ToComponent().InsertAfter(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and inserts the new node(s) after el.
+			/// </summary>
+            public virtual TBuilder InsertAfter(AbstractComponent target, object data)
+            {
+                this.ToComponent().InsertAfter(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and inserts the new node(s) after el.
+			/// </summary>
+            public virtual TBuilder InsertAfter(Element target, object data)
+            {
+                this.ToComponent().InsertAfter(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and inserts the new node(s) before el.
+			/// </summary>
+            public virtual TBuilder InsertBefore(string target, object data)
+            {
+                this.ToComponent().InsertBefore(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and inserts the new node(s) before el.
+			/// </summary>
+            public virtual TBuilder InsertBefore(AbstractComponent target, object data)
+            {
+                this.ToComponent().InsertBefore(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and inserts the new node(s) before el.
+			/// </summary>
+            public virtual TBuilder InsertBefore(Element target, object data)
+            {
+                this.ToComponent().InsertBefore(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and inserts the new node(s) as the first child of el.
+			/// </summary>
+            public virtual TBuilder InsertFirst(string target, object data)
+            {
+                this.ToComponent().InsertFirst(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and inserts the new node(s) as the first child of el.
+			/// </summary>
+            public virtual TBuilder InsertFirst(AbstractComponent target, object data)
+            {
+                this.ToComponent().InsertFirst(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and inserts the new node(s) as the first child of el.
+			/// </summary>
+            public virtual TBuilder InsertFirst(Element target, object data)
+            {
+                this.ToComponent().InsertFirst(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and overwrites the content of el with the new node(s).
+			/// </summary>
+            public virtual TBuilder Overwrite(string target, object data)
+            {
+                this.ToComponent().Overwrite(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and overwrites the content of el with the new node(s).
+			/// </summary>
+            public virtual TBuilder Overwrite(Element target, object data)
+            {
+                this.ToComponent().Overwrite(target, data);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Applies the supplied values to the template and overwrites the content of el with the new node(s).
+			/// </summary>
+            public virtual TBuilder Overwrite(AbstractComponent target, object data)
+            {
+                this.ToComponent().Overwrite(target, data);
+                return this as TBuilder;
+            }
+            
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : XTemplate.Builder<XTemplate, XTemplate.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,170 +252,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Inline functions
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of XTemplate.Builder</returns>
-            public virtual XTemplate.Builder Functions(Action<List<JFunction>> action)
-            {
-                action(this.ToComponent().Functions);
-                return this as XTemplate.Builder;
-            }
-			 
- 			/// <summary>
-			/// Template text
-			/// </summary>
-            public virtual XTemplate.Builder Html(string html)
-            {
-                this.ToComponent().Html = html;
-                return this as XTemplate.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
- 			/// <summary>
-			/// Applies the supplied values to the template and appends the new node(s) to el.
-			/// </summary>
-            public virtual XTemplate.Builder Append(string target, object data)
-            {
-                this.ToComponent().Append(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and appends the new node(s) to el.
-			/// </summary>
-            public virtual XTemplate.Builder Append(AbstractComponent target, object data)
-            {
-                this.ToComponent().Append(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and appends the new node(s) to el.
-			/// </summary>
-            public virtual XTemplate.Builder Append(Element target, object data)
-            {
-                this.ToComponent().Append(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and inserts the new node(s) after el.
-			/// </summary>
-            public virtual XTemplate.Builder InsertAfter(string target, object data)
-            {
-                this.ToComponent().InsertAfter(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and inserts the new node(s) after el.
-			/// </summary>
-            public virtual XTemplate.Builder InsertAfter(AbstractComponent target, object data)
-            {
-                this.ToComponent().InsertAfter(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and inserts the new node(s) after el.
-			/// </summary>
-            public virtual XTemplate.Builder InsertAfter(Element target, object data)
-            {
-                this.ToComponent().InsertAfter(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and inserts the new node(s) before el.
-			/// </summary>
-            public virtual XTemplate.Builder InsertBefore(string target, object data)
-            {
-                this.ToComponent().InsertBefore(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and inserts the new node(s) before el.
-			/// </summary>
-            public virtual XTemplate.Builder InsertBefore(AbstractComponent target, object data)
-            {
-                this.ToComponent().InsertBefore(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and inserts the new node(s) before el.
-			/// </summary>
-            public virtual XTemplate.Builder InsertBefore(Element target, object data)
-            {
-                this.ToComponent().InsertBefore(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and inserts the new node(s) as the first child of el.
-			/// </summary>
-            public virtual XTemplate.Builder InsertFirst(string target, object data)
-            {
-                this.ToComponent().InsertFirst(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and inserts the new node(s) as the first child of el.
-			/// </summary>
-            public virtual XTemplate.Builder InsertFirst(AbstractComponent target, object data)
-            {
-                this.ToComponent().InsertFirst(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and inserts the new node(s) as the first child of el.
-			/// </summary>
-            public virtual XTemplate.Builder InsertFirst(Element target, object data)
-            {
-                this.ToComponent().InsertFirst(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and overwrites the content of el with the new node(s).
-			/// </summary>
-            public virtual XTemplate.Builder Overwrite(string target, object data)
-            {
-                this.ToComponent().Overwrite(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and overwrites the content of el with the new node(s).
-			/// </summary>
-            public virtual XTemplate.Builder Overwrite(Element target, object data)
-            {
-                this.ToComponent().Overwrite(target, data);
-                return this;
-            }
-            
- 			/// <summary>
-			/// Applies the supplied values to the template and overwrites the content of el with the new node(s).
-			/// </summary>
-            public virtual XTemplate.Builder Overwrite(AbstractComponent target, object data)
-            {
-                this.ToComponent().Overwrite(target, data);
-                return this;
-            }
-            
         }
 
         /// <summary>
@@ -244,6 +260,14 @@ namespace Ext.Net
         public XTemplate.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.XTemplate(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -258,7 +282,11 @@ namespace Ext.Net
         /// </summary>
         public XTemplate.Builder XTemplate()
         {
-            return this.XTemplate(new XTemplate());
+#if MVC
+			return this.XTemplate(new XTemplate { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.XTemplate(new XTemplate());
+#endif			
         }
 
         /// <summary>
@@ -266,7 +294,10 @@ namespace Ext.Net
         /// </summary>
         public XTemplate.Builder XTemplate(XTemplate component)
         {
-            return new XTemplate.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new XTemplate.Builder(component);
         }
 
         /// <summary>
@@ -274,7 +305,11 @@ namespace Ext.Net
         /// </summary>
         public XTemplate.Builder XTemplate(XTemplate.Config config)
         {
-            return new XTemplate.Builder(new XTemplate(config));
+#if MVC
+			return new XTemplate.Builder(new XTemplate(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new XTemplate.Builder(new XTemplate(config));
+#endif			
         }
     }
 }

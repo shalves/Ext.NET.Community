@@ -4,7 +4,7 @@
     includeHiddenStateToSubmitData : true,
     submitEmptyHiddenState         : true,
     overrideSubmiDataByHiddenState : false,
-    repaintFix : "block",
+    isIndicatorActive : false,
 
     getHiddenStateName : function () {
         return "_" + this.getName()+"_state";
@@ -91,17 +91,21 @@
         this.setIndicatorTip("", true);
 
         if (preventLayout !== true) {
+            this.isIndicatorActive = true;
             this.needIndicatorRelayout = false;
-            this.doComponentLayout();
-        } else {
+            this.doComponentLayout();            
+        }  
+        else {
             this.needIndicatorRelayout = true;
         }
+        this.isIndicatorActive = false;
     },
     
     setIndicator : function (t, encode, preventLayout) {
-        this.indicatorText = t;
+        this.indicatorText = t;        
         
         if (this.indicatorEl) {
+            this.isIndicatorActive = true;
             this.indicatorEl.dom.innerHTML = encode !== false ? Ext.util.Format.htmlEncode(t) : t;
 
             if (preventLayout !== true) {
@@ -111,7 +115,8 @@
                 
                 this.needIndicatorRelayout = false;
                 this.doComponentLayout();
-            } else {
+            } 
+            else {
                 this.needIndicatorRelayout = true;
             }
         }
@@ -121,11 +126,11 @@
         if (this.indicatorEl) {
             this.indicatorEl.removeCls(this.indicatorCls);
             this.indicatorEl.addCls(cls);
-
             if (preventLayout !== true) {
                 this.needIndicatorRelayout = false;
                 this.doComponentLayout();
-            } else {
+            }  
+            else {
                 this.needIndicatorRelayout = true;
             }
         }
@@ -135,6 +140,7 @@
     
     setIndicatorIconCls : function (cls, preventLayout) {
         if (this.indicatorEl) {
+            this.isIndicatorActive = true;
             this.indicatorEl.removeCls(this.indicatorIconCls);
 
             cls = cls.indexOf('#') === 0 ? X.net.RM.getIcon(cls.substring(1)) : cls;
@@ -144,7 +150,8 @@
             if (preventLayout !== true) {
                 this.needIndicatorRelayout = false;
                 this.doComponentLayout();
-            } else {
+            }  
+            else {
                 this.needIndicatorRelayout = true;
             }
         }
@@ -154,6 +161,7 @@
     
     setIndicatorTip : function (tip) {
         if (this.indicatorEl) {
+            this.isIndicatorActive = true;
             this.indicatorEl.set({ "data-qtip" : tip });
         }
         
@@ -161,9 +169,36 @@
     },
     
     showIndicator : function (preventLayout) {
+        if (Ext.isObject(preventLayout)) {
+            var cfg = preventLayout;
+            preventLayout = cfg.preventLayout;
+
+            if (Ext.isDefined(cfg.tip)) {
+                this.setIndicatorTip(cfg.tip, true);
+            }
+            
+            if (Ext.isDefined(cfg.iconCls)) {
+                this.setIndicatorIconCls(cfg.iconCls, true);
+            }
+
+            if (Ext.isDefined(cfg.setIndicatorCls)) {
+                this.setIndicatorCls(cfg.setIndicatorCls, true);
+            }
+
+            if (Ext.isDefined(cfg.text)) {
+                this.setIndicator(cfg.text, cf.encode, true);
+            }
+        }
+        
         if (this.indicatorEl && (this.indicatorHidden !== false || this.needIndicatorRelayout)) {
-            this.indicatorEl.parent("td").setDisplayed(true);
-            this.indicatorHidden = false;         
+            if (this.preserveIndicatorIcon) {
+                this.indicatorEl.fixDisplay();
+                this.indicatorEl.parent("td").dom.style.visibility = '';
+            }
+            else {
+                this.indicatorEl.parent("td").setDisplayed(true);
+            }
+            this.indicatorHidden = false;                    
         
             if (preventLayout !== true) {
                 if (this.autoFitIndicator) {
@@ -176,14 +211,21 @@
     
     hideIndicator : function (preventLayout) {
         if (this.indicatorEl && this.indicatorHidden !== true) {        
-            this.indicatorEl.parent("td").setDisplayed(false);
+            if (this.preserveIndicatorIcon) {
+                this.indicatorEl.fixDisplay();
+                this.indicatorEl.parent("td").dom.style.visibility = 'hidden';
+            }
+            else {
+                this.indicatorEl.parent("td").setDisplayed(false);
+            }
             this.indicatorHidden = true;
             this.errorSideHide = false;
 
             if (preventLayout !== true) {
                 this.needIndicatorRelayout = false;
                 this.doComponentLayout();
-            } else {
+            }  
+            else {
                 this.needIndicatorRelayout = true;
             }                        
         }    
@@ -303,7 +345,10 @@
 
     initRenderData : function () {
         var indicatorIconCls =  this.indicatorIconCls && this.indicatorIconCls.indexOf('#') === 0 ? X.net.RM.getIcon(this.indicatorIconCls.substring(1)) : this.indicatorIconCls;
+        this.indicatorIconCls = indicatorIconCls;
         this.note = this.noteEncode ? Ext.util.Format.htmlEncode(this.note) : this.note;
+
+        this.isIndicatorActive = !this.isIndicatorEmpty();
 
         return Ext.applyIf(this.callParent(), {
             noteCls          : this.noteCls || "",
@@ -355,7 +400,7 @@
 
             var val = Ext.isDefined(this.hiddenValue) ? this.hiddenValue : this.getHiddenState(this.getValue());
 
-			this.hiddenField.dom.value = val !== null ? val : "";
+			this.hiddenField.dom.value = !Ext.isEmpty(val) ? val : "";
 			
 			this.checkHiddenStateName();
 

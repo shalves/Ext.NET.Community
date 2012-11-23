@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -34,9 +34,12 @@ namespace Ext.Net
 	/// <summary>
 	/// 
 	/// </summary>
-	[Description("")]
+    [Meta]
+    [Description("")]
     public partial class ListFilter : GridFilter
     {
+        public ListFilter() { }
+
         /// <summary>
         /// 
         /// </summary>
@@ -54,8 +57,30 @@ namespace Ext.Net
         }
 
         /// <summary>
+        /// Defaults to 'id'.
+        /// </summary>
+        [Meta]
+        [ConfigOption("idField")]
+        [Category("3. ListFilter")]
+        [DefaultValue("id")]
+        [NotifyParentProperty(true)]
+        [Description("Defaults to 'id'.")]
+        public string IDField
+        {
+            get
+            {
+                return this.State.Get<string>("IDField", "id");
+            }
+            set
+            {
+                this.State.Set("IDField", value);
+            }
+        }
+
+        /// <summary>
         /// The loading text displayed when data loading
         /// </summary>
+        [Meta]
         [ConfigOption]
         [Category("3. ListFilter")]
         [DefaultValue("Loading...")]
@@ -77,6 +102,7 @@ namespace Ext.Net
         /// <summary>
         /// If true then the data loading on show
         /// </summary>
+        [Meta]
         [ConfigOption]
         [Category("3. ListFilter")]
         [DefaultValue(true)]
@@ -97,6 +123,7 @@ namespace Ext.Net
         /// <summary>
         /// Specify true to group all items in this list into a single-select radio button group. Defaults to false.
         /// </summary>
+        [Meta]
         [ConfigOption]
         [Category("3. ListFilter")]
         [DefaultValue(false)]
@@ -117,6 +144,7 @@ namespace Ext.Net
         /// <summary>
         /// The list of options
         /// </summary>
+        [Meta]
         [TypeConverter(typeof(StringArrayConverter))]
         [DefaultValue(null)]
         [Description("The list of options")]
@@ -135,6 +163,7 @@ namespace Ext.Net
         /// <summary>
         /// The list of options
         /// </summary>
+        [Meta]
         [ConfigOption(typeof(StringArrayJsonConverter))]
         [TypeConverter(typeof(StringArrayConverter))]
         [DefaultValue(null)]
@@ -184,6 +213,64 @@ namespace Ext.Net
             set
             {
                 this.State.Set("LabelField", value);
+            }
+        }
+
+        private Menu menuConfig;
+
+        /// <summary>
+        /// The config of the ListFilter menu. Defaults to null.
+        /// </summary>
+        [Meta]
+        [DefaultValue(null)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [ConfigOption("menuConfig", typeof(LazyControlJsonConverter))]
+        [NotifyParentProperty(true)]
+        [Description("The config of the ListFilter menu. Defaults to null.")]
+        public virtual Menu MenuConfig
+        {
+            get
+            {
+                return this.menuConfig;
+            }
+            set
+            {
+                GridPanel grid = this.ParentGrid;
+                
+                if (this.menuConfig != null)
+                {
+                    if (grid != null)
+                    {
+                        if (!grid.Controls.Contains(this.menuConfig))
+                        {
+                            grid.Controls.Remove(this.menuConfig);
+                        }
+
+                        if (!grid.LazyItems.Contains(this.menuConfig))
+                        {
+                            grid.LazyItems.Remove(this.menuConfig);
+                        }
+                    }
+                }                                
+
+                if (value != null)
+                {
+                    value.RenderEmptyMenu = true;
+                    if (grid != null)
+                    {
+                        if (!grid.Controls.Contains(this.menuConfig))
+                        {
+                            grid.Controls.Add(this.menuConfig);
+                        }
+
+                        if (!grid.LazyItems.Contains(this.menuConfig))
+                        {
+                            grid.LazyItems.Add(this.menuConfig);
+                        }
+                    }
+                }
+
+                this.menuConfig = value;
             }
         }
 
@@ -260,7 +347,7 @@ namespace Ext.Net
         {
             RequestManager.EnsureDirectEvent();
 
-            this.AddScript("{0}.getFilterPlugin().getFilter({1}).setValue({2});", this.Plugin.ClientID, JSON.Serialize(this.DataIndex), JSON.Serialize(value));
+            this.AddScript("{0}.getFilter({1}).setValue({2});", this.Plugin.ClientID, JSON.Serialize(this.DataIndex), JSON.Serialize(value));
         }
     }
 }

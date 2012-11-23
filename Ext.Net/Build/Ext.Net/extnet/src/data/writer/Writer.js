@@ -25,69 +25,80 @@
         return type === "int" || type === "float" || type === "boolean" || type === "date";
     },
 
-    setValue : function (data, name, value, field) {
-        if (Ext.isEmpty(value, false) && this.isSimpleField(field)) {
-            switch (field.submitEmptyValue) {
-                case "null":
-                    data[name] = null;        
-                    break;
-                case "emptystring":
-                    data[name] = "";        
-                    break;
+    writeValue : function (data, field, record) {
+        var name = field[this.nameProperty] || field.name,
+            dateFormat = this.dateFormat || field.dateWriteFormat || field.dateFormat,
+            value = record.get(field.name);
+
+        if (field.serialize) {
+            data[name] = field.serialize(value, record);
+        } else if (field.type === Ext.data.Types.DATE && dateFormat && Ext.isDate(value)) {
+            data[name] = Ext.Date.format(value, dateFormat);
+        } else {
+            if (Ext.isEmpty(value, false) && this.isSimpleField(field)) {
+                switch (field.submitEmptyValue) {
+                    case "null":
+                        data[name] = null;        
+                        break;
+                    case "emptystring":
+                        data[name] = "";        
+                        break;
+                }
+            } else {
+                data[name] = this.htmlEncode || field.htmlEncode ? Ext.util.Format.htmlEncode(value) : value;
             }
-        }
-        else {
-            data[name] = value;
         }
     },
 
     getRecordData : function (record, operation) {
         var isPhantom = record.phantom === true,
-            writeAll = this.writeAllFields || isPhantom,
-            nameProperty = this.nameProperty,
+            writeAll = this.writeAllFields || isPhantom,            
             fields = record.fields,
+            fieldItems = fields.items,
+            clientIdProperty = record.clientIdProperty,
             data = {},
-            changes,
-            name,
+            changes,            
             field,
             key,
-            value;
+            value,
+            f, fLen;
         
         if (writeAll) {
-            fields.each(function (field) {
+            fLen = fieldItems.length;
+
+            for (f = 0; f < fLen; f++) {
+                field = fieldItems[f];
+
                 if (this.filterField && this.filterField(record, field, record.get(field.name)) === false) {
                     return;
                 }
-            
+
                 if (field.persist) {
-                    name = field[nameProperty] || field.name;
-                    value = record.get(field.name);
-                    
-                    this.setValue(data, name, value, field);
+                   this.writeValue(data, field, record);
                 }
-            }, this);
+            }
         } else {
             // Only write the changes
             changes = record.getChanges();
-            for (key in changes) {
-                if (this.filterField && this.filterField(record, key, changes[key]) === false) {
-                    continue;
-                }
+            for (key in changes) {                
                 if (changes.hasOwnProperty(key)) {
-                    field = fields.get(key);
-                    name = field[nameProperty] || field.name;
-                    value = changes[key];
+                    if (this.filterField && this.filterField(record, key, changes[key]) === false) {
+                        continue;
+                    }
 
-                    this.setValue(data, name, value, field);                   
+                    field = fields.get(key);
+                    if (field.persist) {
+                        this.writeValue(data, field, record);
+                    }               
                 }
             }           
         }
         
         if (isPhantom) {
-            if (operation && operation.records.length > 1) {
+            if (clientIdProperty && operation && operation.records.length > 1) {
                 // include clientId for phantom records, if multiple records are being written to the server in one operation.
                 // The server can then return the clientId with each record so the operation can match the server records with the client records
-                data[record.clientIdProperty] = record.internalId;
+                data[clientIdProperty] = record.internalId;
             }
         } else {
             // always include the id for non phantoms
@@ -102,6 +113,7 @@
         if (this.skipPhantomId && data.hasOwnProperty(record.clientIdProperty) && isPhantom) {
             delete data[record.clientIdProperty];
         }
+
         return data;
     }
 });

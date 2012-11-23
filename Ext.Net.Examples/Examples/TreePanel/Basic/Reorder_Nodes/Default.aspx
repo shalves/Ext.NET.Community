@@ -46,8 +46,8 @@
 <html>
 <head runat="server">
     <title>Drag and Drop ordering of TreePanel Nodes - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <script>
         var moveNode = function (item, oldParent, newParent, index, options) {
             var buf=[];
             buf.push("Node = " + item.data.text);
@@ -78,21 +78,17 @@
             runat="server" 
             Height="300" 
             Width="250"
-            UseArrows="true"
-            Animate="true">
-            <CustomConfig>
-                <ext:ConfigItem 
-                    Name="viewConfig"
-                    Value="{
-                        plugins : {
-                            ptype: 'treeviewdragdrop'
-                        }
-                    }"
-                    Mode="Raw" />
-            </CustomConfig>
+            UseArrows="true">           
             <Listeners>
                 <ItemMove Fn="moveNode" />
             </Listeners>
+            <View>
+                <ext:TreeView runat="server">
+                   <Plugins>
+                       <ext:TreeViewDragDrop runat="server" ContainerScroll="true" />
+                   </Plugins> 
+                </ext:TreeView>
+            </View>            
         </ext:TreePanel>
     </form>
 </body>

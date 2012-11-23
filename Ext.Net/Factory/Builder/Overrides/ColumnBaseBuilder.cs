@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -52,7 +52,45 @@ namespace Ext.Net
             {
                 this.ToComponent().Sealed = @sealed;
                 return this as TBuilder;
-            }			
+            }
+
+            /// <summary>
+            /// A renderer is an 'interceptor' method which can be used transform data (value, appearance, etc.) before it is rendered.
+            /// </summary>
+            public virtual TBuilder Renderer(RendererFormat rendererFormat)
+            {
+                this.ToComponent().Renderer = new Renderer { Format = rendererFormat };
+                return this as TBuilder;
+            }
+
+            /// <summary>
+            /// A renderer is an 'interceptor' method which can be used transform data (value, appearance, etc.) before it is rendered.
+            /// </summary>
+            public virtual TBuilder Renderer(RendererFormat rendererFormat, params string[] formatArgs)
+            {
+                this.ToComponent().Renderer = new Renderer { Format = rendererFormat, FormatArgs = formatArgs };
+                return this as TBuilder;
+            }
+
+            /// <summary>
+            /// A renderer is an 'interceptor' method which can be used transform data (value, appearance, etc.) before it is rendered.
+            /// </summary>
+            public virtual TBuilder Renderer(string handler)
+            {
+                this.ToComponent().Renderer = new Renderer(handler);
+                return this as TBuilder;
+            }
+
+            /// <summary>
+            /// An optional xtype or config object for a Field to use for editing. Only applicable if the grid is using an Editing plugin.
+            /// </summary>
+            /// <param name="editor"></param>
+            /// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Editor(Field editor)
+            {
+                this.ToComponent().Editor.Add(editor);
+                return this as TBuilder;
+            }            
         }        
     }
 }

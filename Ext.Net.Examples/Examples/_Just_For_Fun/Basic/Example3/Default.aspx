@@ -5,7 +5,7 @@
 <html>
 <head runat="server">
     <title>Ext.NET Examples</title>
-    <style type="text/css">
+    <style>
         *
         {
             margin: 0;
@@ -75,9 +75,9 @@
         }
     </style>
     
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/ext-core/3.1.0/ext-core.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/ext-core/3.1.0/ext-core.js"></script>
     
-    <script type="text/javascript">
+    <script>
         Ext.ns("Ext.ux");
         Ext.ux.FloatElement = Ext.extend(Ext.util.Observable, {
             duration: 0.2, 

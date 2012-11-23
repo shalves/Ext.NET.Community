@@ -29,9 +29,9 @@
 <html>
 <head runat="server">
     <title>Drag and Drop from GridPanel to GridPanel - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var notifyEnter = function (ddSource, e, data) {
 			App.FormPanel1.body.stopAnimation();
 			App.FormPanel1.body.highlight();

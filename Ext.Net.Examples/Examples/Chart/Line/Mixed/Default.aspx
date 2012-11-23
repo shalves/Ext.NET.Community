@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>Charts - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <style type="text/css">    
+    <style>    
         .x-panel {
             margin-bottom : 20px;
         }

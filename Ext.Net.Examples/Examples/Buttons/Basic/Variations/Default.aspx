@@ -6,7 +6,7 @@
     {
         if (!X.IsAjaxRequest)
         {
-            var configs = new List<ButtonConfig> { 
+            List<ButtonConfig> configs = new List<ButtonConfig> { 
                 new ButtonConfig{
                     Name = "Text Only"
                 },
@@ -98,7 +98,7 @@
             InnerText = title
         });
 
-        foreach (var config in configs)
+        foreach (ButtonConfig config in configs)
         {
             Buttons.Controls.Add(new HtmlGenericControl
             {
@@ -106,16 +106,16 @@
                 InnerText = config.Name
             });
 
-            var div = new HtmlGenericControl
+            HtmlGenericControl div = new HtmlGenericControl
             {
                 TagName = "div"                
             };
             
             Buttons.Controls.Add(div);
 
-            foreach (var scale in new ButtonScale[] { ButtonScale.Large, ButtonScale.Medium, ButtonScale.Small })
+            foreach (ButtonScale scale in new ButtonScale[] { ButtonScale.Large, ButtonScale.Medium, ButtonScale.Small })
             {
-                var button = (ButtonBase)Activator.CreateInstance(buttonType ?? typeof(Ext.Net.Button));
+                ButtonBase button = (ButtonBase)Activator.CreateInstance(buttonType ?? typeof(Ext.Net.Button));
                 button.Text = scale.ToString();
                 button.Scale = scale;
                 
@@ -168,9 +168,9 @@
 <html>
 <head runat="server">
     <title>Button Variations - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <style type="text/css">
+    <style>
         .x-btn-default-large .add {
             background-image: url(images/add32.gif) !important;
         }

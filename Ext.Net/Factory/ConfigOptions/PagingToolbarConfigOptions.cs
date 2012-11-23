@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -59,6 +59,7 @@ namespace Ext.Net
                 list.Add("displayMsg", new ConfigOption("displayMsg", null, "Displaying {0} - {1} of {2}", this.DisplayMsg ));
                 list.Add("emptyMsg", new ConfigOption("emptyMsg", null, "No data to display", this.EmptyMsg ));
                 list.Add("storeProxy", new ConfigOption("storeProxy", new SerializationOptions("store"), "", this.StoreProxy ));
+                list.Add("refreshHandler", new ConfigOption("refreshHandler", new SerializationOptions("doRefresh", typeof(FunctionJsonConverter)), "", this.RefreshHandler ));
                 list.Add("afterPageText", new ConfigOption("afterPageText", null, "of {0}", this.AfterPageText ));
                 list.Add("beforePageText", new ConfigOption("beforePageText", null, "Page", this.BeforePageText ));
                 list.Add("firstText", new ConfigOption("firstText", null, "First Page", this.FirstText ));

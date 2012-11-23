@@ -7,8 +7,8 @@
 <html>
 <head runat="server">
     <title>FormPanel Validation - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <style>
         .icon-exclamation {
             padding-left: 25px !important;
             background: url(/icons/exclamation-png/ext.axd) no-repeat 3px 0px !important;

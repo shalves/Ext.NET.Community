@@ -7,10 +7,10 @@
 <html>
 <head runat="server">
     <title>Adding Tabs On The Fly - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
     <ext:XScript runat="server">
-        <script type="text/javascript">
+        <script>
             var addTab = function (tabPanel, id, url, menuItem) {
                 var tab = tabPanel.getComponent(id);
 

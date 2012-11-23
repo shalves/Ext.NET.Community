@@ -58,16 +58,16 @@ namespace Ext.Net.Examples.Examples.TreePanel.Advanced.Remote_Mode_with_Service
         }
 
         [WebMethod]
-        public object RemoteAppend(string id, string parentId, string text)
+        public object RemoteAppend(string parentId, string text)
         {
             //return new { actionSuccess = true, response = new { id = "newId", text = text + "_new" } };
             return new { actionSuccess = true, response = new { id = "newId", attributes = new { text = text + "_new" } } };
         }
 
         [WebMethod]
-        public object RemoteInsert(string id, string parentId, string text)
+        public object RemoteInsert(string parentId, string text)
         {
-            return new { actionSuccess = true, response = new { value = text + "_new" } };
+            return new { actionSuccess = true, response = new { attributes = new { text = text + "_new" } } };
         }
 
         [WebMethod]

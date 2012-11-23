@@ -2,6 +2,12 @@
 // @source data/PagingMemory.js
 
 Ext.data.proxy.Memory.override({
+    constructor: function () {
+        this.callParent(arguments);
+
+        this.data = this.data || [];
+    },
+
     getRecords : function () {
         return this.getReader().read(this.data || []).records;
     }
@@ -72,7 +78,7 @@ Ext.define("Ext.data.proxy.PagingMemory", {
         }
         
         if (operation.start !== undefined && operation.limit !== undefined && operation.isPagingStore !== true) {
-            result.records = result.records.slice(operation.start, operation.start + operation.limit);
+            result.records = Ext.Array.slice(result.records, operation.start, operation.start + operation.limit);
             result.count = result.records.length;
         }
 
@@ -83,8 +89,8 @@ Ext.define("Ext.data.proxy.PagingMemory", {
         operation.setCompleted();
         operation.setSuccessful();
 
-        Ext.Function.defer(function () {
+        //Ext.Function.defer(function () {
             Ext.callback(callback, scope, [operation]);
-        }, 10);
+        //}, 10);
     }
 });

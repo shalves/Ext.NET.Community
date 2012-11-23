@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,68 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseItem.Builder<CRUDMethods, CRUDMethods.Builder>
+        new public abstract partial class Builder<TCRUDMethods, TBuilder> : BaseItem.Builder<TCRUDMethods, TBuilder>
+            where TCRUDMethods : CRUDMethods
+            where TBuilder : Builder<TCRUDMethods, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TCRUDMethods component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Create(HttpMethod create)
+            {
+                this.ToComponent().Create = create;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Read(HttpMethod read)
+            {
+                this.ToComponent().Read = read;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Update(HttpMethod update)
+            {
+                this.ToComponent().Update = update;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Destroy(HttpMethod destroy)
+            {
+                this.ToComponent().Destroy = destroy;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : CRUDMethods.Builder<CRUDMethods, CRUDMethods.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,51 +133,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual CRUDMethods.Builder Create(HttpMethod create)
-            {
-                this.ToComponent().Create = create;
-                return this as CRUDMethods.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual CRUDMethods.Builder Read(HttpMethod read)
-            {
-                this.ToComponent().Read = read;
-                return this as CRUDMethods.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual CRUDMethods.Builder Update(HttpMethod update)
-            {
-                this.ToComponent().Update = update;
-                return this as CRUDMethods.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual CRUDMethods.Builder Destroy(HttpMethod destroy)
-            {
-                this.ToComponent().Destroy = destroy;
-                return this as CRUDMethods.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -125,6 +141,14 @@ namespace Ext.Net
         public CRUDMethods.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.CRUDMethods(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -139,7 +163,11 @@ namespace Ext.Net
         /// </summary>
         public CRUDMethods.Builder CRUDMethods()
         {
-            return this.CRUDMethods(new CRUDMethods());
+#if MVC
+			return this.CRUDMethods(new CRUDMethods { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.CRUDMethods(new CRUDMethods());
+#endif			
         }
 
         /// <summary>
@@ -147,7 +175,10 @@ namespace Ext.Net
         /// </summary>
         public CRUDMethods.Builder CRUDMethods(CRUDMethods component)
         {
-            return new CRUDMethods.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new CRUDMethods.Builder(component);
         }
 
         /// <summary>
@@ -155,7 +186,11 @@ namespace Ext.Net
         /// </summary>
         public CRUDMethods.Builder CRUDMethods(CRUDMethods.Config config)
         {
-            return new CRUDMethods.Builder(new CRUDMethods(config));
+#if MVC
+			return new CRUDMethods.Builder(new CRUDMethods(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new CRUDMethods.Builder(new CRUDMethods(config));
+#endif			
         }
     }
 }

@@ -1,11 +1,10 @@
 <%@ Page Language="C#" %>
-
 <%@ Register Assembly="Ext.Net" Namespace="Ext.Net" TagPrefix="ext" %>
 
 <script runat="server">
     protected void ShowContactForm(object sender, DirectEventArgs e)
     {
-        var config = new UserControlRendrerConfig
+        UserControlRendrerConfig config = new UserControlRendrerConfig
         {
             UserControlPath = "ContactForm.ascx",
             SingleControl = true,
@@ -28,9 +27,9 @@
 <html>
 <head runat="server">
     <title>Contact Form - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />       
+    <link href="/resources/css/examples.css" rel="stylesheet" />       
 
-    <style type="text/css">
+    <style>
         .contactBtn button {
             padding: 0 5px;
             font-size: 16px;

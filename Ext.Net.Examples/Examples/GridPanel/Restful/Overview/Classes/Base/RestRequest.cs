@@ -20,11 +20,11 @@ namespace Ext.Net.Examples.Restful
 
             if (context.Request.PathInfo.IsNotEmpty())
             {
-                var cai = new Regex("^\\/([a-z]+\\w)\\/([a-z]+\\w)\\/([0-9]+)$"); //   /controller/action/id
-                var ca = new Regex("^\\/([a-z]+\\w)\\/([a-z]+\\w)\\/([0-9]+)$");  //   /controller/action
-                var ci = new Regex("^\\/([a-z]+\\w)\\/([0-9]+)$");                //   /controller/id
-                var c = new Regex("^\\/([a-z]+\\w)$");                            //   /controller
-                var i = new Regex("^\\/([0-9]+)$");                               //   /id   
+                Regex cai = new Regex("^\\/([a-z]+\\w)\\/([a-z]+\\w)\\/([0-9]+)$"); //   /controller/action/id
+                Regex ca = new Regex("^\\/([a-z]+\\w)\\/([a-z]+\\w)\\/([0-9]+)$");  //   /controller/action
+                Regex ci = new Regex("^\\/([a-z]+\\w)\\/([0-9]+)$");                //   /controller/id
+                Regex c = new Regex("^\\/([a-z]+\\w)$");                            //   /controller
+                Regex i = new Regex("^\\/([0-9]+)$");                               //   /id   
 
                 Match match;
 

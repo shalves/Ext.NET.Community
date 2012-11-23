@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -154,6 +154,42 @@ namespace Ext.Net
 				}
 			}
 
+			private string groupDirectionParam = "groupDir";
+
+			/// <summary>
+			/// The name of the direction parameter to send in a request. This is only used when simpleGroupMode is set to true. Defaults to 'groupDir'.
+			/// </summary>
+			[DefaultValue("groupDir")]
+			public virtual string GroupDirectionParam 
+			{ 
+				get
+				{
+					return this.groupDirectionParam;
+				}
+				set
+				{
+					this.groupDirectionParam = value;
+				}
+			}
+
+			private string iDParam = "id";
+
+			/// <summary>
+			/// The name of the parameter which carries the id of the entity being operated upon. Defaults to: \"id\"
+			/// </summary>
+			[DefaultValue("id")]
+			public virtual string IDParam 
+			{ 
+				get
+				{
+					return this.iDParam;
+				}
+				set
+				{
+					this.iDParam = value;
+				}
+			}
+
 			private string limitParam = "limit";
 
 			/// <summary>
@@ -187,6 +223,24 @@ namespace Ext.Net
 				set
 				{
 					this.noCache = value;
+				}
+			}
+
+			private bool appendAction = true;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool AppendAction 
+			{ 
+				get
+				{
+					return this.appendAction;
+				}
+				set
+				{
+					this.appendAction = value;
 				}
 			}
 
@@ -241,6 +295,24 @@ namespace Ext.Net
 				set
 				{
 					this.simpleSortMode = value;
+				}
+			}
+
+			private bool simpleGroupMode = false;
+
+			/// <summary>
+			/// Enabling simpleGroupMode in conjunction with remoteGroup will only send one group property and a direction when a remote group is requested. The groupDirectionParam and groupParam will be sent with the property name and either 'ASC' or 'DESC'. Defaults to: false
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool SimpleGroupMode 
+			{ 
+				get
+				{
+					return this.simpleGroupMode;
+				}
+				set
+				{
+					this.simpleGroupMode = value;
 				}
 			}
 

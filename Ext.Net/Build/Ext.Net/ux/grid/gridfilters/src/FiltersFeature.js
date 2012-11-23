@@ -216,6 +216,12 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         me.mixins.observable.constructor.call(me);
     },
 
+    ensureFilters : function () {
+        if (this.view && this.view.headerCt && !this.view.headerCt.menu) {
+            this.view.headerCt.getMenu();
+        }
+    },
+
     createFiltersCollection: function () {
         return Ext.create('Ext.util.MixedCollection', false, function (o) {
             return o ? o.dataIndex : null;
@@ -514,6 +520,7 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         if(!options){
             return;
         }
+        this.ensureFilters();
         options.params = options.params || {};
         this.cleanParams(options.params);
         var params = this.buildQuery(this.getFilterData());
@@ -651,6 +658,7 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
      * @return {Ext.ux.grid.filter.Filter}
      */
     getFilter : function (dataIndex) {
+        this.ensureFilters();        
         return this.filters.get(dataIndex);
     },
 
@@ -664,24 +672,38 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         });
     },
 
+    getFilterItems: function () {
+        var me = this;
+
+        // If there's a locked grid then we must get the filter items for each grid.
+        if (me.lockingPartner) {
+            return me.filters.items.concat(me.lockingPartner.filters.items);
+        }
+
+        return me.filters.items;
+    },
+
     /**
      * Returns an Array of the currently active filters.
      * @return {Array} filters Array of the currently active filters.
      */
     getFilterData : function () {
-        var filters = [], i, len;
+        var items = this.getFilterItems(),
+            filters = [],
+            n, nlen, item, d, i, len;
 
-        this.filters.each(function (f) {
-            if (f.active) {
-                var d = [].concat(f.serialize());
+        for (n = 0, nlen = items.length; n < nlen; n++) {
+            item = items[n];
+            if (item.active) {
+                d = [].concat(item.serialize());
                 for (i = 0, len = d.length; i < len; i++) {
                     filters.push({
-                        field: f.dataIndex,
+                        field: item.dataIndex,
                         data: d[i]
                     });
                 }
             }
-        });
+        }
         return filters;
     },
 

@@ -31,7 +31,7 @@
     public void AddNewModule()
     {
         Desktop.GetInstance().RemoveModule("add-module");
-        var control = Ext.Net.Utilities.ControlUtils.FindControl<Ext.Net.DesktopModuleProxy>(this.LoadControl("modules/TabWindow.ascx"));        
+        DesktopModuleProxy control = Ext.Net.Utilities.ControlUtils.FindControl<Ext.Net.DesktopModuleProxy>(this.LoadControl("modules/TabWindow.ascx"));        
         control.RegisterModule();        
     }
 
@@ -39,7 +39,7 @@
     public void AddAnotherModule()
     {
         Desktop.GetInstance().RemoveModule("add1-module");
-        var m = new DesktopModule
+        DesktopModule m = new DesktopModule
         {
             ModuleID = "dyn-mod",
             Shortcut = new DesktopShortcut
@@ -77,9 +77,9 @@
 <head runat="server">
     <title>Ext.NET Examples</title>
 
-    <link href="resources/desktop.css" rel="stylesheet" type="text/css" />
+    <link href="resources/desktop.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var tile = function () {
             Ext.ComponentQuery.query('desktop')[0].tileWindows();
         };

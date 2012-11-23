@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -92,11 +92,11 @@ namespace Ext.Net
         [ConfigOption]
         [DefaultValue(null)]
         [Description("The maximum value of the interval to be displayed in the axis (REQUIRED).")]
-        public virtual int? Maximum
+        public virtual double? Maximum
         {
             get
             {
-                return this.State.Get<int?>("Maximum", null);
+                return this.State.Get<double?>("Maximum", null);
             }
             set
             {
@@ -111,11 +111,11 @@ namespace Ext.Net
         [ConfigOption]
         [DefaultValue(null)]
         [Description("The minimum value of the interval to be displayed in the axis (REQUIRED).")]
-        public virtual int? Minimum
+        public virtual double? Minimum
         {
             get
             {
-                return this.State.Get<int?>("Minimum", null);
+                return this.State.Get<double?>("Minimum", null);
             }
             set
             {
@@ -130,11 +130,11 @@ namespace Ext.Net
         [ConfigOption]
         [DefaultValue(null)]
         [Description("The number of steps and tick marks to add to the interval. (REQUIRED).")]
-        public virtual int? Steps
+        public virtual double? Steps
         {
             get
             {
-                return this.State.Get<int?>("Steps", null);
+                return this.State.Get<double?>("Steps", null);
             }
             set
             {
@@ -167,13 +167,14 @@ namespace Ext.Net
         /// <param name="title"></param>
         public virtual void SetTitle(string title)
         {
-            var chart = this.Owner as Chart;
+            Chart chart = this.Owner as Chart;
+            
             if (chart == null)
             {
                 throw new Exception("Axis has no a chart reference");
             }
 
-            var index = chart.Axes.IndexOf(this);
+            int index = chart.Axes.IndexOf(this);
             chart.AddScript("{0}.axes[{1}].setTitle({2});", chart.ClientID, index, JSON.Serialize(title));
         }
     }

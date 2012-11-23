@@ -7,16 +7,16 @@
 <html>
 <head runat="server">
     <title>TreePanel with Checkbox Enabled Children - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .complete .x-grid-cell-inner {
             text-decoration : line-through;
             color : #777;
         }
     </style>
     
-    <script type="text/javascript">
+    <script>
         var getTasks = function () {
             var msg = "", 
                 selChildren = App.TreePanel1.getChecked();
@@ -56,9 +56,7 @@
             Width="250"
             UseArrows="true"
             AutoScroll="true"
-            Animate="true"
-            EnableDD="true"
-            ContainerScroll="true"
+            Animate="true"            
             RootVisible="false">
             <Root>
                 <ext:Node>

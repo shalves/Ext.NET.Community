@@ -84,16 +84,20 @@ Ext.define('Ext.grid.plugin.SelectionMemory', {
             this.clearMemory();
         }
 
+        if (!Ext.isFunction(rec.getId)) {
+            return;
+        }
+
         var id = rec.getId(),
             absIndex = this.getAbsoluteIndex(idx);
 
-        if (id) {
+        if (id || id === 0) {
             this.onMemorySelectId(sm, absIndex, id, column);
         }
     },
 
     onMemorySelectId : function (sm, index, id, column) {
-        if (!id) {
+        if (!id && id !== 0) {
             return;
         }
 
@@ -142,7 +146,7 @@ Ext.define('Ext.grid.plugin.SelectionMemory', {
                 this.store.each(function (rec) {
                     var id = rec.getId();
 
-                    if (id && !Ext.isEmpty(this.selectedIds[id])) {
+                    if ((id || id === 0) && !Ext.isEmpty(this.selectedIds[id])) {
                         sel.push(rec);
                     } else {
                         all = false;
@@ -152,13 +156,15 @@ Ext.define('Ext.grid.plugin.SelectionMemory', {
                 }, this);
 
                 if (sel.length > 0) {                
-                    this.selModel.select(sel, false, false);
+                    this.surpressDeselection = true;
+                    this.selModel.select(sel, false, !this.grid.selectionMemoryEvents);
+                    this.surpressDeselection = false;
                 }
             } else {
                  this.store.each(function (rec) {
                     var id = rec.getId();
 
-                    if (id && !Ext.isEmpty(this.selectedIds[id])) {
+                    if ((id || id === 0) && !Ext.isEmpty(this.selectedIds[id])) {
                         var colIndex = cm.getHeaderIndex(cm.down('gridcolumn[dataIndex=' + this.selectedIds[id].dataIndex  +']'))
                         this.selModel.setCurrentPosition({
                             row : i,

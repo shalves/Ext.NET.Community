@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TField, TBuilder> : ComponentBase.Builder<TField, TBuilder>
+        new public abstract partial class Builder<TField, TBuilder> : ComponentBase.Builder<TField, TBuilder>
             where TField : Field
             where TBuilder : Builder<TField, TBuilder>
         {
@@ -270,6 +270,15 @@ namespace Ext.Net
             public virtual TBuilder InputType(InputType inputType)
             {
                 this.ToComponent().InputType = inputType;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The width of the field input element in pixels. Defaults to 100.
+			/// </summary>
+            public virtual TBuilder InputWidth(int inputWidth)
+            {
+                this.ToComponent().InputWidth = inputWidth;
                 return this as TBuilder;
             }
              
@@ -645,11 +654,89 @@ namespace Ext.Net
             }
              
  			/// <summary>
+			/// A custom validation function to be called during field validation (getErrors) (defaults to undefined). If specified, this function will be called first, allowing the developer to override the default validation process.
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Validator(Action<JFunction> action)
+            {
+                action(this.ToComponent().Validator);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// A custom error message to display in place of the default message provided for the validator currently set for this field (defaults to ''). Only applies if validator is set, else ignored.
+			/// </summary>
+            public virtual TBuilder ValidatorText(string validatorText)
+            {
+                this.ToComponent().ValidatorText = validatorText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A validation type name as defined in Ext.form.VTypes (defaults to null).
+			/// </summary>
+            public virtual TBuilder StandardVtype(ValidationType standardVtype)
+            {
+                this.ToComponent().StandardVtype = standardVtype;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A validation type name as defined in Ext.form.VTypes (defaults to null).
+			/// </summary>
+            public virtual TBuilder Vtype(string vtype)
+            {
+                this.ToComponent().Vtype = vtype;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A custom error message to display in place of the default message provided for the vtype currently set for this field (defaults to ''). Only applies if vtype is set, else ignored.
+			/// </summary>
+            public virtual TBuilder VtypeText(string vtypeText)
+            {
+                this.ToComponent().VtypeText = vtypeText;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Parameters are passed to VType validation method
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder VTypeParams(Action<ParameterCollection> action)
+            {
+                action(this.ToComponent().VTypeParams);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
 			/// 
 			/// </summary>
             public virtual TBuilder IsRemoteValidation(bool isRemoteValidation)
             {
                 this.ToComponent().IsRemoteValidation = isRemoteValidation;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder RemoteValidation(Action<RemoteValidationDirectEvent> action)
+            {
+                action(this.ToComponent().RemoteValidation);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder RethrowLoadPostDataException(bool rethrowLoadPostDataException)
+            {
+                this.ToComponent().RethrowLoadPostDataException = rethrowLoadPostDataException;
                 return this as TBuilder;
             }
             
@@ -807,6 +894,15 @@ namespace Ext.Net
             public virtual TBuilder HideNote()
             {
                 this.ToComponent().HideNote();
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// Forces the field to be validated client side.
+			/// </summary>
+            public virtual TBuilder Validate()
+            {
+                this.ToComponent().Validate();
                 return this as TBuilder;
             }
             

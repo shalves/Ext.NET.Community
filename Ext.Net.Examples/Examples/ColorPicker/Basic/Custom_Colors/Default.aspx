@@ -7,7 +7,7 @@
 <html>
 <head runat="server">
     <title>ColorPalate Overview - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
     <script runat="server">
         protected void Page_Load(object sender, EventArgs e)
@@ -45,7 +45,7 @@
         }
     </script>
     
-    <style type="text/css">
+    <style>
         body {
         	padding:20px;
         }
@@ -69,7 +69,7 @@
         }
     </style>
     
-    <script type="text/javascript">
+    <script>
         var setColor = function (el, color) {
             if (Ext.isEmpty(color, false)) {
                 return;

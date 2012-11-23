@@ -1,0 +1,39 @@
+﻿@model System.Collections.IEnumerable
+
+@{
+    ViewBag.Title = "Dynamic View";
+    Layout = "~/Views/Shared/_BaseLayout.cshtml";
+}
+
+@section example
+{
+    <h1>Row Expander Plugin with View</h1>    
+
+    @(
+        Html.X().GridPanel()
+            .Title("Expander Rows with GridPanel")
+            .Icon(Icon.Table)
+            .Width(600)
+            .Height(450)
+            .Store(Html.X().Store()
+                .DataSource(Model)
+                .Model(Html.X().Model()
+                    .Fields(
+                        Html.X().ModelField().Name("ID"),
+                        Html.X().ModelField().Name("Name")
+                    )
+                )
+            )
+            .ColumnModel(
+                Html.X().Column().Text("Supplier").DataIndex("Name").Flex(1)
+            )
+            .Plugins(Html.X().RowExpander()
+                .Loader(Html.X().ComponentLoader()
+                    .Url(Url.Action("GetGrid"))
+                    .Mode(LoadMode.Component)
+                    .LoadMask(mask => mask.ShowMask = true)
+                    .Params(new { id = JRawValue.From("this.record.getId()") })
+                )
+            )
+    )
+}

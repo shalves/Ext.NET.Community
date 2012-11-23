@@ -67,23 +67,17 @@
     {
         // This event is fired once for each Record that is Updated.
 
-        var company = new { 
-            Name = e.Values["company"],
-            Price = e.Values["price"],
-            LastChange = e.Values["lastChange"] 
-        };
-
         string tpl = "Name: {0}, Price: {1}, LastChange: {2}<br />";
-        this.Label1.Html += string.Format(tpl, company.Name, company.Price, company.LastChange);
+        this.Label1.Html += string.Format(tpl, e.Values["company"], e.Values["price"], e.Values["lastChange"]);
     }
 </script>
 
 <html>
 <head runat="server">
     <title>Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {
@@ -131,14 +125,14 @@
             Width="600" 
             Height="290">
             <TopBar>
-                <ext:Toolbar ID="ToolBar1" runat="server">
+                <ext:Toolbar runat="server">
                     <Items>
-                        <ext:Button ID="Button1" runat="server" Text="Save" Icon="Disk">
+                        <ext:Button runat="server" Text="Save" Icon="Disk">
                             <Listeners>
                                 <Click Handler="#{Store1}.save();" />
                             </Listeners>
                         </ext:Button>
-                        <ext:Button ID="Button2" runat="server" Text="Reload" Icon="ArrowRefresh">
+                        <ext:Button runat="server" Text="Reload" Icon="ArrowRefresh">
                             <Listeners>
                                 <Click Handler="#{Store1}.reload();" />
                             </Listeners>

@@ -2,7 +2,7 @@
 
 <%@ Register Assembly="Ext.Net" Namespace="Ext.Net" TagPrefix="ext" %>
 
-<script type="text/javascript">
+<script>
     var mimicRemoteLoading = function () {
         var tree = UsersTree;
         tree.setLoading(true, tree.body);

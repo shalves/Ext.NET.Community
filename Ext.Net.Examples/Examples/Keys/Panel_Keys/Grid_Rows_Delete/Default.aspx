@@ -50,32 +50,30 @@
 <html>
 <head runat="server">
     <title>Deleting Rows using Delete Key - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
-        var deleteRows = function (grid) {
+    <script>
+        var processEvent = function(view, record, node, index, event) {
+            // Load the event with the extra information needed by the mappings
+            event.view = view;
+            event.store = view.getStore();
+            event.record = record;
+            event.index = index;
+            return event;
+        };
+
+        var deleteRows = function (keyCode, e) {
             Ext.Msg.confirm(
                 'Delete Rows',      
                 'Are you sure?', 
-                function (btn) {
-                    var record = grid.getSelectionModel().getLastSelected(),
-                        idx;
-
-                    if(!record){
-                        return;
-                    }
-
-                    idx = grid.store.indexOf(record);
+                function (btn) {                    
                     if (btn == 'yes') {
-                        grid.deleteSelected();
+                        e.store.remove(e.record);
                     }
 
-                    if(idx >= grid.store.getCount()){
-                        idx--;
-                    }
-
-                    //return focus
-                    grid.getSelectionModel().select(idx);                    
+                    // Attempt to select the record that's now in its place
+                    e.view.getSelectionModel().select(e.index);
+                    e.view.el.focus();
                 });
         };
     </script>
@@ -123,22 +121,22 @@
             </Columns>
         </ColumnModel>
         <SelectionModel>
-            <ext:RowSelectionModel runat="server" Mode="Multi" />
+            <ext:RowSelectionModel runat="server" />
         </SelectionModel>
         <View>
-            <ext:GridView runat="server" StripeRows="true" TrackOver="true" />
-        </View>
+            <ext:GridView runat="server">
+               <KeyMap EventName="itemkeydown" ComponentEvent="true">
+                   <ProcessEvent Fn="processEvent" /> 
+                   <Binding>
+                        <ext:KeyBinding Handler="deleteRows">
+                            <Keys>
+                                <ext:Key Code="DELETE" />
+                            </Keys>
+                        </ext:KeyBinding> 
+                   </Binding>
+                </KeyMap>
+            </ext:GridView>
+        </View>        
     </ext:GridPanel>
-
-    <ext:KeyMap runat="server" Target="={#{GridPanel1}.el}">
-        <ext:KeyBinding>
-            <Keys>
-                <ext:Key Code="DELETE" />
-            </Keys>
-            <Listeners>
-                <Event Handler="deleteRows(#{GridPanel1});" />
-            </Listeners>
-        </ext:KeyBinding> 
-    </ext:KeyMap>  
 </body>
 </html>

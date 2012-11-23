@@ -82,7 +82,6 @@
     {
         Store store = new Store
         {
-            ID = "Store1", // <-- ID is Required
             Model = 
             { 
                 new Model 
@@ -100,7 +99,6 @@
         };
 
         store.DataSource = this.Data;
-        //store.DataBind();
 
         return store;
     }
@@ -150,9 +148,9 @@
 <html>
 <head runat="server">
     <title>Create GridPanel and Store during DirectEvent - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {

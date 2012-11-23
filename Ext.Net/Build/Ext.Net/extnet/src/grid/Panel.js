@@ -4,6 +4,7 @@
 Ext.grid.Panel.override({
     selectionSubmit : true,
     selectionMemory : true,
+    selectionMemoryEvents : true,
 
     getFilterPlugin : function () {
         if (this.features && Ext.isArray(this.features)) {
@@ -65,7 +66,6 @@ Ext.grid.Panel.override({
         if (this.lockable) {
             p = this.lockedGrid.getSelectionSubmit();
             Ext.Array.remove(this.lockedGrid.plugins, p);
-
             if (Ext.isFunction(p.destroy)) {
                 p.destroy();
             }
@@ -203,7 +203,7 @@ Ext.grid.Panel.override({
         headerCt.insert(index, newCol);
 
         if (doLayout !== false) {
-            this.forceComponentLayout(); 
+            this.updateLayout(); 
             this.fireEvent('reconfigure', this); 
             this.getView().refresh();
         } 
@@ -220,7 +220,7 @@ Ext.grid.Panel.override({
             headerCt.remove(headerCt.items.getAt(index));
 
             if (doLayout !== false) {
-                this.forceComponentLayout(); 
+                this.updateLayout(); 
                 this.fireEvent('reconfigure', this); 
                 this.getView().refresh();
             }
@@ -233,7 +233,7 @@ Ext.grid.Panel.override({
         headerCt.removeAll();
 
         if (doLayout !== false) {
-            this.forceComponentLayout();             
+            this.updateLayout();             
             this.fireEvent('reconfigure', this); 
             this.getView().refresh();
         }

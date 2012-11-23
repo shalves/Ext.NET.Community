@@ -1,6 +1,5 @@
 <%@ Page Language="C#" %>
 <%@ Import Namespace="System.Collections.Generic"%>
-<%--<%@ Import Namespace="ListView=Ext.Net.ListView"%>--%>
 
 <%@ Register Assembly="Ext.Net" Namespace="Ext.Net" TagPrefix="ext" %>
 
@@ -24,61 +23,50 @@
         this.Store1.DataBind();
     }
     
-    private void RemoveFromCache(string id)
+    [DirectMethod]
+    public static string GetGrid(Dictionary<string, string> parameters)
     {
-        X.Js.Call("removeFromCache", id);
-    }
-
-    private void AddToCache(string id)
-    {
-        X.Js.Call("addToCache", id);
-    }
-
-    protected void BeforeExpand(object sender, DirectEventArgs e)
-    {
-        string id = e.ExtraParams["id"];
+        // string id = parameters["id"];
         
-        Store store = new Store { ID = "StoreRow_"+id };
-
-        Model model = new Model();
-        model.IDProperty = "ID";
-        model.Fields.Add("ID", "Name");
-        store.Model.Add(model);
-
         List<object> data = new List<object>();
         
         for (int i = 1; i <= 10; i++)
         {
-            data.Add(new { ID = "P"+i, Name = "Product " + i });
+            data.Add(new { ID = "P" + i, Name = "Product " + i });
         }
 
-        store.DataSource = data;
-        
         GridPanel grid = new GridPanel
         {
-            ID = "GridPanelRow_" + id,
             Height = 200,
-            Store = { store }
+            EnableColumnHide = false,
+            Store = 
+            { 
+                new Store 
+                { 
+                    Model = {
+                        new Model {
+                            IDProperty = "ID",
+                            Fields = 
+                            {
+                                new ModelField("ID"),
+                                new ModelField("Name")
+                            }
+                        }
+                    },
+                    DataSource = data
+                }
+            },
+            ColumnModel =
+            {
+                Columns = 
+                { 
+                    new Column { Text = "Products's Name", DataIndex = "Name" }
+                }
+            }
         };
-        
-        grid.ColumnModel.Columns.Add(new Column
-                                         {
-                                             Text = "Products's Name",
-                                             DataIndex = "Name"
-                                         });
-        grid.ColumnModel.ID = "GridPanelRowCM_" + id;
 
-        grid.View.Add(new Ext.Net.GridView { ID = "GridPanelRowView_" + id });
-
-        //X.Get("row-" + id).SwallowEvent(new string[] { "click", "mousedown", "mouseup", "dblclick"}, true);
-
-        this.RemoveFromCache(grid.ID);
-        grid.Render("row-" + id, RenderMode.RenderTo);
-        this.AddToCache(grid.ID);
-
-        GridPanel1.DoLayout();
+        return ComponentLoader.ToConfig(grid);
     }
-    
 </script>
 
 <!DOCTYPE html>
@@ -86,71 +74,7 @@
 <html>
 <head runat="server">
     <title>RowExpander with GridPanel - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    
-    <ext:ResourcePlaceHolder runat="server" Mode="Script" />
-    
-    <script type="text/javascript">
-        var ns = App;
-        ns.lookup = [];
-        
-        var clean = function () {
-            if (ns.lookup.length > 0) {
-                ns.RowExpander1.collapseAll();
-                
-                Ext.each(ns.lookup, function (control) {
-                    if (control) {
-                        control.destroy();
-                    }
-                });
-                
-                ns.lookup = [];
-            }            
-        };
-
-        var removeFromCache = function (c) {
-            c = window[c];
-            Ext.Array.remove(ns.lookup, c);
-            
-            if (c) {
-                c.destroy();
-            }
-        };
-
-        var addToCache = function (c) {
-            ns.lookup.push(ns[c]);
-        };
-        
-        var beforeUpdate = function (view, record, rowIndex){    
-            var grid = window["GridPanelRow_"+record.getId()];
-            if(grid && !grid.moved){
-                var ce = grid.getEl(), 
-                    el = Ext.net.ResourceMgr.getAspForm() || Ext.getBody();                    
-                    
-                ce.addCls("x-hidden");
-                
-                el.dom.appendChild(ce.dom);
-                grid.moved = true;
-        
-                view.on("itemupdate", function (){
-                    if(!grid.moved){
-                        return;
-                    }
-                    var row = view.getNode(rowIndex),              
-                        body = Ext.DomQuery.selectNode("div.x-grid-rowbody", row);                
-                
-                    Ext.fly("row-"+record.getId()).appendChild(ce.dom);
-                    ce.removeCls("x-hidden");  
-                    grid.moved = false;       
-                    body.rendered = true;                       
-                }, view, {single:true});
-            }
-        };
-
-        var beforeRemove = function (view, record, rowIndex){    
-            removeFromCache("GridPanelRow_"+record.getId());
-        };
-    </script>
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -159,63 +83,57 @@
         <h1>Row Expander Plugin with GridPanel</h1>
         
         <p>The caching is presented, GridPanel renders once only (until view refresh)</p>
-        
-        <ext:Store ID="Store1" runat="server">
-            <Model>
-                <ext:Model runat="server" IDProperty="ID">
-                    <Fields>
-                        <ext:ModelField Name="ID" />
-                        <ext:ModelField Name="Name" />
-                    </Fields>
-                </ext:Model>
-            </Model>
-        </ext:Store>
-        
+
+        <p>The nested GridPanels support is limited.</p>
+
+        <p>Here are some known issues:</p>
+
+        <ul>
+            <li>1. No horizontal lines and no stripeRows effect in nested GridPanels (unless a nested GridPanel contains a RowExpander).<br /></li>
+            <li>2. No tracking mouse over functionality for nested GridPanels. So, for instance, the rows are not highlighted when the mouse hovers them.<br /></li>
+            <li>3. A parent and a nested GridPanels must not use row and checkbox selection models at the same time.<br /></li>
+            <li>4. The Columns option of a header menu of nested GridPanels doesn't work. It must be disabled. To disable set the GridPanel's EnableColumnHide property to false.<br /></li>
+            <li>5. No auto height for nested GridPanels.<br /></li>
+            <li>6. If a nested GridPanel has a RowExpander, then over mouse CSS rules from a parent GridPanel will be applied to a nested GridPanel.</li>
+            <li>etc. More issuses are possible.<br /></li>
+        </ul>
+
+        <br />
+
         <ext:GridPanel 
-            ID="GridPanel1" 
-            runat="server" 
-            StoreID="Store1" 
-            Title="Expander Rows with ListView" 
+            runat="server"             
+            Title="Expander Rows with GridPanel"
             Collapsible="true"
             AnimCollapse="true" 
             Icon="Table" 
-            Width="600" 
-            Height="600">
+            Width="600"
+            Height="450"
+            DisableSelection="true">
+            <Store>
+                <ext:Store ID="Store1" runat="server">
+                    <Model>
+                        <ext:Model runat="server" IDProperty="ID">
+                            <Fields>
+                                <ext:ModelField Name="ID" />
+                                <ext:ModelField Name="Name" />
+                            </Fields>
+                        </ext:Model>
+                    </Model>
+                </ext:Store>
+            </Store>
             <ColumnModel runat="server">               
                 <Columns>
                     <ext:Column runat="server" Text="Supplier" DataIndex="Name" Flex="1" />
                 </Columns>
-            </ColumnModel>
-            <View>
-                <ext:GridView runat="server">
-                    <Listeners>
-                        <BeforeRefresh Fn="clean" />                        
-                        <BeforeItemUpdate Fn="beforeUpdate" />
-                        <BeforeItemRemove Fn="beforeRemove" />
-                    </Listeners>
-                </ext:GridView>
-            </View>
-            <SelectionModel>
-                <ext:RowSelectionModel runat="server" Mode="Multi" />
-            </SelectionModel>
+            </ColumnModel>            
             <Plugins>
-                <ext:RowExpander ID="RowExpander1" runat="server" EnableCaching="true" SwallowBodyEvents="true">
-                    <Template runat="server">
-                        <Html>
-							<div id="row-{ID}" style="background-color:White;"></div>
-						</Html>
-                    </Template>
-                    <DirectEvents>
-                        <BeforeExpand 
-                            OnEvent="BeforeExpand" 
-                            Before="return !body.rendered;" 
-                            Success="body.rendered=true;">
-                            <EventMask ShowMask="true" Target="CustomTarget" CustomTarget="={#{GridPanel1}.body}" />
-                            <ExtraParams>
-                                <ext:Parameter Name="id" Value="record.getId()" Mode="Raw" />
-                            </ExtraParams>
-                        </BeforeExpand>
-                    </DirectEvents>
+                <ext:RowExpander runat="server">
+                    <Loader runat="server" DirectMethod="#{DirectMethods}.GetGrid" Mode="Component">
+                        <LoadMask ShowMask="true" />
+                        <Params>
+                            <ext:Parameter Name="id" Value="this.record.getId()" Mode="Raw" />
+                        </Params>
+                    </Loader>
                 </ext:RowExpander>
             </Plugins>            
         </ext:GridPanel>

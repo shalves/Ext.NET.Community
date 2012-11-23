@@ -6,7 +6,7 @@
 <html>
 <head runat="server">
     <title>Punch Chart - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
     <script runat="server">
         public System.Drawing.Color ColorFromAhsb(double h, double sl, double l)
@@ -72,7 +72,7 @@
     
         protected void Page_Load(object sender, EventArgs e)
         {
-            var axisx = new List<string> 
+            List<string> axisx = new List<string> 
             { 
                 "12am",
                 "1",
@@ -100,7 +100,7 @@
                 "11"
             };
 
-            var data = new List<Pair> 
+            List<Pair> data = new List<Pair> 
             {                 
                 new Pair("Mon", new List<int?>{
                   null, null, null, null, 23, null, null, null, null, 40, null, 15, 10, null, 17, null, 14, 12, 20, 16, null, null, 5, 28
@@ -171,15 +171,15 @@
             {
                 for (int j = 0; j < axisx.Count; j++)
                 {
-                    var row = (List<int?>)data[i].Second;
-                    var value = row[j];
+                    List<int?> row = (List<int?>)data[i].Second;
+                    int? value = row[j];
 
                     if (value != null)
                     {
-                        var r = Convert.ToInt32(Math.Min(Math.Round(Math.Sqrt(value.Value / Math.PI) * 4), max));
-                        var dx = Convert.ToInt32(leftgutter + x * (j + 0.5) - 60 - r);
-                        var dy = Convert.ToInt32(y * (i + 0.5) - 10);
-                        var color = System.Drawing.ColorTranslator.ToHtml(this.ColorFromAhsb((1 - r*1.0f / max) * 0.5, 1, 0.5));
+                        int r = Convert.ToInt32(Math.Min(Math.Round(Math.Sqrt(value.Value / Math.PI) * 4), max));
+                        int dx = Convert.ToInt32(leftgutter + x * (j + 0.5) - 60 - r);
+                        int dy = Convert.ToInt32(y * (i + 0.5) - 10);
+                        string color = System.Drawing.ColorTranslator.ToHtml(this.ColorFromAhsb((1 - r*1.0f / max) * 0.5, 1, 0.5));
                         
                         draw.Items.Add(new Sprite
                         {
@@ -251,7 +251,7 @@
         }
     </script>
 
-    <script type="text/javascript">
+    <script>
         function onMouseOver(surface, id){
             var lbl = surface.items.get("lbl"+id),
                 bg = surface.items.get("bg"+id),

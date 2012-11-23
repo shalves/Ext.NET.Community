@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -30,7 +30,6 @@ using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
 using Ext.Net.Utilities;
 
 namespace Ext.Net
@@ -162,14 +161,17 @@ namespace Ext.Net
                     {
                         this.uc.ID = this.UserControlID;
                     }
-
+#if NET40
                     this.uc.ClientIDMode = this.UserControlClientIDMode;
+#endif
                     this.AfterUCAdd(this.uc);
                 }
                 else
                 {
                     this.uc = UserControlRenderer.LoadControl(this.Path, this.UserControlID.IsNotEmpty() ? this.UserControlID : null);
+#if NET40
                     this.uc.ClientIDMode = this.UserControlClientIDMode;
+#endif
                 }                
             }
         }

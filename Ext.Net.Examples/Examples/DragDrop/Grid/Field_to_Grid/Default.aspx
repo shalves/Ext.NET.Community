@@ -65,15 +65,15 @@
 <html>
 <head runat="server">
     <title>Field to Grid - Ext.NET Examples</title>    
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .x-drop-target-active {
 	        background-color : #D88;
         }
     </style>
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {
@@ -161,30 +161,20 @@
         };
         
         var getDragData = function (e) {
-            var t = e.getTarget("input");
-            if (t) {
-                e.stopEvent();
-
-                //   Ugly code to "detach" the drag gesture from the input field.
-                //   Without this, Opera never changes the mouseover target from the input field
-                //   even when dragging outside of the field - it just keeps selecting.
-                if (Ext.isOpera) {
-                    Ext.fly(t).on("mousemove", function (e1) {
-                        t.style.visibility = "hidden";
-                        Ext.defer(function(){
-                            t.style.visibility = '';
-                        }, 1);
-                    }, null, {single:true});
-                }
-                
-                var f = Ext.ComponentQuery.query('field[inputEl]{inputEl.id=="' + t.id + '"}')[0];
-                var d = document.createElement("div");
-                d.className = "x-form-text";
-                d.appendChild(document.createTextNode(t.value));
-                Ext.fly(d).setWidth(f.getEl().getWidth());
+            var targetLabel = e.getTarget('label', null, true),
+                field,
+                dragEl;
+            if (targetLabel) {
+                //Get the data we are dragging: the Field
+                //create a ddel for the drag proxy to display
+                field = Ext.getCmp(targetLabel.up('.' + Ext.form.Labelable.prototype.formItemCls).id);
+                dragEl = document.createElement('div');
+                dragEl.className = 'x-form-text';
+                dragEl.appendChild(document.createTextNode(field.getRawValue()));
+                Ext.fly(dragEl).setWidth(field.getEl().getWidth());
                 return {
-                    field: f,
-                    ddel: d
+                    field: field,
+                    ddel: dragEl
                 };
             }
         };
@@ -197,6 +187,12 @@
 <body>
     <form runat="server">
         <ext:ResourceManager runat="server" />
+
+        <h1>Using a GridPanel as a DropZone managing each grid cell as a target</h1>
+        <p>This example assumes prior knowledge of using a GridPanel.</p>
+        <p>This illustrates how a DragZone can manage an arbitrary number of drag sources, and
+        how a DropZone can manage an arbitrary number of targets.</p>
+        <p>Fields are editable. Drag the fields into the grid using the <b>label</b> as the handle.</p>
         
         <ext:GridPanel 
             ID="GridPanel1"

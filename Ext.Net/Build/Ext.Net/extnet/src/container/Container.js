@@ -29,41 +29,35 @@ Ext.Container.override({
     clearContent : function () {
         if (this.iframe && this.iframe.dom) {
             var me = this,
-                doc = me.getDoc(),
-                fn = me.onIFrameRelayedEvent;
-
-            if (doc) {
-                try {
-                    Ext.EventManager.un(doc, {
-                        mousedown: fn, 
-                        mousemove: fn, 
-                        mouseup: fn,   
-                        click: fn,     
-                        dblclick: fn,  
-                        scope: me
-                    });
-                } catch(e) {                
-                }
-            }
+                doc,
+                prop;
 
             this.iframe.un("load", this.getLoader().afterIFrameLoad, this);
 
-            var doc = this.getDoc();
-            if (doc) {
-                Ext.EventManager.removeAll(doc);
-                for (prop in doc) {
-                    if (doc.hasOwnProperty && doc.hasOwnProperty(prop)) {
-                        delete doc[prop];
+            try {
+                doc = me.getDoc();
+                
+                if (doc) {
+                    if (!Ext.isIE) {
+                        Ext.EventManager.removeAll(doc);
+                    }
+
+                    for (prop in doc) {
+                        if (doc.hasOwnProperty && doc.hasOwnProperty(prop)) {
+                            delete doc[prop];
+                        }
                     }
                 }
-            }
 
-            if (Ext.isIE) {
-                this.iframe.dom.src = Ext.net.StringUtils.format("java{0}", "script:false");
-            }
-
-            this.removeAll(true);
-            delete this.iframe;
+                this.iframe.dom.contentWindow.parentAutoLoadControl = null;
+            } catch(e) { } 
+            
+            try {
+                this.iframe.dom.src = Ext.SSL_SECURE_URL;
+                Ext.destroy(this.iframe);
+                delete this.iframe;
+                this.removeAll(true);
+            } catch(e) { }
 
             this.getLoader().removeMask();
             
@@ -141,6 +135,27 @@ Ext.Container.override({
             btn.fireEvent("click", btn, e);
         }
     },
+	
+	beforeWindowUnload: function () {
+        var me = this,
+            doc, prop;
+
+        if (me.rendered) {
+            try {
+                doc = me.getDoc();
+                if (doc) {
+                    if (!Ext.isIE) {
+                        Ext.EventManager.removeAll(doc);
+                    }
+                    for (prop in doc) {
+                        if (doc.hasOwnProperty && doc.hasOwnProperty(prop)) {
+                            delete doc[prop];
+                        }
+                    }
+                }
+            } catch(e) { }
+        }
+    }, 
 
     onIFrameLoad: function () {
         var me = this,
@@ -148,28 +163,26 @@ Ext.Container.override({
             fn = me.onIFrameRelayedEvent;
 
         if (doc) {
-            try {
-                Ext.EventManager.un(doc, {
-                    mousedown: fn, 
-                    mousemove: fn, 
-                    mouseup: fn,   
-                    click: fn,     
-                    dblclick: fn,  
-                    scope: me
-                });
+            if (!Ext.isIE) {
+                try {
+                    Ext.EventManager.removeAll(doc); 
 
-                Ext.EventManager.on(doc, {
-                    mousedown: fn, 
-                    mousemove: fn, 
-                    mouseup: fn,   
-                    click: fn,     
-                    dblclick: fn,  
-                    scope: me
-                });
-            } catch (e) {                
+                    Ext.EventManager.on(doc, {
+                        mousedown: fn, 
+                        mousemove: fn, 
+                        mouseup: fn,   
+                        click: fn,     
+                        dblclick: fn,  
+                        scope: me
+                    });
+                } catch(e) {                
+                }
             }
             
-            //Ext.EventManager.on(window, 'unload', me.beforeDestroy, me);
+            if (!this._unloadListener) {
+                this._unloadListener = true;
+                Ext.EventManager.on(window, 'unload', me.beforeWindowUnload, me);
+            }
         }
     },
 

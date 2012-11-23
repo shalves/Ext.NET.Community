@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public abstract partial class Builder<TFormPanelBase, TBuilder> : AbstractPanel.Builder<TFormPanelBase, TBuilder>
+        new public abstract partial class Builder<TFormPanelBase, TBuilder> : AbstractPanel.Builder<TFormPanelBase, TBuilder>
             where TFormPanelBase : FormPanelBase
             where TBuilder : Builder<TFormPanelBase, TBuilder>
         {
@@ -168,6 +168,15 @@ namespace Ext.Net
             public virtual TBuilder WaitTitle(string waitTitle)
             {
                 this.ToComponent().WaitTitle = waitTitle;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// If set to true, the field values are sent as JSON in the request body. All of the field values, plus any additional params configured via baseParams and/or the options to submit, will be included in the values POSTed in the body of the request.
+			/// </summary>
+            public virtual TBuilder JsonSubmit(bool jsonSubmit)
+            {
+                this.ToComponent().JsonSubmit = jsonSubmit;
                 return this as TBuilder;
             }
              

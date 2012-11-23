@@ -20,7 +20,7 @@
             if (Ext.Net.ResourceManager.IsSupportedCulture(this.ResourceManager1.Locale, out isParent))
             {
                 string cultureName = isParent ? this.ResourceManager1.Locale.Split(new char[] { '-' })[0] : this.ResourceManager1.Locale;
-                this.ComboBox1.Select(cultureName);
+                this.ComboBox1.SelectedItems.Add(new Ext.Net.ListItem { Value = cultureName });
             }
         }
     }
@@ -33,7 +33,7 @@
             return;
         }
         
-        this.Page.UICulture = this.ComboBox1.SelectedItems[0].Value;                  
+        this.Page.Culture = this.ComboBox1.SelectedItems[0].Value;                  
     }
 </script>
 
@@ -42,9 +42,9 @@
 <html>
 <head runat="server">
     <title>Locale - Ext.NET Examples</title>    
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <style type="text/css">
+    <style>
         .spacer {
             width  : 176px; 
             height : 5px; 

@@ -6,15 +6,43 @@
 <%@ Register Assembly="Ext.Net" Namespace="Ext.Net" TagPrefix="ext" %>
 
 <script runat="server">
+    UserControl currentUC;
+    
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!string.IsNullOrWhiteSpace(CurrentControl.Text))
+        {
+            this.LoadUserControl(CurrentControl.Text);
+        }
+    }
+
+    private void LoadUserControl(string num, bool update = false)
+    {
+        if (update && currentUC != null)
+        {
+            Ext.Net.Utilities.ControlUtils.FindControls<AbstractComponent>(this.Panel1).ForEach(c => { 
+                if(!c.IsLazy)
+                {
+                    c.Destroy();
+                }
+            });
+            this.Panel1.ContentControls.Clear();
+        }        
+        
+        currentUC = (UserControl)this.LoadControl(string.Format("UserControl{0}.ascx", num));
+        currentUC.ID = "UC" + num;
+        this.Panel1.ContentControls.Add(currentUC);
+        
+        if (update)
+        {
+            CurrentControl.Text = num;
+            this.Panel1.UpdateContent();
+        }
+    }
+
     protected void Button1_Click(object sender, DirectEventArgs e)
     {
-        X.Js.Call("destroyFromCache", new JRawValue(Panel1.ClientID));
-        BaseUserControl uc1 = (BaseUserControl)this.LoadControl("UserControl1.ascx");
-        uc1.ID = "UC1";
-        this.Panel1.ContentControls.Add(uc1);
-
-        X.Js.Call("putToCache", new JRawValue(Panel1.ClientID), uc1.ControlsToDestroy);
-        this.Panel1.UpdateContent();
+        this.LoadUserControl("1", true);
         
         this.Button1.Disabled = true;
         this.Button2.Disabled = false;
@@ -22,16 +50,10 @@
 
     protected void Button2_Click(object sender, DirectEventArgs e)
     {
-        X.Js.Call("destroyFromCache", new JRawValue(Panel1.ClientID));
-        BaseUserControl uc2 = (BaseUserControl)this.LoadControl("UserControl2.ascx");
-        uc2.ID = "UC2";
-        this.Panel1.ContentControls.Add(uc2);
-        
-        X.Js.Call("putToCache", new JRawValue(Panel1.ClientID), uc2.ControlsToDestroy);
-        this.Panel1.UpdateContent();
+        this.LoadUserControl("2", true);
 
-        this.Button1.Disabled = false;
         this.Button2.Disabled = true;
+        this.Button1.Disabled = false;
     }
 </script>
 
@@ -40,25 +62,7 @@
 <html>
 <head runat="server">
     <title>Update Controls and Content during a DirectEvent - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    
-    <script type="text/javascript">
-        var destroyFromCache = function (container) {
-            container.controlsCache = container.controlsCache || [];
-
-            Ext.each(container.controlsCache, function (controlId) {
-                var control = Ext.getCmp(controlId);
-
-                if (control && control.destroy) {
-                    control.destroy();
-                }
-            });
-        };
-        
-        var putToCache = function (container, controls) {
-            container.controlsCache = controls;
-        };
-    </script>
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -68,6 +72,8 @@
         
         <h3>Load UserControls</h3>
         
+        <ext:Hidden ID="CurrentControl" runat="server" />
+
         <ext:Panel 
             ID="Panel1" 
             runat="server" 

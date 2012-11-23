@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project path="" name="Ext.Net" author="Ext.NET, Inc." version="2.0.0" copyright="@version   : 2.0.0 - Community Edition (AGPLv3 License)&#xD;&#xA;@author    : Ext.NET, Inc. http://www.ext.net/&#xD;&#xA;@date      : 2012-07-24&#xD;&#xA;@copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.&#xD;&#xA;@license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.&#xD;&#xA;@website   : http://www.ext.net/" output="$project" source="False" source-dir="$output\source" minify="False" min-dir="$output" doc="False" doc-dir="$output\docs" master="true" master-file="$output\yui-ext.js" zip="true" zip-file="$output\yuo-ext.$version.zip">
+<project path="" name="Ext.Net UX" author="Ext.NET, Inc." version="2.1.0" copyright="@version   : 2.1.0 - Ext.NET Pro License&#xD;&#xA;@author    : Ext.NET, Inc. http://www.ext.net/&#xD;&#xA;@date      : 2012-11-21&#xD;&#xA;@copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.&#xD;&#xA;@license   : See license.txt and http://www.ext.net/license/. &#xD;&#xA;@website   : http://www.ext.net/" output="$project" source="False" source-dir="$output\source" minify="False" min-dir="$output" doc="False" doc-dir="$output\docs" master="true" master-file="$output\yui-ext.js" zip="true" zip-file="$output\yuo-ext.$version.zip">
   <file name="grid\gridfilters\gridfilters-debug.js" path="grid\gridfilters" />
   <file name="multiselect\multiselect.js" path="multiselect" />
   <file name="tabmenu\tabmenu.js" path="tabmenu" />
@@ -25,6 +25,8 @@
   <file name="preview\preview.js" path="preview" />
   <file name="tabclosemenu\tabclosemenu.js" path="tabclosemenu" />
   <file name="capslockdetector\capslockdetector.js" path="capslockdetector" />
+  <file name="passwordmask\passwordmask.js" path="passwordmask" />
+  <file name="inputmask\inputmask.js" path="inputmask" />
   <target name="Ext.Net" file="$output\extnet-ux.js" debug="True" shorthand="False" shorthand-list="YAHOO.util.Dom.setStyle&#xD;&#xA;YAHOO.util.Dom.getStyle&#xD;&#xA;YAHOO.util.Dom.getRegion&#xD;&#xA;YAHOO.util.Dom.getViewportHeight&#xD;&#xA;YAHOO.util.Dom.getViewportWidth&#xD;&#xA;YAHOO.util.Dom.get&#xD;&#xA;YAHOO.util.Dom.getXY&#xD;&#xA;YAHOO.util.Dom.setXY&#xD;&#xA;YAHOO.util.CustomEvent&#xD;&#xA;YAHOO.util.Event.addListener&#xD;&#xA;YAHOO.util.Event.getEvent&#xD;&#xA;YAHOO.util.Event.getTarget&#xD;&#xA;YAHOO.util.Event.preventDefault&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Event.stopPropagation&#xD;&#xA;YAHOO.util.Event.stopEvent&#xD;&#xA;YAHOO.util.Anim&#xD;&#xA;YAHOO.util.Motion&#xD;&#xA;YAHOO.util.Connect.asyncRequest&#xD;&#xA;YAHOO.util.Connect.setForm&#xD;&#xA;YAHOO.util.Dom&#xD;&#xA;YAHOO.util.Event">
     <include name="grid\gridfilters\gridfilters-debug.js" />
     <include name="multiselect\multiselect.js" />
@@ -51,5 +53,7 @@
     <include name="preview\preview.js" />
     <include name="tabclosemenu\tabclosemenu.js" />
     <include name="capslockdetector\capslockdetector.js" />
+    <include name="passwordmask\passwordmask.js" />
+    <include name="inputmask\inputmask.js" />
   </target>
 </project>

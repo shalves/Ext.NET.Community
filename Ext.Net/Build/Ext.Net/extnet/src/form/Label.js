@@ -37,11 +37,11 @@ Ext.define("Ext.net.Label", {
         var me = this;
 
         me.callParent(); 
-        
+                
         Ext.apply(me.renderData, {
             iconAlign: me.iconAlign,
             iconCls: me.iconCls || "",
-            html: me.text ? Ext.util.Format.htmlEncode(me.text) : (me.html || "")
+            html: this.getDisplayText(me.text ? me.text : me.html, !!me.text)
         });
         
         Ext.apply(me.renderSelectors, {
@@ -79,12 +79,17 @@ Ext.define("Ext.net.Label", {
         return this.rendered ? encode === true ? Ext.util.Format.htmlEncode(this.textEl.dom.innerHTML) : this.textEl.dom.innerHTML : this.text;
     },
 
+    getDisplayText : function (text, encode) {
+        var t = text || this.text || "",
+            x = encode !== false ? Ext.util.Format.htmlEncode(t) : t;
+        return (Ext.isEmpty(t) && !Ext.isEmpty(this.emptyText)) ? this.emptyText : !Ext.isEmpty(this.format) ? Ext.net.StringUtils.format(this.format, x) : x
+    },
+
     setText : function (t, encode) {
         this.text = t;
         
-        if (this.rendered) {
-            var x = encode !== false ? Ext.util.Format.htmlEncode(t) : t;
-            this.textEl.dom.innerHTML = (Ext.isEmpty(t) && !Ext.isEmpty(this.emptyText)) ? this.emptyText : !Ext.isEmpty(this.format) ? Ext.String.format(this.format, x) : x;
+        if (this.rendered) {            
+            this.textEl.dom.innerHTML = this.getDisplayText(null, encode);
         }
         
         return this;

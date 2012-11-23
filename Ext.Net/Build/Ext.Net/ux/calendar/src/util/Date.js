@@ -35,6 +35,13 @@ Ext.define('Ext.calendar.util.Date', {
         return dt2.getTime() - dt1.getTime();
     },
 
+    isMidnight: function(dt) {
+        return dt.getHours() === 0 &&
+               dt.getMinutes() === 0 &&
+               dt.getSeconds() === 0 && 
+               dt.getMilliseconds() === 0;    
+    },
+
     // private helper fn
     maxOrMin: function(max) {
         var dt = (max ? 0: Number.MAX_VALUE),

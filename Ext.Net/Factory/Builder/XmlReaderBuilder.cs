@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,41 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : AbstractReader.Builder<XmlReader, XmlReader.Builder>
+        new public abstract partial class Builder<TXmlReader, TBuilder> : AbstractReader.Builder<TXmlReader, TBuilder>
+            where TXmlReader : XmlReader
+            where TBuilder : Builder<TXmlReader, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TXmlReader component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The DomQuery path to the repeated element which contains record information.
+			/// </summary>
+            public virtual TBuilder Record(string record)
+            {
+                this.ToComponent().Record = record;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : XmlReader.Builder<XmlReader, XmlReader.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,24 +106,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The DomQuery path to the repeated element which contains record information.
-			/// </summary>
-            public virtual XmlReader.Builder Record(string record)
-            {
-                this.ToComponent().Record = record;
-                return this as XmlReader.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -98,6 +114,14 @@ namespace Ext.Net
         public XmlReader.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.XmlReader(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -112,7 +136,11 @@ namespace Ext.Net
         /// </summary>
         public XmlReader.Builder XmlReader()
         {
-            return this.XmlReader(new XmlReader());
+#if MVC
+			return this.XmlReader(new XmlReader { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.XmlReader(new XmlReader());
+#endif			
         }
 
         /// <summary>
@@ -120,7 +148,10 @@ namespace Ext.Net
         /// </summary>
         public XmlReader.Builder XmlReader(XmlReader component)
         {
-            return new XmlReader.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new XmlReader.Builder(component);
         }
 
         /// <summary>
@@ -128,7 +159,11 @@ namespace Ext.Net
         /// </summary>
         public XmlReader.Builder XmlReader(XmlReader.Config config)
         {
-            return new XmlReader.Builder(new XmlReader(config));
+#if MVC
+			return new XmlReader.Builder(new XmlReader(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new XmlReader.Builder(new XmlReader(config));
+#endif			
         }
     }
 }

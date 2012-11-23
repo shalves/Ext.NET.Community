@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,63 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : AbstractPanel.Builder<Portal, Portal.Builder>
+        new public abstract partial class Builder<TPortal, TBuilder> : AbstractPanel.Builder<TPortal, TBuilder>
+            where TPortal : Portal
+            where TBuilder : Builder<TPortal, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TPortal component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<PortalListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side DirectEvent Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<PortalDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// true to use overflow:'auto' on the components layout element and show scroll bars automatically when necessary, false to clip any overflowing content (defaults to false).
+			/// </summary>
+            public virtual TBuilder AutoScroll(bool autoScroll)
+            {
+                this.ToComponent().AutoScroll = autoScroll;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : Portal.Builder<Portal, Portal.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,46 +128,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Portal.Builder</returns>
-            public virtual Portal.Builder Listeners(Action<PortalListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as Portal.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEvent Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of Portal.Builder</returns>
-            public virtual Portal.Builder DirectEvents(Action<PortalDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as Portal.Builder;
-            }
-			 
- 			/// <summary>
-			/// true to use overflow:'auto' on the components layout element and show scroll bars automatically when necessary, false to clip any overflowing content (defaults to false).
-			/// </summary>
-            public virtual Portal.Builder AutoScroll(bool autoScroll)
-            {
-                this.ToComponent().AutoScroll = autoScroll;
-                return this as Portal.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -120,6 +136,14 @@ namespace Ext.Net
         public Portal.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.Portal(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -134,7 +158,11 @@ namespace Ext.Net
         /// </summary>
         public Portal.Builder Portal()
         {
-            return this.Portal(new Portal());
+#if MVC
+			return this.Portal(new Portal { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.Portal(new Portal());
+#endif			
         }
 
         /// <summary>
@@ -142,7 +170,10 @@ namespace Ext.Net
         /// </summary>
         public Portal.Builder Portal(Portal component)
         {
-            return new Portal.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new Portal.Builder(component);
         }
 
         /// <summary>
@@ -150,7 +181,11 @@ namespace Ext.Net
         /// </summary>
         public Portal.Builder Portal(Portal.Config config)
         {
-            return new Portal.Builder(new Portal(config));
+#if MVC
+			return new Portal.Builder(new Portal(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new Portal.Builder(new Portal(config));
+#endif			
         }
     }
 }

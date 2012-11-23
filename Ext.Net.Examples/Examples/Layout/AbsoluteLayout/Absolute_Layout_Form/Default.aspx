@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>Form with AbsoluteLayout - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         /* Custom rule to make the toolbar fit within a framed panel with no margin: */
         .email-form .x-panel-mc .x-panel-tbar .x-toolbar {
             border-top: 1px solid #C2D6EF;

@@ -5,7 +5,7 @@
 <script runat="server">
     protected void ReloadData(object sender, DirectEventArgs e)
     {
-        var store = this.Chart1.GetStore();
+        Store store = this.Chart1.GetStore();
         
         store.DataSource = Ext.Net.Examples.ChartData.GenerateData();
         store.DataBind();
@@ -17,9 +17,9 @@
 <html>
 <head runat="server">
     <title>Bar Chart - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
+    <script>
         function saveChart (btn) {
             Ext.MessageBox.confirm('Confirm Download', 'Would you like to download the chart as an image?', function(choice){
                 if(choice == 'yes'){

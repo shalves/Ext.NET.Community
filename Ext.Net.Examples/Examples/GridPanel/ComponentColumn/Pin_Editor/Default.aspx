@@ -30,9 +30,9 @@
 <html>
 <head runat="server">
     <title>ComponentColumn Pin Editor - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
+    <script>
         var pinEditors = function (btn, pressed) {
             var columnConfig = btn.column,
                 column = columnConfig.column;
@@ -57,7 +57,7 @@
             ID="GridPanel1" 
             runat="server" 
             Title="ComponentColumn Pin Editor" 
-            Width="600" 
+            Width="620" 
             Height="300">
             <Store>
                 <ext:Store ID="Store1" runat="server">
@@ -136,7 +136,7 @@
                         Text="Date">
                         <Renderer Format="Date" FormatArgs="'d/m/Y'" />                            
                         <Component>
-                            <ext:DateField runat="server" />
+                            <ext:DateField runat="server" Format="dd/MM/yyyy" />
                         </Component>
                     </ext:ComponentColumn>
 

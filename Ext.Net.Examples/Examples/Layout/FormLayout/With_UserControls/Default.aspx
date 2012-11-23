@@ -107,7 +107,7 @@
 <html>
 <head runat="server">
     <title>FormLayout with Nested UserControls - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -128,8 +128,7 @@
             Resizable="false"
             BodyStyle="background-color:#fff;"
             BodyPadding="5"
-            Layout="Form"
-            DefaultAnchor="100%">
+            Layout="Form">
             <Items>
                 <ext:TextField ID="txtFirstName" runat="server" FieldLabel="First Name" AllowBlank="false" />
                 <ext:TextField ID="txtLastName" runat="server" FieldLabel="Last Name" AllowBlank="false" />

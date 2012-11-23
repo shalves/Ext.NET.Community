@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -225,6 +225,24 @@ namespace Ext.Net
 				}
 			}
 			        
+			private JFunction serialize = null;
+
+			/// <summary>
+			/// A function which converts the Model's value for this Field into a form which can be used by whatever Writer is being used to sync data with the server.
+			/// </summary>
+			public JFunction Serialize
+			{
+				get
+				{
+					if (this.serialize == null)
+					{
+						this.serialize = new JFunction();
+					}
+			
+					return this.serialize;
+				}
+			}
+			        
 			private JFunction convert = null;
 
 			/// <summary>
@@ -297,6 +315,42 @@ namespace Ext.Net
 				}
 			}
 
+			private string dateWriteFormat = "";
+
+			/// <summary>
+			/// Used to provide a custom format when serializing dates with a writer. If this is not specified, the DateFormat will be used.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string DateWriteFormat 
+			{ 
+				get
+				{
+					return this.dateWriteFormat;
+				}
+				set
+				{
+					this.dateWriteFormat = value;
+				}
+			}
+
+			private string dateReadFormat = "";
+
+			/// <summary>
+			/// Used when converting received data into a Date when the Type is specified as \"Date\". This configuration takes precedence over DateFormat.
+			/// </summary>
+			[DefaultValue("")]
+			public virtual string DateReadFormat 
+			{ 
+				get
+				{
+					return this.dateReadFormat;
+				}
+				set
+				{
+					this.dateReadFormat = value;
+				}
+			}
+
 			private string defaultValue = "";
 
 			/// <summary>
@@ -366,6 +420,24 @@ namespace Ext.Net
 				set
 				{
 					this.useNull = value;
+				}
+			}
+
+			private bool htmlEncode = false;
+
+			/// <summary>
+			/// Configure `true` to encode html in the field before sync
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool HtmlEncode 
+			{ 
+				get
+				{
+					return this.htmlEncode;
+				}
+				set
+				{
+					this.htmlEncode = value;
 				}
 			}
 

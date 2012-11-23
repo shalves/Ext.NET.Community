@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,41 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : AbstractValidation.Builder<FormatValidation, FormatValidation.Builder>
+        new public abstract partial class Builder<TFormatValidation, TBuilder> : AbstractValidation.Builder<TFormatValidation, TBuilder>
+            where TFormatValidation : FormatValidation
+            where TBuilder : Builder<TFormatValidation, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TFormatValidation component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// A JavaScript RegExp object to be tested against the value
+			/// </summary>
+            public virtual TBuilder Matcher(string matcher)
+            {
+                this.ToComponent().Matcher = matcher;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : FormatValidation.Builder<FormatValidation, FormatValidation.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,24 +106,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// A JavaScript RegExp object to be tested against the value
-			/// </summary>
-            public virtual FormatValidation.Builder Regex(string regex)
-            {
-                this.ToComponent().Regex = regex;
-                return this as FormatValidation.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -98,6 +114,14 @@ namespace Ext.Net
         public FormatValidation.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.FormatValidation(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -112,7 +136,11 @@ namespace Ext.Net
         /// </summary>
         public FormatValidation.Builder FormatValidation()
         {
-            return this.FormatValidation(new FormatValidation());
+#if MVC
+			return this.FormatValidation(new FormatValidation { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.FormatValidation(new FormatValidation());
+#endif			
         }
 
         /// <summary>
@@ -120,7 +148,10 @@ namespace Ext.Net
         /// </summary>
         public FormatValidation.Builder FormatValidation(FormatValidation component)
         {
-            return new FormatValidation.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new FormatValidation.Builder(component);
         }
 
         /// <summary>
@@ -128,7 +159,11 @@ namespace Ext.Net
         /// </summary>
         public FormatValidation.Builder FormatValidation(FormatValidation.Config config)
         {
-            return new FormatValidation.Builder(new FormatValidation(config));
+#if MVC
+			return new FormatValidation.Builder(new FormatValidation(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new FormatValidation.Builder(new FormatValidation(config));
+#endif			
         }
     }
 }

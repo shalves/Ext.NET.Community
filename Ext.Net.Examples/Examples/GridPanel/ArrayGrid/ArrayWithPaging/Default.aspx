@@ -18,7 +18,7 @@
 
     private void BindData()
     {
-        var store = this.GridPanel1.GetStore();
+        Store store = this.GridPanel1.GetStore();
         
         store.DataSource = this.Data;
         store.DataBind(); 
@@ -71,9 +71,9 @@
 <html>
 <head runat="server">
     <title>Simple Array Grid With Paging and Remote Reloading - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
 
         var change = function (value) {
@@ -99,8 +99,7 @@
             ID="GridPanel1"
             runat="server" 
             Title="Array Grid" 
-            Width="700" 
-            Height="310">
+            Width="700">
             <Store>
                 <ext:Store ID="Store1" runat="server" OnReadData="MyData_Refresh" PageSize="10">
                     <Model>
@@ -136,8 +135,7 @@
                 <ext:RowSelectionModel runat="server" Mode="Multi" />
             </SelectionModel>
             <View>
-                <ext:GridView runat="server" StripeRows="true">                   
-                </ext:GridView>
+                <ext:GridView runat="server" StripeRows="true" />                   
             </View>            
             <BottomBar>
                  <ext:PagingToolbar runat="server">
@@ -155,7 +153,7 @@
                                 <ext:ListItem Value="10" />
                             </SelectedItems>
                             <Listeners>
-                                <Select Handler="#{GridPanel1}.store.pageSize = parseInt(this.getValue(), 10); #{GridPanel1}.store.load();" />
+                                <Select Handler="#{GridPanel1}.store.pageSize = parseInt(this.getValue(), 10); #{GridPanel1}.store.reload();" />
                             </Listeners>
                         </ext:ComboBox>
                     </Items>

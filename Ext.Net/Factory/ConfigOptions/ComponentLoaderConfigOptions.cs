@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -62,6 +62,7 @@ namespace Ext.Net
                 list.Add("triggerEvent", new ConfigOption("triggerEvent", null, "", this.TriggerEvent ));
                 list.Add("triggerControl", new ConfigOption("triggerControl", null, "", this.TriggerControl ));
                 list.Add("reloadOnEvent", new ConfigOption("reloadOnEvent", null, false, this.ReloadOnEvent ));
+                list.Add("removeD", new ConfigOption("removeD", null, false, this.RemoveD ));
                 list.Add("monitorComplete", new ConfigOption("monitorComplete", null, false, this.MonitorComplete ));
                 list.Add("callbackProxy", new ConfigOption("callbackProxy", new SerializationOptions("callback", JsonMode.Raw), "", this.CallbackProxy ));
                 list.Add("autoLoad", new ConfigOption("autoLoad", null, true, this.AutoLoad ));
@@ -77,6 +78,7 @@ namespace Ext.Net
                 list.Add("target", new ConfigOption("target", null, "", this.Target ));
                 list.Add("url", new ConfigOption("url", new SerializationOptions(JsonMode.Url), "", this.Url ));
                 list.Add("directMethod", new ConfigOption("directMethod", null, "", this.DirectMethod ));
+                list.Add("showWarningOnFailure", new ConfigOption("showWarningOnFailure", null, true, this.ShowWarningOnFailure ));
                 list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
 
                 return list;

@@ -8,9 +8,9 @@
 <head runat="server">
     <title>Toolbar Button Groups - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .add32 {
             background-image : url(images/add32.gif) !important;
         }

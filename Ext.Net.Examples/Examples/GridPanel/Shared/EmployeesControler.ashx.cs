@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
@@ -20,8 +21,8 @@ namespace Ext.Net.Examples.Northwind
             context.Response.ContentType = "text/json";
 
             int count;
-            var result = Employee.GetEmployeesFilter(this.Start, this.Limit, this.Sort, out count);
-            var pagingEmployees = new Paging<Employee>(result, count);
+            List<Employee> result = Employee.GetEmployeesFilter(this.Start, this.Limit, this.Sort, out count);
+            Paging<Employee> pagingEmployees = new Paging<Employee>(result, count);
             
             StoreResponseData sr = new StoreResponseData();
             sr.Total = pagingEmployees.TotalRecords;
@@ -89,7 +90,7 @@ namespace Ext.Net.Examples.Northwind
                 {
                     return null;
                 }
-                var sorters = JSON.Deserialize<DataSorter[]>(sort, new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver());
+                DataSorter[] sorters = JSON.Deserialize<DataSorter[]>(sort, new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver());
                 return sorters.Length > 0 ? sorters[0] : null;
             }
         }

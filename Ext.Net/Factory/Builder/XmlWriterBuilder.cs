@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,68 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : AbstractWriter.Builder<XmlWriter, XmlWriter.Builder>
+        new public abstract partial class Builder<TXmlWriter, TBuilder> : AbstractWriter.Builder<TXmlWriter, TBuilder>
+            where TXmlWriter : XmlWriter
+            where TBuilder : Builder<TXmlWriter, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TXmlWriter component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The root to be used if documentRoot is empty and a root is required to form a valid XML document.
+			/// </summary>
+            public virtual TBuilder DefaultDocumentRoot(string defaultDocumentRoot)
+            {
+                this.ToComponent().DefaultDocumentRoot = defaultDocumentRoot;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The name of the root element of the document. Defaults to 'xmlData'. If there is more than 1 record and the root is not specified, the default document root will still be used to ensure a valid XML document is created.
+			/// </summary>
+            public virtual TBuilder DocumentRoot(string documentRoot)
+            {
+                this.ToComponent().DocumentRoot = documentRoot;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A header to use in the XML document (such as setting the encoding or version). Defaults to ''.
+			/// </summary>
+            public virtual TBuilder Header(string header)
+            {
+                this.ToComponent().Header = header;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The name of the node to use for each record. Defaults to 'record'.
+			/// </summary>
+            public virtual TBuilder Record(string record)
+            {
+                this.ToComponent().Record = record;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : XmlWriter.Builder<XmlWriter, XmlWriter.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,51 +133,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The root to be used if documentRoot is empty and a root is required to form a valid XML document.
-			/// </summary>
-            public virtual XmlWriter.Builder DefaultDocumentRoot(string defaultDocumentRoot)
-            {
-                this.ToComponent().DefaultDocumentRoot = defaultDocumentRoot;
-                return this as XmlWriter.Builder;
-            }
-             
- 			/// <summary>
-			/// The name of the root element of the document. Defaults to 'xmlData'. If there is more than 1 record and the root is not specified, the default document root will still be used to ensure a valid XML document is created.
-			/// </summary>
-            public virtual XmlWriter.Builder DocumentRoot(string documentRoot)
-            {
-                this.ToComponent().DocumentRoot = documentRoot;
-                return this as XmlWriter.Builder;
-            }
-             
- 			/// <summary>
-			/// A header to use in the XML document (such as setting the encoding or version). Defaults to ''.
-			/// </summary>
-            public virtual XmlWriter.Builder Header(string header)
-            {
-                this.ToComponent().Header = header;
-                return this as XmlWriter.Builder;
-            }
-             
- 			/// <summary>
-			/// The name of the node to use for each record. Defaults to 'record'.
-			/// </summary>
-            public virtual XmlWriter.Builder Record(string record)
-            {
-                this.ToComponent().Record = record;
-                return this as XmlWriter.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -125,6 +141,14 @@ namespace Ext.Net
         public XmlWriter.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.XmlWriter(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -139,7 +163,11 @@ namespace Ext.Net
         /// </summary>
         public XmlWriter.Builder XmlWriter()
         {
-            return this.XmlWriter(new XmlWriter());
+#if MVC
+			return this.XmlWriter(new XmlWriter { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.XmlWriter(new XmlWriter());
+#endif			
         }
 
         /// <summary>
@@ -147,7 +175,10 @@ namespace Ext.Net
         /// </summary>
         public XmlWriter.Builder XmlWriter(XmlWriter component)
         {
-            return new XmlWriter.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new XmlWriter.Builder(component);
         }
 
         /// <summary>
@@ -155,7 +186,11 @@ namespace Ext.Net
         /// </summary>
         public XmlWriter.Builder XmlWriter(XmlWriter.Config config)
         {
-            return new XmlWriter.Builder(new XmlWriter(config));
+#if MVC
+			return new XmlWriter.Builder(new XmlWriter(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new XmlWriter.Builder(new XmlWriter(config));
+#endif			
         }
     }
 }

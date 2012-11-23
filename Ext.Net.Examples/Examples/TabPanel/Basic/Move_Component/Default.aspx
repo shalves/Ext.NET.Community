@@ -7,7 +7,7 @@
     {
         if (!X.IsAjaxRequest)
         {
-            var store = this.GridPanel1.Store.Primary;
+            Store store = this.GridPanel1.GetStore();
             
             store.DataSource = new object[]
             {
@@ -52,7 +52,7 @@
 <html>
 <head runat="server">
     <title>Move Component to TabPanel - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 </head>
 <body>
     <form runat="server">

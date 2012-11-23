@@ -132,10 +132,10 @@
 <head runat="server">
     <title>MessageBox - Ext.NET Examples</title>   
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" /> 
-    <script src="/resources/examples.js" type="text/javascript"></script>
+    <link href="/resources/css/examples.css" rel="stylesheet" /> 
+    <script src="/resources/examples.js"></script>
     
-    <script type="text/javascript">
+    <script>
         var showResult = function (btn) {
             Ext.Msg.notify("Button Click", "You clicked the " + btn + " button");
         };
@@ -145,7 +145,7 @@
         };
     </script> 
     
-    <style type="text/css">
+    <style>
         .x-window-dlg .ext-mb-download {
             background : transparent url(resources/images/download.gif) no-repeat top left;
             height : 46px;

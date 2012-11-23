@@ -29,8 +29,8 @@
 <html>
 <head runat="server">
     <title>Draggable Panels within a Viewport - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <style>
         .invite {
             background-color : #99bbe8 !important;
         }
@@ -39,7 +39,7 @@
             background-color : silver;
         }
     </style>
-    <script type="text/javascript">
+    <script>
         var notifyDrop = function (source, e, data) {
             var targetCt = Ext.getCmp(this.el.dom.id),
                 targetPanel = targetCt.items.get(0),

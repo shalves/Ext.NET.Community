@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -232,6 +232,14 @@ namespace Ext.Net
         protected override void Render(HtmlTextWriter writer)
         {
             this.SetIsLast();
+
+            if(this.StartupMask != null)
+            {
+                this.RegisterClientStyleBlock("startupMask", this.StartupMask.BuildCss());
+                this.RegisterClientScriptBlock("startupMask", this.StartupMask.BuildScript());
+                writer.Write(this.StartupMask.BuildHtml());
+            }
+
             base.Render(writer);
         }
 
@@ -535,12 +543,17 @@ namespace Ext.Net
                     writer.Write("</Ext.Net.Direct.Response>");
                 }
             }
+#if MVC
             else if (this is Ext.Net.MVC.MvcResourceManager || (!this.IsSelfRender && !this.IsDynamic))
+#else
+            else if (!this.IsSelfRender && !this.IsDynamic)
+#endif
             {
+                bool placeHolder = this.ScriptFilesContainer != null || this.ResourcePlaceHolder != null;
                 if (this.scriptFilesBuilder.Length > 0)
                 {
                     writer.Write(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string>{                        
-                        {this.ScriptFilesContainer != null ? "ref" : "selector", this.ScriptFilesContainer != null ? "ext.net.initscriptfiles" : "headstart"},
+                        {placeHolder ? "ref" : "selector", placeHolder ? "ext.net.initscriptfiles" : "headstart"},
                         {"index", "20"}
                     }, this.scriptFilesBuilder.ToString()));
                 }
@@ -552,7 +565,7 @@ namespace Ext.Net
                         string key = Guid.NewGuid().ToString("N");
 
                         writer.Write(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string>{                        
-                            {this.ScriptFilesContainer != null ? "ref" : "selector", this.ScriptFilesContainer != null ? "ext.net.initscriptfiles" : "headstart"},
+                            {placeHolder ? "ref" : "selector", placeHolder ? "ext.net.initscriptfiles" : "headstart"},
                             {"key", key},
                             {"index", "30"},
                             {"url", this.ResolveUrlLink("~/extnet/extnet-init-js/ext.axd?" + key)}
@@ -586,10 +599,14 @@ namespace Ext.Net
                     writer.Write(ResourceManager.PostBackMethodToken);
                     writer.Write(ResourceManager.RemoveBlocksToken);
                 }
-                /*else
+
+                if (!this.IsSelfRender && this.Page.Header != null)
                 {
-                    writer.Write(ResourceManager.InputsVSToken);
-                } */               
+                    writer.Write(Transformer.NET.Net.CreateToken(typeof(Transformer.NET.ItemTag), new Dictionary<string, string> { { "selector", "fixTitle" } }, "\n    <title>{0}</title>\n    ".FormatWith(this.Page.Title)));
+                }
+
+                writer.Write(ResourceManager.RemoveLeadingEmptyLines);
+                writer.Write(ResourceManager.RemoveLeadingEmptyLinesAfterForm);
             }
         }
 
@@ -772,14 +789,7 @@ namespace Ext.Net
             {
                 JFunction jFunction = manager.GetDirectEventJFunc(manager.DirectEvents.WindowResize, "WindowResize");
 
-                realManager.RegisterOnWindowResizeScript("{0}_WindowResize".FormatWith(manager.ClientID), jFunction.ToScript());
-            }
-
-            if (!manager.DirectEvents.TextResize.IsDefault)
-            {
-                JFunction jFunction = manager.GetDirectEventJFunc(manager.DirectEvents.TextResize, "TextResize");
-
-                realManager.RegisterOnTextResizeScript("{0}_TextResize".FormatWith(manager.ClientID), jFunction.ToScript());
+                realManager.RegisterClientScriptBlock("{0}_WindowResize".FormatWith(manager.ClientID), "Ext.EventManager.onWindowResize({0}, window);".FormatWith(jFunction.ToScript()));
             }
         }
 
@@ -844,12 +854,12 @@ namespace Ext.Net
                 {
                     string themeName = this.Theme == Ext.Net.Theme.Default ? "" : ("-" + this.Theme.ToString().ToLowerInvariant());
                     if (type == ResourceLocationType.Embedded)
-                    {                        
-                        source.Append(string.Format(ResourceManager.StyleIncludeTemplate, this.GetWebResourceUrl(ResourceManager.ASSEMBLYSLUG + ".extjs.resources.css.ext-all"+ themeName +"-embedded.css")));
+                    {
+                        source.Append(string.Format(ResourceManager.ThemeIncludeTemplate, this.GetWebResourceUrl(ResourceManager.ASSEMBLYSLUG + ".extjs.resources.css.ext-all" + themeName + "-embedded.css")));
 
                         foreach (KeyValuePair<string, string> item in this.ThemeIncludeInternalBag)
                         {
-                            source.Append(string.Format(ResourceManager.ThemeIncludeTemplate, item.Value));
+                            source.Append(string.Format(ResourceManager.StyleIncludeTemplate, item.Value));
                         }
 
                         source.Append(string.Format(ResourceManager.StyleIncludeTemplate, this.GetWebResourceUrl(ResourceManager.ASSEMBLYSLUG + ".extnet.resources.css.extnet-all-embedded.css")));
@@ -965,10 +975,18 @@ namespace Ext.Net
             }
 
             StringBuilder sb = new StringBuilder(256);
-
+            var first = true;
             foreach (KeyValuePair<string, string> item in this.ClientStyleBlockBag)
             {
-                sb.Append(string.Format(ResourceManager.StyleBlockItemTemplate, item.Value));
+                if (first)
+                {
+                    sb.Append(string.Concat("        ", item.Value));
+                    first = false;
+                }
+                else
+                {
+                    sb.Append(string.Format(ResourceManager.StyleBlockItemTemplate, item.Value));
+                }
             }
 
             return string.Format(ResourceManager.StyleBlockTemplate, sb.ToString());
@@ -1114,7 +1132,7 @@ namespace Ext.Net
                 {
                     return;
                 }
-                string cultureName = isParent ? this.Locale.Split(new char[]{'-'})[0] : this.Locale;
+                string cultureName = isParent ? this.Locale.Split(new char[]{'-'})[0].ToLowerInvariant() : new CultureInfo(this.Locale).Name;
                 source.Append(string.Format(ResourceManager.ScriptIncludeTemplate, this.GetWebResourceUrl(ResourceManager.ASSEMBLYSLUG + ".extnet.locale.ext-lang-".ConcatWith(cultureName, ".js"))));
             }
         }
@@ -1182,9 +1200,24 @@ namespace Ext.Net
         [Description("")]
         public virtual string BuildDirectMethodProxies(bool dynamicOnly)
         {
+            if (this.DirectMethodProxy == ClientProxy.Ignore)
+            {
+                return "";
+            }
+#if MVC
+            if (this.IsMVC)
+            {
+                if (dynamicOnly || this.ViewContext == null)
+                {
+                    return "";
+                }
+                
+                return Ext.Net.MVC.MvcDirectMethod.BuildProxy(this.ViewContext);
+            }
+#endif
             Dictionary<string, Dictionary<string, DirectMethodList>> methods = this.GroupDirectMethodsByNamespace(dynamicOnly);
             StringBuilder sb = new StringBuilder(256);
-
+            
             foreach (KeyValuePair<string, Dictionary<string, DirectMethodList>> ns in methods)
             {
                 string nsName = ns.Key;
@@ -1545,16 +1578,6 @@ namespace Ext.Net
                 onready.Append(script.Value);
             }
 
-            foreach (KeyValuePair<string, string> item in this.ScriptOnWindowResizeBag)
-            {
-                onready.AppendFormat(ResourceManager.OnWindowResizeTemplate, item.Value);
-            }
-
-            foreach (KeyValuePair<string, string> item in this.ScriptOnTextResizeBag)
-            {
-                onready.AppendFormat(ResourceManager.OnTextResizeTemplate, item.Value);
-            }
-
             bool isCDN = false;
 
 #if ISPRO
@@ -1589,16 +1612,33 @@ namespace Ext.Net
                 {
                     source.Append("Ext.state.Manager.setProvider(new Ext.state.CookieProvider());");
                 }
+                else if (this.StateProvider == StateProvider.LocalStorage)
+                {
+                    source.Append("Ext.state.Manager.setProvider(new Ext.state.LocalStorageProvider());");
+                }
             }
 
-            if (App.GetInstance() != null)
+            var onreadyScript = onready.Replace("</script>", "<\\/script>").ToString();
+            if (RequestManager.IsAjaxRequest)
             {
-                var script = onready.Replace("</script>", "<\\/script>").ToString();
-                source.Append(RequestManager.IsAjaxRequest ? script : App.GetInstance().ApplicationTemplate(script));
+                source.Append(onreadyScript);
+            }
+            else if (Ext.Net.App.GetInstance() != null)
+            {
+                source.Append(Ext.Net.App.GetInstance().ApplicationTemplate(onreadyScript));
+            }
+            else if (this.App != null)
+            {
+                string initFnName = string.Concat(this.Namespace, ".", this.App.InitFnName);
+                source.AppendFormat("{0}=function(){{{1}}};", initFnName, onreadyScript);
+                if (this.App.AutoInit)
+                {
+                    source.AppendFormat("Ext.onReady({0});", initFnName);
+                }
             }
             else
             {
-                source.AppendFormat((RequestManager.IsAjaxRequest) ? "{0}" : ResourceManager.OnReadyTemplate, onready.Replace("</script>", "<\\/script>"));
+                source.AppendFormat(ResourceManager.OnReadyTemplate, onreadyScript);
             }
 
             foreach (KeyValuePair<string, string> item in this.ClientScriptBlockBag)
@@ -1668,34 +1708,57 @@ namespace Ext.Net
         {
             if (!manager.Listeners.DocumentReady.IsDefault)
             {
-                string temp = manager.Listeners.DocumentReady.Fn;
+                string temp = manager.Listeners.DocumentReady.FnInternal;
 
-                if (manager.Listeners.DocumentReady.Handler.IsNotEmpty())
+                if (manager.Listeners.DocumentReady.Delay > 0)
                 {
-                    temp = manager.Listeners.DocumentReady.Handler;
+                    temp = string.Format("Ext.defer({0}, {1});", temp, manager.Listeners.DocumentReady.Delay);
+                }
+                else
+                {
+                    temp = string.Format("({0}).call(this);", temp);
                 }
 
                 this.RegisterOnReadyScript(TokenUtils.ReplaceIDTokens(temp, this.Page));
             }
 
+            string handler;
+            string scope;
+            string config;
             if (!manager.Listeners.WindowScroll.IsDefault)
-            {
-                this.RegisterClientScriptBlock(manager.ClientID.ConcatWith("_WindowScroll"), "Ext.EventManager.on(window,\"scroll\",function(e){{{0}}},window,{{buffer: 50}});".FormatWith(TokenUtils.ParseTokens(manager.Listeners.WindowScroll.Handler, manager)));
+            {                
+                handler = manager.Listeners.WindowScroll.FnInternal;
+                scope = manager.Listeners.WindowScroll.Scope.IsNotEmpty() ? manager.Listeners.WindowScroll.Scope : "window";
+                manager.Listeners.WindowScroll.Handler = "";
+                manager.Listeners.WindowScroll.Fn = "";
+                config = new ClientConfig().Serialize(manager.Listeners.WindowScroll);
+                config = config.IsEmpty() ? "{}" : config;
+ 
+                this.RegisterClientScriptBlock(manager.ClientID.ConcatWith("_WindowScroll"), "Ext.EventManager.on(window,\"scroll\",{0},{1},{2});".FormatWith(handler, scope, config));
             }
 
             if (!manager.Listeners.WindowUnload.IsDefault)
             {
-                this.RegisterClientScriptBlock(manager.ClientID.ConcatWith("_WindowUnload"), "Ext.EventManager.on(window,\"beforeunload\",function(e){{var extnet_windowBeforeUnload=function(e){{{0}}};if (extnet_windowBeforeUnload(e)){{e.browserEvent.returnValue=\"{1}\";}}}},window);".FormatWith(TokenUtils.ParseTokens(manager.Listeners.WindowUnload.Handler, manager), manager.WindowUnloadMsg));
+                handler = manager.Listeners.WindowUnload.FnInternal;
+                scope = manager.Listeners.WindowUnload.Scope.IsNotEmpty() ? manager.Listeners.WindowUnload.Scope : "window";
+                manager.Listeners.WindowUnload.Handler = "";
+                manager.Listeners.WindowUnload.Fn = "";
+                config = new ClientConfig().Serialize(manager.Listeners.WindowUnload);
+                config = config.IsEmpty() ? "{}" : config;
+
+                this.RegisterClientScriptBlock(manager.ClientID.ConcatWith("_WindowUnload"), "Ext.EventManager.on(window,\"beforeunload\",function(e){{if ({0}(e)){{e.browserEvent.returnValue=\"{1}\";}}}},{2}, {3});".FormatWith(handler, manager.WindowUnloadMsg, scope, config));
             }
 
             if (!manager.Listeners.WindowResize.IsDefault)
             {
-                this.RegisterOnWindowResizeScript(manager.ClientID.ConcatWith("_WindowResize"), manager.Listeners.WindowResize.FnInternal);
-            }
+                handler = manager.Listeners.WindowResize.FnInternal;
+                scope = manager.Listeners.WindowResize.Scope.IsNotEmpty() ? manager.Listeners.WindowResize.Scope : "window";
+                manager.Listeners.WindowResize.Handler = "";
+                manager.Listeners.WindowResize.Fn = "";
+                config = new ClientConfig().Serialize(manager.Listeners.WindowResize);
+                config = config.IsEmpty() ? "{}" : config;
 
-            if (!manager.Listeners.TextResize.IsDefault)
-            {
-                this.RegisterOnTextResizeScript(manager.ClientID.ConcatWith("_TextResize"), manager.Listeners.TextResize.FnInternal);
+                this.RegisterClientScriptBlock(manager.ClientID.ConcatWith("_WindowResize"), "Ext.EventManager.onWindowResize({0}, {1}, {2});".FormatWith(handler, scope, config));
             }
 
             if (!manager.Listeners.BeforeAjaxRequest.IsDefault || 
@@ -1739,7 +1802,8 @@ namespace Ext.Net
 
         internal void RegisterInitID(BaseControl control)
         {
-            if (!control.IsIdRequired && (control.IDMode == IDMode.Ignore || ((control.IDMode == IDMode.Explicit || control.IDMode == IDMode.Client || control.IDMode == IDMode.Static) && control.IsGeneratedID)))
+            IDMode mode = control.IDMode;
+            if (!control.IsIdRequired && (mode == IDMode.Ignore || ((mode == IDMode.Explicit || mode == IDMode.Client || mode == IDMode.Static) && control.IsGeneratedID)))
             {
                 this.ExcludeFromLazyInit.Add(control.ClientID);
                 return;
@@ -1756,7 +1820,7 @@ namespace Ext.Net
             
             this.InitList.Add(id);
 
-            if (control.IsGeneratedID && control.IDMode == IDMode.Ignore)
+            if (control.IsGeneratedID && mode == IDMode.Ignore)
             {
                 this.ExcludeFromLazyInit.Add(id);
             }
@@ -2311,23 +2375,6 @@ namespace Ext.Net
 
         private static Regex CssWebResourceUrls_RE = new Regex(@"<%=WebResource\([""']?([^\)]*?\.(gif|png))[""']?\)%>", RegexOptions.Compiled);
 
-        /*/// <summary>
-        /// 
-        /// </summary>
-        /// <param name="src"></param>
-        /// <returns></returns>
-        [Description("")]
-        public virtual string ParseCssWebResourceUrls(string src)
-        {
-            foreach (Match match in CssWebResourceUrls_RE.Matches(src))
-            {
-                string url = match.Value.Replace("<%=WebResource(\"", "").Replace("\")%>", "");
-                src = src.Replace(match.Value, string.Format("{0}", this.GetWebResourceUrl(url)));
-            }
-
-            return src;
-        }*/
-
         /// <summary>
         /// 
         /// </summary>
@@ -2405,7 +2452,7 @@ namespace Ext.Net
 
             if (this.IsSelfRender)
             {
-                var globalIcons = this.GlobalIcons;
+                var globalIcons = ResourceManager.GlobalIcons;
 
                 if (!globalIcons.Contains(icon))
                 {
@@ -2414,6 +2461,97 @@ namespace Ext.Net
             }
 
             this.registeredIcons.Add(icon);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="icon"></param>
+        [Description("")]
+        public static void RegisterGlobalIcon(Icon icon)
+        {
+            if (icon == Icon.None)
+            {
+                return;
+            }
+
+            var globalIcons = ResourceManager.GlobalIcons;
+
+            if (!globalIcons.Contains(icon))
+            {
+                globalIcons.Add(icon);
+            }
+
+            var rm = ResourceManager.GetInstance();
+            if (rm != null)
+            {
+                if (rm.registeredIcons.Contains(icon))
+                {
+                    return;
+                }
+                rm.registeredIcons.Add(icon);
+            }
+        }
+
+        public static void RegisterGlobalScript(string url)
+        {
+            ResourceManager.RegisterGlobalResource(new ClientResourceItem(url));
+        }
+
+        public static void RegisterGlobalScript(Type type, string resourceName)
+        {
+            ResourceManager.RegisterGlobalResource(new ClientResourceItem(type, resourceName));
+        }
+
+        public static void RegisterGlobalStyle(string url)
+        {
+            ResourceManager.RegisterGlobalResource(new ClientResourceItem(url, true));
+        }
+
+        public static void RegisterGlobalStyle(Type type, string resourceName)
+        {
+            ResourceManager.RegisterGlobalResource(new ClientResourceItem(type, resourceName, true));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="icon"></param>
+        public static void RegisterGlobalResource(ClientResourceItem resource)
+        {
+            var globalResources = ResourceManager.GlobalClientResources;
+
+            if (!globalResources.Contains(resource))
+            {
+                globalResources.Add(resource);
+            }
+
+            var rm = ResourceManager.GetInstance();
+            if (rm != null)
+            {
+                if (!resource.IsCss)
+                {
+                    if (resource.Path.IsNotEmpty())
+                    {
+                        rm.RegisterClientScriptInclude(resource.Path, resource.Path);
+                    }
+                    else if (resource.PathEmbedded.IsNotEmpty())
+                    {
+                        rm.RegisterClientScriptInclude(resource.Type, resource.PathEmbedded);
+                    }
+                }
+                else
+                {
+                    if (resource.Path.IsNotEmpty())
+                    {
+                        rm.RegisterClientStyleInclude(resource.Path, resource.Path);
+                    }
+                    else if (resource.PathEmbedded.IsNotEmpty())
+                    {
+                        rm.RegisterClientStyleInclude(resource.Type, resource.PathEmbedded);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -2478,7 +2616,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        protected virtual List<Icon> GlobalIcons
+        internal static List<Icon> GlobalIcons
         {
             get
             {
@@ -2494,6 +2632,28 @@ namespace Ext.Net
                 }
 
                 return (List<Icon>)HttpContext.Current.Items["Ext.Net.GlobalIcons"];
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        internal static List<ClientResourceItem> GlobalClientResources
+        {
+            get
+            {
+                if (HttpContext.Current == null)
+                {
+                    return new List<ClientResourceItem>();
+                }
+
+                if (HttpContext.Current.Items[ResourceManager.GLOBAL_CLIENT_RESOURCES] == null)
+                {
+                    List<ClientResourceItem> resources = new List<ClientResourceItem>();
+                    HttpContext.Current.Items[ResourceManager.GLOBAL_CLIENT_RESOURCES] = resources;
+                }
+
+                return (List<ClientResourceItem>)HttpContext.Current.Items[ResourceManager.GLOBAL_CLIENT_RESOURCES];
             }
         }
 
@@ -2538,7 +2698,7 @@ namespace Ext.Net
         [Description("")]
         public static string GetIconRequester(Icon icon)
         {
-            return (icon != Icon.None) ? "<raw>X.net.RM.getIcon(\"{0}\")".FormatWith(icon.ToString()) : "";
+            return (icon != Icon.None) ? TokenUtils.Settings.RawMarker + "X.net.RM.getIcon(\"{0}\")".FormatWith(icon.ToString()) : "";
         }
 
         /// <summary>
@@ -2776,6 +2936,46 @@ namespace Ext.Net
             internal set
             {
                 this.customDirectEvents = value;
+            }
+        }
+
+        private StartupMask startupMask;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [NotifyParentProperty(true)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]        
+        [Description("")]
+        public virtual StartupMask StartupMask
+        {
+            get
+            {
+                return this.startupMask;
+            }
+            set
+            {
+                this.startupMask = value;
+            }
+        }
+
+        private AppInit app;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [NotifyParentProperty(true)]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("")]
+        public virtual AppInit App
+        {
+            get
+            {
+                return this.app;
+            }
+            set
+            {
+                this.app = value;
             }
         }
 
@@ -3425,7 +3625,7 @@ namespace Ext.Net
                 tempID = c.ID ?? "";
                 tempConfigID = (c is BaseControl ? ((BaseControl)c).ConfigID : c.ClientID) ?? "";
 
-                if (configID.Equals(tempID) || configID.Equals(tempConfigID))
+                if ((tempConfigID.IsEmpty() && configID.Equals(tempID)) || configID.Equals(tempConfigID))
                 {
                     found = c;
                 }
@@ -3470,7 +3670,7 @@ namespace Ext.Net
                 tempID = control.ID ?? "";
                 tempConfigID = control is BaseControl ? ((BaseControl)control).ConfigID : control.ClientID;
 
-                if (configID.Equals(tempID) || configID.Equals(tempConfigID))
+                if ((tempConfigID.IsEmpty() && configID.Equals(tempID)) || configID.Equals(tempConfigID))
                 {
                     found = control;
                 }

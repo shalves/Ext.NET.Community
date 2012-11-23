@@ -1,10 +1,6 @@
-﻿#$folder = "D:\Projects\Coolite\svn.ext.net\trunk\Ext.Net\Build\Ext.Net\extjs\locale\"
-#$dest = "D:\Projects\Coolite\svn.ext.net\trunk\Ext.Net\Build\Ext.Net\extjs\locale\"
-#$patchFolder = "D:\Projects\Coolite\svn.ext.net\trunk\Ext.Net\Build\BuildScripts\Locales\"
-
-$folder = "..\Ext.Net\extjs\locale"
-$dest = "..\Ext.Net\extnet\locale\"
-$patchFolder = ".\Locales\"
+﻿$folder = "..\Ext.Net\extjs\locale"
+$dest = $curFolder + "..\Ext.Net\extnet\locale\"
+$patchFolder = $curFolder + ".\Locales\"
 [System.Io.Directory]::CreateDirectory($dest)
 Remove-Item $dest"*.js"
 $files = [System.Io.Directory]::GetFiles($folder)

@@ -35,9 +35,9 @@
 <html>
 <head runat="server">
     <title>FormPanel - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         #fi-button-msg {
             border: 2px solid #ccc;
             padding: 5px 10px;
@@ -47,7 +47,7 @@
         }
     </style>
     
-    <script type="text/javascript">
+    <script>
         var showFile = function (fb, v) {
             if (v) {
                 var el = Ext.get('fi-button-msg');

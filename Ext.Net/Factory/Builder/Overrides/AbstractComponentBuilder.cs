@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -28,6 +28,8 @@ using System;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Web;
+using System.Collections.Generic;
 
 namespace Ext.Net
 {
@@ -41,55 +43,6 @@ namespace Ext.Net
             where TBuilder : Builder<TAbstractComponent, TBuilder>
         {
             /// <summary>
-            /// In layout pages, renders the content of a named section to content area of the widget
-            /// </summary>
-            /// <param name="page"></param>
-            /// <param name="name"></param>
-            /// <param name="required"></param>
-            /// <returns></returns>
-            public virtual TBuilder ContentFromSection(System.Web.WebPages.WebPageBase page, string name, bool required)
-            {
-                BaseControl.SectionsStack.Push(null);
-                var result = page.RenderSection(name, required);
-                if (result != null)
-                {
-                    this.ToComponent().ContentControls.Add(new LiteralControl(result.ToHtmlString()));
-                }
-                BaseControl.SectionsStack.Pop();
-                return this as TBuilder;
-            }
-
-            /// <summary>
-            /// In layout pages, renders the content of a named section to content area of the widget
-            /// </summary>
-            /// <param name="page"></param>
-            /// <param name="name"></param>
-            /// <returns></returns>
-            public virtual TBuilder ContentFromSection(System.Web.WebPages.WebPageBase page, string name)
-            {
-                return this.ContentFromSection(page, name, false);
-            }
-
-            /// <summary>
-            /// Renders the content of one page within another page to content area of the widget
-            /// </summary>
-            /// <param name="page"></param>
-            /// <param name="path"></param>
-            /// <param name="data"></param>
-            /// <returns></returns>
-            public virtual TBuilder ContentFromPage(System.Web.WebPages.WebPageBase page, string path, params object[] data)
-            {
-                BaseControl.SectionsStack.Push(null);
-                var result = page.RenderPage(path, data);
-                if (result != null)
-                {
-                    this.ToComponent().ContentControls.Add(new LiteralControl(result.ToHtmlString()));
-                }
-                BaseControl.SectionsStack.Pop();
-                return this as TBuilder;
-            }
-
-            /// <summary>
             /// 
             /// </summary>
             /// <param name="content"></param>
@@ -97,8 +50,24 @@ namespace Ext.Net
             public virtual TBuilder Content(Func<object, object> content)
             {
                 BaseControl.SectionsStack.Push(null);
+                ResourceManager.ScriptOrderNextRange();
                 var result = content(null);
                 this.ToComponent().ContentControls.Add(new LiteralControl(result.ToString()));
+                ResourceManager.ScriptOrderPrevRange();
+                BaseControl.SectionsStack.Pop();
+                return this as TBuilder;
+            }
+
+            /// <summary>
+            /// An HTML fragment, or a DomHelper specification to use as the layout element content (defaults to '')
+            /// </summary>
+            public virtual TBuilder Html(Func<object, object> html)
+            {
+                BaseControl.SectionsStack.Push(null);
+                ResourceManager.ScriptOrderNextRange();
+                var result = html(null);
+                this.ToComponent().Html = result.ToString();
+                ResourceManager.ScriptOrderPrevRange();
                 BaseControl.SectionsStack.Pop();
                 return this as TBuilder;
             }
@@ -137,7 +106,52 @@ namespace Ext.Net
             {
                 this.ToComponent().PageY = Unit.Pixel(pageY);
                 return this as TBuilder;
-            }            
+            }
+
+            /// <summary>
+            /// An object or array of objects that will provide custom functionality for this component. The only requirement for a valid plugin is that it contain an init method that accepts a reference of type Ext.AbstractComponent. When a component is created, if any plugins are available, the component will call the init method on each plugin, passing a reference to itself. Each plugin can then call methods or respond to events on the component as needed to provide its functionality.
+            /// </summary>
+            /// <param name="plugin">plugin</param>
+            /// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Plugins(Plugin plugin)
+            {
+                this.ToComponent().Plugins.Add(plugin);
+                return this as TBuilder;
+            }
+
+            /// <summary>
+            /// An object or array of objects that will provide custom functionality for this component. The only requirement for a valid plugin is that it contain an init method that accepts a reference of type Ext.AbstractComponent. When a component is created, if any plugins are available, the component will call the init method on each plugin, passing a reference to itself. Each plugin can then call methods or respond to events on the component as needed to provide its functionality.
+            /// </summary>
+            /// <param name="plugins">plugins</param>
+            /// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Plugins(params Plugin[] plugins)
+            {
+                this.ToComponent().Plugins.AddRange(plugins);
+                return this as TBuilder;
+            }
+
+            /// <summary>
+            /// An object or array of objects that will provide custom functionality for this component. The only requirement for a valid plugin is that it contain an init method that accepts a reference of type Ext.AbstractComponent. When a component is created, if any plugins are available, the component will call the init method on each plugin, passing a reference to itself. Each plugin can then call methods or respond to events on the component as needed to provide its functionality.
+            /// </summary>
+            /// <param name="plugins">plugins</param>
+            /// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Plugins(IEnumerable<Plugin> plugins)
+            {
+                this.ToComponent().Plugins.AddRange(plugins);
+                return this as TBuilder;
+            }
+
+            public virtual TBuilder Bin(params Observable[] items)
+            {
+                this.ToComponent().Bin.AddRange(items);
+                return this as TBuilder;
+            }
+
+            public virtual TBuilder Bin(IEnumerable<Observable> items)
+            {
+                this.ToComponent().Bin.AddRange(items);
+                return this as TBuilder;
+            }
         }
     }
 }

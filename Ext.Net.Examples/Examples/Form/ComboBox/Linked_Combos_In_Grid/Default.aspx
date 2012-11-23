@@ -75,7 +75,7 @@
         List<string> fields = new List<string>{"country", "state", "city", "region"};
         int startIndex = fields.IndexOf(e.ExtraParams["field"]);
         JsonObject data = JSON.Deserialize<JsonObject>(e.ExtraParams["record"]);
-        var record = this.Store1.GetAt(int.Parse(e.ExtraParams["index"]));
+        ModelProxy record = this.Store1.GetAt(int.Parse(e.ExtraParams["index"]));
 
         for (int i = startIndex+1; i < 4; i++)
         {
@@ -102,9 +102,9 @@
 <html>
 <head runat="server">
     <title>Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
         
-    <script type="text/javascript">
+    <script>
         var beforeEdit = function (ed, e) {
             var field = this.getEditor(e.record, e.column).field;
             

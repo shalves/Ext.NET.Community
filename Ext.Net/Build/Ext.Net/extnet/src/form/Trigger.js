@@ -30,7 +30,10 @@ Ext.form.field.Trigger.override({
         }        
 
         if (triggersConfig) {
-            var cn = [], isSimple;
+            var cn = [], 
+                isSimple,
+                foundVisible = false,
+                firstIsSimple = false;
 
             for (i = 0; i < triggersConfig.length; i++) {
                 var trigger = triggersConfig[i],
@@ -57,23 +60,31 @@ Ext.form.field.Trigger.override({
 
                 if (trigger.special) {
                     triggerCfg.cn.special = 1;
-                }
+                }                
 
                 if (Ext.net.StringUtils.startsWith(triggerIcon || "", "x-form-simple")) {
                     if (i != (triggersConfig.length - 1)) {
                         triggerCfg.style += "width:16px;";
                     }
+                    
+                    triggerCfg.cn.simple = true;
                     isSimple = true;
+
+                    if (!trigger.hideTrigger && !foundVisible) {
+                        firstIsSimple = true;
+                    }
+                }
+
+                if (trigger.hideTrigger) {
+                    triggerCfg.style += "display:none;";                    
+                }
+                else {
+                    foundVisible = true;
                 }
 
                 if (trigger.style) {
                     triggerCfg.style += trigger.style;
-                }               
-
-                if (trigger.hideTrigger) {
-                    triggerCfg.style += "display:none;";
-                    //triggerCfg.hidden = true;
-                }
+                }                               
                 
                 if (i == (triggersConfig.length - 1)) {
                     triggerCfg.cn.cls += ' ' + this.triggerBaseCls + '-last';
@@ -82,9 +93,9 @@ Ext.form.field.Trigger.override({
                 cn.push(triggerCfg);
             }
             
-            if (isSimple) {
+            if (firstIsSimple && !this.hideTrigger && !this.readOnly) {
                 this.on("afterrender", function () {
-                    this.inputEl.setStyle({"border-right": "0px"});
+                    this.inputEl.setStyle({"border-right-width": "0px"});
                 }, this, {single:true});
             }
 
@@ -111,6 +122,40 @@ Ext.form.field.Trigger.override({
 
     getTrigger : function (index, ct) {
         return ct !== false ? this.triggerEl.item(index).parent() : this.triggerEl.item(index);
+    },
+
+    removeBorderIfSimple : function () {
+        var first,
+            i,
+            len,
+            isSimple;
+
+        for (i=0, len = this.triggerEl.getCount(); i < len; i++) {
+            first = this.triggerEl.item(i);
+            if (first.parent().isVisible() && first.getAttribute("simple")) {
+                isSimple = first.getAttribute("simple");
+                break;
+            }
+        }
+        
+        if (isSimple && !this.hideTrigger && !this.readOnly) {
+            this.inputEl.setStyle({"border-right-width": "0px"});
+        }
+        else {
+            this.inputEl.setStyle({"border-right-width": "1px"});
+        }
+    },
+
+    toggleTrigger : function (index, state) {
+        var trigger = this.getTrigger(index);
+        
+        if (!Ext.isBoolean(state)) {
+            state = !trigger.isVisible();
+        }
+
+        trigger[state ? "show" : "hide"]();
+            
+        this.removeBorderIfSimple();        
     },
 
     onTriggerWrapClick : function () {

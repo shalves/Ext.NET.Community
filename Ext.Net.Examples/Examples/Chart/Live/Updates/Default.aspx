@@ -51,10 +51,10 @@
     {
         get
         {
-            var dataItem = this.LastDataItem;                                
-            var random = new Random();
+            DataItem dataItem = this.LastDataItem;                                
+            Random random = new Random();
 
-            var di = new DataItem
+            DataItem di = new DataItem
             {
                 Date = dataItem != null ? dataItem.Date.AddDays(1) : new DateTime(2011, 1, 1),
                 Visits = Convert.ToInt32(Math.Min(100, Math.Max(dataItem != null ? (dataItem.Visits + (random.NextDouble() - 0.5) * 20) : random.NextDouble() * 100, 0))),
@@ -70,8 +70,8 @@
 
     protected void GetNewData(object sender, DirectEventArgs e)
     {
-        var data = this.Data;
-        var timeAxis = (TimeAxis)Chart1.Axes[1];
+        DataItem data = this.Data;
+        TimeAxis timeAxis = (TimeAxis)Chart1.Axes[1];
 
         if (new DateTime(2011, 1, 7) < data.Date)
         {            
@@ -87,7 +87,7 @@
     {
         if (!X.IsAjaxRequest)
         {
-            var store = this.Chart1.GetStore();
+            Store store = this.Chart1.GetStore();
             
             store.DataSource = new List<DataItem>{this.Data};
             store.DataBind();
@@ -100,7 +100,7 @@
 <html>
 <head runat="server">
     <title>Live Updated Chart</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">

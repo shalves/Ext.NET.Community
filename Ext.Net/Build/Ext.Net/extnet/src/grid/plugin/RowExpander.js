@@ -13,6 +13,7 @@
  */
 Ext.define('Ext.ux.RowExpander', {
     extend : 'Ext.AbstractPlugin',
+    lockableScope: 'normal',
 
     requires : [
         'Ext.grid.feature.RowBody',
@@ -53,13 +54,6 @@ Ext.define('Ext.ux.RowExpander', {
     rowCollapsedCls   : 'x-grid-row-collapsed',
     swallowBodyEvents : false,
 
-    renderer : function (value, metadata, record, rowIdx, colIdx) {
-        if (colIdx === 0) {
-            metadata.tdCls = 'x-grid-td-expander';
-        }
-        return '<div class="x-grid-row-expander">&#160;</div>';
-    },
-
     /**
      * @event expandbody
      * <b<Fired through the grid's View</b>
@@ -76,24 +70,33 @@ Ext.define('Ext.ux.RowExpander', {
      */
 
     constructor : function () {
+        var me = this,
+            grid,
+            rowBodyTpl,
+            features;
+
         this.addEvents("beforeexpand", "expand", "beforecollapse", "collapse");
         this.callParent(arguments);
         this.mixins.observable.constructor.call(this);        
         
-        var grid = this.getCmp();
+        grid = this.getCmp();
         this.recordsExpanded = {};
+        this.preventsExpanding = {};
         this.bodyContent = {};
 
-        // <debug>
         if (!this.rowBodyTpl) {
-            //Ext.Error.raise("The 'rowBodyTpl' config is required and is not defined.");
             this.rowBodyTpl="";
         }
-        // </debug>
 
-         var rowBodyTpl = (this.rowBodyTpl instanceof Ext.XTemplate) ? this.rowBodyTpl : Ext.create('Ext.XTemplate', this.rowBodyTpl),
+        if (!Ext.isEmpty(this.rowBodyTpl) && (this.loader || this.component)) {            
+            this.cmpBodyTpl = (this.rowBodyTpl instanceof Ext.XTemplate) ? this.rowBodyTpl : Ext.create('Ext.XTemplate', this.rowBodyTpl);
+            this.rowBodyTpl="";
+        }
+
+        var rowBodyTpl = (this.rowBodyTpl instanceof Ext.XTemplate) ? this.rowBodyTpl : Ext.create('Ext.XTemplate', this.rowBodyTpl),
             features = [{
                 ftype              : 'rowbody',
+                lockableScope: 'normal',
                 columnId           : this.getHeaderId(),
                 recordsExpanded    : this.recordsExpanded,
                 rowBodyHiddenCls   : this.rowBodyHiddenCls,
@@ -104,22 +107,40 @@ Ext.define('Ext.ux.RowExpander', {
                     return rowBodyTpl.applyTemplate(data) || this.expander.bodyContent[record.internalId];
                 }
             },{
-                ftype : 'rowwrap'
+                ftype : 'rowwrap',
+                lockableScope: 'normal'
+            },
+            // In case the client grid is lockable (At this stage we cannot know; plugins are constructed early)
+            // push a Feature into the locked side which sets up the initially collapsed row state correctly
+            {
+                ftype: 'feature',
+                lockableScope: 'locked',
+                getAdditionalData: function (data, idx, record, result) {
+                    if (!me.recordsExpanded[record.internalId]) {
+                        result.rowCls = (result.rowCls || '') + ' ' + me.rowCollapsedCls;
+                    }
+                }
             }];
 
         if (grid.features) {
-            grid.features = features.concat(grid.features);
+            grid.features = Ext.Array.push(features, grid.features);
         } else {
             grid.features = features;
+        }
+
+        this.componentsCache = [];
+        this.outerComponentsCache = [];
+
+        if (this.component && this.singleExpand === false) {
+            this.componentCfg = this.component;
+            delete this.component;            
         }
         
         if (this.component && !this.component.initialConfig) {
             this.component.monitorResize = true;
             this.componentCfg = this.component;
-            this.component = Ext.ComponentManager.create(this.component, "panel");
-        }       
-
-        // NOTE: features have to be added before init (before Table.initComponent)
+            this.component = Ext.ComponentManager.create(Ext.isFunction(this.component) ? this.component.call({expander: this}) : this.component, "panel");
+        }             
     },
 
     getExpanded : function () {
@@ -136,23 +157,68 @@ Ext.define('Ext.ux.RowExpander', {
     },
 
     init : function (grid) {
+        var me = this,
+            reconfigurable = grid;
+
         this.callParent(arguments);
-
+        this.grid = grid;
+        me.view = grid.getView();
         // Columns have to be added in init (after columns has been used to create the
-        // headerCt). Otherwise, shared column configs get corrupted, e.g., if put in the
-        // prototype.
-        grid.headerCt.insert(0, this.getHeaderConfig());
-        grid.on("render", this.bindView, this, {single: true});
-
-        if (this.doLayoutOnExpand !== false) {
-            this.on("expand", function () {
-                this.getCmp().headerCt.doLayout();
-            }, this, {buffer:10});
-
-            this.on("collapse", function () {
-                this.getCmp().headerCt.doLayout();
-            }, this, {buffer:10});
+        // headerCt). Otherwise, shared column configs get corrupted, e.g., if put in the prototype.
+        this.addExpander();
+        me.bindView(me.view);
+        // If our client grid is the normal side of a lockable grid, we listen to its lockable owner's beforereconfigure
+        // and also bind to the locked grid's view for dblclick and keydown events
+        if (reconfigurable.ownerLockable) {
+            reconfigurable = reconfigurable.ownerLockable;
+            me.bindView(reconfigurable.lockedGrid.getView());
         }
+        reconfigurable.on('beforereconfigure', me.beforeReconfigure, me);        
+        grid.headerCt.on("columnresize", this.updateComponentsWidth, this, {delay:20, buffer : 20});
+        grid.headerCt.on("columnhide", this.updateComponentsWidth, this, {delay:20, buffer : 20});
+        grid.headerCt.on("columnshow", this.updateComponentsWidth, this, {delay:20, buffer : 20});
+    },
+
+    updateComponentsWidth : function () {       
+        var i,
+            grid = this.getCmp(),
+            body,
+            len = this.componentsCache.length,
+            item;
+
+        if (this.component && this.component.record && this.recordsExpanded[this.component.record.internalId]) {
+            body = Ext.get(grid.view.getNode(grid.store.getByInternalId(this.component.record.internalId))).down("div.x-grid-rowbody");         
+            this.component.setWidth(body.getWidth() - (this.scrollOffset || 0));
+        }
+
+        if (this.componentsCache && len > 0) {
+            for (i = 0; i < len; i++) {
+                item = this.componentsCache[i];
+                if (this.recordsExpanded[item.id]) {                    
+                    body = Ext.get(grid.view.getNode(grid.store.getByInternalId(item.id))).down("div.x-grid-rowbody");         
+                    item.cmp.setWidth(body.getWidth() - (this.scrollOffset || 0));
+                }
+            }
+        }
+    },
+    
+    beforeReconfigure: function (grid, store, columns, oldStore, oldColumns) {
+        var expander = this.getHeaderConfig();
+        expander.locked = true;
+        columns.unshift(expander);
+    },
+    
+    addExpander: function () {
+        var me = this,
+            expanderGrid = me.grid,
+            expanderHeader = me.getHeaderConfig();
+
+        // If this is the normal side of a lockable grid, find the other side.
+        if (expanderGrid.ownerLockable) {
+            expanderGrid = expanderGrid.ownerLockable.lockedGrid;
+            expanderGrid.width += expanderHeader.width;
+        }
+        expanderGrid.headerCt.insert(0, expanderHeader);
     },
 
     getHeaderId : function () {
@@ -163,13 +229,14 @@ Ext.define('Ext.ux.RowExpander', {
     },
 
     getRowBodyFeatureData : function (data, idx, record, orig) {
-        var o = Ext.grid.feature.RowBody.prototype.getAdditionalData.apply(this, arguments),
-            id = this.columnId;
+        var me = this,
+            o = me.self.prototype.getAdditionalData.apply(this, arguments),
+            id = me.columnId;
 
         o.rowBodyColspan = o.rowBodyColspan - 1;
         o.rowBody = this.getRowBodyContents(record, data);
-        o.rowCls = this.recordsExpanded[record.internalId] ? '' : this.rowCollapsedCls;
-        o.rowBodyCls = this.recordsExpanded[record.internalId] ? '' : this.rowBodyHiddenCls;
+        o.rowCls = this.expander.recordsExpanded[record.internalId] ? '' : this.rowCollapsedCls;
+        o.rowBodyCls = this.expander.recordsExpanded[record.internalId] ? '' : this.rowBodyHiddenCls;
         o[id + '-tdAttr'] = ' valign="top" rowspan="2" ';
 
         if (orig[id+'-tdAttr']) {
@@ -178,44 +245,48 @@ Ext.define('Ext.ux.RowExpander', {
         return o;
     },
 
-    bindView : function () {
-        var view = this.getCmp().getView(),
-            viewEl;
+    stopEventFn : function (view, e) {
+        return !e.getTarget(".x-grid-rowbody", view.el);
+    },
 
-        if (!view.rendered) {
-            view.on('render', this.bindView, this, {single: true});
-        } else {
-            viewEl = view.getEl();
+    bindView : function (view) {
+        view.stopEventFn = this.stopEventFn;
 
-            if (this.expandOnEnter) {
-                this.keyNav = Ext.create('Ext.KeyNav', viewEl, {
-                    'enter' : this.onEnter,
-                    scope   : this
-                });
-            }
+        view.on("beforerefresh", function () {
+            this.preventsExpanding = {};
+        }, this);
+        
+        if (this.expandOnEnter) {
+            view.on('itemkeydown', this.onKeyDown, this);
+        }
 
-            if (this.expandOnDblClick) {
-                view.on('itemdblclick', this.onDblClick, this);
-            }
+        if (this.expandOnDblClick) {
+            view.on('itemdblclick', this.onDblClick, this);
+        }
 
-            view.on('itemmousedown', function (view, record, item, index, e) {
-                return !e.getTarget('div.x-grid-rowbody', view.el);
-            }, this);
+        view.on('itemmousedown', function (view, record, item, index, e) {
+            return !e.getTarget('div.x-grid-rowbody', view.el);
+        }, this);
 
-            if (this.swallowBodyEvents) {
-                view.on("itemupdate", this.swallowRow, this);
-                view.on("refresh", this.swallowRow, this);            
-            }
+        if (this.swallowBodyEvents) {
+            view.on("itemupdate", this.swallowRow, this);
+            view.on("refresh", this.swallowRow, this);            
+        }
 
-            if (this.component) {            
-                view.on("beforerefresh", this.moveComponent, this);
-                view.on("beforeitemupdate", this.moveComponent, this);
-                view.on("beforeitemremove", this.moveComponent, this);
-                view.on("refresh", this.restoreComponent, this);
-                view.on("itemupdate", this.restoreComponent, this);      
-            }
+        if ((this.componentCfg && this.singleExpand === false) || this.loader) {
+            view.on("beforerefresh", this.mayRemoveComponents, this);            
+            view.on("beforeitemupdate", this.mayRemoveComponent, this);
+            view.on("beforeitemremove", this.removeComponent, this);
+            view.on("refresh", this.restoreComponents, this);
+            view.on("itemupdate", this.restoreSingleComponent, this);      
+        }
 
-            this.view = view;
+        if (this.component) {            
+            view.on("beforerefresh", this.moveComponent, this);
+            view.on("beforeitemupdate", this.moveComponent, this);
+            view.on("beforeitemremove", this.moveComponent, this);
+            view.on("refresh", this.restoreComponent, this);
+            view.on("itemupdate", this.restoreComponent, this);      
         }
     },
 
@@ -230,6 +301,91 @@ Ext.define('Ext.ux.RowExpander', {
         ce.addCls("x-hidden");        
         el.dom.appendChild(ce.dom);
         this.componentInsideGrid = false;
+    },
+
+    removeComponent : function (view, record, rowIndex) {
+        for (var i = 0, l = this.componentsCache.length; i < l; i++) {
+            if (this.componentsCache[i].id == record.internalId) {
+                try {
+                    var cmp = this.componentsCache[i].cmp;
+                    cmp.destroy();
+                    Ext.Array.remove(this.componentsCache, this.componentsCache[i]);
+                } catch (ex) { }
+
+                break;
+            }
+        }
+    },
+
+    mayRemoveComponent : function (view, record, rowIndex) {
+        if (this.invalidateComponentsOnRefresh) {
+            this.removeComponents(view, record, rowIndex);
+            return;
+        }
+
+        var item,
+            ce,
+            elTo;
+
+        for (var i = 0, l = this.componentsCache.length; i < l; i++) {
+            item = this.componentsCache[i];
+            
+            if (item.id == record.internalId) {
+                ce = item.cmp.getEl();
+                elTo = Ext.net.ResourceMgr.getAspForm() || Ext.getBody();
+                ce.addCls("x-hidden");        
+                elTo.dom.appendChild(ce.dom);                
+
+                this.outerComponentsCache.push(item);
+                Ext.Array.remove(this.componentsCache, item);
+                
+                break;
+            }
+        }
+    },
+
+    mayRemoveComponents : function () {
+        if (this.invalidateComponentsOnRefresh) {
+            this.removeComponents();
+            return;
+        }
+
+        var cmp,
+            ce,
+            elTo = Ext.net.ResourceMgr.getAspForm() || Ext.getBody();
+
+        for (var i = 0, l = this.componentsCache.length; i < l; i++) {
+            cmp = this.componentsCache[i].cmp;
+            ce = cmp.getEl();
+
+            ce.addCls("x-hidden");        
+            elTo.dom.appendChild(ce.dom);                
+        }
+
+        this.outerComponentsCache = this.componentsCache;
+        this.componentsCache = [];
+    },
+
+    removeComponents : function (outer) {
+        for (var i = 0, l = this.componentsCache.length; i < l; i++) {
+            try {
+                var cmp = this.componentsCache[i].cmp;                
+                cmp.destroy();
+            } catch (ex) { }
+        }
+
+        this.componentsCache = [];
+
+        if (outer && this.outerComponentsCache) {
+            for (var i = 0, l = this.outerComponentsCache.length; i < l; i++) {
+                try {
+                    var cmp = this.outerComponentsCache[i].cmp;                
+                    cmp.destroy();
+                } catch (ex) { }
+            }
+
+            this.outerComponentsCache = [];
+        }
     },
     
     restoreComponent : function () {
@@ -246,10 +402,139 @@ Ext.define('Ext.ux.RowExpander', {
                 
                 body.appendChild(this.component.getEl());
                 this.component.removeCls("x-hidden");
+                this.component.setWidth(body.getWidth() - (this.scrollOffset || 0));
                 this.componentInsideGrid = true;
                 return false;
             }
         }, this);
+
+        grid.view.refreshSize();
+        this.component.doLayout();
+    },
+
+    onRowCmpLoad : function (loader, response, options) {
+        loader.paramsFnScope.expander.getCmp().getView().refreshSize();
+        var target = loader.getTarget();
+        target.doLayout ? target.doLayout() : target.doComponentLayout();
+    },
+
+    createComponent : function (record, body) {
+        var rowCmp,
+            needContainer,
+            scope,
+            box,
+            loader;
+
+        if (this.loader) {
+            needContainer = !(this.loader.renderer == "html" || this.loader.renderer == "data");
+            scope = {record: record, expander: this, el: body, grid : this.getCmp()};
+            loader = Ext.isFunction(this.loader) ? this.loader.call(scope) : Ext.clone(this.loader);
+            loader.paramsFnScope = scope;
+            loader.success = this.onRowCmpLoad;
+
+            rowCmp = Ext.create(needContainer ? "Ext.container.Container" : "Ext.Component", {
+                loader : loader,        
+                layout : "anchor",
+                defaults : { anchor : "100%" },
+                tpl : !Ext.isEmpty(this.cmpBodyTpl) ? ((this.cmpBodyTpl instanceof Ext.XTemplate) ? this.cmpBodyTpl : Ext.create('Ext.XTemplate', this.cmpBodyTpl)) : undefined
+            });                            
+        }
+        else {
+            rowCmp = Ext.ComponentManager.create(Ext.isFunction(this.componentCfg) ? this.componentCfg.call({record: record, expander: this}) : Ext.clone(this.componentCfg), "panel");
+        }      
+
+        //box = Ext.util.Format.parseBox(this.componentMargin || 0);
+
+        if (this.componentMargin) {
+            rowCmp.margin = this.componentMargin;
+        }
+        
+        rowCmp.ownerCt = this.getCmp();
+        rowCmp.record = record;
+        rowCmp.width = body.getWidth() - (this.scrollOffset || 0);
+        rowCmp.render(body);
+        rowCmp.addCls("x-row-expander-control");
+        this.componentsCache.push({id: record.internalId, cmp: rowCmp});
+        return rowCmp;
+    },
+
+    restoreSingleComponent : function (record, index, node) {
+       var grid = this.getCmp();       
+        
+       if (this.recordsExpanded[record.internalId]) {
+            var rowNode = grid.view.getNode(index),          
+                body = Ext.get(rowNode).down("div.x-grid-rowbody"),
+                rowCmp = this.getComponent(record, body);                               
+                
+            if (!rowCmp) {                    
+                rowCmp = this.createComponent(record, body);
+            }
+
+            grid.view.refreshSize();
+            rowCmp.doLayout ? rowCmp.doLayout() : rowCmp.doComponentLayout();
+        }        
+    },
+
+    restoreComponents : function () {
+        var grid = this.getCmp(),
+        cmps = [];
+        
+        grid.store.each(function (record, i) {
+            if (this.recordsExpanded[record.internalId]) {
+                var rowNode = grid.view.getNode(i),          
+                    body = Ext.get(rowNode).down("div.x-grid-rowbody"),
+                    rowCmp = this.getComponent(record, body);                               
+                
+                if (!rowCmp) {                    
+                    rowCmp = this.createComponent(record, body);
+                }
+
+                cmps.push(rowCmp);
+            }
+        }, this);
+
+        this.removeOuterOrphans();
+
+        grid.view.refreshSize();
+        Ext.each(cmps, function (cmp) {
+            cmp.doLayout ? cmp.doLayout() : cmp.doComponentLayout();
+        });        
+    },
+
+    removeOuterOrphans : function () {
+        if (this.outerComponentsCache && this.outerComponentsCache.length > 0) {
+            var len = this.outerComponentsCache.length,
+                store = this.getCmp().store,
+                records = store.data.items,
+                len2 = records.length,
+                r,
+                found,
+                i = 0,
+                item;
+
+            while (i < len) {
+                item = this.outerComponentsCache[i];
+                found = false;
+
+                for (r = 0; r < len2; r++) {
+                    if (records[r].internalId == item.id) {
+                        found = true;
+                        break;
+                    }    
+                }
+
+                if (!found) {
+                    try {
+                        item.cmp.destroy();
+                    } catch (ex) { }
+                    Ext.Array.remove(this.outerComponentsCache, item);
+                    len--;
+                }
+                else {
+                    i++;
+                }
+            }
+        }
     },
 
     swallowRow : function () {
@@ -265,18 +550,19 @@ Ext.define('Ext.ux.RowExpander', {
         }, this);
     },
 
-    onEnter : function (e) {
-        var view = this.view,
-            ds   = view.store,
-            sm   = view.getSelectionModel(),
-            sels = sm.getSelection(),
-            ln   = sels.length,
-            i = 0,
-            rowIdx;
+    onKeyDown: function (view, record, row, rowIdx, e) {
+        if (e.getKey() == e.ENTER) {
+            var ds   = view.store,
+                sels = view.getSelectionModel().getSelection(),
+                ln   = sels.length,
+                i = 0;
 
-        for (; i < ln; i++) {
-            rowIdx = ds.indexOf(sels[i]);
-            this.toggleRow(rowIdx);
+            for (; i < ln; i++) {
+                if (!this.preventsExpanding[sels[i].internalId]) {
+                    rowIdx = ds.indexOf(sels[i]);
+                    this.toggleRow(rowIdx, sels[i]);
+                }
+            }
         }
     },
 
@@ -297,72 +583,95 @@ Ext.define('Ext.ux.RowExpander', {
             return;
         }
         
-        var i = 0;
+        var i = 0,
+            store = this.getCmp().store,
+            len = store.getCount();
 
-        for (i; i < this.getCmp().store.getCount(); i++) {
-            this.toggleRow(i, true);
+        for (i; i < len; i++) {
+            this.toggleRow(i, store.getAt(i), true);
         }
     },
     
     collapseAll : function () {
-        var i = 0;
+        var i = 0,
+            store = this.getCmp().store,
+            len = store.getCount();
 
-        for (i; i < this.getCmp().store.getCount(); i++) {
-            this.toggleRow(i, false);
+        for (i; i < len; i++) {
+            this.toggleRow(i, store.getAt(i), false);
         }
         this.recordsExpanded = {};
     },
 
     collapseRow : function (row) {        
-        this.toggleRow(row, false);
+        this.toggleRow(row, this.view.getRecord(this.view.getNode(row)), false);
     },
 
     expandRow : function (row) {        
-        this.toggleRow(row, true);
+        this.toggleRow(row, this.view.getRecord(this.view.getNode(row)), true);
     },
 
-    toggleRow : function (rowIdx, state) {
-        var rowNode = this.view.getNode(rowIdx),
+    toggleRow : function (rowIdx, record, state) {
+        var me = this,
+            view = this.view,
+	        rowNode = this.view.getNode(rowIdx),
             row = Ext.get(rowNode),
             nextBd = row.down(this.rowBodyTrSelector),
-            body = row.down("div.x-grid-rowbody"),
-            record = this.view.getRecord(rowNode),
+            body = row.down("div.x-grid-rowbody"),       
+            hasState = Ext.isDefined(state),
+            isCollapsed = row.hasCls(me.rowCollapsedCls),
+            addOrRemoveCls = isCollapsed ? 'removeCls' : 'addCls',
             grid = this.getCmp(),
-            hasState = Ext.isDefined(state);
+            rowCmp,
+            needContainer,
+            rowHeight;
 
         rowIdx = grid.store.indexOf(record);
-
+        //Ext.suspendLayouts();
         if ((row.hasCls(this.rowCollapsedCls) && !hasState) || (hasState && state === true && row.hasCls(this.rowCollapsedCls))) {
             if (this.beforeExpand(record, nextBd, rowNode, rowIdx)) {
                 row.removeCls(this.rowCollapsedCls);
                 nextBd.removeCls(this.rowBodyHiddenCls);
                 this.recordsExpanded[record.internalId] = true;
-
+                
                 if (this.component) {
                     if (this.recreateComponent) {
                         this.component.destroy();
-                        this.component = Ext.ComponentManager.create(this.componentCfg, "panel");
+                        this.component = Ext.ComponentManager.create(Ext.isFunction(this.componentCfg) ? this.componentCfg.call({record: record, expander: this}) : this.componentCfg, "panel");
                     }
                 
                     if (this.component.rendered) {                    
                         body.appendChild(this.component.getEl());
+                        this.component.setWidth(body.getWidth() - (this.scrollOffset || 0));
                     } else {
+                        this.component.width = body.getWidth() - (this.scrollOffset || 0);
                         this.component.render(body);
                     }
                 
                     this.component.addCls("x-row-expander-control");
                     this.component.removeCls("x-hidden");
                 
-                    this.componentInsideGrid = true;
-
-                    grid.doLayout();
-                    this.component.doLayout();
+                    this.componentInsideGrid = true;                    
+                    rowCmp = this.component;
+                }
+                else if (this.componentCfg || this.loader) {
+                    rowCmp = this.getComponent(record, body);
+                    if (!rowCmp) {                        
+                        rowCmp = this.createComponent(record, body);
+                    }
                 }
 
                 if (this.swallowBodyEvents) {
                     this.swallowRow();
                 }
 
+		        view.refreshSize();
+
+                if (rowCmp) {
+                    rowCmp.record = record;
+                    rowCmp.doLayout ? rowCmp.doLayout() : rowCmp.doComponentLayout();
+                }
+                
                 this.fireEvent('expand', this, record, nextBd, rowNode, rowIdx);
             }
         } else if ((!row.hasCls(this.rowCollapsedCls) && !hasState) || (hasState && state === false && !row.hasCls(this.rowCollapsedCls))) {
@@ -370,41 +679,60 @@ Ext.define('Ext.ux.RowExpander', {
                 row.addCls(this.rowCollapsedCls);
                 nextBd.addCls(this.rowBodyHiddenCls);
                 this.recordsExpanded[record.internalId] = false;
+		        view.refreshSize();         
                 this.fireEvent('collapse', this, record, nextBd, rowNode, rowIdx);
             }
         }
+
+        // Sync the height and class of the row on the locked side
+        if (me.grid.ownerLockable) {
+            view = me.grid.ownerLockable.lockedGrid.view;
+            rowHeight = row.getHeight();
+            row = Ext.fly(view.getNode(rowIdx), '_rowExpander');
+            row.setHeight(rowHeight);
+            row[addOrRemoveCls](me.rowCollapsedCls);
+            view.refreshSize();
+        }
+       // Ext.resumeLayouts(true);
     },
 
-    onDblClick : function (view, cell, rowIdx, cellIndex, e) {
-        if (!e.getTarget(this.rowBodyTrSelector, view.el)) {
-            this.toggleRow(rowIdx);
+    onDblClick : function (view, record, row, rowIdx, e) {
+        if (!this.preventsExpanding[record.internalId] && !e.getTarget(this.rowBodyTrSelector, view.el)) {
+            this.toggleRow(rowIdx, record);
         }
     },
 
-    getHeaderConfig : function () {
-        var me                = this,
-            toggleRow         = Ext.Function.bind(me.toggleRow, me),
-            selectRowOnExpand = me.selectRowOnExpand;
+    renderer : Ext.emptyFn,
+
+    getHeaderConfig: function () {
+        var me = this;
 
         return {
-            id           : this.getHeaderId(),
-            width        : 24,
-            sortable     : false,
-            resizable    : false,
-            draggable    : false,
-            hideable     : false,
-            menuDisabled : true,
-            cls          : Ext.baseCSSPrefix + 'grid-header-special',
-            renderer : function (value, metadata) {
+            id: me.getHeaderId(),
+            width: 24,
+            lockable: false,
+            sortable: false,
+            resizable: false,
+            draggable: false,
+            hideable: false,
+            menuDisabled: true,
+            cls: Ext.baseCSSPrefix + 'grid-header-special',
+            renderer: function (value, metadata, record) {
                 metadata.tdCls = Ext.baseCSSPrefix + 'grid-cell-special';
-
-                return '<div class="' + Ext.baseCSSPrefix + 'grid-row-expander">&#160;</div>';
+                var res = me.renderer.apply(this, arguments);
+                if (res === false) {
+                    res = "&#160;";
+                    me.preventsExpanding[record.internalId] = true;
+                }
+                else if (res === true) {
+                    res = null;
+                }
+                return res ? res : ('<div class="' + Ext.baseCSSPrefix + 'grid-row-expander">&#160;</div>');
             },
-            processEvent : function (type, view, cell, recordIndex, cellIndex, e) {
-                if (type == "mousedown" && e.getTarget('.x-grid-cell-inner')) {
-                    var row = e.getTarget('.x-grid-row');
-                    toggleRow(row);
-                    return selectRowOnExpand;
+            processEvent: function (type, view, cell, rowIndex, cellIndex, e, record) {
+                if (type == "mousedown" && e.getTarget('.x-grid-row-expander')) {
+                    me.toggleRow(rowIndex, record);
+                    return me.selectRowOnExpand;
                 }
             }
         };
@@ -424,5 +752,52 @@ Ext.define('Ext.ux.RowExpander', {
         }
 
         return !Ext.fly(row).hasClass(this.rowCollapsedCls);
+    },
+
+    getComponent : function (record, body) {
+        var i, l, item, cmp;
+
+        if (this.componentsCache) {
+            for (i = 0, l = this.componentsCache.length; i < l; i++) {
+                item = this.componentsCache[i];
+                if (item.id == record.internalId) {
+                    if (body) {
+                        item.cmp.setWidth(body.getWidth() - (this.scrollOffset || 0));
+                    }
+                    return item.cmp;
+                }
+            }
+        }
+
+        if (this.outerComponentsCache) {
+            for (i = 0, l = this.outerComponentsCache.length; i < l; i++) {
+                if (this.outerComponentsCache[i].id == record.internalId) {
+                    item = this.outerComponentsCache[i];
+                    cmp = item.cmp;
+
+                    if (body) {
+                        body.appendChild(cmp.getEl());
+                        cmp.removeCls("x-hidden");
+                        cmp.setWidth(body.getWidth() - (this.scrollOffset || 0));
+                        Ext.Array.remove(this.outerComponentsCache, item);
+                        this.componentsCache.push(item);
+                    }
+                
+                    return cmp;
+                }
+            }
+        }
+
+        return null;
+    },
+
+    destroy : function () {
+        if (this.component && Ext.isFunction(this.component.destroy)) {
+            this.component.destroy();
+        }
+
+        if (this.componentsCache) {
+            this.removeComponents(true);
+        }
     }
 });

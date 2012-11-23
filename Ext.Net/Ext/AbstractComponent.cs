@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -84,13 +84,15 @@ namespace Ext.Net
                 if (HttpContext.Current != null && !this.tagRequestChecked)
                 {
                     this.tagRequestChecked = true;
-                    var tagFromRequest = HttpContext.Current.Request.Form[this.TagHiddenName ?? this.UniqueID + "_tag"];
+                    
+                    string tagFromRequest = HttpContext.Current.Request.Form[this.TagHiddenName ?? this.UniqueID + "_tag"];
 
                     if (tagFromRequest != null)
                     {
                         tagFromRequest = HttpContext.Current.Server.HtmlDecode(tagFromRequest);
                         this.SuspendScripting();
                         this.State.Set("Tag", JSON.Deserialize<object>(tagFromRequest)); 
+                        //this.State.Set("Tag", tagFromRequest);
                         this.ResumeScripting();
                     }
                 }
@@ -480,6 +482,7 @@ namespace Ext.Net
         /// </summary>
         [Meta]
         [ConfigOption(JsonMode.Serialize)]
+        [DirectEventUpdate(MethodName="Update")]
         [Category("3. AbstractComponent")]
         [DefaultValue(null)]
         [Description("The initial set of data to apply to the tpl to update the content area of the AbstractComponent.")]
@@ -1150,8 +1153,8 @@ namespace Ext.Net
             get
             {
                 return (this.Page != null && this.Page.Form != null)
-                           ? string.Concat("={Ext.get(", JSON.Serialize(this.Page.Form.ClientID), ")}")
-                           : "={Ext.getBody()}";
+                           ? TokenUtils.RawWrap(string.Concat("Ext.get(", JSON.Serialize(this.Page.Form.ClientID), ")"))
+                           : TokenUtils.RawWrap("Ext.getBody()");
             }
         }
 
@@ -1218,6 +1221,27 @@ namespace Ext.Net
                     this.Controls.Add(this.renderTpl);
                     this.LazyItems.Add(this.renderTpl);
                 }
+            }
+        }
+
+        /// <summary>
+        /// In CSS terms, shrink-wrap width is analogous to an inline-block element as opposed to a block-level element. Some container layouts always shrink-wrap their children, effectively ignoring this property (e.g., Ext.layout.container.HBox, Ext.layout.container.VBox, Ext.layout.component.Dock). The Default is \"Height\".
+        /// </summary>
+        [Meta]
+        [ConfigOption(typeof(EnumToIntConverter))]
+        [Localizable(true)]
+        [Category("3. AbstractComponent")]
+        [DefaultValue(ShrinkWrap.Height)]
+        [Description("In CSS terms, shrink-wrap width is analogous to an inline-block element as opposed to a block-level element. Some container layouts always shrink-wrap their children, effectively ignoring this property (e.g., Ext.layout.container.HBox, Ext.layout.container.VBox, Ext.layout.component.Dock). The Default is \"Height\".")]
+        public virtual ShrinkWrap ShrinkWrap
+        {
+            get
+            {
+                return this.State.Get<ShrinkWrap>("ShrinkWrap", ShrinkWrap.Height);
+            }
+            set
+            {
+                this.State.Set("ShrinkWrap", value);
             }
         }
 
@@ -1454,6 +1478,7 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
+        [Meta]
         [ConfigOption("preinitFn", JsonMode.Raw)]
         [DefaultValue(null)]
         [PersistenceMode(PersistenceMode.InnerProperty)]
@@ -1472,6 +1497,82 @@ namespace Ext.Net
                     value.Args = new string[]{"cmp"};
                 }
                 this.preinitFn = value;
+            }
+        }
+
+        private KeyMap keyMap;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [DefaultValue(null)]
+        [Category("3. AbstractComponent")]
+        [ConfigOption("keyMap", typeof(LazyControlJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("")]
+        public virtual KeyMap KeyMap
+        {
+            get
+            {
+                return this.keyMap;
+            }
+            set
+            {
+                if (this.keyMap != null)
+                {
+                    this.Controls.Remove(this.keyMap);
+                    this.LazyItems.Remove(this.keyMap);
+                    this.keyMap.BelongsToCmp = false;
+                }
+
+                this.keyMap = value;
+
+                if (this.keyMap != null)
+                {
+                    this.keyMap.EnableViewState = false;
+                    this.keyMap.BelongsToCmp = true;
+                    this.Controls.Add(this.keyMap);
+                    this.LazyItems.Add(this.keyMap);
+                }
+            }
+        }
+
+        private KeyNav keyNav;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Meta]
+        [DefaultValue(null)]
+        [Category("3. AbstractComponent")]
+        [ConfigOption("keyNav", typeof(LazyControlJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [Description("")]
+        public virtual KeyNav KeyNav
+        {
+            get
+            {
+                return this.keyNav;
+            }
+            set
+            {
+                if (this.keyNav != null)
+                {
+                    this.Controls.Remove(this.keyNav);
+                    this.LazyItems.Remove(this.keyNav);
+                    this.keyNav.BelongsToCmp = false;
+                }
+
+                this.keyNav = value;
+
+                if (this.keyNav != null)
+                {
+                    this.keyNav.EnableViewState = false;
+                    this.keyNav.BelongsToCmp = false;
+                    this.Controls.Add(this.keyNav);
+                    this.LazyItems.Add(this.keyNav);
+                }
             }
         }
 
@@ -1544,11 +1645,22 @@ namespace Ext.Net
         }
 
         /// <summary>
+        /// Adds a CSS class to the component's label.
+        /// </summary>
+        /// <param name="labelCls">A CSS class to add</param>
+        [Meta]
+        [Description("Adds a CSS class to the component's label.")]
+        public void AddLabelCls(string labelCls)
+        {
+            this.Call("labelEl.addCls", labelCls);
+        }
+
+        /// <summary>
         /// Destroys this component by purging any event listeners, removing the component's element from the DOM, removing the component from its Ext.Container (if applicable) and unregistering it from Ext.ComponentMgr. Destruction is generally handled automatically by the framework and this method should usually not need to be called directly.
         /// </summary>
         [Meta]
         [Description("Destroys this component by purging any event listeners, removing the component's element from the DOM, removing the component from its Ext.Container (if applicable) and unregistering it from Ext.ComponentMgr. Destruction is generally handled automatically by the framework and this method should usually not need to be called directly.")]
-        public virtual void Destroy()
+        public override void Destroy()
         {
             this.Call("destroy");
         }
@@ -1627,6 +1739,18 @@ namespace Ext.Net
         {
             this.Call("removeCls", cls);
         }
+
+        /// <summary>
+        /// Removes a CSS class from the component's label.
+        /// </summary>
+        /// <param name="labelCls">A CSS class to remove</param>
+        [Meta]
+        [Description("Removes a CSS class from the component's label.")]
+        public void RemoveLabelCls(string labelCls)
+        {
+            this.Call("labelEl.removeCls", labelCls);
+        }
+
 
         /// <summary>
         /// Method which removes a specified UI + uiCls from the components element. The cls which is added to the element will be: this.baseCls + '-' + ui
@@ -2086,7 +2210,7 @@ namespace Ext.Net
         {
             get
             {
-                var nf = new NumberFormatInfo {CurrencyDecimalSeparator = "."};
+                NumberFormatInfo nf = new NumberFormatInfo {CurrencyDecimalSeparator = "."};
 
                 return ColumnWidth.ToString(nf);
             }
@@ -2357,7 +2481,10 @@ namespace Ext.Net
         [Description("")]
         protected virtual void AfterBinItemAdd(Observable item)
         {
-            item.LazyMode = LazyMode.Instance;
+            if(!item.HasOwnState("LazyMode"))
+            {
+                item.LazyMode = LazyMode.Instance;
+            }
 
             this.AfterItemAdd(item);
         }
@@ -2409,7 +2536,8 @@ namespace Ext.Net
 
                     this.ContentContainer.Visible = true;
 
-                    var container = this as AbstractContainer;
+                    AbstractContainer container = this as AbstractContainer;
+                    
                     if (container != null && this.ContentControls.Count > 0 && container.Items.Count == 0 && container.Layout.IsNotEmpty())
                     {
                         return "";
@@ -3113,15 +3241,31 @@ namespace Ext.Net
 
         public virtual void EnsureLoadPostData()
         {
-            var ctrl = this as IXPostBackDataHandler;
+            IXPostBackDataHandler ctrl = this as IXPostBackDataHandler;
 
             if (ctrl != null && !ctrl.HasLoadPostData)
             {
-                var result = ctrl.LoadPostData(this.ConfigID, this.Context.Request.Params);
+                bool result = ctrl.LoadPostData(this.ConfigID, this.Context.Request.Params);
+                
                 if (result)
                 {
                     ctrl.RaisePostDataChangedEvent();
                 }
+            }
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            if (this.HasResourceManager && !this.ResourceManager.DisableViewState)
+            {
+                return;
+            }
+
+            if (this is IXPostBackDataHandler && !this.IsDynamic && (ExtNet.IsAjaxRequest || (this.Page != null && this.Page.IsPostBack)))
+            {
+                this.EnsureLoadPostData();
             }
         }
 
@@ -3302,27 +3446,6 @@ namespace Ext.Net
             set
             {
                 this.State.Set("Selectable", value);
-            }
-        }
-
-        /// <summary>
-        /// True to use height:'auto', false to use fixed height (defaults to false).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("3. AbstractComponent")]
-        [DefaultValue(false)]
-        [NotifyParentProperty(true)]
-        [Description("True to use height:'auto', false to use fixed height (defaults to false).")]
-        public virtual bool AutoHeight
-        {
-            get
-            {
-                return this.State.Get<bool>("AutoHeight", false);
-            }
-            set
-            {
-                this.State.Set("AutoHeight", value);
             }
         }
 

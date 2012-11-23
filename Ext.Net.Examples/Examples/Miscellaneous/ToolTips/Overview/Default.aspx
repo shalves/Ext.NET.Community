@@ -8,9 +8,9 @@
 <head runat="server">
     <title>ToolTips - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <style type="text/css">
+    <style>
         .tip-target {
             width      : 185px;
             text-align : center;

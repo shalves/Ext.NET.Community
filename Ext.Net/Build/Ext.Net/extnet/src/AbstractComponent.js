@@ -20,7 +20,6 @@ Ext.override(Ext.AbstractComponent, {
         if (this.preinitFn) {
             this.preinitFn.call(this.preinitScope || this, this);
         }
-
         if (this.tag) {
             this.setTag(this.tag);
         }
@@ -177,5 +176,39 @@ Ext.override(Ext.AbstractComponent, {
                 cmp.render(container, position);
             }            
         }
+    },
+
+    /**
+     * Retrieves this component's bin component.
+     *
+     * @param {String/Number} comp 
+     * 
+     * This parameter may be any of the following:
+     *
+     * - a String : representing itemId or id of the bin component.
+     * - a Number : representing the position of the bin component
+     *   within the bin property.
+     *
+     *
+     * @return {Ext.Component} The component (if found) or null.
+     */
+    getBinComponent : function (comp) {
+        var me = this,
+            item = null;
+
+        if (me.bin) {
+            if (Ext.isNumber(comp)) {
+                item = me.bin[comp];
+            } else if (Ext.isString(comp)) {
+                Ext.each(me.bin, function (binItem) {
+                    if (binItem.itemId === comp || binItem.id === comp || binItem.storeId === comp || binItem.proxyId === comp) {
+                        item = binItem;
+                        return false;
+                    }
+                });
+            }
+        }
+
+        return item;
     }
 });

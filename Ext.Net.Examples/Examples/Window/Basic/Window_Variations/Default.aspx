@@ -5,8 +5,8 @@
 <html>
 <head runat="server">
     <title>Windows Example - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <style>
         .x-panel-body p
         {
             margin: 10px;

@@ -20,7 +20,7 @@
 <html>
 <head runat="server">
     <title>DirectMethod Overview - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -162,12 +162,9 @@ public void SetTimeStamp(string text)
         <ext:Panel 
             runat="server" 
             Title="Company Information"
-            AutoHeight="true" 
             Width="350" 
             BodyPadding="5"
-            Frame="true"
-            
-            >
+            Frame="true">
             <Items>
                 <ext:TextField 
                     ID="TextField3" 
@@ -441,7 +438,7 @@ public string GetTimeStamp()
                         <span class="doc-member">options</span> : Object
                         <div class="doc-subdesc">
                             (optional) An object containing configuration properties. This options object may contain any of the following properties, 
-                            or options as defined in <a href="http://extjs.com/deploy/dev/docs/?class=Ext.Ajax&member=request">Ext.Ajax.request</a>.
+                            or options as defined in <a href="http://docs.sencha.com/ext-js/4-1/#!/api/Ext.data.Connection-method-request">Ext.data.Connection.request</a>.
                             <ul>
                                 <li>
                                     <span class="doc-prop">success</span> : Function

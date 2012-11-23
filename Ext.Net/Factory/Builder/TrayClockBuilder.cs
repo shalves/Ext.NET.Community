@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,59 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ToolbarTextItem.Builder<TrayClock, TrayClock.Builder>
+        new public abstract partial class Builder<TTrayClock, TBuilder> : ToolbarTextItem.Builder<TTrayClock, TBuilder>
+            where TTrayClock : TrayClock
+            where TBuilder : Builder<TTrayClock, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TTrayClock component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder TimeFormat(string timeFormat)
+            {
+                this.ToComponent().TimeFormat = timeFormat;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Template(string template)
+            {
+                this.ToComponent().Template = template;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder RefreshInterval(int refreshInterval)
+            {
+                this.ToComponent().RefreshInterval = refreshInterval;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : TrayClock.Builder<TrayClock, TrayClock.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,42 +124,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TrayClock.Builder TimeFormat(string timeFormat)
-            {
-                this.ToComponent().TimeFormat = timeFormat;
-                return this as TrayClock.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TrayClock.Builder Template(string template)
-            {
-                this.ToComponent().Template = template;
-                return this as TrayClock.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TrayClock.Builder RefreshInterval(int refreshInterval)
-            {
-                this.ToComponent().RefreshInterval = refreshInterval;
-                return this as TrayClock.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -116,6 +132,14 @@ namespace Ext.Net
         public TrayClock.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.TrayClock(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -130,7 +154,11 @@ namespace Ext.Net
         /// </summary>
         public TrayClock.Builder TrayClock()
         {
-            return this.TrayClock(new TrayClock());
+#if MVC
+			return this.TrayClock(new TrayClock { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.TrayClock(new TrayClock());
+#endif			
         }
 
         /// <summary>
@@ -138,7 +166,10 @@ namespace Ext.Net
         /// </summary>
         public TrayClock.Builder TrayClock(TrayClock component)
         {
-            return new TrayClock.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new TrayClock.Builder(component);
         }
 
         /// <summary>
@@ -146,7 +177,11 @@ namespace Ext.Net
         /// </summary>
         public TrayClock.Builder TrayClock(TrayClock.Config config)
         {
-            return new TrayClock.Builder(new TrayClock(config));
+#if MVC
+			return new TrayClock.Builder(new TrayClock(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new TrayClock.Builder(new TrayClock(config));
+#endif			
         }
     }
 }

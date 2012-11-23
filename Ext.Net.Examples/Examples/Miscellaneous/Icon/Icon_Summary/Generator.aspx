@@ -22,7 +22,7 @@
             }
         ));
 
-        var store = this.DataView1.GetStore();
+        Store store = this.DataView1.GetStore();
         store.DataSource = data;
         store.DataBind();
     }
@@ -33,7 +33,7 @@
 <html>
 <head runat="server">
     <title>Icons - Ext.NET Examples</title>
-    <style type="text/css">
+    <style>
         body {
             padding : 20px;
             font    : normal 11px arial,helvetica,sans-serif;

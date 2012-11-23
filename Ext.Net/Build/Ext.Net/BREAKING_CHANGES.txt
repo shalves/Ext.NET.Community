@@ -1,12 +1,21 @@
 ﻿**************************************************************************
-*                      2.0.x BREAKING CHANGES                            *
-*                                                                        *
-*                     UPGRADING FROM V1 TO V2                            *
-*                                                                        *
+*                      2.1.0 BREAKING CHANGES                            *
 **************************************************************************
 
-Release Date     : 2012-07-24
+Release Date     : 2012-11-21
+Current Version  : 2.1.0
+Previous Version : 2.0.0
+
+    NONE
+
+
+**************************************************************************
+*                      2.0.x BREAKING CHANGES                            *
+**************************************************************************
+
+Release Date     : 2012-03-08
 Current Version  : 2.0.0
+
 
 1.   - XControl has been renamed to BaseControl
 	 - StateManagedItem has been renamed to BaseItem
@@ -472,7 +481,7 @@ Current Version  : 2.0.0
 30.  Signature of ModelField .Convert has been changed.
 	 The first argument is a record, not an array of values.
 
-31.  Store .BasePrams has been renamed to .Parameters
+31.  Store .BaseParams has been renamed to .Parameters
      Parameter has been renamed to StoreParameter
 
 32.  RowSelectionModel RowSelect and RowDeselect Listener and DirectEvent has been renamed to
@@ -746,7 +755,9 @@ Current Version  : 2.0.0
 
 82. TreePanel ContainerScroll has been removed.
 
-83. AsyncNode class has been removed. Use Node with NodeType="async".
+83. AsyncTreeNode class has been removed. Use a Node class instead. 
+
+    If a Node is not a leaf and doesn't contain any children, it will initiate a load request on expand.
 
 84. TreeNode has been renamed to Node. Its cliet side ensureVisible method has been removed.
     Use TreePanel View focusRow method.
@@ -1010,3 +1021,8 @@ Current Version  : 2.0.0
 126. The FileUploadField FileSelected event has been removed.
 
 	Use the Change one.
+
+127. A RowLayout has been removed. Use an AnchorLayout or a VBoxLayout instead.
+	 http://examples.ext.net/#/search/AnchorLayout
+	 http://examples.ext.net/#/search/VBoxLayout
+     

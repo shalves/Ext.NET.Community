@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -31,7 +31,6 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
 using Ext.Net.Utilities;
 
 namespace Ext.Net
@@ -105,6 +104,26 @@ namespace Ext.Net
             set
             {
                 this.State.Set("AllowBlank", value);
+            }
+        }
+
+        /// <summary>
+        /// Specify false to automatically trim the value before validating the whether the value is blank. Setting this to false automatically sets AllowBlank to false.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. TextField")]
+        [DefaultValue(true)]
+        [Description("Specify false to automatically trim the value before validating the whether the value is blank. Setting this to false automatically sets AllowBlank to false.")]
+        public virtual bool AllowOnlyWhitespace
+        {
+            get
+            {
+                return this.State.Get<bool>("AllowOnlyWhitespace", true);
+            }
+            set
+            {
+                this.State.Set("AllowOnlyWhitespace", value);
             }
         }
 
@@ -282,13 +301,13 @@ namespace Ext.Net
         [Meta]
         [ConfigOption]
         [Category("6. TextField")]
-        [DefaultValue(typeof(Unit), "800")]
+        [DefaultValue(800)]
         [Description("The maximum width to allow when grow = true (defaults to 800).")]
-        public virtual Unit GrowMax
+        public virtual int GrowMax
         {
             get
             {
-                return this.UnitPixelTypeCheck(State["GrowMax"], Unit.Pixel(800), "GrowMax");
+                return this.State.Get<int>("GrowMax", 800);
             }
             set
             {
@@ -302,13 +321,13 @@ namespace Ext.Net
         [Meta]
         [ConfigOption]
         [Category("6. TextField")]
-        [DefaultValue(typeof(Unit), "30")]
+        [DefaultValue(30)]
         [Description("The minimum width to allow when grow = true (defaults to 30).")]
-        public virtual Unit GrowMin
+        public virtual int GrowMin
         {
             get
             {
-                return this.UnitPixelTypeCheck(State["GrowMin"], Unit.Pixel(30), "GrowMin");
+                return this.State.Get<int>("GrowMin", 30);
             }
             set
             {
@@ -521,85 +540,7 @@ namespace Ext.Net
             {
                 this.State.Set("StripCharsRe", value);
             }
-        }
-
-        private JFunction validator;
-
-        /// <summary>   
-        /// A custom validation function to be called during field validation (getErrors) (defaults to undefined). If specified, this function will be called first, allowing the developer to override the default validation process.
-        /// This function will be passed the following Parameters:
-        /// value: Mixed
-        ///     The current field value
-        /// 
-        /// This function is to Return:
-        /// true: Boolean
-        ///     true if the value is valid
-        /// msg: String
-        ///     An error message if the value is invalid
-        /// </summary>
-        [Meta]
-        [ConfigOption(JsonMode.Raw)]
-        [Category("5. Field")]
-        [PersistenceMode(PersistenceMode.InnerProperty)]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        [Description("A custom validation function to be called during field validation (getErrors) (defaults to undefined). If specified, this function will be called first, allowing the developer to override the default validation process.")]
-        public virtual JFunction Validator
-        {
-            get
-            {
-                if (this.validator == null)
-                {
-                    this.validator = new JFunction();
-                    if(!this.DesignMode)
-                    {
-                        this.validator.Args = new string[]{"value"};
-                    }
-                }
-
-                return this.validator;
-            }
-        }
-
-        /// <summary>
-        /// A validation type name as defined in Ext.form.VTypes (defaults to null).
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. TextField")]
-        [DefaultValue("")]
-        [Description("A validation type name as defined in Ext.form.VTypes (defaults to null).")]
-        public virtual string Vtype
-        {
-            get
-            {
-                return this.State.Get<string>("Vtype", "");
-            }
-            set
-            {
-                this.State.Set("Vtype", value);
-            }
-        }
-
-        /// <summary>
-        /// A custom error message to display in place of the default message provided for the vtype currently set for this field (defaults to ''). Only applies if vtype is set, else ignored.
-        /// </summary>
-        [Meta]
-        [ConfigOption]
-        [Category("6. TextField")]
-        [DefaultValue("")]
-        [Localizable(true)]
-        [Description("A custom error message to display in place of the default message provided for the vtype currently set for this field (defaults to ''). Only applies if vtype is set, else ignored.")]
-        public virtual string VtypeText
-        {
-            get
-            {
-                return this.State.Get<string>("VtypeText", "");
-            }
-            set
-            {
-                this.State.Set("VtypeText", value);
-            }
-        }
+        }        
 
         private static readonly object EventTextChanged = new object();
 
@@ -612,7 +553,8 @@ namespace Ext.Net
         {
             add
             {
-                Events.AddHandler(EventTextChanged, value);
+                this.CheckForceId();
+				Events.AddHandler(EventTextChanged, value);
             }
             remove
             {

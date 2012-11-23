@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -37,8 +37,8 @@ namespace Ext.Net
     /// </summary>
     /// <typeparam name="TComponent"></typeparam>
     /// <typeparam name="TBuilder"></typeparam>
-    public partial class ControlBuilder<TComponent, TBuilder> 
-        : IControlBuilder<TComponent>
+    public partial class ControlBuilder<TComponent, TBuilder>
+        : IControlBuilder<TComponent>, IControlBuilder
         where TComponent : Control
         where TBuilder : ControlBuilder<TComponent, TBuilder>
     {
@@ -55,7 +55,7 @@ namespace Ext.Net
 		/// 
 		/// </summary>
 		[Description("")]
-        protected TComponent control;
+        private TComponent control;
 
         //  Hat Tip to James Newton King
         //  REFERENCE: http://james.newtonking.com/archive/2009/07/28/implicit-conversions-and-linq-to-json.aspx
@@ -103,6 +103,11 @@ namespace Ext.Net
         public virtual void Render(Control control)
         {
             control.Controls.Add(this.ToComponent());
+        }
+
+        public T Cast<T>() where T : class, IControlBuilder
+        {
+            return this as T;
         }
     }
 

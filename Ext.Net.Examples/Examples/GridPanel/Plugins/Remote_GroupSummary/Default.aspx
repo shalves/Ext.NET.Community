@@ -12,7 +12,7 @@
     {
         CultureInfo ci = new CultureInfo("en-US");
         Store store = GridPanel1.Store.Primary;
-        var data = new List<Project> 
+        List<Project> data = new List<Project> 
              { 
                  new Project(100, "Ext Forms: Field Anchoring", 112, "Integrate 2.0 Forms with 2.0 Layouts", 6, 150, 0, DateTime.Parse("06/24/2007",ci)),
                  new Project(100, "Ext Forms: Field Anchoring", 113, "Implement AnchorLayout", 4, 150, 0, DateTime.Parse("06/25/2007",ci)),
@@ -32,7 +32,7 @@
                  new Project(102, "Ext Grid: Summary Rows", 111, "Testing and debugging", 8, 125, 0, DateTime.Parse("07/15/2007",ci))
              };
 
-        var summaryData = new List<object> 
+        List<object> summaryData = new List<object> 
         {
             new {Name = "Ext Grid: Single-level Grouping", Description = 13, Estimate = 6, Rate = 100, Due = DateTime.Parse("07/06/2012",ci), Cost = 1234},
 	        new {Name = "Ext Forms: Field Anchoring", Description = 14, Estimate = 9, Rate = 50, Due = DateTime.Parse("06/29/2007",ci), Cost = 999},
@@ -71,9 +71,9 @@
 <head runat="server">
     <title>Grouping with Remote Summary - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
    
-    <style type="text/css">
+    <style>
         .x-grid-body .x-grid-cell-Cost {
             background-color : #f1f2f4;
         }
@@ -122,7 +122,7 @@
                                 <ext:ModelField Name="Estimate" Type="Int" />
                                 <ext:ModelField Name="Rate" Type="Float" />
                                 <ext:ModelField Name="Due" Type="Date" />
-                                <ext:ModelField Name="Cost" Type="Date" />
+                                <ext:ModelField Name="Cost" />
                             </Fields>
                         </ext:Model>
                     </Model>
@@ -198,7 +198,7 @@
                 <ext:GridView runat="server" StripeRows="false" />
             </View>         
             <TopBar>
-                <ext:Toolbar ID="Toolbar1" runat="server">
+                <ext:Toolbar runat="server">
                     <Items>
                         <ext:Button runat="server" Text="Toggle" ToolTip="Toggle the visibility of summary row">
                             <Listeners>

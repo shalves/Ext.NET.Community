@@ -42,9 +42,9 @@
 <html>
 <head runat="server">
     <title>Field Indicator - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         .red-text {
             color     : red;
             font-size : large;

@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>KeyNav - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" /> 
+    <link href="/resources/css/examples.css" rel="stylesheet" /> 
     
-    <script type="text/javascript">
+    <script>
         var isCenter = true;
         
         var move = function (win, dir) {

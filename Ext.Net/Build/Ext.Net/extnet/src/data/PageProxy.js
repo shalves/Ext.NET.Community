@@ -5,6 +5,7 @@ Ext.define("Ext.data.proxy.Page", {
     extend: "Ext.data.proxy.Server",
     alias : 'proxy.page',
     isPageProxy : true,
+    appendAction : false,
     
     extractResponseData : function (response) {
         return response.data;

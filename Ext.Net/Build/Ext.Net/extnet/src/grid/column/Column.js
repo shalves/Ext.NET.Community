@@ -48,7 +48,15 @@ Ext.grid.column.Column.override({
                 type : 'hbox'
             });
             me.isContainer = true;
-        }         
+        }
+
+        if (me.wrap) {
+            if (!Ext.isString(me.tdCls)) {
+                me.tdCls = "";
+            }
+    
+            me.tdCls += " x-grid-cell-wrap";
+        }
     },
 
     afterHide : function () {
@@ -83,7 +91,7 @@ Ext.grid.column.Column.override({
         var me = this;
 
         if (!me.grid) {
-            me.grid = me.up('gridpanel');
+            me.grid = me.up('tablepanel');
         }
 
         return this.callParent(arguments);
@@ -190,23 +198,39 @@ Ext.grid.column.Column.override({
             var rightAlign = me.rightCommandAlign === false ? false : true,
                 preparedCommands = [],
                 commands = me.commands,
+                i,
+                cmd,
+                command,
                 userRendererValue;
+
+            for (i = 0; i < commands.length; i++) {
+                cmd = commands[i];                
+
+                if (cmd.iconCls && cmd.iconCls.charAt(0) === '#') {
+                    cmd.iconCls = X.net.RM.getIcon(cmd.iconCls.substring(1));
+                }
+            }
                 
             if (me.prepareCommands) {                
                 commands = Ext.net.clone(me.commands);
                 me.prepareCommands(me.grid, commands, record, row, col, value);
             }    
                 
-            for (var i = rightAlign ? (commands.length - 1) : 0; rightAlign ? (i >= 0) : (i < commands.length); rightAlign ? i-- : i++) {
-                var cmd = commands[i];
+            for (i = rightAlign ? (commands.length - 1) : 0; rightAlign ? (i >= 0) : (i < commands.length); rightAlign ? i-- : i++) {
+                cmd = commands[i];
                 
                 cmd.tooltip = cmd.tooltip || {};
+
+                if (cmd.iconCls && cmd.iconCls.charAt(0) === '#') {
+                    cmd.iconCls = X.net.RM.getIcon(cmd.iconCls.substring(1));
+                }
                 
-                var command = {
+                command = {
                     command  : cmd.command,
                     cls      : cmd.cls,
                     iconCls  : cmd.iconCls,
                     hidden   : cmd.hidden,
+                    disabled : cmd.disabled,
                     text     : cmd.text,
                     style    : cmd.style,
                     qtext    : cmd.tooltip.text,
@@ -216,6 +240,10 @@ Ext.grid.column.Column.override({
 
                 if (me.prepareCommand) {
                     me.prepareCommand(me.grid, command, record, row, col, value);
+                }
+
+                if (command.disabled) {
+                    command.cls = (command.cls || "") + " x-imagecommand-disabled";
                 }
 
                 if (command.hidden) {
@@ -283,13 +311,16 @@ Ext.grid.column.Column.override({
     },
 
     onCellCommandClick : function (view, e, target, cell, recordIndex, cellIndex) {
-        var cmd = Ext.fly(target).getAttributeNS("", "cmd");
-            
-        if (Ext.isEmpty(cmd, false)) {
+        var cmd = Ext.fly(target).getAttributeNS("", "cmd"),
+            owner = this.grid,
+            store = owner.getStore(),
+            record = store.getAt ? store.getAt(recordIndex) : view.getRecord(view.getNode(recordIndex));
+ 
+        if (Ext.isEmpty(cmd, false) || Ext.fly(target).hasCls("x-imagecommand-disabled")) {
             return;
         }
-
-        this.fireEvent("command", this, cmd, this.grid.store.getAt(recordIndex), recordIndex, cellIndex);
+ 
+        this.fireEvent("command", this, cmd, record, recordIndex, cellIndex);
     },
 
     beforeDestroy : function () {

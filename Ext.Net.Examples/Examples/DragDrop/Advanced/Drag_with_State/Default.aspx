@@ -9,7 +9,7 @@
 <html>
 <head runat="server">
     <title>Drag with state - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
     <script runat="server">
         protected void Page_Load(object sender, EventArgs e)
@@ -32,7 +32,7 @@
         }
     </script>
     
-    <style type="text/css">
+    <style>
         div.draggable-item {
             border : 1px solid silver;
             background-color : #f0f080;
@@ -59,7 +59,7 @@
         }
     </style>
     
-    <script type="text/javascript">
+    <script>
         var getState = function () {
             var state = {};
             state.divs = App.divsData.divs;

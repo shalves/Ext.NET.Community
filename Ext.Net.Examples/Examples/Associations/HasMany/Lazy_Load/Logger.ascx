@@ -16,7 +16,7 @@
         <ext:MessageBusListener Name="App.Log" Fn="addLogMessage" />
     </MessageBusListeners>
     <HtmlBin>
-        <style type="text/css">
+        <style>
             .beforeload {
                 color: blue;
             }
@@ -26,7 +26,7 @@
             }
         </style>
 
-        <script type="text/javascript">
+        <script>
             var addLogMessage = function(name, data){
                 this.update({
                     now: new Date(),

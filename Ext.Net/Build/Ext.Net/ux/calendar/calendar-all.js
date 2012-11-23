@@ -1,15 +1,31 @@
-/*
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+/********
+ * This file is part of Ext.NET.
+ *     
+ * Ext.NET is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * Ext.NET is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
+ * 
+ * You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
+ * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
- * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
- * @website   : http://www.ext.net/
- */
-
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
+ *              See license.txt and http://www.ext.net/license/.
+ *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
+ ********/
 
 Ext.define('Ext.calendar.util.Date',{singleton:true,equalDates:function(dt1,dt2){return dt1.getFullYear()==dt2.getFullYear()&&dt1.getMonth()==dt2.getMonth()&&dt1.getDate()==dt2.getDate();},diffDays:function(start,end){var day=1000*60*60*24,clear=Ext.Date.clearTime,diff=clear(end,true).getTime()-clear(start,true).getTime();return Math.ceil(diff/day);},copyTime:function(fromDt,toDt){var dt=Ext.Date.clone(toDt);dt.setHours(fromDt.getHours(),fromDt.getMinutes(),fromDt.getSeconds(),fromDt.getMilliseconds());return dt;},compare:function(dt1,dt2,precise){if(precise!==true){dt1=Ext.Date.clone(dt1);dt1.setMilliseconds(0);dt2=Ext.Date.clone(dt2);dt2.setMilliseconds(0);}
-return dt2.getTime()-dt1.getTime();},maxOrMin:function(max){var dt=(max?0:Number.MAX_VALUE),i=0,args=arguments[1],ln=args.length;for(;i<ln;i++){dt=Math[max?'max':'min'](dt,args[i].getTime());}
+return dt2.getTime()-dt1.getTime();},isMidnight:function(dt){return dt.getHours()===0&&dt.getMinutes()===0&&dt.getSeconds()===0&&dt.getMilliseconds()===0;},maxOrMin:function(max){var dt=(max?0:Number.MAX_VALUE),i=0,args=arguments[1],ln=args.length;for(;i<ln;i++){dt=Math[max?'max':'min'](dt,args[i].getTime());}
 return new Date(dt);},max:function(){return this.maxOrMin.apply(this,[true,arguments]);},min:function(){return this.maxOrMin.apply(this,[false,arguments]);},today:function(){return Ext.Date.clearTime(new Date());},add:function(dt,o){if(!o){return dt;}
 var ExtDate=Ext.Date,dateAdd=ExtDate.add,newDt=ExtDate.clone(dt);if(o.years){newDt=dateAdd(newDt,ExtDate.YEAR,o.years);}
 if(o.months){newDt=dateAdd(newDt,ExtDate.MONTH,o.months);}
@@ -113,13 +129,15 @@ this.callParent(arguments);}});
 
 Ext.define('Ext.calendar.form.field.DateRange',{extend:'Ext.form.FieldContainer',alias:'widget.daterangefield',requires:['Ext.form.field.Date','Ext.form.field.Time','Ext.form.Label','Ext.form.field.Checkbox','Ext.layout.container.Column'],toText:'to',allDayText:'All day',singleLine:true,dateFormat:'n/j/Y',timeFormat:Ext.Date.use24HourTime?'G:i':'g:i A',fieldLayout:{type:'hbox',defaultMargins:{top:0,right:5,bottom:0,left:0}},initComponent:function(){var me=this;me.addCls('ext-dt-range');if(me.singleLine){me.layout=me.fieldLayout;me.items=me.getFieldConfigs();}
 else{me.items=[{xtype:'container',layout:me.fieldLayout,items:[me.getStartDateConfig(),me.getStartTimeConfig(),me.getDateSeparatorConfig()]},{xtype:'container',layout:me.fieldLayout,items:[me.getEndDateConfig(),me.getEndTimeConfig(),me.getAllDayConfig()]}];}
-me.callParent(arguments);me.initRefs();},initRefs:function(){var me=this;me.startDate=me.down('#'+me.id+'-start-date');me.startTime=me.down('#'+me.id+'-start-time');me.endTime=me.down('#'+me.id+'-end-time');me.endDate=me.down('#'+me.id+'-end-date');me.allDay=me.down('#'+me.id+'-allday');me.toLabel=me.down('#'+me.id+'-to-label');},getFieldConfigs:function(){var me=this;return[me.getStartDateConfig(),me.getStartTimeConfig(),me.getDateSeparatorConfig(),me.getEndTimeConfig(),me.getEndDateConfig(),me.getAllDayConfig()];},getStartDateConfig:function(){return{xtype:'datefield',itemId:this.id+'-start-date',format:this.dateFormat,width:100,listeners:{'change':{fn:function(){this.onFieldChange('date','start');},scope:this}}};},getStartTimeConfig:function(){return{xtype:'timefield',itemId:this.id+'-start-time',hidden:this.showTimes===false,labelWidth:0,hideLabel:true,width:90,format:this.timeFormat,listeners:{'select':{fn:function(){this.onFieldChange('time','start');},scope:this}}};},getEndDateConfig:function(){return{xtype:'datefield',itemId:this.id+'-end-date',format:this.dateFormat,hideLabel:true,width:100,listeners:{'change':{fn:function(){this.onFieldChange('date','end');},scope:this}}};},getEndTimeConfig:function(){return{xtype:'timefield',itemId:this.id+'-end-time',hidden:this.showTimes===false,labelWidth:0,hideLabel:true,width:90,format:this.timeFormat,listeners:{'select':{fn:function(){this.onFieldChange('time','end');},scope:this}}};},getDuration:function(){var me=this,start=me.getDT('start'),end=me.getDT('end');return end.getTime()-start.getTime();},getAllDayConfig:function(){return{xtype:'checkbox',itemId:this.id+'-allday',hidden:this.showTimes===false||this.showAllDay===false,boxLabel:this.allDayText,margins:{top:2,right:5,bottom:0,left:0},handler:this.onAllDayChange,scope:this};},onAllDayChange:function(chk,checked){this.startTime.setVisible(!checked);this.endTime.setVisible(!checked);},getDateSeparatorConfig:function(){return{xtype:'label',itemId:this.id+'-to-label',text:this.toText,margins:{top:4,right:5,bottom:0,left:0}};},isSingleLine:function(){var me=this;if(me.calculatedSingleLine===undefined){if(me.singleLine=='auto'){var ownerCtEl=me.ownerCt.getEl(),w=me.ownerCt.getWidth()-ownerCtEl.getPadding('lr'),el=ownerCtEl.down('.x-panel-body');if(el){w-=el.getPadding('lr');}
+me.callParent(arguments);me.initRefs();},initRefs:function(){var me=this;me.startDate=me.down('#'+me.id+'-start-date');me.startTime=me.down('#'+me.id+'-start-time');me.endTime=me.down('#'+me.id+'-end-time');me.endDate=me.down('#'+me.id+'-end-date');me.allDay=me.down('#'+me.id+'-allday');me.toLabel=me.down('#'+me.id+'-to-label');me.startDate.validateOnChange=me.endDate.validateOnChange=false;me.startDate.isValid=me.endDate.isValid=function(){var me=this,valid=Ext.isDate(me.getValue());if(!valid){me.focus();}
+return valid;};},getFieldConfigs:function(){var me=this;return[me.getStartDateConfig(),me.getStartTimeConfig(),me.getDateSeparatorConfig(),me.getEndTimeConfig(),me.getEndDateConfig(),me.getAllDayConfig()];},getStartDateConfig:function(){return{xtype:'datefield',itemId:this.id+'-start-date',format:this.dateFormat,width:100,listeners:{'change':{fn:function(){this.onFieldChange('date','start');},scope:this}}};},getStartTimeConfig:function(){return{xtype:'timefield',itemId:this.id+'-start-time',hidden:this.showTimes===false,labelWidth:0,hideLabel:true,width:90,format:this.timeFormat,listeners:{'select':{fn:function(){this.onFieldChange('time','start');},scope:this}}};},getEndDateConfig:function(){return{xtype:'datefield',itemId:this.id+'-end-date',format:this.dateFormat,hideLabel:true,width:100,listeners:{'change':{fn:function(){this.onFieldChange('date','end');},scope:this}}};},getEndTimeConfig:function(){return{xtype:'timefield',itemId:this.id+'-end-time',hidden:this.showTimes===false,labelWidth:0,hideLabel:true,width:90,format:this.timeFormat,listeners:{'select':{fn:function(){this.onFieldChange('time','end');},scope:this}}};},getDuration:function(){var me=this,start=me.getDT('start'),end=me.getDT('end');return end.getTime()-start.getTime();},getAllDayConfig:function(){return{xtype:'checkbox',itemId:this.id+'-allday',hidden:this.showTimes===false||this.showAllDay===false,boxLabel:this.allDayText,margins:{top:2,right:5,bottom:0,left:0},handler:this.onAllDayChange,scope:this};},onAllDayChange:function(chk,checked){this.startTime.setVisible(!checked);this.endTime.setVisible(!checked);},getDateSeparatorConfig:function(){return{xtype:'label',itemId:this.id+'-to-label',text:this.toText,margins:{top:4,right:5,bottom:0,left:0}};},isSingleLine:function(){var me=this;if(me.calculatedSingleLine===undefined){if(me.singleLine=='auto'){var ownerCtEl=me.ownerCt.getEl(),w=me.ownerCt.getWidth()-ownerCtEl.getPadding('lr'),el=ownerCtEl.down('.x-panel-body');if(el){w-=el.getPadding('lr');}
 el=ownerCtEl.down('.x-form-item-label')
 if(el){w-=el.getWidth()-el.getPadding('lr');}
 me.calculatedSingleLine=w<=me.singleLineMinWidth?false:true;}
 else{me.calculatedSingleLine=me.singleLine!==undefined?me.singleLine:true;}}
 return me.calculatedSingleLine;},onFieldChange:function(type,startend){this.checkDates(type,startend);this.fireEvent('change',this,this.getValue());},checkDates:function(type,startend){var me=this,startField=me.down('#'+me.id+'-start-'+type),endField=me.down('#'+me.id+'-end-'+type),startValue=me.getDT('start'),endValue=me.getDT('end');if(startValue>endValue){if(startend=='start'){endField.setValue(startValue);}else{startField.setValue(endValue);me.checkDates(type,'start');}}
-if(type=='date'){me.checkDates('time',startend);}},getValue:function(){return[this.getDT('start'),this.getDT('end'),this.allDay.getValue()];},getDT:function(startend){var time=this[startend+'Time'].getValue(),dt=this[startend+'Date'].getValue();if(Ext.isDate(dt)){dt=Ext.Date.format(dt,this[startend+'Date'].format);}
+if(type=='date'){me.checkDates('time',startend);}},getValue:function(){var eDate=Ext.calendar.util.Date,start=this.getDT('start'),end=this.getDT('end'),allDay=this.allDay.getValue();if(Ext.isDate(start)&&Ext.isDate(end)&&start.getTime()!==end.getTime()){if(!allDay&&eDate.isMidnight(start)&&eDate.isMidnight(end)){allDay=true;end=eDate.add(end,{days:-1});}}
+return[start,end,allDay];},getDT:function(startend){var time=this[startend+'Time'].getValue(),dt=this[startend+'Date'].getValue();if(Ext.isDate(dt)){dt=Ext.Date.format(dt,this[startend+'Date'].format);}
 else{return null;};if(time&&time!=''){time=Ext.Date.format(time,this[startend+'Time'].format);var val=Ext.Date.parseDate(dt+' '+time,this[startend+'Date'].format+' '+this[startend+'Time'].format);return val;}
 return Ext.Date.parseDate(dt,this[startend+'Date'].format);},setValue:function(v){if(!v){return;}
 if(Ext.isArray(v)){this.setDT(v[0],'start');this.setDT(v[1],'end');this.allDay.setValue(!!v[2]);}

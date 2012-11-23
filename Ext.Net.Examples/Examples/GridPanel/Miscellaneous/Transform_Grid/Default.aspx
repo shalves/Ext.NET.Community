@@ -5,9 +5,9 @@
 <html>
 <head runat="server">
     <title>Converting an HTML table into a GridPanel - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         #data { 
             width: 400px; 
             border: 1px solid #bbb; 

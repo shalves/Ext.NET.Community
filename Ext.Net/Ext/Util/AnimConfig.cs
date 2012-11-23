@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -29,6 +29,7 @@ using System.Text;
 using System.Web.UI;
 
 using Ext.Net.Utilities;
+using System.Collections.Generic;
 
 namespace Ext.Net
 {
@@ -362,9 +363,11 @@ namespace Ext.Net
                     return null;
                 }
 
-                var sb = new StringBuilder();
+                StringBuilder sb = new StringBuilder();
+
                 sb.Append("{");
-                foreach (var keyFrame in this.KeyFrames)
+
+                foreach (KeyValuePair<string, ParameterCollection> keyFrame in this.KeyFrames)
                 {
                     if (keyFrame.Value != null && keyFrame.Value.Count > 0)
                     {

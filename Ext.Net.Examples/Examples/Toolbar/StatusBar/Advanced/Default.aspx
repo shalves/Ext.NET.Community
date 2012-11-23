@@ -14,8 +14,8 @@
 <html>
 <head runat="server">
     <title>StatusBar Advanced - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />   
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />   
+    <style>
         .list {
             list-style-image    : none;
             list-style-position : outside;

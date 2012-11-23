@@ -53,7 +53,7 @@
 <html>
 <head runat="server">
     <title>TreePanel with Editor - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -70,9 +70,7 @@
             Title="Tree Editors Filter"
             AutoScroll="true" 
             Width="250" 
-            Collapsed="False" 
             CollapseFirst="True" 
-            HideParent="False"
             RootVisible="False">    
             <Fields>
                 <ext:ModelField Name="editor" Type="Int" />
@@ -104,9 +102,7 @@
             Title="Tree Active Editor"
             AutoScroll="true" 
             Width="250" 
-            Collapsed="False" 
-            CollapseFirst="True" 
-            HideParent="False"
+            CollapseFirst="True"             
             ActiveEditor="Editor1"
             RootVisible="False">    
             <TopBar>

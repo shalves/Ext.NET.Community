@@ -29,7 +29,7 @@
 <html>
 <head runat="server">
     <title>Loader - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <h1>Data Loader</h1>
@@ -106,7 +106,7 @@
         Title="Data from JSON web service">
         <Tpl runat="server">
             <Html>
-                <tpl for="d">
+                <tpl for=".">
                     <p>{FirstName} - {LastName}</p>
                 </tpl>
             </Html>            

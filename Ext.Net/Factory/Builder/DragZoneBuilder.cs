@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,74 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : DragSource.Builder<DragZone, DragZone.Builder>
+        new public abstract partial class Builder<TDragZone, TBuilder> : DragSource.Builder<TDragZone, TBuilder>
+            where TDragZone : DragZone
+            where TBuilder : Builder<TDragZone, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TDragZone component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// True to register this container with the Scrollmanager for auto scrolling during drag operations.
+			/// </summary>
+            public virtual TBuilder ContainerScroll(bool containerScroll)
+            {
+                this.ToComponent().ContainerScroll = containerScroll;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Called after a repair of an invalid drop. By default, highlights this.dragData.ddel
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder AfterRepair(Action<JFunction> action)
+            {
+                action(this.ToComponent().AfterRepair);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Called before a repair of an invalid drop to get the XY to animate to. By default returns the XY of this.dragData.ddel
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder GetRepairXY(Action<JFunction> action)
+            {
+                action(this.ToComponent().GetRepairXY);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Called once drag threshold has been reached to initialize the proxy element. By default, it clones the this.dragData.ddel
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder OnInitDrag(Action<JFunction> action)
+            {
+                action(this.ToComponent().OnInitDrag);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : DragZone.Builder<DragZone, DragZone.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,57 +139,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// True to register this container with the Scrollmanager for auto scrolling during drag operations.
-			/// </summary>
-            public virtual DragZone.Builder ContainerScroll(bool containerScroll)
-            {
-                this.ToComponent().ContainerScroll = containerScroll;
-                return this as DragZone.Builder;
-            }
-             
- 			/// <summary>
-			/// Called after a repair of an invalid drop. By default, highlights this.dragData.ddel
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DragZone.Builder</returns>
-            public virtual DragZone.Builder AfterRepair(Action<JFunction> action)
-            {
-                action(this.ToComponent().AfterRepair);
-                return this as DragZone.Builder;
-            }
-			 
- 			/// <summary>
-			/// Called before a repair of an invalid drop to get the XY to animate to. By default returns the XY of this.dragData.ddel
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DragZone.Builder</returns>
-            public virtual DragZone.Builder GetRepairXY(Action<JFunction> action)
-            {
-                action(this.ToComponent().GetRepairXY);
-                return this as DragZone.Builder;
-            }
-			 
- 			/// <summary>
-			/// Called once drag threshold has been reached to initialize the proxy element. By default, it clones the this.dragData.ddel
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DragZone.Builder</returns>
-            public virtual DragZone.Builder OnInitDrag(Action<JFunction> action)
-            {
-                action(this.ToComponent().OnInitDrag);
-                return this as DragZone.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -131,6 +147,14 @@ namespace Ext.Net
         public DragZone.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.DragZone(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -145,7 +169,11 @@ namespace Ext.Net
         /// </summary>
         public DragZone.Builder DragZone()
         {
-            return this.DragZone(new DragZone());
+#if MVC
+			return this.DragZone(new DragZone { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.DragZone(new DragZone());
+#endif			
         }
 
         /// <summary>
@@ -153,7 +181,10 @@ namespace Ext.Net
         /// </summary>
         public DragZone.Builder DragZone(DragZone component)
         {
-            return new DragZone.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new DragZone.Builder(component);
         }
 
         /// <summary>
@@ -161,7 +192,11 @@ namespace Ext.Net
         /// </summary>
         public DragZone.Builder DragZone(DragZone.Config config)
         {
-            return new DragZone.Builder(new DragZone(config));
+#if MVC
+			return new DragZone.Builder(new DragZone(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new DragZone.Builder(new DragZone(config));
+#endif			
         }
     }
 }

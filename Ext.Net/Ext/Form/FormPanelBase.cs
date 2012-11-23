@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -304,7 +304,7 @@ namespace Ext.Net
             {
                 if (this.Url.IsEmpty())
                 {
-                    if (HttpContext.Current != null && HttpContext.Current.Request.RawUrl.IsNotEmpty())
+                    if (HttpContext.Current != null && HttpContext.Current.Request.RawUrl.IsNotEmpty() && !this.IsMVC)
                     {
                         return HttpContext.Current.Request.RawUrl;
                     }
@@ -355,6 +355,27 @@ namespace Ext.Net
             set
             {
                 this.State.Set("WaitTitle", value);
+            }
+        }
+
+        /// <summary>
+        /// If set to true, the field values are sent as JSON in the request body. All of the field values, plus any additional params configured via baseParams and/or the options to submit, will be included in the values POSTed in the body of the request.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("6. FormPanel")]
+        [DefaultValue(false)]
+        [NotifyParentProperty(true)]
+        [Description("If set to true, the field values are sent as JSON in the request body. All of the field values, plus any additional params configured via baseParams and/or the options to submit, will be included in the values POSTed in the body of the request.")]
+        public virtual bool JsonSubmit
+        {
+            get
+            {
+                return this.State.Get<bool>("JsonSubmit", false);
+            }
+            set
+            {
+                this.State.Set("JsonSubmit", value);
             }
         }
 

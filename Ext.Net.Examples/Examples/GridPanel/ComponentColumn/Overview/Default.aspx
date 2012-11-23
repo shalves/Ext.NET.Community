@@ -20,11 +20,11 @@
 
             this.Store2.DataSource = new object[]
             {
-                new object[] {0, "Task 1", 0, 0 },
-                new object[] {1, "Task 2", 0, 0 },
-                new object[] {2, "Task 3", 0, 0 },
-                new object[] {3, "Task 4", 0, 0 },
-                new object[] {4, "Task 5", 0, 0 }
+                new object[] { 0, "Task 1", 0, 0 },
+                new object[] { 1, "Task 2", 0, 0 },
+                new object[] { 2, "Task 3", 0, 0 },
+                new object[] { 3, "Task 4", 0, 0 },
+                new object[] { 4, "Task 5", 0, 0 }
             };
 
             this.Store2.DataBind();
@@ -33,16 +33,16 @@
 
     protected void DoTasks(object sender, DirectEventArgs e)
     {
-        var json = e.ExtraParams["tasks"];
-        var tasks = JSON.Deserialize<Dictionary<string, string>[]>(json);
+        string json = e.ExtraParams["tasks"];
+        Dictionary<string, string>[] tasks = JSON.Deserialize<Dictionary<string, string>[]>(json);
 
-        foreach (var task in tasks)
+        foreach (Dictionary<string, string> task in tasks)
         {
-            var id = JSON.Deserialize<int>(task["TaskID"]);
-            var progress = JSON.Deserialize<float>(task["Progress"]);
-            var status = JSON.Deserialize<int>(task["Status"]);
+            int id = JSON.Deserialize<int>(task["TaskID"]);
+            float progress = JSON.Deserialize<float>(task["Progress"]);
+            int status = JSON.Deserialize<int>(task["Status"]);
             
-            var record = Store2.GetById(id);
+            ModelProxy record = Store2.GetById(id);
             record.BeginEdit();
             
             if (status == 1) {
@@ -68,9 +68,9 @@
 <html>
 <head runat="server">
     <title>ComponentColumn Overview - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
+    <script>
         var bindWidgets = function (column, cmp, record) {
             var status = record.get('Status'),
                 statusLbl = cmp.down('#Status'),
@@ -144,7 +144,7 @@
             </Store>
             <ColumnModel runat="server">
                 <Columns>
-                     <ext:RowNumbererColumn runat="server" Width="20" />
+                     <ext:RowNumbererColumn runat="server" />
 
                      <ext:ComponentColumn runat="server">
                         <Component>
@@ -177,8 +177,7 @@
         <ext:GridPanel 
             runat="server" 
             Title="Tasks" 
-            Width="320" 
-            Height="190">
+            Width="320">
             <Bin>
                 <ext:TaskManager runat="server">
                     <Tasks>
@@ -213,13 +212,13 @@
             </Store>
             <ColumnModel runat="server">
                 <Columns>
-                     <ext:RowNumbererColumn runat="server" Width="20" />
+                     <ext:RowNumbererColumn runat="server" />
 
                      <ext:Column runat="server" Text="Task" DataIndex="TaskName" />
 
                      <ext:ComponentColumn runat="server" Flex="1">
                         <Component>
-                            <ext:Container runat="server">
+                            <ext:Container runat="server" Height="22">
                                 <Items>
                                     <ext:Label runat="server" ItemID="Status" />
                                     <ext:ProgressBar runat="server" ItemID="Progress" />

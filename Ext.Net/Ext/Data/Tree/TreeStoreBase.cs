@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -96,6 +96,25 @@ namespace Ext.Net
             set
             {
                 this.State.Set("DefaultRootId", value);
+            }
+        }
+
+        /// <summary>
+        /// The default root text (if not specified). Defaults to: "Root"
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [DefaultValue("Root")]
+        [Description("The default root text (if not specified). Defaults to: \"Root\"")]
+        public virtual string DefaultRootText
+        {
+            get
+            {
+                return this.State.Get<string>("DefaultRootText", "Root");
+            }
+            set
+            {
+                this.State.Set("DefaultRootText", value);
             }
         }
 
@@ -209,6 +228,24 @@ namespace Ext.Net
             this.Call("setRootNode", new JRawValue(node.ToScript()));
         }
 
+        /// <summary>
+        /// Reload a node
+        /// </summary>
+        /// <param name="id"></param>
+        public virtual void ReloadNode(string id)
+        {
+            this.GetNodeById(id).Reload();
+        }
+
+        /// <summary>
+        /// Reload a node
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="options"></param>
+        public virtual void ReloadNode(string id, object options)
+        {
+            this.GetNodeById(id).Reload(options);
+        }
 
         private static readonly object EventReadData = new object();
 
@@ -227,7 +264,8 @@ namespace Ext.Net
         {
             add
             {
-                this.Events.AddHandler(EventReadData, value);
+                this.CheckForceId();
+				this.Events.AddHandler(EventReadData, value);
             }
             remove
             {
@@ -344,6 +382,7 @@ namespace Ext.Net
         /// <summary> 
         /// 
         /// </summary>
+        [Meta]
         [Bindable(true)]
         [DefaultValue(null)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -369,6 +408,7 @@ namespace Ext.Net
         /// <summary> 
         /// 
         /// </summary>
+        [Meta]
         [DefaultValue("")]
         [IDReferenceProperty(typeof(HierarchicalDataSourceControl))]
         public virtual string DataSourceID
@@ -505,7 +545,7 @@ namespace Ext.Net
         /// </summary>
         protected virtual void EnsureDataBound()
         {
-            if (this.RequiresDataBinding && (this.DataSourceID.Length > 0 || this.requiresBindToNull))
+            if (this.RequiresDataBinding && (this.DataSourceID.Length > 0 || this.DataSource is HierarchicalDataSourceControl || this.requiresBindToNull))
             {
                 this.DataBind();
                 this.requiresBindToNull = false;
@@ -702,7 +742,8 @@ namespace Ext.Net
 
             if (this.DataSource is NodeCollection)
             {
-                var nodes = (NodeCollection)this.DataSource;
+                NodeCollection nodes = (NodeCollection)this.DataSource;
+                
                 if (this.Root.Count == 0 && nodes.Count == 1)
                 {
                     this.Root.AddRange(nodes);
@@ -1454,6 +1495,7 @@ namespace Ext.Net
                     if (!X.IsAjaxRequest)
                     {
                         Node newNodeParent = newNode.ParentNode;
+
                         while (newNodeParent != null)
                         {
                             if (newNodeParent.Expanded != true)
@@ -1469,6 +1511,7 @@ namespace Ext.Net
                 if (data.HasChildren && !populateOnDemand)
                 {
                     IHierarchicalEnumerable newEnumerable = data.GetChildren();
+
                     if (newEnumerable != null)
                     {
                         this.DataBindRecursive(newNode, newEnumerable);
@@ -1486,15 +1529,17 @@ namespace Ext.Net
         /// <param name="attrs"></param>
         protected virtual void GetModelProperties(string modelName, PropertyDescriptorCollection props, object item, ConfigItemCollection attrs)
         {
-            var model = Ext.Net.Model.Get(modelName);
+            Model model = Ext.Net.Model.Get(modelName);
+
             if (model == null)
             {
                 return;
             }
 
-            foreach (var field in model.Fields)
+            foreach (ModelField field in model.Fields)
             {
                 object value = this.GetFieldValue(props, item, field);
+
                 if (value != null)
                 {
                     attrs.Add(new ConfigItem(string.IsNullOrEmpty(field.Mapping) ? field.Name : field.Mapping, JSON.Serialize(value), ParameterMode.Raw));
@@ -1524,8 +1569,9 @@ namespace Ext.Net
                     return item;
                 }
             }
-            var fieldName = string.IsNullOrEmpty(field.Mapping) ? field.Name : field.Mapping;
-            var desc = props.Find(fieldName, true);
+
+            string fieldName = string.IsNullOrEmpty(field.Mapping) ? field.Name : field.Mapping;
+            PropertyDescriptor desc = props.Find(fieldName, true);
             
             return desc != null ? desc.GetValue(item) : null;
         }        

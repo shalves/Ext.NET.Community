@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,72 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ServerProxy.Builder<DirectProxy, DirectProxy.Builder>
+        new public abstract partial class Builder<TDirectProxy, TBuilder> : ServerProxy.Builder<TDirectProxy, TBuilder>
+            where TDirectProxy : DirectProxy
+            where TBuilder : Builder<TDirectProxy, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TDirectProxy component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// Specific direct functions to call on CRUD action methods \"read\", \"create\", \"update\" and \"destroy\".
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder API(Action<CRUDUrls> action)
+            {
+                action(this.ToComponent().API);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Function to call when executing a request. directFn is a simple alternative to defining the api configuration-parameter for Store's which will not implement a full CRUD api.
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectFn(Action<JFunction> action)
+            {
+                action(this.ToComponent().DirectFn);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Defaults to undefined. A list of params to be executed server side. Specify the params in the order in which they must be executed on the server-side as a String of params delimited by either whitespace, comma, or pipe.
+			/// </summary>
+            public virtual TBuilder ParamOrder(string paramOrder)
+            {
+                this.ToComponent().ParamOrder = paramOrder;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Send parameters as a collection of named arguments (defaults to true). Providing a paramOrder nullifies this configuration.
+			/// </summary>
+            public virtual TBuilder ParamsAsHash(bool paramsAsHash)
+            {
+                this.ToComponent().ParamsAsHash = paramsAsHash;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : DirectProxy.Builder<DirectProxy, DirectProxy.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,55 +137,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// Specific direct functions to call on CRUD action methods \"read\", \"create\", \"update\" and \"destroy\".
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DirectProxy.Builder</returns>
-            public virtual DirectProxy.Builder API(Action<CRUDUrls> action)
-            {
-                action(this.ToComponent().API);
-                return this as DirectProxy.Builder;
-            }
-			 
- 			/// <summary>
-			/// Function to call when executing a request. directFn is a simple alternative to defining the api configuration-parameter for Store's which will not implement a full CRUD api.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of DirectProxy.Builder</returns>
-            public virtual DirectProxy.Builder DirectFn(Action<JFunction> action)
-            {
-                action(this.ToComponent().DirectFn);
-                return this as DirectProxy.Builder;
-            }
-			 
- 			/// <summary>
-			/// Defaults to undefined. A list of params to be executed server side. Specify the params in the order in which they must be executed on the server-side as a String of params delimited by either whitespace, comma, or pipe.
-			/// </summary>
-            public virtual DirectProxy.Builder ParamOrder(string paramOrder)
-            {
-                this.ToComponent().ParamOrder = paramOrder;
-                return this as DirectProxy.Builder;
-            }
-             
- 			/// <summary>
-			/// Send parameters as a collection of named arguments (defaults to true). Providing a paramOrder nullifies this configuration.
-			/// </summary>
-            public virtual DirectProxy.Builder ParamsAsHash(bool paramsAsHash)
-            {
-                this.ToComponent().ParamsAsHash = paramsAsHash;
-                return this as DirectProxy.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -129,6 +145,14 @@ namespace Ext.Net
         public DirectProxy.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.DirectProxy(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -143,7 +167,11 @@ namespace Ext.Net
         /// </summary>
         public DirectProxy.Builder DirectProxy()
         {
-            return this.DirectProxy(new DirectProxy());
+#if MVC
+			return this.DirectProxy(new DirectProxy { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.DirectProxy(new DirectProxy());
+#endif			
         }
 
         /// <summary>
@@ -151,7 +179,10 @@ namespace Ext.Net
         /// </summary>
         public DirectProxy.Builder DirectProxy(DirectProxy component)
         {
-            return new DirectProxy.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new DirectProxy.Builder(component);
         }
 
         /// <summary>
@@ -159,7 +190,11 @@ namespace Ext.Net
         /// </summary>
         public DirectProxy.Builder DirectProxy(DirectProxy.Config config)
         {
-            return new DirectProxy.Builder(new DirectProxy(config));
+#if MVC
+			return new DirectProxy.Builder(new DirectProxy(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new DirectProxy.Builder(new DirectProxy(config));
+#endif			
         }
     }
 }

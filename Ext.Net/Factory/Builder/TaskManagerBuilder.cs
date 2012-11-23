@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,142 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : LazyObservable.Builder<TaskManager, TaskManager.Builder>
+        new public abstract partial class Builder<TTaskManager, TBuilder> : LazyObservable.Builder<TTaskManager, TBuilder>
+            where TTaskManager : TaskManager
+            where TBuilder : Builder<TTaskManager, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TTaskManager component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The minimum precision in milliseconds supported by this TaskRunner instance (defaults to 10)
+			/// </summary>
+            public virtual TBuilder Interval(int interval)
+            {
+                this.ToComponent().Interval = interval;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The start delay in milliseconds for autorun tasks
+			/// </summary>
+            public virtual TBuilder AutoRunDelay(int autoRunDelay)
+            {
+                this.ToComponent().AutoRunDelay = autoRunDelay;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Tasks(Action<TaskCollection> action)
+            {
+                action(this.ToComponent().Tasks);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder AddTask(Task task)
+            {
+                this.ToComponent().AddTask(task);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder RemoveTask(int index)
+            {
+                this.ToComponent().RemoveTask(index);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder RemoveTask(string name)
+            {
+                this.ToComponent().RemoveTask(name);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder StartAll()
+            {
+                this.ToComponent().StartAll();
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder StopAll()
+            {
+                this.ToComponent().StopAll();
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder StartTask(int index)
+            {
+                this.ToComponent().StartTask(index);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder StopTask(int index)
+            {
+                this.ToComponent().StopTask(index);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder StartTask(string name)
+            {
+                this.ToComponent().StartTask(name);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder StopTask(string name)
+            {
+                this.ToComponent().StopTask(name);
+                return this as TBuilder;
+            }
+            
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : TaskManager.Builder<TaskManager, TaskManager.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,125 +207,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The minimum precision in milliseconds supported by this TaskRunner instance (defaults to 10)
-			/// </summary>
-            public virtual TaskManager.Builder Interval(int interval)
-            {
-                this.ToComponent().Interval = interval;
-                return this as TaskManager.Builder;
-            }
-             
- 			/// <summary>
-			/// The start delay in milliseconds for autorun tasks
-			/// </summary>
-            public virtual TaskManager.Builder AutoRunDelay(int autoRunDelay)
-            {
-                this.ToComponent().AutoRunDelay = autoRunDelay;
-                return this as TaskManager.Builder;
-            }
-             
- 			/// <summary>
-			/// 
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of TaskManager.Builder</returns>
-            public virtual TaskManager.Builder Tasks(Action<TaskCollection> action)
-            {
-                action(this.ToComponent().Tasks);
-                return this as TaskManager.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TaskManager.Builder AddTask(Task task)
-            {
-                this.ToComponent().AddTask(task);
-                return this;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TaskManager.Builder RemoveTask(int index)
-            {
-                this.ToComponent().RemoveTask(index);
-                return this;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TaskManager.Builder RemoveTask(string name)
-            {
-                this.ToComponent().RemoveTask(name);
-                return this;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TaskManager.Builder StartAll()
-            {
-                this.ToComponent().StartAll();
-                return this;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TaskManager.Builder StopAll()
-            {
-                this.ToComponent().StopAll();
-                return this;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TaskManager.Builder StartTask(int index)
-            {
-                this.ToComponent().StartTask(index);
-                return this;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TaskManager.Builder StopTask(int index)
-            {
-                this.ToComponent().StopTask(index);
-                return this;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TaskManager.Builder StartTask(string name)
-            {
-                this.ToComponent().StartTask(name);
-                return this;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual TaskManager.Builder StopTask(string name)
-            {
-                this.ToComponent().StopTask(name);
-                return this;
-            }
-            
         }
 
         /// <summary>
@@ -199,6 +215,14 @@ namespace Ext.Net
         public TaskManager.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.TaskManager(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -213,7 +237,11 @@ namespace Ext.Net
         /// </summary>
         public TaskManager.Builder TaskManager()
         {
-            return this.TaskManager(new TaskManager());
+#if MVC
+			return this.TaskManager(new TaskManager { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.TaskManager(new TaskManager());
+#endif			
         }
 
         /// <summary>
@@ -221,7 +249,10 @@ namespace Ext.Net
         /// </summary>
         public TaskManager.Builder TaskManager(TaskManager component)
         {
-            return new TaskManager.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new TaskManager.Builder(component);
         }
 
         /// <summary>
@@ -229,7 +260,11 @@ namespace Ext.Net
         /// </summary>
         public TaskManager.Builder TaskManager(TaskManager.Config config)
         {
-            return new TaskManager.Builder(new TaskManager(config));
+#if MVC
+			return new TaskManager.Builder(new TaskManager(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new TaskManager.Builder(new TaskManager(config));
+#endif			
         }
     }
 }

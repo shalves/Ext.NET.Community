@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,50 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : Grouping.Builder<GroupingSummary, GroupingSummary.Builder>
+        new public abstract partial class Builder<TGroupingSummary, TBuilder> : Grouping.Builder<TGroupingSummary, TBuilder>
+            where TGroupingSummary : GroupingSummary
+            where TBuilder : Builder<TGroupingSummary, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TGroupingSummary component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// true to add css for column separation lines. Default is false.
+			/// </summary>
+            public virtual TBuilder ShowSummaryRow(bool showSummaryRow)
+            {
+                this.ToComponent().ShowSummaryRow = showSummaryRow;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The name of the property which contains the Array of summary objects. Defaults to undefined. It allows to use server-side calculated summaries.
+			/// </summary>
+            public virtual TBuilder RemoteRoot(string remoteRoot)
+            {
+                this.ToComponent().RemoteRoot = remoteRoot;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : GroupingSummary.Builder<GroupingSummary, GroupingSummary.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,33 +115,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// true to add css for column separation lines. Default is false.
-			/// </summary>
-            public virtual GroupingSummary.Builder ShowSummaryRow(bool showSummaryRow)
-            {
-                this.ToComponent().ShowSummaryRow = showSummaryRow;
-                return this as GroupingSummary.Builder;
-            }
-             
- 			/// <summary>
-			/// The name of the property which contains the Array of summary objects. Defaults to undefined. It allows to use server-side calculated summaries.
-			/// </summary>
-            public virtual GroupingSummary.Builder RemoteRoot(string remoteRoot)
-            {
-                this.ToComponent().RemoteRoot = remoteRoot;
-                return this as GroupingSummary.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -107,6 +123,14 @@ namespace Ext.Net
         public GroupingSummary.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.GroupingSummary(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -121,7 +145,11 @@ namespace Ext.Net
         /// </summary>
         public GroupingSummary.Builder GroupingSummary()
         {
-            return this.GroupingSummary(new GroupingSummary());
+#if MVC
+			return this.GroupingSummary(new GroupingSummary { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.GroupingSummary(new GroupingSummary());
+#endif			
         }
 
         /// <summary>
@@ -129,7 +157,10 @@ namespace Ext.Net
         /// </summary>
         public GroupingSummary.Builder GroupingSummary(GroupingSummary component)
         {
-            return new GroupingSummary.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new GroupingSummary.Builder(component);
         }
 
         /// <summary>
@@ -137,7 +168,11 @@ namespace Ext.Net
         /// </summary>
         public GroupingSummary.Builder GroupingSummary(GroupingSummary.Config config)
         {
-            return new GroupingSummary.Builder(new GroupingSummary(config));
+#if MVC
+			return new GroupingSummary.Builder(new GroupingSummary(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new GroupingSummary.Builder(new GroupingSummary(config));
+#endif			
         }
     }
 }

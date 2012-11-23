@@ -27,10 +27,10 @@
     [DirectMethod]
     public object GetProducts(string action, Dictionary<string, object> extraParams)
     {
-        var userId = -1;
+        int userId = -1;
 
         StoreRequestParameters prms = new StoreRequestParameters(extraParams);
-        var filter = prms.Filter;
+        DataFilter[] filter = prms.Filter;
         if (filter.Length > 0 && filter[0].Property == "UserId")
         {
             userId = Convert.ToInt32(filter[0].Value);
@@ -126,7 +126,7 @@
 <html>
 <head runat="server">
     <title>Simple lazy load - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 </head>
 <body>
     <ext:ResourceManager runat="server"  DirectEventUrl="Default.aspx"/>

@@ -23,7 +23,7 @@ namespace Ext.Net.Examples
 
             HttpResponse response = HttpContext.Current.Response;
 
-            var localLog = Convert.ToBoolean(WebConfigurationManager.AppSettings["LocalLogging"]);
+            bool localLog = Convert.ToBoolean(WebConfigurationManager.AppSettings["LocalLogging"]);
 
             if (!RequestManager.IsAjaxRequest && (localLog || HttpContext.Current.Request.Url.Host != "localhost"))
             {

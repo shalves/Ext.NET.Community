@@ -32,10 +32,10 @@
 <head runat="server">
     <title>DataView with Paging - Ext.NET Examples</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
     <ext:XScript runat="server">
-        <script type="text/javascript">
+        <script>
             var prepareData = function (data) {
                 data.shortName = Ext.util.Format.ellipsis(data.name, 15);
                 data.sizeString = Ext.util.Format.fileSize(data.size);
@@ -53,7 +53,7 @@
         </script>
     </ext:XScript>
     
-    <style type="text/css">
+    <style>
         .images-view .x-panel-body {
 	        background: white;
 	        font: 11px Arial, Helvetica, sans-serif;

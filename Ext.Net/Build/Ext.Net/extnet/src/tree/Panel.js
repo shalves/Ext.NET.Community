@@ -3,6 +3,7 @@
 
 Ext.tree.Panel.override({
     mode : "local",
+    selectionSubmit : false,
     
     constructor : function (config) {
         if (config && config.autoLoad) {
@@ -10,6 +11,19 @@ Ext.tree.Panel.override({
         }
 
         this.callParent(arguments);
+    },
+
+    initSelectionSubmit : function () {
+        this.plugins = this.plugins || [];
+        this.plugins.push(Ext.create('Ext.grid.plugin.SelectionSubmit', {}));
+    },
+
+    doSelection : function () {
+         this.getSelectionSubmit().doSelection();
+    },
+    
+    initSelectionData : function () {
+        this.getSelectionSubmit().initSelectionData();
     },
 
     initComponent : function () {
@@ -27,7 +41,11 @@ Ext.tree.Panel.override({
             "beforeremoteappend"    : true            
         });
 
+        this.initSelectionSubmit();
+
         this.callParent(arguments);
+
+        this.relayEvents(this.getView(), ["nodedragover"]);
 
         if ((Ext.isEmpty(this.selectionSubmitConfig) || this.selectionSubmitConfig.disableAutomaticSubmit !== true) && this.hasId()) {
            this.getSelectionModel().on("selectionchange", this.updateSelection, this);
@@ -114,6 +132,14 @@ Ext.tree.Panel.override({
         this.toggleChecked(startNode, true);
     },
 
+    filterGetRowClass : function (record) {
+        var cls = "";
+        if (this._originGetRowClass && this._originGetRowClass.fn) {
+            cls = this._originGetRowClass.fn.apply(arguments) || "";
+        }
+        return record.data.hidden ? "x-hidden " + cls : cls;
+    },
+
     filterBy : function (fn, config) {
 		config = config || {};
         this.filtered = this.filtered || {};
@@ -124,8 +150,16 @@ Ext.tree.Panel.override({
 
 		this.getView().animate = false;
 
+        Ext.suspendLayouts();
+
+        if (!this._originGetRowClass) {
+            this._originGetRowClass = { fn: this.view.getRowClass };
+
+            this.view.getRowClass = Ext.Function.bind(this.filterGetRowClass, this);
+        }
+
 		if (config.autoClear) {
-			this.clearFilter();
+			this.clearFilter(false, false);
 		}
 		
 		af = this.filtered;
@@ -197,12 +231,23 @@ Ext.tree.Panel.override({
                 }
             } 
         }
+
+        Ext.resumeLayouts();
 	},
 	
-    clearFilter : function (collapse) {
+    clearFilter : function (collapse, suspendLayouts) {
         var af = this.filtered || {},
             n,
             viewNode;
+
+        if (suspendLayouts !== false) {
+            Ext.suspendLayouts();
+        }
+
+        if (this._originGetRowClass) {
+            this.view.getRowClass = this._originGetRowClass.fn;
+            delete this._originGetRowClass;
+        }
         
         for (var id in af) {
             if (typeof id != "function") {
@@ -225,6 +270,10 @@ Ext.tree.Panel.override({
             this.getView().animate = false;
             this.getRootNode().collapseChildren(true);
             this.getView().animate = animate;
+        }        
+
+        if (suspendLayouts !== false) {
+            Ext.resumeLayouts();
         }
 
         if (Ext.isWebKit) {
@@ -243,7 +292,7 @@ Ext.tree.Panel.override({
 
     getSelectionModelField : function () {
         if (!this.selectionModelField) {
-            this.selectionModelField = new Ext.form.field.Hidden({ id : this.id + "_SM", name : this.id + "_SM" });
+            this.selectionModelField = new Ext.form.field.Hidden({ name : this.selectedHiddenName || (this.id + "_SM") });
 
 			this.on("beforedestroy", function () { 
                 if (this.rendered) {
@@ -257,7 +306,7 @@ Ext.tree.Panel.override({
     
     getCheckNodesField : function () {
         if (!this.checkNodesField) {
-            this.checkNodesField = new Ext.form.field.Hidden({ id : this.id + "_CheckNodes", name : this.id + "_CheckNodes" });
+            this.checkNodesField = new Ext.form.field.Hidden({ name : this.checkedHiddenName || (this.id + "_CheckNodes") });
 
 			this.on("beforedestroy", function () { 
                 if (this.rendered) {
@@ -272,7 +321,6 @@ Ext.tree.Panel.override({
     excludeAttributes : [        
         "parentId",
         "index",
-        "checked",
         "leaf",
         "depth",
         "expanded",
@@ -334,6 +382,10 @@ Ext.tree.Panel.override({
         
         if (config.attributeFilter(node.idProperty, node.getId())) {
             sNode.nodeID = node.getId();
+        }
+
+        if (config.attributeFilter(node.clientIdProperty, node.internalId)) {
+            sNode.clientID = node.internalId;
         }
         
         if (config.attributeFilter(this.displayField, node.data[this.displayField])) {
@@ -467,6 +519,10 @@ Ext.tree.Panel.override({
             ac.userScope = ac.scope;
             delete ac.scope;
         }
+
+        if (this.submitUrl && !ac.url) {
+            ac.url = this.submitUrl;
+        }
         
         Ext.apply(ac, {
             control       : this,
@@ -476,6 +532,12 @@ Ext.tree.Panel.override({
             userSuccess   : this.submitSuccess,
             userFailure   : this.submitFailure
         });
+
+        if (ac.cleanRequest || ac.url) {
+            ac.extraParams = ac.extraParams || {};
+            ac.extraParams.data = ac.serviceParams;
+            delete ac.serviceParams;
+        }
 
         Ext.net.DirectEvent.request(ac);
     },
@@ -498,7 +560,7 @@ Ext.tree.Panel.override({
 
     submitSuccess : function (response, result, context, type, action, extraParams, o) {
         try {
-            var responseObj = result.serviceResponse;
+            var responseObj = result.serviceResponse || result;
             result = { success: responseObj.success, msg: responseObj.message };
         } catch (e) {
             if (o && o.userCallback) {
@@ -518,7 +580,7 @@ Ext.tree.Panel.override({
             return;
         }
 
-        if (!result.success) {
+        if (result.success === false) {
             if (o && o.userCallback) {
                 o.userCallback.call(o.userScope || context, o, false, response);
             }
@@ -644,6 +706,15 @@ Ext.tree.Panel.override({
             o.node.set(result.attributes);
         }
 
+        if (o.action != "raEdit" && Ext.isDefined(rParams.value)) {
+            o.node.set("text", rParams.value);
+        }
+
+        var id = rParams.ra_id || rParams.id;
+		if (id) {
+			o.node.setId(id);
+		}
+
 		switch (o.action) {
 		    case "raEdit":
 			    if (o.isRowEditing) {
@@ -695,18 +766,13 @@ Ext.tree.Panel.override({
 		        break;
 		    case "raAppend":
 		    case "raInsert":
-		        var id = rParams.ra_id || rParams.id;
-
-		        if (id) {
-			        o.node.setId(id);
-			    }
-
 			    this.getSelectionModel().select(o.node);
 		        break;
 		}
 
         o.node.commit();
 		
+        this.fireEvent("remote"+action.toLowerCase().substr(2) +"success", this, o.node, action, o);
 		this.fireEvent("remoteactionsuccess", this, o.node, action, o);
 	},
 	
@@ -764,7 +830,7 @@ Ext.tree.Panel.override({
 	        }
 
 	        config.extraParams = Ext.apply(config.extraParams, config.raConfig);
-	        config.type = "load";	        
+	        config.type = "load";
 	    } else {
 	        config.serviceParams = Ext.encode(config.raConfig);
 	    }
@@ -784,7 +850,8 @@ Ext.tree.Panel.override({
 		    dc.raConfig = {
 	            id       : node.getId(),
 	            parentId : node.parentNode.getId(),
-	            text     : this.convertText(node.data.text)
+	            text     : this.convertText(node.data.text),
+                index    : node.parentNode.indexOf(node)
 	        };
 	        
 	        this.performRemoteAction(dc);
@@ -871,14 +938,17 @@ Ext.tree.Panel.override({
                 currentPosition : currentPosition
             };
 
-            var ids = [];
+            var ids = [],
+                parentIds = [];
             Ext.each(data.records, function (r) {
                 ids.push(r.getId());
+                parentIds.push(r.parentNode.getId());
             });
 
 		    dc.raConfig = {
 	            ids      : ids,
 	            targetId : overNode.getId(),
+                parentIds : parentIds,
 	            point    : currentPosition
 	        };
 
@@ -902,7 +972,8 @@ Ext.tree.Panel.override({
 		
 		if (dc !== false && this.fireEvent("beforeremoteremove", this, node, dc.extraParams) !== false) {
 		    dc.raConfig = {
-	            id : node.getId()
+	            id : node.getId(),
+                parentId : node.parentNode.getId()
 	        };
 	        
 	        this.performRemoteAction(dc);
@@ -915,8 +986,11 @@ Ext.tree.Panel.override({
 		    child;
 		    
 		if (node.isLeaf()) {
-            node.set("leaf", false);
-            node.set("loaded", true);
+            //node.set("leaf", false);
+            //node.set("loaded", true);
+            node.data.leaf = false;
+            node.data.loaded = true;
+            this.store.fireEvent('update', this, node, Ext.data.Model.EDIT, null); 
         }
 		
         this.getView().animate = false;

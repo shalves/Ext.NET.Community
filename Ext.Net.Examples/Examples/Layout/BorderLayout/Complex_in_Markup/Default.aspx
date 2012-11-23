@@ -7,7 +7,7 @@
 <html>
 <head runat="server">
     <title>Complex BorderLayout - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <ext:ResourceManager runat="server" />
@@ -15,7 +15,6 @@
     <h1>Complex BorderLayout in Markup</h1>
     
     <ext:Button 
-        ID="Button1"
         runat="server" 
         Text="Show Window" 
         Icon="Application">

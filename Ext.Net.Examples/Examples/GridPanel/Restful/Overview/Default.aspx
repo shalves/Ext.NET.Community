@@ -14,9 +14,9 @@
 <html>
 <head runat="server">
     <title>RESTful Store - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var onWrite = function(store, operation) {
             var record = operation.getRecords()[0],
                 name = Ext.String.capitalize(operation.action),
@@ -37,9 +37,7 @@
     <form runat="server">
         <ext:ResourceManager runat="server" />
         
-        <h1>RESTful Store</h1>
-        
-        <p>(also see <a href="http://mvc.ext.net/restdemo/">http://mvc.ext.net/restdemo/</a>)</p>
+        <h1>RESTful Store</h1>        
        
         <ext:GridPanel 
             ID="UserGrid" 

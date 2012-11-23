@@ -1,22 +1,44 @@
-﻿Product      : Ext.NET Community Edition (AGPLv3 License)
-Version      : 2.0.0
-Last Updated : 2012-07-24
+﻿Product      : Ext.NET.Community
+Version      : 2.1.0
+Last Updated : 2012-11-21
 
 
 --------------------------------------------------------------------------
    CONTENTS
 --------------------------------------------------------------------------
 
-I.    ADD TO VISUAL STUDIO TOOLBOX INSTRUCTIONS
-II.   Version 2.0.0 REVISIONS + BREAKING CHANGES
-III.  SAMPLE WEB.CONFIG
-IV.   <extnet> WEB.CONFIG GLOBAL CONFIGURATION PROPERTIES
-V.    CREDITS
-	
-	
--------------------------------------------------------------------------
-   I. ADD TO VISUAL STUDIO TOOLBOX INSTRUCTIONS
+I.   SYSTEM REQUIREMENTS
+II.  ADD TO VISUAL STUDIO TOOLBOX INSTRUCTIONS
+III. Version 2.1.0 REVISIONS + BREAKING CHANGES
+IV.  SAMPLE WEB.CONFIG
+V.   <extnet> WEB.CONFIG GLOBAL CONFIGURATION PROPERTIES
+VI.  CREDITS
+
+
 --------------------------------------------------------------------------
+   I. SYSTEM REQUIREMENTS
+--------------------------------------------------------------------------
+
+1. Visual Studio 2008, 2010 or 2012, or
+2. Visual Studio Express 2008, 2010 or 2012
+3. .NET Framework 3.5, 4.0* or 4.5
+
+*minimum required for Ext.NET MVC
+
+	
+--------------------------------------------------------------------------
+   II. ADD TO VISUAL STUDIO TOOLBOX INSTRUCTIONS
+--------------------------------------------------------------------------
+
+Getting Started (NuGet)
+
+The easiest and quickest way to install Ext.NET is using NuGet. 
+Run the following command in Visual Studio Command panel, or seach for "Ext.NET" in NuGet Package Manager.
+
+    Install-Package Ext.NET
+
+
+Getting Started (Manual)
 
 The following steps are required to manually install the controls into 
 your Visual Studio or Visual Web Developer Express Toolbox. 
@@ -59,14 +81,14 @@ your Visual Studio or Visual Web Developer Express Toolbox.
 
 
 --------------------------------------------------------------------------
-   II. Version 2.0.0 REVISIONS + BREAKING CHANGES
+   III. Version 2.1.0 REVISIONS + BREAKING CHANGES
 --------------------------------------------------------------------------
 
-See CHANGELOG.txt
+See CHANGELOG.txt and BREAKING_CHANGES.txt
 
 
 --------------------------------------------------------------------------
-   III. SAMPLE WEB.CONFIG
+   IV. SAMPLE WEB.CONFIG
 --------------------------------------------------------------------------
 
 <?xml version="1.0"?>
@@ -125,7 +147,7 @@ See CHANGELOG.txt
 
 
 --------------------------------------------------------------------------
-   IV. <extnet> WEB.CONFIG GLOBAL CONFIGURATION PROPERTIES
+   V. <extnet> WEB.CONFIG GLOBAL CONFIGURATION PROPERTIES
 --------------------------------------------------------------------------
   
 directEventUrl : string
@@ -229,7 +251,7 @@ quickTips : boolean
 
 	
 --------------------------------------------------------------------------
-                             IV. CREDITS
+                             VI. CREDITS
 --------------------------------------------------------------------------
 	
 1.  FamFamFam Icons provided by Mark James 

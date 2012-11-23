@@ -20,7 +20,7 @@
 <head runat="server">
     <title>Multisort DataView Example</title>    
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">

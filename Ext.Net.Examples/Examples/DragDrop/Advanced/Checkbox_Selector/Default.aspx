@@ -19,9 +19,9 @@
 <html>
 <head runat="server">
     <title>Click and Drag to Select Items - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">        
+    <script>        
         var startTrack = function () {
 	        this.checkboxes = [];
 	        var cb;
@@ -53,7 +53,7 @@
 		};
     </script>
     
-    <style type="text/css">
+    <style>
         .cb-cell td{
             padding-right  : 10px;
             padding-bottom : 5px;

@@ -7,12 +7,12 @@
 <html>
 <head runat="server">
     <title>TabBar Config - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
     <script runat="server">
         protected void AddTab(object sender, DirectEventArgs e)
         {
-            var panel = new Ext.Net.Panel
+            Ext.Net.Panel panel = new Ext.Net.Panel
             {
                 Title = "New Tab",
                 Closable = true,
@@ -28,7 +28,7 @@
         }
     </script>
 
-    <style type="text/css">
+    <style>
         .x-newtab-item
         {
             float:left;

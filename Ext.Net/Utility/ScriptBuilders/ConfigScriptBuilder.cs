@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -27,8 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Text;
+
 using Ext.Net.Utilities;
 
 namespace Ext.Net
@@ -96,8 +96,6 @@ namespace Ext.Net
                 {
                     if (c.Visible || Object.ReferenceEquals(c, this.Control))
                     {
-                        c.DeferInitScriptGeneration = true;
-
                         if (c.AutoDataBind)
                         {
                             c.DataBind();
@@ -105,12 +103,18 @@ namespace Ext.Net
                     }
                 }
 
-                var html = this.Control is INoneContentable ? null : BaseScriptBuilder.RenderControl(this.Control, null);
+                SelfRenderingPage pageHolder = new SelfRenderingPage();
+                ResourceManager newMgr = new ResourceManager(true);
+                newMgr.RenderScripts = ResourceLocationType.None;
+                newMgr.RenderStyles = ResourceLocationType.None;
+                newMgr.IDMode = IDMode.Explicit;
+                newMgr.IsDynamic = true;
+                pageHolder.Controls.Add(newMgr);
+                pageHolder.Controls.Add(this.Control);
+                pageHolder.Items["Ext.Net.DeferInitScriptGeneration"] = new object();
 
-                foreach (BaseControl c in childControls)
-                {
-                    c.DeferInitScriptGeneration = false;
-                }
+                string html = this.Control is INoneContentable ? null : BaseScriptBuilder.RenderControl(this.Control, pageHolder);
+                pageHolder.Items["Ext.Net.DeferInitScriptGeneration"] = null;
 
                 List<BaseControl> newChildControls = this.FindControls(this.Control, false, sb, null, null);
                 newChildControls.Insert(0, this.Control);
@@ -178,7 +182,7 @@ namespace Ext.Net
                     }
                 }                
                 
-                var initToken = Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{                        
+                string  initToken = Transformer.NET.Net.CreateToken(typeof(Transformer.NET.AnchorTag), new Dictionary<string, string>{                        
                     {"id", "init_script"}                            
                 });
 
@@ -194,7 +198,7 @@ namespace Ext.Net
                 this.script = sb.ToString();
             }
 
-            var config = Transformer.NET.Html.HtmlTransformer.Transform(this.script);                        
+            string config = Transformer.NET.Html.HtmlTransformer.Transform(this.script);                        
 
             return config;
         }
@@ -213,6 +217,19 @@ namespace Ext.Net
         /// <param name="control"></param>
         /// <param name="icons"></param>
         protected override void CheckIcon(BaseControl control, List<Icon> icons)
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="ns"></param>
+        protected override void RegisterNS(StringBuilder sb, List<string> ns)
+        {
+        }
+
+        protected override void RegisterControlResourcesInManager(ResourceManager manager, BaseControl ctrl)
         {
         }
 

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,99 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : AbstractContainer.Builder<PanelHeader, PanelHeader.Builder>
+        new public abstract partial class Builder<TPanelHeader, TBuilder> : AbstractContainer.Builder<TPanelHeader, TBuilder>
+            where TPanelHeader : PanelHeader
+            where TBuilder : Builder<TPanelHeader, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TPanelHeader component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// The icon to use in the Title bar. See also, IconCls to set an icon with a custom Css class.
+			/// </summary>
+            public virtual TBuilder Icon(Icon icon)
+            {
+                this.ToComponent().Icon = icon;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A CSS class that will provide a background image to be used as the panel header icon (defaults to '').
+			/// </summary>
+            public virtual TBuilder IconCls(string iconCls)
+            {
+                this.ToComponent().IconCls = iconCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A CSS class that will provide a background image to be used as the panel header icon (defaults to '').
+			/// </summary>
+            public virtual TBuilder IconPath(string iconPath)
+            {
+                this.ToComponent().IconPath = iconPath;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Set a title for the panel's header. See Ext.panel.Header.title.
+			/// </summary>
+            public virtual TBuilder Title(string title)
+            {
+                this.ToComponent().Title = title;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// May be \"left\", \"right\" or \"center\". The alignment of the title text within the available space between the icon and the tools. Defaults to: \"left\"
+			/// </summary>
+            public virtual TBuilder TitleAlign(TitleAlign titleAlign)
+            {
+                this.ToComponent().TitleAlign = titleAlign;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<PanelHeaderListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side Ajax Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<PanelHeaderDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : PanelHeader.Builder<PanelHeader, PanelHeader.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,82 +164,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// The icon to use in the Title bar. See also, IconCls to set an icon with a custom Css class.
-			/// </summary>
-            public virtual PanelHeader.Builder Icon(Icon icon)
-            {
-                this.ToComponent().Icon = icon;
-                return this as PanelHeader.Builder;
-            }
-             
- 			/// <summary>
-			/// A CSS class that will provide a background image to be used as the panel header icon (defaults to '').
-			/// </summary>
-            public virtual PanelHeader.Builder IconCls(string iconCls)
-            {
-                this.ToComponent().IconCls = iconCls;
-                return this as PanelHeader.Builder;
-            }
-             
- 			/// <summary>
-			/// A CSS class that will provide a background image to be used as the panel header icon (defaults to '').
-			/// </summary>
-            public virtual PanelHeader.Builder IconPath(string iconPath)
-            {
-                this.ToComponent().IconPath = iconPath;
-                return this as PanelHeader.Builder;
-            }
-             
- 			/// <summary>
-			/// Set a title for the panel's header. See Ext.panel.Header.title.
-			/// </summary>
-            public virtual PanelHeader.Builder Title(string title)
-            {
-                this.ToComponent().Title = title;
-                return this as PanelHeader.Builder;
-            }
-             
- 			/// <summary>
-			/// May be \"left\", \"right\" or \"center\". The alignment of the title text within the available space between the icon and the tools. Defaults to: \"left\"
-			/// </summary>
-            public virtual PanelHeader.Builder TitleAlign(TitleAlign titleAlign)
-            {
-                this.ToComponent().TitleAlign = titleAlign;
-                return this as PanelHeader.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of PanelHeader.Builder</returns>
-            public virtual PanelHeader.Builder Listeners(Action<PanelHeaderListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as PanelHeader.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side Ajax Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of PanelHeader.Builder</returns>
-            public virtual PanelHeader.Builder DirectEvents(Action<PanelHeaderDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as PanelHeader.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -156,6 +172,14 @@ namespace Ext.Net
         public PanelHeader.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.PanelHeader(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -170,7 +194,11 @@ namespace Ext.Net
         /// </summary>
         public PanelHeader.Builder PanelHeader()
         {
-            return this.PanelHeader(new PanelHeader());
+#if MVC
+			return this.PanelHeader(new PanelHeader { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.PanelHeader(new PanelHeader());
+#endif			
         }
 
         /// <summary>
@@ -178,7 +206,10 @@ namespace Ext.Net
         /// </summary>
         public PanelHeader.Builder PanelHeader(PanelHeader component)
         {
-            return new PanelHeader.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new PanelHeader.Builder(component);
         }
 
         /// <summary>
@@ -186,7 +217,11 @@ namespace Ext.Net
         /// </summary>
         public PanelHeader.Builder PanelHeader(PanelHeader.Config config)
         {
-            return new PanelHeader.Builder(new PanelHeader(config));
+#if MVC
+			return new PanelHeader.Builder(new PanelHeader(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new PanelHeader.Builder(new PanelHeader(config));
+#endif			
         }
     }
 }

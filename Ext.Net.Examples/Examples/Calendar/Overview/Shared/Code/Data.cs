@@ -8,7 +8,7 @@ namespace Ext.Net.Calendar.Demo
         {
             get
             {
-                var now = DateTime.Now.Date;
+                DateTime now = DateTime.Now.Date;
 
                 return new EventModelCollection { 
                     new EventModel

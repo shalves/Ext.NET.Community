@@ -20,7 +20,7 @@
 
         e.Total = 8000;
 
-        var store = this.GridPanel1.GetStore();
+        Store store = this.GridPanel1.GetStore();
         store.DataSource = data;
         store.DataBind(); 
     }
@@ -31,7 +31,7 @@
 <html>
 <head runat="server">
     <title>Local Paging for Remote Data - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />  
+    <link href="/resources/css/examples.css" rel="stylesheet" />  
 </head>
 <body>
     <form runat="server">

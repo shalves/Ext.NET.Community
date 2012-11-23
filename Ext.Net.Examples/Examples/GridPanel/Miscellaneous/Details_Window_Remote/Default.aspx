@@ -33,9 +33,9 @@
 <html>
 <head runat="server">
     <title>Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
    
-    <script type="text/javascript">                
+    <script>                
         var employeeDetailsRender = function () {
             return '<img class="imgEdit" ext:qtip="Click to view/edit additional details" style="cursor:pointer;" src="vcard_edit.png" />';
         };
@@ -102,7 +102,7 @@
             runat="server" 
             StoreID="Store1" 
             Title="Employees"
-            Height="175">
+            Height="250">
             <ColumnModel runat="server">
 			    <Columns>
                     <ext:Column runat="server" Text="Full Name" DataIndex="LastName" Flex="1">  

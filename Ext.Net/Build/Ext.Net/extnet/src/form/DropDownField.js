@@ -5,6 +5,7 @@ Ext.define("Ext.net.DropDownField", {
     extend         : "Ext.form.field.Picker",
     alias          : "widget.netdropdown", 
     mode           : "text",
+	includeHiddenStateToSubmitData : false,
     triggerCls     : Ext.baseCSSPrefix + 'form-arrow-trigger', 
     
     syncValue : Ext.emptyFn,
@@ -86,14 +87,17 @@ Ext.define("Ext.net.DropDownField", {
 
     alignPicker : function () {
         var me = this,
-            picker, isAbove,
+            picker, 
+            isAbove,
             aboveSfx = '-above';
 
         if (this.isExpanded) {
             picker = me.getPicker();
+            
             if (me.matchFieldWidth) {
                 picker.setSize(me.bodyEl.getWidth());
             }
+
             if (picker.isFloating()) {
                 picker.alignTo(me.inputEl, me.pickerAlign, me.pickerOffset);
                 isAbove = picker.el.getY() < me.inputEl.getY();
@@ -103,7 +107,7 @@ Ext.define("Ext.net.DropDownField", {
         }
     },
 
-    setValue : function (value, text, collapse) {
+    setValue : function (value, text, collapse, preventSync) {
               
         if (this.mode === "text") {
             collapse = text;
@@ -114,7 +118,7 @@ Ext.define("Ext.net.DropDownField", {
         
         this.callParent([text]);        
                 
-        if (!this.isExpanded) {
+        if (preventSync === false || ((preventSync == null || !Ext.isDefined(preventSync)) && !this.isExpanded)) {
             this.onSyncValue(value, text);
         }
         
@@ -130,7 +134,7 @@ Ext.define("Ext.net.DropDownField", {
     },
     
     getValue : function () {
-        return this._value;
+        return this.mode == "text" ? this.callParent() : this._value;
     },
     
     reset : function () {
@@ -145,5 +149,27 @@ Ext.define("Ext.net.DropDownField", {
         this.clearInvalid();
         delete this.wasValid; 
         this.applyEmptyText();
+    },
+
+    checkChange : function () {
+        if (!this.suspendCheckChange) {
+            var me = this,
+                newVal = me.getValue(),
+                rawValue = me.getRawValue(),
+                oldVal = me.lastValue,
+                oldRawVal = me.lastRawValue;            
+
+            if (!me.isEqual(newVal, oldVal) && !me.isDestroyed) {
+                me.lastValue = newVal;
+                me.lastRawValue = rawValue;
+                
+                me.fireEvent('change', me, newVal, oldVal);
+                me.onChange(newVal, oldVal);
+            } else if (!me.isEqual(rawValue, oldRawVal) && !me.isDestroyed) {
+                me.lastRawValue = rawValue;                
+                me.fireEvent('change', me, newVal, oldVal);
+                me.onChange(newVal, oldVal);
+            }
+        }
     }
 });

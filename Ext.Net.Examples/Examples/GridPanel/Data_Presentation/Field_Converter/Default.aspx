@@ -24,15 +24,14 @@
 
 <html>
 <head runat="server">
-    <title>Field Convert - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <title>Field Converter - Ext.NET Examples</title>
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
         <ext:ResourceManager runat="server" />
         
         <ext:GridPanel 
-            ID="GridPanel1" 
             runat="server" 
             Title="Grid" 
             Width="600" 
@@ -40,7 +39,7 @@
             <Store>
                 <ext:Store ID="Store1" runat="server">
                     <Model>
-                        <ext:Model runat="server" IDProperty="company">
+                        <ext:Model runat="server">
                             <Fields>
                                 <ext:ModelField Name="company" />
                                 <ext:ModelField Name="price" Type="Float" />
@@ -56,11 +55,11 @@
             </Store>
             <ColumnModel runat="server">
                 <Columns>
-                    <ext:Column runat="server" Text="Company" Width="160" DataIndex="company" Flex="1" />
+                    <ext:Column runat="server" Text="Company" DataIndex="company" Flex="1" />
                     <ext:Column runat="server" Text="Price" Width="75" DataIndex="price" />
                     <ext:Column runat="server" Text="Change" Width="75" DataIndex="change" />
                     <ext:Column runat="server" Text="Change" Width="75" DataIndex="pctChange" />
-                    <ext:CheckColumn runat="server" Text="Active" Width="50" Sortable="true" DataIndex="active" />
+                    <ext:CheckColumn runat="server" Text="Active" Width="50" DataIndex="active" />
                 </Columns>
             </ColumnModel>            
         </ext:GridPanel>  

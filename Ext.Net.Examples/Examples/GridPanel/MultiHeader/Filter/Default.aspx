@@ -7,9 +7,9 @@
     {
         if (!X.IsAjaxRequest)
         {
-            var data = this.GetData();
-            var store1 = this.GridPanel1.GetStore();
-            var store2 = this.ComboBox1.GetStore();
+            object[] data = this.GetData();
+            Store store1 = this.GridPanel1.GetStore();
+            Store store2 = this.ComboBox1.GetStore();
  
             store1.DataSource = data;
             store1.DataBind();
@@ -60,9 +60,9 @@
 <html>
 <head runat="server">
     <title>GridPanel with MultiHeader Row Filters - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
  
-    <script type="text/javascript">
+    <script>
         var template = '<span style="color:{0};">{1}</span>';
  
         var change = function (value) {
@@ -75,7 +75,7 @@
     </script>
      
     <ext:XScript runat="server">
-        <script type="text/javascript">
+        <script>
                          
             var applyFilter = function (field) {                
                 var store = #{GridPanel1}.getStore();
@@ -201,6 +201,7 @@
                             <ext:ComboBox 
                                 ID="ComboBox1" 
                                 runat="server"
+                                Icon="Magnifier"
                                 TriggerAction="All"
                                 Mode="Local"
                                 DisplayField="company"
@@ -265,7 +266,7 @@
                             </ext:DateField>
                         </HeaderItems>
                     </ext:DateColumn>
-                    <ext:Column runat="server" Width="25" DataIndex="company" Sortable="false" MenuDisabled="true" Text="&nbsp;" Fixed="true">
+                    <ext:Column runat="server" Width="25" DataIndex="company" Sortable="false" MenuDisabled="true" Text="&nbsp;" Resizable="false">
                         <Renderer Handler="return '';" />
                         <HeaderItems>
                             <ext:Container runat="server">

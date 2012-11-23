@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -144,6 +144,78 @@ namespace Ext.Net
             get
             {
                 return this.unbind ?? (this.unbind = new ComponentListener());
+            }
+        }
+
+        private ComponentListener validateedit;
+
+        /// <summary>
+        /// Fires after a cell is edited, but before the value is set in the record. Return false from event handler to cancel the change.
+        /// Parameters
+        /// item : Ext.column.ComponentColumn
+        /// e : Object
+        /// An edit event with the following properties:
+        /// 
+        /// grid - The grid
+        /// cmp - Editor component
+        /// record - The record being edited
+        /// field - The field name being edited
+        /// value - The value being set
+        /// originalValue - The original value for the field, before the edit.
+        /// row - The grid table row
+        /// column - The grid Column defining the column that is being edited.
+        /// rowIdx - The row index that is being edited
+        /// colIdx - The column index that is being edited
+        /// cancel - Set this to true to cancel the edit or return false from your handler.
+        /// </summary>
+        [ListenerArgument(0, "item")]
+        [ListenerArgument(1, "e")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("validateedit", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires after a cell is edited, but before the value is set in the record. Return false from event handler to cancel the change.")]
+        public virtual ComponentListener ValidateEdit
+        {
+            get
+            {
+                return this.validateedit ?? (this.validateedit = new ComponentListener());
+            }
+        }
+
+        private ComponentListener edit;
+
+        /// <summary>
+        /// Fires after a cell is edited.
+        /// Parameters
+        /// item : Ext.column.ComponentColumn
+        /// e : Object
+        /// An edit event with the following properties:
+        /// 
+        /// grid - The grid
+        /// cmp - Editor component
+        /// record - The record being edited
+        /// field - The field name being edited
+        /// value - The value being set
+        /// originalValue - The original value for the field, before the edit.
+        /// row - The grid table row
+        /// column - The grid Column defining the column that is being edited.
+        /// rowIdx - The row index that is being edited
+        /// colIdx - The column index that is being edited
+        /// cancel - Set this to true to cancel the edit or return false from your handler.
+        /// </summary>
+        [ListenerArgument(0, "item")]
+        [ListenerArgument(1, "e")]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        [ConfigOption("edit", typeof(ListenerJsonConverter))]
+        [PersistenceMode(PersistenceMode.InnerProperty)]
+        [NotifyParentProperty(true)]
+        [Description("Fires after a cell is edited.")]
+        public virtual ComponentListener Edit
+        {
+            get
+            {
+                return this.edit ?? (this.edit = new ComponentListener());
             }
         }
     }

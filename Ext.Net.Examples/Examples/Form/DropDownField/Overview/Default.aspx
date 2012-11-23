@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>DropDownField Overview - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var getTasks = function (tree) {
             var msg = [], 
                 selNodes = tree.getChecked();
@@ -235,10 +235,13 @@
             Editable="false" 
             Width="300" 
             TriggerIcon="SimpleArrowDown">
+            <Listeners>
+                <Expand Handler="this.picker.setWidth(500);" />
+            </Listeners>
             <Component>
                 <ext:GridPanel
                     runat="server" 
-                    Height="350" 
+                    Height="350"
                     Title="Plants" 
                     Frame="true" 
                     ForceFit="true">

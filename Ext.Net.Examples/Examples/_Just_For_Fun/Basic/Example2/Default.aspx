@@ -8,7 +8,7 @@
 <head runat="server">
     <title>Ext.NET Examples</title>
     
-    <style type="text/css">
+    <style>
         body {
             padding : 20px;
         }
@@ -51,8 +51,8 @@
         } 
     </style>
     
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script> 
-    <script type="text/javascript">	    
+    <script src="http://www.google.com/jsapi"></script> 
+    <script>	    
 	    google.load("ext-core", "3.0");
 	    google.load("search","1");	    
 	    

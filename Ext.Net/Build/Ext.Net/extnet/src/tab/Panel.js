@@ -59,7 +59,7 @@ Ext.tab.Panel.override({
             return false;
         }
 
-        var eventName = item.closeAction || closeAction || "close",
+        var eventName = closeAction || item.closeAction || "close",
             destroy = eventName == "close" || eventName == "destroy";
         
         if (eventName == "destroy") {
@@ -90,6 +90,10 @@ Ext.tab.Panel.override({
     },
 
     addTab : function (tab, index, activate) {
+        if (tab.id && this.getComponent(tab.id)) {
+            return;
+        }
+        
         var config = {};
 
         if (!Ext.isEmpty(index)) {

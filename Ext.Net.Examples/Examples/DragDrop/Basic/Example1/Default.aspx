@@ -7,9 +7,9 @@
 <html>
 <head runat="server">
     <title>Drag&amp;Drop - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         body {
             font-size : 11px;
         }
@@ -56,7 +56,7 @@
         }
     </style>
     
-    <script type="text/javascript">
+    <script>
         var startDrag = function (x, y) {
             var dragEl = Ext.get(this.getDragEl());
             var el = Ext.get(this.getEl());

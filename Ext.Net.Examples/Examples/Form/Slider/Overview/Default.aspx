@@ -14,9 +14,9 @@
 <html>
 <head runat="server">
     <title>SliderField - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     <ext:XScript runat="server">
-        <script type="text/javascript">
+        <script>
             var toHex = function (value) {
                 var str = value.toString(16);
             

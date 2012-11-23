@@ -127,7 +127,7 @@
 <head runat="server">
     <title>Row Selection Model</title>
     
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
 

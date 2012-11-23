@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,8 +25,10 @@
  ********/
 
 using System.ComponentModel;
-
+using System.Linq;
 using System.Text;
+using Ext.Net.Utilities;
+using System;
 
 namespace Ext.Net
 {
@@ -68,13 +70,25 @@ namespace Ext.Net
         /// </summary>
         /// <param name="text"></param>
         /// <param name="value"></param>
+        public ListItem(string text, object value)
+        {
+            this.Value = JSON.Serialize(value);
+            this.Mode = ParameterMode.Raw;
+            this.Text = text;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="value"></param>
         /// <param name="index"></param>
         public ListItem(string text, string value, int index)
         {
             this.Value = value;
             this.Text = text;
             this.Index = index;
-        }        
+        }
 
         /// <summary>
         /// 
@@ -188,6 +202,49 @@ namespace Ext.Net
     /// </summary>    
     public partial class ListItemCollection : BaseItemCollection<ListItem>
     {
+        public static ListItemCollection FromEnum(Type enumType)
+        {
+            ListItemCollection items = new ListItemCollection();
+            foreach (var item in Enum.GetValues(enumType))
+            {
+                var fi = enumType.GetField(item.ToString());
+                var attribute = fi.GetCustomAttributes(typeof(DescriptionAttribute), true).FirstOrDefault();
+                var title = attribute == null ? item.ToString() : ((DescriptionAttribute)attribute).Description;
+                var value = Convert.ChangeType(item, ((Enum)item).GetTypeCode());
+                var listItem = new ListItem
+                {
+                    Value = value.ToString(),
+                    Text = title
+                };
+                items.Add(listItem);
+            }
+
+            return items;
+        }
+        
+        public virtual void Add(object items)
+        {
+            if (items == null)
+            {
+                return;
+            }
+
+            if (items is ListItem.Builder)
+            {
+                base.Add(((ListItem.Builder)items).ToComponent());
+                return;
+            }
+
+            if (items is ListItem)
+            {
+                base.Add((ListItem)items);
+                return;
+            }
+
+            var props = items.GetType().GetProperties().Select(x => new ListItem(x.Name.ToLowerCamelCase(), JSON.Serialize(x.GetValue(items, null), new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver())) { Mode = ParameterMode.Raw });
+            this.AddRange(props);
+        }
+        
         /// <summary>
         /// 
         /// </summary>
@@ -203,9 +260,14 @@ namespace Ext.Net
                 {
                     sb.Append(",");
                 }
-                comma = true;
 
-                sb.Append(new ClientConfig().Serialize(item));
+                var json =  new ClientConfig().Serialize(item);
+
+                if (!ClientConfig.IsEmptyObject(json))
+                {
+                    comma = true;
+                    sb.Append(json);
+                }
             }
             sb.Append("]");
 

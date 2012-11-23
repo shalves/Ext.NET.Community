@@ -5,12 +5,13 @@ Ext.define("Ext.net.LinkButton", {
     extend : "Ext.button.Button",
     alias  : "widget.netlinkbutton",
     buttonSelector : "a:first",
-    cls            : "",
-    iconAlign      : "left",
-    initRenderTpl: Ext.emptyFn,
+    cls : "",
+    iconAlign : "left",
+    initRenderTpl : Ext.emptyFn,
+    applyRenderSelectors : Ext.emptyFn,
     componentLayout : null,
     scale : null,   
-    autoEl: 'span', 
+    autoEl : 'span', 
 
     // private
     onMenuShow : function (e) {
@@ -115,7 +116,7 @@ Ext.define("Ext.net.LinkButton", {
         }
 
         el.appendChild(this.valueElement());
-        this.btnEl = this.textEl;
+        this.btnEl = Ext.get(this.textEl);
 
         if (this.iconAlign == "right") {
             el.appendChild(img);

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,191 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ComponentBase.Builder<ColorPicker, ColorPicker.Builder>
+        new public abstract partial class Builder<TColorPicker, TBuilder> : ComponentBase.Builder<TColorPicker, TBuilder>
+            where TColorPicker : ColorPicker
+            where TBuilder : Builder<TColorPicker, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TColorPicker component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// If set to true then reselecting a color that is already selected fires the select event. Defaults to: false
+			/// </summary>
+            public virtual TBuilder AllowReselect(bool allowReselect)
+            {
+                this.ToComponent().AllowReselect = allowReselect;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The DOM event that will cause a color to be selected. This can be any valid event name (dblclick, contextmenu). Defaults to: \"click\"
+			/// </summary>
+            public virtual TBuilder ClickEvent(string clickEvent)
+            {
+                this.ToComponent().ClickEvent = clickEvent;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// A function that will handle the select event of this picker. 
+			/// </summary>
+            public virtual TBuilder Handler(string handler)
+            {
+                this.ToComponent().Handler = handler;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The scope (this reference) in which the handler function will be called. Defaults to this Color picker instance.
+			/// </summary>
+            public virtual TBuilder Scope(string scope)
+            {
+                this.ToComponent().Scope = scope;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// The CSS class to apply to the selected element
+			/// </summary>
+            public virtual TBuilder SelectedCls(string selectedCls)
+            {
+                this.ToComponent().SelectedCls = selectedCls;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// An array of 6-digit color hex code strings (without the # symbol).
+			/// </summary>
+            public virtual TBuilder Colors(string[] colors)
+            {
+                this.ToComponent().Colors = colors;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// An existing XTemplate instance to be used in place of the default template for rendering the component.
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Template(Action<XTemplate> action)
+            {
+                action(this.ToComponent().Template);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// The initial color to highlight (should be a valid 6-digit color hex code without the # symbol). Note that the hex codes are case-sensitive.
+			/// </summary>
+            public virtual TBuilder Value(string value)
+            {
+                this.ToComponent().Value = value;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// AutoPostBack
+			/// </summary>
+            public virtual TBuilder AutoPostBack(bool autoPostBack)
+            {
+                this.ToComponent().AutoPostBack = autoPostBack;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder PostBackEvent(string postBackEvent)
+            {
+                this.ToComponent().PostBackEvent = postBackEvent;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Gets or sets a value indicating whether validation is performed when the control is set to validate when a postback occurs.
+			/// </summary>
+            public virtual TBuilder CausesValidation(bool causesValidation)
+            {
+                this.ToComponent().CausesValidation = causesValidation;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Gets or Sets the Controls ValidationGroup
+			/// </summary>
+            public virtual TBuilder ValidationGroup(string validationGroup)
+            {
+                this.ToComponent().ValidationGroup = validationGroup;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Client-side JavaScript Event Handlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder Listeners(Action<ColorPickerListeners> action)
+            {
+                action(this.ToComponent().Listeners);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// Server-side DirectEventHandlers
+ 			/// </summary>
+ 			/// <param name="action">The action delegate</param>
+ 			/// <returns>An instance of TBuilder</returns>
+            public virtual TBuilder DirectEvents(Action<ColorPickerDirectEvents> action)
+            {
+                action(this.ToComponent().DirectEvents);
+                return this as TBuilder;
+            }
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder DirectSelectUrl(string directSelectUrl)
+            {
+                this.ToComponent().DirectSelectUrl = directSelectUrl;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Select(string value)
+            {
+                this.ToComponent().Select(value);
+                return this as TBuilder;
+            }
+            
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Select(string value, bool suppressEvent)
+            {
+                this.ToComponent().Select(value, suppressEvent);
+                return this as TBuilder;
+            }
+            
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ColorPicker.Builder<ColorPicker, ColorPicker.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,165 +256,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// If set to true then reselecting a color that is already selected fires the select event. Defaults to: false
-			/// </summary>
-            public virtual ColorPicker.Builder AllowReselect(bool allowReselect)
-            {
-                this.ToComponent().AllowReselect = allowReselect;
-                return this as ColorPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The DOM event that will cause a color to be selected. This can be any valid event name (dblclick, contextmenu). Defaults to: \"click\"
-			/// </summary>
-            public virtual ColorPicker.Builder ClickEvent(string clickEvent)
-            {
-                this.ToComponent().ClickEvent = clickEvent;
-                return this as ColorPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// A function that will handle the select event of this picker. 
-			/// </summary>
-            public virtual ColorPicker.Builder Handler(string handler)
-            {
-                this.ToComponent().Handler = handler;
-                return this as ColorPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The scope (this reference) in which the handler function will be called. Defaults to this Color picker instance.
-			/// </summary>
-            public virtual ColorPicker.Builder Scope(string scope)
-            {
-                this.ToComponent().Scope = scope;
-                return this as ColorPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// The CSS class to apply to the selected element
-			/// </summary>
-            public virtual ColorPicker.Builder SelectedCls(string selectedCls)
-            {
-                this.ToComponent().SelectedCls = selectedCls;
-                return this as ColorPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// An array of 6-digit color hex code strings (without the # symbol).
-			/// </summary>
-            public virtual ColorPicker.Builder Colors(string[] colors)
-            {
-                this.ToComponent().Colors = colors;
-                return this as ColorPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// An existing XTemplate instance to be used in place of the default template for rendering the component.
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ColorPicker.Builder</returns>
-            public virtual ColorPicker.Builder Template(Action<XTemplate> action)
-            {
-                action(this.ToComponent().Template);
-                return this as ColorPicker.Builder;
-            }
-			 
- 			/// <summary>
-			/// The initial color to highlight (should be a valid 6-digit color hex code without the # symbol). Note that the hex codes are case-sensitive.
-			/// </summary>
-            public virtual ColorPicker.Builder Value(string value)
-            {
-                this.ToComponent().Value = value;
-                return this as ColorPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// AutoPostBack
-			/// </summary>
-            public virtual ColorPicker.Builder AutoPostBack(bool autoPostBack)
-            {
-                this.ToComponent().AutoPostBack = autoPostBack;
-                return this as ColorPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ColorPicker.Builder PostBackEvent(string postBackEvent)
-            {
-                this.ToComponent().PostBackEvent = postBackEvent;
-                return this as ColorPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Gets or sets a value indicating whether validation is performed when the control is set to validate when a postback occurs.
-			/// </summary>
-            public virtual ColorPicker.Builder CausesValidation(bool causesValidation)
-            {
-                this.ToComponent().CausesValidation = causesValidation;
-                return this as ColorPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Gets or Sets the Controls ValidationGroup
-			/// </summary>
-            public virtual ColorPicker.Builder ValidationGroup(string validationGroup)
-            {
-                this.ToComponent().ValidationGroup = validationGroup;
-                return this as ColorPicker.Builder;
-            }
-             
- 			/// <summary>
-			/// Client-side JavaScript Event Handlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ColorPicker.Builder</returns>
-            public virtual ColorPicker.Builder Listeners(Action<ColorPickerListeners> action)
-            {
-                action(this.ToComponent().Listeners);
-                return this as ColorPicker.Builder;
-            }
-			 
- 			/// <summary>
-			/// Server-side DirectEventHandlers
- 			/// </summary>
- 			/// <param name="action">The action delegate</param>
- 			/// <returns>An instance of ColorPicker.Builder</returns>
-            public virtual ColorPicker.Builder DirectEvents(Action<ColorPickerDirectEvents> action)
-            {
-                action(this.ToComponent().DirectEvents);
-                return this as ColorPicker.Builder;
-            }
-			
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ColorPicker.Builder Select(string value)
-            {
-                this.ToComponent().Select(value);
-                return this;
-            }
-            
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ColorPicker.Builder Select(string value, bool suppressEvent)
-            {
-                this.ToComponent().Select(value, suppressEvent);
-                return this;
-            }
-            
         }
 
         /// <summary>
@@ -239,6 +264,14 @@ namespace Ext.Net
         public ColorPicker.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ColorPicker(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -253,7 +286,11 @@ namespace Ext.Net
         /// </summary>
         public ColorPicker.Builder ColorPicker()
         {
-            return this.ColorPicker(new ColorPicker());
+#if MVC
+			return this.ColorPicker(new ColorPicker { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ColorPicker(new ColorPicker());
+#endif			
         }
 
         /// <summary>
@@ -261,7 +298,10 @@ namespace Ext.Net
         /// </summary>
         public ColorPicker.Builder ColorPicker(ColorPicker component)
         {
-            return new ColorPicker.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ColorPicker.Builder(component);
         }
 
         /// <summary>
@@ -269,7 +309,11 @@ namespace Ext.Net
         /// </summary>
         public ColorPicker.Builder ColorPicker(ColorPicker.Config config)
         {
-            return new ColorPicker.Builder(new ColorPicker(config));
+#if MVC
+			return new ColorPicker.Builder(new ColorPicker(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ColorPicker.Builder(new ColorPicker(config));
+#endif			
         }
     }
 }

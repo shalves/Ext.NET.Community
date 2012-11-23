@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -27,6 +27,8 @@
 using System;
 using System.ComponentModel;
 using System.Web.UI;
+using System.Collections;
+using System.Linq;
 
 namespace Ext.Net
 {
@@ -116,11 +118,13 @@ namespace Ext.Net
         {
             get
             {
-                var numbers = this.Numbers;
+                double[] numbers = this.Numbers;
+                
                 if (numbers != null && numbers.Length > 0)
                 {
                     return this.Numbers[0];
                 }
+                
                 return null;
             }
             set
@@ -514,7 +518,8 @@ namespace Ext.Net
         {
             if (value is double[])
             {
-                var arr = (double[])value;
+                double[] arr = (double[])value;
+                
                 for (int i = 0; i < arr.Length; i++)
                 {
                     this.Call("setValue", i, arr[i]);    

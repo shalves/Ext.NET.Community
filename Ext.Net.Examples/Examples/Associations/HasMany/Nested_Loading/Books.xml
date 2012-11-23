@@ -1,7 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <Books>
     <Book>
-        <id>1</id>
+      <id>1</id>
+      <name>Ext.NET Web Application Development</name>
+      <author>Anup Shah</author>
+      <detail>Build rich internet applications using the power of Ext.NET controls. Learn how Ext.NET leverages Sencha’s popular Ext JS JavaScript framework to provide a full client-server web development experience. Full of examples and tips, with clear step-by-step instructions.</detail>
+      <price>44.99</price>
+      <image>images/books/extnet-2.jpg</image>
+    </Book>
+    <Book>
+        <id>2</id>
         <name>Learning Ext JS</name>
         <author>Shea Frederick, Colin Ramsay &amp; Steve 'Cutter' Blades</author>
         <detail>As more and more of our work is done through a web browser, and more businesses build web rather than desktop applications, users want web applications that look and feel like desktop applications. Ext JS is a JavaScript library that makes it (relatively) easy to create desktop-style user interfaces in a web application, including multiple windows, toolbars, drop-down menus, dialog boxes, and much more. Both Commercial and Open Source licenses are available for Ext JS.&lt;br /&gt;&lt;br /&gt;Ext JS has the unique advantage of being the only client-side UI library that also works as an application development library. Learning Ext JS will help you create rich, dynamic, and AJAX-enabled web applications that look good and perform beyond the expectations of your users.&lt;br /&gt;&lt;br /&gt;From the building blocks of the application layout, to complex dynamic Grids and Forms, this book will guide you through the basics of using Ext JS, giving you the knowledge required to create rich user experiences beyond typical web interfaces. It will also provide you with the tools you need to use AJAX, by consuming server-side data directly into the many interfaces of the Ext JS component library.</detail>
@@ -23,7 +31,7 @@
         </review>
     </Book>
     <Book>
-        <id>2</id>
+        <id>3</id>
         <name>Learning Ext JS 3.2</name>
         <author>Shea Frederick, Colin Ramsay &amp; Steve 'Cutter' Blades and Nigel White</author>
         <detail>The book provides plenty of fun example code and screenshots to guide you through the creation of examples to assist with learning. By taking a chapter-by-chapter look at each major aspect of the Ext JS framework, the book lets you digest the available features in small, easily understandable chunks, allowing you to start using the library for your development needs immediately. This book is written for Web Application Developers who are familiar with HTML but may have little to no experience with JavaScript application development. If you are starting to build a new web application, or are re-vamping an existing web application, then this book is for you.</detail>
@@ -45,7 +53,7 @@
         </review>
     </Book>
     <Book>
-        <id>3</id>
+        <id>4</id>
         <name>Ext JS in Action</name>
         <author>Jesus Garcia</author>
         <detail>Ext JS, a cross-browser JavaScript library for building Rich Internet Applications (RIA), has emerged from the mix of JavaScript frameworks, libraries and object-oriented development techniques as a one of the clear leaders. Ext JS combines an extensive library of super-high-quality widgets, an intuitive, extensible component model, and an easy-to-use API to create a full, rock-solid platform for JavaScript-based web apps. Ext JS has been adopted by such household names as Adobe, Aetna, Amazon.com, Best Buy Hallmark, Panasonic, Pixar Animation Studios, Siemens, Sony, and Visa.&lt;br /&gt;&lt;br /&gt;Ext JS in Action teaches the reader about Ext from the ground up. By following the common design patterns demonstrated in the Ext source and in many commercial applications, the book teaches you to achieve the same results you see in world-class commercial JavaScript applications. This book will guide you through the Ext component model and layouts. You'll learn how core components, such as the Container class, serve as building blocks for building complex user interfaces. The book fully covers Ext utility classes, AJAX, Observable (the Ext events model), DOM helpers and Function Helpers and illustrates how use of JavaScript Object Notation (JSON), a powerful and lightweight data format, can allow your application to efficiently communicate over the network to the web server. Finally, you'll build on this foundation to customize or extend Ext widgets.&lt;br /&gt;&lt;br /&gt;Ext JS in Action assumes that you have a solid foundation in JavaScript, but requires no previous exposure to Ext JS.</detail>
@@ -74,7 +82,7 @@
         </review>
     </Book>
     <Book>
-        <id>4</id>
+        <id>5</id>
         <name>Ext JS 3.0 Cookbook</name>
         <author>Jorge Ramon</author>
         <detail>Using Ext JS you can easily build desktop-style interfaces in your web applications. Over 400,000 developers are working smarter with Ext JS and yet most of them fail to exercise all of the features that this powerful JavaScript library has to offer.&lt;br /&gt;&lt;br /&gt;Get to grips with all of the features that you would expect with this quick and easy-to-follow Ext JS Cookbook. This book provides clear instructions for getting the most out of Ext JS with and offers many exercises to build impressive rich internet applications. This cookbook shows techniques and 'patterns' for building particular interface styles and features in Ext JS. Pick what you want and move ahead.&lt;br /&gt;&lt;br /&gt;It teaches you how to use all of the Ext JS widgets and components smartly, through practical examples and exercises. Native and custom layouts, forms, grids, listviews, treeviews, charts, tab panels, menus, toolbars, and many more components are covered in a multitude of examples.The book also looks at best practices on data storage, application architecture, code organization, presenting recipes for improving them--our cookbook provides expert information for people working with Ext JS.</detail>

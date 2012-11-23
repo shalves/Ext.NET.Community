@@ -6,18 +6,18 @@
 <html>
 <head runat="server">
     <title>Australia - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
     <script runat="server">       
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!X.IsAjaxRequest)
             {
-                var draw = this.Draw1;
+                DrawComponent draw = this.Draw1;
                 draw.Width = 300;
                 draw.Height = 300;
 
-                var colors = new string[] { 
+                string[] colors = new string[] { 
                         "#8D38C9", 
                         "#00FFFF", 
                         "#FF00FF", 
@@ -27,7 +27,7 @@
                         "#FF0000"
                 };
 
-                var doc = new System.Xml.XmlDocument();
+                XmlDocument doc = new System.Xml.XmlDocument();
                 doc.Load(Server.MapPath("Australia.xml"));
 
                 List<object> info = new List<object>();
@@ -35,7 +35,7 @@
                 int i = 0;
                 foreach (System.Xml.XmlNode state in doc.SelectNodes("states/state"))
                 {
-                    var sprite = new Sprite 
+                    Sprite sprite = new Sprite 
                     { 
                         Type = SpriteType.Path,
                         Path = state.SelectSingleNode("path").InnerText,
@@ -65,7 +65,7 @@
         
     </script>
 
-    <script type="text/javascript">
+    <script>
         function onMouseOver(sprite, color, idx) {
             sprite.stopAnimation();
             sprite.animate({
@@ -92,7 +92,7 @@
         }
     </script>
 
-    <style type="text/css">
+    <style>
         .x-state-desc .x-form-display-field{
             font-size: 14px;
         }

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -25,13 +25,13 @@
  ********/
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Text;
 using System.Web.UI;
 
 using Ext.Net.Utilities;
-using System.Collections.Generic;
-using System.Globalization;
 
 namespace Ext.Net
 {
@@ -213,7 +213,8 @@ namespace Ext.Net
                 }
                 else if(mode == ParameterMode.Auto)
                 {
-                    var result = this.GetAutoValue(script);
+                    KeyValuePair<string, ParameterMode> result = this.GetAutoValue(script);
+                    
                     mode = result.Value;
                     script = result.Key;
                 }
@@ -239,7 +240,7 @@ namespace Ext.Net
 
             if (name.IsNotEmpty())
             {
-                sb.Append(name).Append(":");
+                sb.Append(JSON.Serialize(name)).Append(":");
             }
 
             sb.Append("{");
@@ -301,7 +302,8 @@ namespace Ext.Net
             }
             else if (mode == ParameterMode.Auto)
             {
-                var result = this.GetAutoValue(script);
+                KeyValuePair<string, ParameterMode> result = this.GetAutoValue(script);
+
                 mode = result.Value;
                 script = result.Key;
             }
@@ -322,15 +324,25 @@ namespace Ext.Net
             DateTime dateTest;
             ParameterMode mode;            
 
-            if (bool.TryParse(value, out boolTest) || double.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out doubleTest))
+            if (bool.TryParse(value, out boolTest))
             {
+                mode = ParameterMode.Raw;
+                value = value.ToLowerInvariant();
+            }
+            else if (double.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out doubleTest))
+            {
+                if (value.Contains(","))
+                {
+                    value = value.Replace(",", ".");
+                }
+                
                 mode = ParameterMode.Raw;
                 value = value.ToLowerInvariant();
             }
             else if (DateTime.TryParse(value, CultureInfo.CurrentCulture, DateTimeStyles.None, out dateTest))
             {
                 mode = ParameterMode.Raw;
-                value = DateTimeUtils.DateNetToJs(dateTest);
+                value = JSON.Serialize(dateTest, JSON.ScriptConverters);
             }
             else
             {
@@ -355,7 +367,7 @@ namespace Ext.Net
             {
                 return this.userParams ?? (this.userParams = new ParameterCollection {Owner = this.Owner});
             }
-        }
+        }        
     }
 
     /// <summary>

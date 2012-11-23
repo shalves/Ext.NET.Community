@@ -69,10 +69,10 @@
 
 <html>
 <head runat="server">
-    <title>Field Mapping - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <title>Editor Field Mapping - Ext.NET Examples</title>
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <script type="text/javascript">
+    <script>
         var departmentRenderer = function (value) {
             var r = App.StoreCombo.getById(value);
 
@@ -100,7 +100,6 @@
         </ext:Store>
         
         <ext:GridPanel 
-            EnableViewState="true" 
             Height="100"
             runat="server"
             Title="List" 
@@ -124,7 +123,7 @@
                     <ext:Column runat="server" Text="ID" DataIndex="ID" />
                     <ext:Column runat="server" Text="NAME" DataIndex="Name" />
                     <ext:Column runat="server" Text="SURNAME" DataIndex="Surname" />
-                    <ext:Column runat="server" DataIndex="DepartmentId" Text="Department" Width="240">
+                    <ext:Column runat="server" Text="DEPARTMENT" DataIndex="DepartmentId" Width="240">
                         <Renderer Fn="departmentRenderer" />
                         <Editor>
                             <ext:ComboBox 
@@ -139,9 +138,6 @@
                     </ext:Column>
                 </Columns>
             </ColumnModel>
-            <SelectionModel>
-                <ext:RowSelectionModel runat="server" Mode="Multi" />
-            </SelectionModel>
             <Plugins>
                 <ext:CellEditing runat="server" />
             </Plugins>

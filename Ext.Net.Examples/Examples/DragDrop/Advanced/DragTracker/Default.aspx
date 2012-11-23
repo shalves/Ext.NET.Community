@@ -30,9 +30,9 @@
 <html>
 <head runat="server">
     <title>Click and Drag to Select Items - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">
+    <style>
         div.tracked-item {
             border           : 1px solid silver;
             background-color : #f0f080;
@@ -65,7 +65,7 @@
         }
     </style>
     
-    <script type="text/javascript">        
+    <script>        
         var startTrack = function () {
 	        Ext.select("div.tracked-item.selected").removeCls("selected");
 	        this.items = Ext.select("div.tracked-item", true);

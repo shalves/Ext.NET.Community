@@ -50,9 +50,9 @@
 <html>
 <head runat="server">
     <title>Multi-Header Row in GridPanel - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <style type="text/css">        
+    <style>        
         .test-ct {
             background-color : Black; 
             height : 47px !important; 

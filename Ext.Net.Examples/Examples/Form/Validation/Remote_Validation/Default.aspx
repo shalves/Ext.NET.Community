@@ -36,6 +36,19 @@
 
         System.Threading.Thread.Sleep(1000);
     }
+
+    [DirectMethod]
+    public object DirectCheckField(string value)
+    {
+        if (value == "Valid")
+        {
+            return true;
+        }
+        else
+        {
+            return "'Valid' is valid value only";
+        }
+    }
 </script>
 
 <!DOCTYPE html>
@@ -43,12 +56,12 @@
 <html>
 <head runat="server">
     <title>Remote Validation - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
         <ext:ResourceManager runat="server" />
-       
+
         <ext:FormPanel 
             runat="server" 
             Title="Remote Validation Form" 
@@ -56,8 +69,7 @@
             Frame="true"            
             MonitorValid="true"
             Width="500"             
-            DefaultAnchor="100%"
-            Height="230">
+            DefaultAnchor="100%">
             <FieldDefaults>
                 <CustomConfig>
                     <ext:ConfigItem Name="LabelWidth" Value="250" Mode="Raw" />
@@ -69,6 +81,9 @@
                 <ext:TextField runat="server" FieldLabel="Client only validation" AllowBlank="false" />
                 <ext:TextField runat="server" FieldLabel="Server only validation" IsRemoteValidation="true">
                     <RemoteValidation OnValidation="CheckField" />
+                </ext:TextField>
+                <ext:TextField runat="server" FieldLabel="DirectFn validation" IsRemoteValidation="true">
+                    <RemoteValidation DirectFn="App.direct.DirectCheckField" />
                 </ext:TextField>
                 
                 <ext:TextField runat="server" FieldLabel="Client and server validation" IsRemoteValidation="true" AllowBlank="false">

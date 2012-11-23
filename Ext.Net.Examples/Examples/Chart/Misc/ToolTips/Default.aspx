@@ -7,8 +7,8 @@
 <html>
 <head runat="server">
     <title>Tips Chart - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
+    <link href="/resources/css/examples.css" rel="stylesheet" />
+    <style>
         .x-tip {
             background-color      : #fff;
             border-radius         : 0.5em;
@@ -60,7 +60,7 @@
         }
     </style>
 
-    <script type="text/javascript">
+    <script>
         var tipsRenderer = function (si, item) {
             var storeItem = item.storeItem,
                 data = [{

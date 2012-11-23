@@ -7,7 +7,7 @@
     }
 </script>
 
-<style type="text/css">
+<style>
     div.sourcecode {
 	    margin  : 12px 0;
         font    : normal 12px monospace; 

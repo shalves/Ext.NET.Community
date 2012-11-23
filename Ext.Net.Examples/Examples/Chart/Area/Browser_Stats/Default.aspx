@@ -7,7 +7,7 @@
     
     protected void Page_Load(object sender, EventArgs e)
     {
-        var data = new List<object> 
+        List<object> data = new List<object> 
         { 
             new { Date = new DateTime(2009, 1, 1),  IE = 44.8, Firefox = 45.5, Chrome = 3.9,  Safari = 3,   Opera = 2.3, Other = 0.5 },
             new { Date = new DateTime(2009, 2, 1),  IE = 43.6, Firefox = 46.4, Chrome = 4,    Safari = 3,   Opera = 2.2, Other = 0.8 },
@@ -35,7 +35,7 @@
             new { Date = new DateTime(2010, 12, 1), IE = 27.5, Firefox = 43.5, Chrome = 22.4, Safari = 3.8, Opera = 2.2, Other = 0.6 }
         };
 
-        var store = this.Chart1.GetStore();
+        Store store = this.Chart1.GetStore();
         
         store.DataSource = data;
         store.DataBind();
@@ -47,7 +47,7 @@
 <html>
 <head runat="server">
     <title>Area BrowserStats - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />   
+    <link href="/resources/css/examples.css" rel="stylesheet" />   
 </head>
 <body>
     <form runat="server">

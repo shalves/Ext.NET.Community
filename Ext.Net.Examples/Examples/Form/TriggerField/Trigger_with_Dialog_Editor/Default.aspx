@@ -54,9 +54,9 @@
 <html>
 <head runat="server">
     <title>EditorGrid with TriggerField Editor and Dialog - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
     
-    <script type="text/javascript">
+    <script>
         var triggerClick = function (el, trigger, tag, auto, index) {            
             switch(tag) {
                 case "pick":

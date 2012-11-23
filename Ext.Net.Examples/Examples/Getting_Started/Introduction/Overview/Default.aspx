@@ -5,7 +5,7 @@
 <html>
 <head runat="server">
     <title>Getting Started - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css"  rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css"  rel="stylesheet" />
     <base target="_blank" />
 </head>
 <body>
@@ -15,30 +15,37 @@
         <h2>Overview</h2>
         
         <p>Ext.NET is a toolkit of AJAX enabled ASP.NET Web Controls.</p>
+        
+        <p>Ext.NET includes the powerful desktop application development platform 
+        <a href="http://www.sencha.com/products/extjs/"> Sencha Ext JS</a>. 
+        Ext JS provides unparalleled cross-browser compatibility enabling you to develop incredible web apps for any browser.</p>
 
-        <p>Ext.NET includes the powerful cross-browser <a href="http://www.extjs.com/">ExtJS</a> JavaScript Library and 
-            simplifies the development of powerful and rich AJAX enabled Web Applications.</p>
-
-        <p>Both Open-Source (Community License) or Closed-Source (Professional License) are available. 
-            The <a href="http://www.ext.net/license/">License Summary</a> outlines differences between the two licensing options. 
-            The code and functionality of both the Community and Professional editions are essentially the same with the only effective difference being the License under which each is released.</p>
-            
-        <p>Direct access to the latest Ext.NET source code, via read-only SVN access, is available to all Professional Edition License holders with a valid Support Subscription. More information regarding
-            Professional Edition Licenses and Support Subscriptions is available on the <a href="http://www.ext.net/products" />Product Summary</a>.</p>
+        <p>Direct access to the latest Ext.NET source code, via read-only SVN access, is available to all Ext.NET Pro 
+            license holders with a valid Premium Support Subscription. An Ext.NET Pro license and Premium Support
+            subscription can be purchased in the <a href="http://ext.net/store/">Store</a></p>
             
         <h2>System Requirements</h2>
         
         <ol class="expanded">
-            <li><a href="http://www.microsoft.com/visualstudio/">Visual Studio</a> 2005, 2008 or 2010, or</li>
-            <li><a href="http://www.microsoft.com/express/vwd/">Visual Web Developer Express</a> 2005, 2008 or 2010</li>
-            <li>.NET Framework 3.5 (only required to be installed on machine), you can code in .NET 2.0, 3.0 or 3.5</li>
+            <li><a href="http://www.microsoft.com/visualstudio/eng/products/visual-studio-overview">Visual Studio</a> 2008, 2010 or 2012, or</li>
+            <li><a href="http://www.microsoft.com/visualstudio/eng/products/visual-studio-express-products">Visual Studio Express</a> 2008, 2010 or 2012</li>
+            <li>.NET Framework 3.5, 4.0* or 4.5</li>
         </ol>
+
+        <p>*minimum required for Ext.NET MVC</p>
         
-        <h2>Getting Started (Step-by-Step)</h2>
+        <h2>Getting Started (NuGet)</h2>
         
+        <p>The easiest and quickest way to install Ext.NET is using <a href="http://nuget.org/packages/Ext.NET">NuGet</a>. Run the following command in Visual Studio Command panel, 
+        or seach for "Ext.NET" in NuGet Package Manager.</p>
+
+        <p><code>Install-Package Ext.NET</code></p>
+
+        <h2>Getting Started (Manual)</h2>
+
         <ol class="expanded">
             <li>First ensure you have Visual Studio or Visual Web Developer Express installed on your computer.
-                <div class="information"><p>If you do not have a copy of Visual Studio already installed, the <a href="http://www.microsoft.com/express/vwd/">Visual Web Developer Express Edition</a> is free to use and 
+                <div class="information"><p>If you do not have a copy of Visual Studio already installed, the <a href="http://www.microsoft.com/visualstudio/eng/products/visual-studio-express-products/">Visual Studio Express</a> is free to use and 
                 is a great way to get started with ASP.NET and Ext.NET. The Ext.NET Components work exactly the same in both environments.</p></div></li>
             
             <li><p>A Manual installation package (.zip) is available for download at <a href="http://www.ext.net/download/">http://www.ext.net/download/</a>.</p></li>
@@ -54,7 +61,7 @@
                 </ol>
             </li>
             
-            <li>Add the Ext.NET Controls to your Visual Studio (or Visual Web Developer) Toolbox, see also <a href="http://ext.net/support/readme.txt">README.txt</a>
+            <li>Add the Ext.NET Controls to your Visual Studio (or Visual Web Developer) Toolbox, see also <a href="http://examples.ext.net/#/Getting_Started/Introduction/README/">README.txt</a>
                 <ol style="list-style-type: lower-roman;">
                     <li>Open Visual Studio or Visual Web Developer Express</li>
                     <li>Open an existing web site or create a new web site project.</li>

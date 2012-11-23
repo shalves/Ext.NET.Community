@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -116,25 +116,25 @@ namespace Ext.Net
 					this.disableCachingParam = value;
 				}
 			}
-        
+
 			private AjaxOptions ajaxOptions = null;
 
 			/// <summary>
 			/// Any additional options to be passed to the request, for example timeout or headers.
 			/// </summary>
-			public AjaxOptions AjaxOptions
-			{
+			[DefaultValue(null)]
+			public virtual AjaxOptions AjaxOptions 
+			{ 
 				get
 				{
-					if (this.ajaxOptions == null)
-					{
-						this.ajaxOptions = new AjaxOptions();
-					}
-			
 					return this.ajaxOptions;
 				}
+				set
+				{
+					this.ajaxOptions = value;
+				}
 			}
-			
+
 			private bool passParentSize = false;
 
 			/// <summary>
@@ -204,6 +204,24 @@ namespace Ext.Net
 				set
 				{
 					this.reloadOnEvent = value;
+				}
+			}
+
+			private bool removeD = false;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			[DefaultValue(false)]
+			public virtual bool RemoveD 
+			{ 
+				get
+				{
+					return this.removeD;
+				}
+				set
+				{
+					this.removeD = value;
 				}
 			}
 
@@ -492,6 +510,24 @@ namespace Ext.Net
 				set
 				{
 					this.directMethod = value;
+				}
+			}
+
+			private bool showWarningOnFailure = true;
+
+			/// <summary>
+			/// Show warning if request fail.
+			/// </summary>
+			[DefaultValue(true)]
+			public virtual bool ShowWarningOnFailure 
+			{ 
+				get
+				{
+					return this.showWarningOnFailure;
+				}
+				set
+				{
+					this.showWarningOnFailure = value;
 				}
 			}
         

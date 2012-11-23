@@ -69,15 +69,18 @@
 <html>
 <head runat="server">
     <title>Checkout Form - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />       
+    <link href="/resources/css/examples.css" rel="stylesheet" />       
 
-    <script type="text/javascript">
+    <script>
         function onMailingAddrFieldChange(field) {
             var formPanel = field.up("form"),
-                copyToBilling = formPanel.down('[name=billingSameAsMailing]').getValue();
+                copyToBilling = formPanel.down('[name=billingSameAsMailing]').getValue(),
+                copyField = formPanel.down('[name=' + field.billingFieldName + ']');
 
             if (copyToBilling) {
-                formPanel.down('[name=' + field.billingFieldName + ']').setValue(field.getValue());
+                copyField.setValue(field.getValue());
+            } else {
+                copyField.clearInvalid();
             }
         }
 
@@ -92,7 +95,7 @@
                 // This must only be applied when it is not IE6, as it has issues with opacity when cleartype
                 // is enabled
                 if (!Ext.isIE6) {
-                    field.el.animate({opacity: checked ? .3 : 1});
+                    field.el.animate({opacity: checked ? 0.3 : 1});
                 }
             });
         }
@@ -150,7 +153,8 @@
                             </Items>
                         </ext:FieldContainer>
                         <ext:Container runat="server"
-                            Layout="HBoxLayout">
+                            Layout="HBoxLayout"
+                            MarginSpec="0 0 5 0">
                             <Items>
                                 <ext:TextField 
                                     runat="server"
@@ -196,7 +200,8 @@
 
                         <ext:Container 
                             runat="server"
-                            Layout="HBoxLayout">
+                            Layout="HBoxLayout"
+                            MarginSpec="0 0 5 0">
                             <Items>
                                 <ext:TextField 
                                     runat="server"
@@ -289,7 +294,8 @@
 
                         <ext:Container 
                             runat="server"
-                            Layout="HBoxLayout">
+                            Layout="HBoxLayout"
+                            MarginSpec="0 0 5 0">
                             <Items>
                                 <ext:TextField 
                                     runat="server" 
@@ -387,7 +393,8 @@
 
                         <ext:Container 
                             runat="server"
-                            Layout="HBoxLayout">
+                            Layout="HBoxLayout"
+                            MarginSpec="0 0 5 0">
                             <Items>
                                 <ext:TextField 
                                     runat="server" 

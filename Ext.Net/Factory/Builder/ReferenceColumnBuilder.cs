@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,41 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : ColumnBase.Builder<ReferenceColumn, ReferenceColumn.Builder>
+        new public abstract partial class Builder<TReferenceColumn, TBuilder> : ColumnBase.Builder<TReferenceColumn, TBuilder>
+            where TReferenceColumn : ReferenceColumn
+            where TBuilder : Builder<TReferenceColumn, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TReferenceColumn component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Reference(string reference)
+            {
+                this.ToComponent().Reference = reference;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ReferenceColumn.Builder<ReferenceColumn, ReferenceColumn.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,24 +106,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ReferenceColumn.Builder Reference(string reference)
-            {
-                this.ToComponent().Reference = reference;
-                return this as ReferenceColumn.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -98,6 +114,14 @@ namespace Ext.Net
         public ReferenceColumn.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ReferenceColumn(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -112,7 +136,11 @@ namespace Ext.Net
         /// </summary>
         public ReferenceColumn.Builder ReferenceColumn()
         {
-            return this.ReferenceColumn(new ReferenceColumn());
+#if MVC
+			return this.ReferenceColumn(new ReferenceColumn { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ReferenceColumn(new ReferenceColumn());
+#endif			
         }
 
         /// <summary>
@@ -120,7 +148,10 @@ namespace Ext.Net
         /// </summary>
         public ReferenceColumn.Builder ReferenceColumn(ReferenceColumn component)
         {
-            return new ReferenceColumn.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ReferenceColumn.Builder(component);
         }
 
         /// <summary>
@@ -128,7 +159,11 @@ namespace Ext.Net
         /// </summary>
         public ReferenceColumn.Builder ReferenceColumn(ReferenceColumn.Config config)
         {
-            return new ReferenceColumn.Builder(new ReferenceColumn(config));
+#if MVC
+			return new ReferenceColumn.Builder(new ReferenceColumn(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ReferenceColumn.Builder(new ReferenceColumn(config));
+#endif			
         }
     }
 }

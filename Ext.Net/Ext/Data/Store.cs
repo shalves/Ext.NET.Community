@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -138,14 +138,19 @@ namespace Ext.Net
                 {
                     string reader = this.Reader.Primary != null ? (", reader:" + new ClientConfig().Serialize(this.Reader.Primary)) : "";
                     string writer = this.Writer.Primary != null ? (", writer:" + new ClientConfig().Serialize(this.Writer.Primary)) : "";
-                    
+
+                    if (this.Data != null)
+                    {
+                        return string.Format("{{type: '{0}'{1}{2}}}", this.IsPagingStore || this.Buffered ? "pagingmemory" : "memory", reader, writer);
+                    }
+
                     if (this.MemoryDataPresent)
                     {
                         string template = "{{data:{0}, type: '{1}'{2}{3}}}";
-                        return string.Format(template, this.DSData != null ? JSON.Serialize(this.DSData) : JsonData, this.IsPagingStore || this.Buffered ? "pagingmemory" : "memory", reader,writer);
+                        return string.Format(template, this.DSData != null ? JSON.Serialize(this.DSData) : JsonData, this.IsPagingStore || this.Buffered ? "pagingmemory" : "memory", reader, writer);
                     }
 
-                    return string.Format("{{data:[],type:'{0}'{1}{2}}}", this.IsPagingStore || this.Buffered ? "pagingmemory" : "memory", reader, writer);
+                    return string.Format("{{type:'{0}'{1}{2}}}", this.IsPagingStore || this.Buffered ? "pagingmemory" : "memory", reader, writer);
                 }
 
                 return "";
@@ -157,13 +162,13 @@ namespace Ext.Net
         /// </summary>
         public virtual bool MemoryDataPresent
         {
-            get 
+            get
             {
                 if (this.IsDynamic && !this.IsDataBound && (this.DataSourceID.IsNotEmpty() || this.DataSource != null))
                 {
                     this.DataBind();
                 }
-                return (this.DSData != null || this.JsonData.IsNotEmpty()); 
+                return (this.DSData != null || this.JsonData.IsNotEmpty());
             }
         }
 
@@ -222,7 +227,7 @@ namespace Ext.Net
                 {
                     this.directEvents = new StoreDirectEvents(this);
                 }
-                
+
                 return this.directEvents;
             }
         }
@@ -244,76 +249,76 @@ namespace Ext.Net
         private static readonly object EventReadData = new object();
         private static readonly object EventSubmitData = new object();
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[Description("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
         public delegate void BeforeStoreChangedEventHandler(object sender, BeforeStoreChangedEventArgs e);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[Description("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
         public delegate void AfterStoreChangedEventHandler(object sender, AfterStoreChangedEventArgs e);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[Description("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
         public delegate void BeforeRecordUpdatedEventHandler(object sender, BeforeRecordUpdatedEventArgs e);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[Description("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
         public delegate void AfterRecordUpdatedEventHandler(object sender, AfterRecordUpdatedEventArgs e);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[Description("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
         public delegate void BeforeRecordDeletedEventHandler(object sender, BeforeRecordDeletedEventArgs e);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[Description("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
         public delegate void AfterRecordDeletedEventHandler(object sender, AfterRecordDeletedEventArgs e);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[Description("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
         public delegate void BeforeRecordInsertedEventHandler(object sender, BeforeRecordInsertedEventArgs e);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[Description("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
         public delegate void AfterRecordInsertedEventHandler(object sender, AfterRecordInsertedEventArgs e);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[Description("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
         public delegate void BeforeDirectEventHandler(object sender, BeforeDirectEventArgs e);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[Description("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
         public delegate void AfterDirectEventHandler(object sender, AfterDirectEventArgs e);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[Description("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
         public delegate void AjaxReadDataEventHandler(object sender, StoreReadDataEventArgs e);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		[Description("")]
+        /// <summary>
+        /// 
+        /// </summary>
+        [Description("")]
         public delegate void AjaxSubmitDataEventHandler(object sender, StoreSubmitDataEventArgs e);
 
         /// <summary>
@@ -325,6 +330,7 @@ namespace Ext.Net
         {
             add
             {
+                this.CheckForceId();
                 this.Events.AddHandler(EventBeforeStoreChanged, value);
             }
             remove
@@ -342,6 +348,7 @@ namespace Ext.Net
         {
             add
             {
+                this.CheckForceId();
                 this.Events.AddHandler(EventAfterStoreChanged, value);
             }
             remove
@@ -359,6 +366,7 @@ namespace Ext.Net
         {
             add
             {
+                this.CheckForceId();
                 this.Events.AddHandler(EventBeforeRecordUpdated, value);
             }
             remove
@@ -376,6 +384,7 @@ namespace Ext.Net
         {
             add
             {
+                this.CheckForceId();
                 this.Events.AddHandler(EventAfterRecordUpdated, value);
             }
             remove
@@ -393,6 +402,7 @@ namespace Ext.Net
         {
             add
             {
+                this.CheckForceId();
                 this.Events.AddHandler(EventBeforeRecordDeleted, value);
             }
             remove
@@ -410,6 +420,7 @@ namespace Ext.Net
         {
             add
             {
+                this.CheckForceId();
                 this.Events.AddHandler(EventAfterRecordDeleted, value);
             }
             remove
@@ -427,6 +438,7 @@ namespace Ext.Net
         {
             add
             {
+                this.CheckForceId();
                 this.Events.AddHandler(EventBeforeRecordInserted, value);
             }
             remove
@@ -444,6 +456,7 @@ namespace Ext.Net
         {
             add
             {
+                this.CheckForceId();
                 this.Events.AddHandler(EventAfterRecordInserted, value);
             }
             remove
@@ -461,6 +474,7 @@ namespace Ext.Net
         {
             add
             {
+                this.CheckForceId();
                 this.Events.AddHandler(EventAfterDirectEvent, value);
             }
             remove
@@ -478,6 +492,7 @@ namespace Ext.Net
         {
             add
             {
+                this.CheckForceId();
                 this.Events.AddHandler(EventBeforeDirectEvent, value);
             }
             remove
@@ -495,6 +510,7 @@ namespace Ext.Net
         {
             add
             {
+                this.CheckForceId();
                 this.Events.AddHandler(EventReadData, value);
             }
             remove
@@ -512,6 +528,7 @@ namespace Ext.Net
         {
             add
             {
+                this.CheckForceId();
                 this.Events.AddHandler(EventSubmitData, value);
             }
             remove
@@ -705,7 +722,7 @@ namespace Ext.Net
         private IDictionary oldValues;
         private JToken record;
         private List<object> responseRecords;
-        
+
         void IPostBackEventHandler.RaisePostBackEvent(string eventArgument)
         {
             if (RequestManager.IsAjaxRequest)
@@ -745,7 +762,7 @@ namespace Ext.Net
             {
                 return;
             }
-            
+
             string _ea = this.Page.Request["__EVENTARGUMENT"];
 
             if (_ea.IsNotEmpty())
@@ -840,11 +857,11 @@ namespace Ext.Net
                 throw new HttpException("Can't find DataSource");
             }
 
-            JArray data = JArray.Parse(this.changingEventArgs.DataHandler.JsonData);            
+            JArray data = JArray.Parse(this.changingEventArgs.DataHandler.JsonData);
 
             if (this.changingEventArgs.Action == StoreAction.Update && (noDs || ds.GetView(this.DataMember).CanUpdate))
             {
-                this.MakeUpdates(ds, data); 
+                this.MakeUpdates(ds, data);
             }
 
             if (this.changingEventArgs.Action == StoreAction.Destroy && (noDs || ds.GetView(this.DataMember).CanDelete))
@@ -858,6 +875,16 @@ namespace Ext.Net
             }
         }
 
+        private string ChopQuotes(string value)
+        {
+            if (value.IsNotEmpty() && value.StartsWith("\"") && value.EndsWith("\""))
+            {
+                return value.Chop();
+            }
+
+            return value;
+        }
+
         private void MakeUpdates(IDataSource ds, JArray data)
         {
             string id = this.ModelInstance.GetIDProperty();
@@ -865,19 +892,21 @@ namespace Ext.Net
             foreach (JToken token in data)
             {
                 this.record = token;
+                var jObject = (JObject)token;
                 values = new SortedList(this.ModelInstance.Fields.Count);
                 keys = new SortedList();
                 oldValues = new SortedList();
 
                 foreach (ModelField field in this.ModelInstance.Fields)
                 {
-                    values[field.Name] = token.Value<string>(field.Mapping.IsNotEmpty() ? field.Mapping : field.Name) ?? token.Value<string>(field.Name);
+                    var jProperty = jObject.Property(field.Mapping.IsNotEmpty() ? field.Mapping : field.Name) ?? jObject.Property(field.Name);
+                    values[field.Name] = jProperty != null && jProperty.Value.Type != JTokenType.Null && jProperty.Value.Type != JTokenType.Undefined ? (jProperty.Value.Type == JTokenType.String ? (string)jProperty.Value : this.ChopQuotes(jProperty.Value.ToString(Newtonsoft.Json.Formatting.None))) : null;
                 }
 
                 if (id.IsNotEmpty())
                 {
                     string idStr = token.Value<string>(id);
-                    
+
                     int idInt;
 
                     if (int.TryParse(idStr, out idInt))
@@ -903,7 +932,7 @@ namespace Ext.Net
                     continue;
                 }
 
-                if (ds !=null)
+                if (ds != null)
                 {
                     ds.GetView("").Update(keys, values, oldValues, this.UpdateCallback);
                 }
@@ -911,7 +940,7 @@ namespace Ext.Net
                 {
                     this.UpdateCallback(0, null);
                 }
-                
+
             }
         }
 
@@ -954,7 +983,7 @@ namespace Ext.Net
                 {
                     continue;
                 }
-                
+
                 if (ds != null)
                 {
                     ds.GetView("").Delete(keys, oldValues, DeleteCallback);
@@ -973,15 +1002,17 @@ namespace Ext.Net
             foreach (JToken token in data)
             {
                 this.record = token;
+                var jObject = (JObject)token;
                 values = new SortedList(this.ModelInstance.Fields.Count);
                 keys = new SortedList();
                 oldValues = new SortedList();
 
                 foreach (ModelField field in this.ModelInstance.Fields)
                 {
-                    values[field.Name] = token.Value<string>(field.Mapping.IsNotEmpty() ? field.Mapping : field.Name) ?? token.Value<string>(field.Name);
+                    var jProperty = jObject.Property(field.Mapping.IsNotEmpty() ? field.Mapping : field.Name) ?? jObject.Property(field.Name);
+                    values[field.Name] = jProperty != null && jProperty.Value.Type != JTokenType.Null && jProperty.Value.Type != JTokenType.Undefined ? (jProperty.Value.Type == JTokenType.String ? (string)jProperty.Value : this.ChopQuotes(jProperty.Value.ToString(Newtonsoft.Json.Formatting.None))) : null;
                 }
-                
+
                 BeforeRecordInsertedEventArgs eBeforeRecordInserted = new BeforeRecordInsertedEventArgs(record, keys, values);
                 this.OnBeforeRecordInserted(eBeforeRecordInserted);
 
@@ -994,7 +1025,7 @@ namespace Ext.Net
                 {
                     continue;
                 }
-                
+
                 if (ds != null)
                 {
                     ds.GetView("").Insert(values, InsertCallback);
@@ -1028,7 +1059,7 @@ namespace Ext.Net
                 var model = this.ModelInstance;
                 foreach (var key in values.Keys)
                 {
-                    var field = model.Fields.First<ModelField>(f => f.Name == key.ToString());
+                    var field = model.Fields.FirstOrDefault<ModelField>(f => f.Name == key.ToString());
                     mappings.Add(field != null ? (field.Mapping.IsNotEmpty() ? field.Mapping : field.Name) : key.ToString(), values[key]);
                 }
 
@@ -1068,7 +1099,7 @@ namespace Ext.Net
                 var model = this.ModelInstance;
                 foreach (var key in values.Keys)
                 {
-                    var field = model.Fields.Single<ModelField>(f => f.Name == key.ToString());
+                    var field = model.Fields.FirstOrDefault<ModelField>(f => f.Name == key.ToString());
                     mappings.Add(field != null ? (field.Mapping.IsNotEmpty() ? field.Mapping : field.Name) : key.ToString(), values[key]);
                 }
 
@@ -1135,7 +1166,7 @@ namespace Ext.Net
                     data = HttpUtility.HtmlDecode(data);
                 }
 
-                switch(action)
+                switch (action)
                 {
                     case "create":
                     case "destroy":
@@ -1147,7 +1178,7 @@ namespace Ext.Net
                         }
 
                         this.DoSaving(action, data, parametersToken);
-                        
+
                         break;
                     case "read":
                         StoreReadDataEventArgs refreshArgs = new StoreReadDataEventArgs(parametersToken);
@@ -1158,7 +1189,7 @@ namespace Ext.Net
                         {
                             if (refreshArgs.Total > -1)
                             {
-                                dsp.Total = refreshArgs.Total; 
+                                dsp.Total = refreshArgs.Total;
                             }
                         }
 

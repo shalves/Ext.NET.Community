@@ -38,7 +38,18 @@ Ext.panel.Panel.override({
         if (f) {
             f.el.dom.value = "false";
         }
-    })
+    }),
+
+    setIconCls : function (cls) {
+        this.callParent([cls && cls.indexOf('#') === 0 ? X.net.RM.getIcon(cls.substring(1)) : cls]);
+    },
+
+    setIcon : function (icon) {
+        if (this.iconCls) {
+            this.setIconCls("");
+        }
+        this.callParent([icon && icon.indexOf('#') === 0 ? X.net.RM.getIconUrl(icon.substring(1)) : icon]);
+    }
 });
 
 // now toolbar is docked components, need to change this checking
@@ -53,14 +64,15 @@ Ext.Panel.prototype.initComponent = Ext.Function.createInterceptor(Ext.Panel.pro
     }
 });
 
-Ext.panel.Panel.prototype.setIconClsOld = Ext.panel.Panel.prototype.setIconCls;
+Ext.panel.Header.override({
+    setIconCls : function (cls) {
+        this.callParent([cls && cls.indexOf('#') === 0 ? X.net.RM.getIcon(cls.substring(1)) : cls]);
+    },
 
-Ext.panel.Panel.prototype.setIconCls = function (cls) {
-    this.setIconClsOld(cls && cls.indexOf('#') === 0 ? X.net.RM.getIcon(cls.substring(1)) : cls);
-};
-
-Ext.panel.Header.prototype.setIconClsOld = Ext.panel.Header.prototype.setIconCls;
-
-Ext.panel.Header.prototype.setIconCls = function (cls) {
-    this.setIconClsOld(cls && cls.indexOf('#') === 0 ? X.net.RM.getIcon(cls.substring(1)) : cls);
-};
+    setIcon : function (icon) {
+        if (this.iconCls) {
+            this.setIconCls("");
+        }
+        this.callParent([icon && icon.indexOf('#') === 0 ? X.net.RM.getIconUrl(icon.substring(1)) : icon]);
+    }
+});

@@ -15,9 +15,9 @@
 <head runat="server">
     <title>Button Control Variations - Ext.NET Examples</title>
 
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 
-    <style type="text/css">
+    <style>
         .custom-icon1 {
         	background-image : url(arrow-down.gif) !important;
         }

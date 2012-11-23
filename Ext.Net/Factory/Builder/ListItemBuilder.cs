@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.0.0 - Community Edition (AGPLv3 License)
+ * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-24
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -41,7 +41,68 @@ namespace Ext.Net
         /// <summary>
         /// 
         /// </summary>
-        public partial class Builder : BaseItem.Builder<ListItem, ListItem.Builder>
+        new public abstract partial class Builder<TListItem, TBuilder> : BaseItem.Builder<TListItem, TBuilder>
+            where TListItem : ListItem
+            where TBuilder : Builder<TListItem, TBuilder>
+        {
+            /*  Ctor
+                -----------------------------------------------------------------------------------------------*/
+
+			/// <summary>
+			/// 
+			/// </summary>
+            public Builder(TListItem component) : base(component) { }
+
+
+			/*  ConfigOptions
+				-----------------------------------------------------------------------------------------------*/
+			 
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Text(string text)
+            {
+                this.ToComponent().Text = text;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Value(string value)
+            {
+                this.ToComponent().Value = value;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// 
+			/// </summary>
+            public virtual TBuilder Index(int index)
+            {
+                this.ToComponent().Index = index;
+                return this as TBuilder;
+            }
+             
+ 			/// <summary>
+			/// Wrap in quotes or not
+			/// </summary>
+            public virtual TBuilder Mode(ParameterMode mode)
+            {
+                this.ToComponent().Mode = mode;
+                return this as TBuilder;
+            }
+            
+
+			/*  Methods
+				-----------------------------------------------------------------------------------------------*/
+			
+        }
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public partial class Builder : ListItem.Builder<ListItem, ListItem.Builder>
         {
             /*  Ctor
                 -----------------------------------------------------------------------------------------------*/
@@ -72,51 +133,6 @@ namespace Ext.Net
             {
                 return component.ToBuilder();
             }
-            
-            
-			/*  ConfigOptions
-				-----------------------------------------------------------------------------------------------*/
-			 
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ListItem.Builder Text(string text)
-            {
-                this.ToComponent().Text = text;
-                return this as ListItem.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ListItem.Builder Value(string value)
-            {
-                this.ToComponent().Value = value;
-                return this as ListItem.Builder;
-            }
-             
- 			/// <summary>
-			/// 
-			/// </summary>
-            public virtual ListItem.Builder Index(int index)
-            {
-                this.ToComponent().Index = index;
-                return this as ListItem.Builder;
-            }
-             
- 			/// <summary>
-			/// Wrap in quotes or not
-			/// </summary>
-            public virtual ListItem.Builder Mode(ParameterMode mode)
-            {
-                this.ToComponent().Mode = mode;
-                return this as ListItem.Builder;
-            }
-            
-
-			/*  Methods
-				-----------------------------------------------------------------------------------------------*/
-			
         }
 
         /// <summary>
@@ -125,6 +141,14 @@ namespace Ext.Net
         public ListItem.Builder ToBuilder()
 		{
 			return Ext.Net.X.Builder.ListItem(this);
+		}
+		
+		/// <summary>
+        /// 
+        /// </summary>
+        public override IControlBuilder ToNativeBuilder()
+		{
+			return (IControlBuilder)this.ToBuilder();
 		}
     }
     
@@ -139,7 +163,11 @@ namespace Ext.Net
         /// </summary>
         public ListItem.Builder ListItem()
         {
-            return this.ListItem(new ListItem());
+#if MVC
+			return this.ListItem(new ListItem { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return this.ListItem(new ListItem());
+#endif			
         }
 
         /// <summary>
@@ -147,7 +175,10 @@ namespace Ext.Net
         /// </summary>
         public ListItem.Builder ListItem(ListItem component)
         {
-            return new ListItem.Builder(component);
+#if MVC
+			component.ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null;
+#endif			
+			return new ListItem.Builder(component);
         }
 
         /// <summary>
@@ -155,7 +186,11 @@ namespace Ext.Net
         /// </summary>
         public ListItem.Builder ListItem(ListItem.Config config)
         {
-            return new ListItem.Builder(new ListItem(config));
+#if MVC
+			return new ListItem.Builder(new ListItem(config) { ViewContext = this.HtmlHelper != null ? this.HtmlHelper.ViewContext : null });
+#else
+			return new ListItem.Builder(new ListItem(config));
+#endif			
         }
     }
 }

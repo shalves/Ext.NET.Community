@@ -35,9 +35,9 @@
 <html>
 <head runat="server">
     <title>Prepare Commands - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
+    <link href="/resources/css/examples.css" rel="stylesheet" />    
 
-    <script type="text/javascript">
+    <script>
         var prepareToolbar = function (grid, toolbar, rowIndex, record) {
             // for example hide 'Edit' button if price < 50
             if (record.get("price") < 50) {
@@ -59,8 +59,8 @@
         var prepareCommands = function (grid, commands, record, row) {
             if (record.get("price") >= 50) {
                 commands.push({
-                        command    : "accept",                        
-                        iconCls    : "icon-accept"                                         
+                        command : "accept",                        
+                        iconCls : "icon-accept"                                         
                 });               
             }            
         };
@@ -82,8 +82,8 @@
         var prepareCellCommands = function (grid, commands, record, row, col, value) {
             if (record.get("price") >= 50) {
                commands.push({
-                   iconCls: "icon-moneyadd",
-                   command: "moneyadd"
+                   iconCls : "icon-moneyadd",
+                   command : "moneyadd"
                });                
             }   
         };

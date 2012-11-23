@@ -7,7 +7,7 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        var store = this.GridPanel1.GetStore();
+        Store store = this.GridPanel1.GetStore();
         
         store.DataSource = Employee.GetAll();
         store.DataBind();
@@ -64,7 +64,7 @@
 <html>
 <head runat="server">
     <title>Server Mapping - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />
+    <link href="/resources/css/examples.css" rel="stylesheet" />
 </head>
 <body>
     <form runat="server">
@@ -73,13 +73,12 @@
         <ext:GridPanel
             ID="GridPanel1"
             runat="server"
-            AutoHeight="true" 
             Title="List" 
             Icon="Application">
             <Store>
                 <ext:Store runat="server">
                     <Model>
-                        <ext:Model runat="server" IDProperty="ID">
+                        <ext:Model runat="server">
                             <Fields>
                                 <ext:ModelField Name="ID" Type="Int" />
                                 <ext:ModelField Name="Name" />
@@ -95,7 +94,7 @@
                     <ext:Column runat="server" Text="ID" DataIndex="ID" />
                     <ext:Column runat="server" Text="NAME" DataIndex="Name" />
                     <ext:Column runat="server" Text="SURNAME" DataIndex="Surname" />
-                    <ext:Column runat="server" Text="Department" DataIndex="Department" Width="240" />
+                    <ext:Column runat="server" Text="DEPARTMENT" DataIndex="Department" Width="240" />
                 </Columns>
             </ColumnModel>            
         </ext:GridPanel>

@@ -3,7 +3,64 @@
 <%@ Register Src="~/Examples/Associations/HasMany/Lazy_Load/Models.ascx" TagPrefix="uc" TagName="Models" %>
 
 <script runat="server">
+    [DirectMethod]
+    public static void RenderOrders(int id, string containerId)
+    {
+        UserControlRendrerConfig cfg = new UserControlRendrerConfig 
+        { 
+            UserControlPath = "OrderGrid.ascx",
+            Element = containerId,
+            SingleControl=true,
+            Mode = RenderMode.AddTo
+        };
+
+        cfg.BeforeRender += delegate(ComponentAddedEventArgs e) 
+        {
+            GridPanel grid = ((GridPanel)e.Control);
+            grid.Title = "Orders - " + id;
+            grid.CustomConfig.Add(new ConfigItem("customerId", id.ToString()));
+        };
+        
+        UserControlRenderer.Render(cfg);
+    }
+
+    [DirectMethod]
+    public static void RenderOrderItems(int id, string containerId)
+    {
+        UserControlRendrerConfig cfg = new UserControlRendrerConfig
+        {
+            UserControlPath = "OrderItemsGrid.ascx",
+            Element = containerId,
+            SingleControl = true,
+            Mode = RenderMode.AddTo
+        };
+
+        cfg.BeforeRender += delegate(ComponentAddedEventArgs e)
+        {
+            GridPanel grid = ((GridPanel)e.Control);
+            grid.Title = "Order Items - " + id;
+        };
+
+        UserControlRenderer.Render(cfg);
+    }
     
+    [DirectMethod]
+    public static void RenderItemLoader(int id)
+    {
+        UserControlRendrerConfig cfg = new UserControlRendrerConfig
+        {
+            UserControlPath = "ItemLoader.ascx",
+            SingleControl = true
+        };
+
+        cfg.BeforeRender += delegate(ComponentAddedEventArgs e)
+        {
+            Window window = ((Window)e.Control);
+            window.Title = "Order Item " + id;
+        };
+
+        UserControlRenderer.Render(cfg);
+    }        
 </script>
 
 <!DOCTYPE html>
@@ -11,68 +68,7 @@
 <html>
 <head runat="server">
     <title>Lazy Loading Data Associations - Ext.NET Examples</title>
-    <link href="/resources/css/examples.css" rel="stylesheet" type="text/css" />    
-
-    <script runat="server">
-        [DirectMethod]
-        public static void RenderOrders(int id, string containerId)
-        {
-            var cfg = new UserControlRendrerConfig 
-            { 
-                UserControlPath = "OrderGrid.ascx",
-                Element = containerId,
-                SingleControl=true,
-                Mode = RenderMode.AddTo
-            };
-
-            cfg.BeforeRender += delegate(ComponentAddedEventArgs e) 
-            {
-                var grid = ((GridPanel)e.Control);
-                grid.Title = "Orders - " + id;
-                grid.CustomConfig.Add(new ConfigItem("customerId", id.ToString()));
-            };
-            
-            UserControlRenderer.Render(cfg);
-        }
-
-        [DirectMethod]
-        public static void RenderOrderItems(int id, string containerId)
-        {
-            var cfg = new UserControlRendrerConfig
-            {
-                UserControlPath = "OrderItemsGrid.ascx",
-                Element = containerId,
-                SingleControl = true,
-                Mode = RenderMode.AddTo
-            };
-
-            cfg.BeforeRender += delegate(ComponentAddedEventArgs e)
-            {
-                var grid = ((GridPanel)e.Control);
-                grid.Title = "Order Items - " + id;
-            };
-
-            UserControlRenderer.Render(cfg);
-        }
-        
-        [DirectMethod]
-        public static void RenderItemLoader(int id)
-        {
-            var cfg = new UserControlRendrerConfig
-            {
-                UserControlPath = "ItemLoader.ascx",
-                SingleControl = true
-            };
-
-            cfg.BeforeRender += delegate(ComponentAddedEventArgs e)
-            {
-                var window = ((Window)e.Control);
-                window.Title = "Order Item " + id;
-            };
-
-            UserControlRenderer.Render(cfg);
-        }        
-    </script>
+    <link href="/resources/css/examples.css" rel="stylesheet" />        
 </head>
 <body>    
     <ext:ResourceManager runat="server" DirectEventUrl="Default.aspx" />
