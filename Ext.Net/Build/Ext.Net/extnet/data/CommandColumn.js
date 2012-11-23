@@ -535,8 +535,8 @@ Ext.extend(Ext.net.CommandColumn, Ext.util.Observable, {
     destroy : function () {
         var view = this.grid.getView();
         
-        Ext.each(this.sharedMenus || [], function(menu){
-            if(menu){
+        Ext.each(this.sharedMenus || [], function (menu) {
+            if (menu) {
                 menu.destroy();
             }
         });

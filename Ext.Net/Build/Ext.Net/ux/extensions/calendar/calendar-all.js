@@ -1,12 +1,28 @@
-/*
- * @version   : 1.0.0 - Professional Edition (Ext.Net Professional License)
+/********
+ * This file is part of Ext.NET.
+ *     
+ * Ext.NET is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * Ext.NET is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
+ * 
+ * You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
+ * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ * @version   : 1.6.0 - Ext.NET Community License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-10
- * @copyright : Copyright (c) 2006-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
- * @license   : See license.txt and http://www.ext.net/license/. 
- * @website   : http://www.ext.net/
- */
-
+ * @date      : 2012-11-21
+ * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
+ *              See license.txt and http://www.ext.net/license/.
+ *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
+ ********/
 
 Ext.ns('Ext.calendar');(function(){Ext.apply(Ext.calendar,{Date:{diffDays:function(start,end){day=1000*60*60*24;diff=end.clearTime(true).getTime()-start.clearTime(true).getTime();return Math.ceil(diff/day);},copyTime:function(fromDt,toDt){var dt=toDt.clone();dt.setHours(fromDt.getHours(),fromDt.getMinutes(),fromDt.getSeconds(),fromDt.getMilliseconds());return dt;},compare:function(dt1,dt2,precise){if(precise!==true){dt1=dt1.clone();dt1.setMilliseconds(0);dt2=dt2.clone();dt2.setMilliseconds(0);}
 return dt2.getTime()-dt1.getTime();},equalDates:function(dt1,dt2){return dt1.getFullYear()==dt2.getFullYear()&&dt1.getMonth()==dt2.getMonth()&&dt1.getDate()==dt2.getDate();},maxOrMin:function(max){var dt=(max?0:Number.MAX_VALUE),i=0,args=arguments[1],ln=args.length;for(;i<ln;i++){dt=Math[max?'max':'min'](dt,args[i].getTime());}

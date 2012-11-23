@@ -16,7 +16,7 @@ Ext.net.ResourceMgr = function () {
         
         resolveUrl : function (url) {
             if (url && Ext.net.StringUtils.startsWith(url, "~/")) {                
-                return url.replace(/^~/, Ext.isEmpty(this.appName, false) ? "" : ("/"+this.appName))
+                return url.replace(/^~/, Ext.isEmpty(this.appName, false) ? "" : ("/" + this.appName))
             }
 
             return url;

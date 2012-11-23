@@ -2782,7 +2782,6 @@
     <Content Include="Build\Ext.Net\Licenses\SilkCompanionIcon.txt" />
     <Content Include="Build\Ext.Net\ux\extensions\calendar\build.bat" />
     <Content Include="Build\Ext.Net\ux\extensions\calendar\calendar-all.jsb" />
-    <None Include="Build\NuGet\Ext.NET.1.4.0.nupkg" />
     <None Include="Build\NuGet\Web.config.transform">
       <SubType>Designer</SubType>
     </None>
@@ -6220,6 +6219,7 @@
     <Content Include="Build\Ext.Net\ux\extensions\calendar\src\widgets\DateRangeField.js" />
     <Content Include="Build\Ext.Net\ux\extensions\calendar\src\widgets\ReminderField.js" />
     <EmbeddedResource Include="Build\Ext.Net\ux\plugins\mousedistancesensor\mousedistancesensor.js" />
+    <Content Include="Build\Ext.Net\WhatsNew_1.0.txt" />
     <EmbeddedResource Include="Build\Images\accept.png" />
     <EmbeddedResource Include="Build\Images\delete.png" />
     <EmbeddedResource Include="Build\Images\logo.gif" />

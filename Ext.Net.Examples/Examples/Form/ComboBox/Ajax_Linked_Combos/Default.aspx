@@ -38,7 +38,7 @@
     <form runat="server">
     <ext:ResourceManager runat="server" />
     
-    <ext:Store runat="server" ID="CitiesStore" AutoLoad="false" OnRefreshData="CitiesRefresh">
+    <ext:Store  ID="CitiesStore" runat="server" AutoLoad="false" OnRefreshData="CitiesRefresh">
         <DirectEventConfig>
             <EventMask ShowMask="false" />
         </DirectEventConfig>

@@ -426,6 +426,10 @@ Ext.extend(Ext.net.Store, Ext.data.GroupingStore, {
                 data[k] = undefined;
             }
             
+            if (options.encode) {
+                data[k] = Ext.util.Format.htmlEncode(data[k]);
+            }
+            
             field = this.getFieldByName(k);
             
             if (Ext.isEmpty(data[k], false) && this.isSimpleField(k, field)) {
@@ -691,7 +695,7 @@ Ext.extend(Ext.net.Store, Ext.data.GroupingStore, {
             json += jsonCreated;
         }
 
-        return options.encode ? Ext.util.Format.htmlEncode(json) : json;
+        return json;
     },
 
     getByDataId : function (id) {

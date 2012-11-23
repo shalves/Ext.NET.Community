@@ -203,7 +203,9 @@
             Layout="Fit"
             Title="Simple DataView (0 items selected)">
             <Items>
-                <ext:DataView ID="ImageView" runat="server"
+                <ext:DataView 
+                    ID="ImageView" 
+                    runat="server"
                     StoreID="Store1"
                     AutoHeight="true"
                     MultiSelect="true"
@@ -215,7 +217,7 @@
 							<tpl for=".">
 								<div class="thumb-wrap" id="{name}">
 									<div class="thumb"><img src="{url}" title="{name}"></div>
-									<span class="x-editable">{shortName}</span>
+									<span class="x-editable">{shortName}-{name}</span>
 								</div>
 							</tpl>
 							<div class="x-clear"></div>    

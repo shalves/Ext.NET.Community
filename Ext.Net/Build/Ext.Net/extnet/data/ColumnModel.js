@@ -5,7 +5,7 @@ Ext.chromeVersion = Ext.isChrome ? parseInt(( /chrome\/(\d{2})/ ).exec(navigator
 Ext.grid.ColumnModel.override({
     defaultSortable: true, 
     
-    getTotalWidth : function(includeHidden) {
+    getTotalWidth : function (includeHidden) {
 		if (!this.totalWidth) {
 			var boxsizeadj = (Ext.isChrome && Ext.chromeVersion > 18 ? 2 : 0);
 			this.totalWidth = 0;
@@ -54,16 +54,16 @@ Ext.grid.ColumnModel.override({
 Ext.grid.Column.override({
     forbidIdScoping : true,
 
-    getCellEditor: function(rowIndex){
+    getCellEditor: function (rowIndex) {
         var ed = this.getEditor(rowIndex);
-        if(ed){
-            if(!ed.startEdit){
-                if(!ed.gridEditor){
+        if (ed) {
+            if (!ed.startEdit) {
+                if (!ed.gridEditor) {
                     ed.gridEditor = new Ext.grid.GridEditor(ed);
                 }
                 ed = ed.gridEditor;
             }
-            else if(ed.field){
+            else if (ed.field) {
                 ed.field.gridEditor = ed;
             }
         }

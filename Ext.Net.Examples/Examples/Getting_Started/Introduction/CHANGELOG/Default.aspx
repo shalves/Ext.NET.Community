@@ -11,6 +11,54 @@
 <body>
 <pre>
 **************************************************************************
+*                       Version 1.6.0 CHANGELOG                          *
+**************************************************************************
+
+Release Date     : 2012-11-21
+Current Version  : 1.6.0
+Previous Version : 1.5.0
+
+NEW
+    [r4536] VS 2012 solution
+
+FIX
+    [r4196] ToolbarSpacer ignored its config including ID.
+    [r4197] ColumnHeaderGroup misalignment under Chrome.
+    [r4198] PagingToolbar: added the PrependButtons property.
+    [r4199] The RecordField RenderMilliseconds property has been missed in its builder and config classes.
+    [r4205] Fixed issue with NuGet Package where an old .dll was being included instead of new v1.5.0. No code changes were made, only NuGet (.nupkg) was updated to correct version of Ext.Net.dll.
+    [r4266] FitLayout should force resizing if a Panel floats up in BorderLayout.
+    [r4284] The Simple Tasks example: fixed a server exception thrown after double clicking on grid rows.
+    [r4292] The ComboBox selectByIndex method: added the check a record with the specified index is available in the Store to avoid a JavaScript error.
+    [r4309] ColumnHeaderGroup misalignment under Chrome. Related to the revision #4197.
+    [r4322] DirectMethod cannot accept Nullable types
+    [r4424] Store encode option works incorrectly
+    [r4432] EmptyValue of DropDownFiel appears in Value
+    [r4439] DropDownField can expand drop down component with incorrect zIndex
+    [r4444] ComboBox FireSelectOnLoad="true" didn't work with SelectedIndex.
+    [r4537]	Assembly minor version is not generated
+    [r4538]	Date serialization is incorrect for DisabledDate
+    [r4539]	Slate theme bug with TabPanel TabPosition="Bottom"
+    [r4540]	DateField.Config broke MinValue. Now DateField's MinValue has DefaultValue attribute.
+    [r4547]	Corrected the date in the Factory Templates
+
+UPDATE
+    [r4206] Updated version and timestamp on MetaFactory templates
+    [r4225] Move /trunk/ to /branches/1/
+    [r4307] The ColumnBase class: removed the unused Wrap property.
+    [r4308] UX: the ConfigOptions factory files are updated with a new date from the template.
+    [r4385] very minor source formatting of DataView example
+    [r4388] Updated revision number to 1.6.0 and timestamp
+    [r4389] Updated Examples Explorer version number to 1.6.0
+    [r4390] Revised version number to 1.6.0 and time stamps
+    [r4517] A minor formatting issue in Examples Web.config.
+    [r4524] Minor source formatting
+    [r4531] Bumped Examples Explorer version number to 1.6.0. Updated CHANGELOG.txt
+    [r4541] Updated Factory Templates
+
+
+
+**************************************************************************
 *                       Version 1.5.0 CHANGELOG                          *
 **************************************************************************
 
@@ -445,7 +493,7 @@ FIX
 94. [FIX] [#3753] Changed a Window .Frame default value to "true".
 	https://extnet.lighthouseapp.com/projects/50526/tickets/210
 
-95. [FIX] [#3752] TokenUtils supports "] !tokens>" now
+95. [FIX] [#3752] TokenUtils supports "&lt;!tokens>" now
 
 96. [FIX] [#3751] Now PagingStore applies paging if a data comes from a DirectEvent at the first time.
 	http://forums.ext.net/showthread.php?15947
@@ -684,14 +732,14 @@ Previous Version : 1.0.0 RC2
 	 
 	 Example
 	 
-	 ] ext:Window runat="server" Title="#{TextField1.Text}" />
+	 &lt;ext:Window runat="server" Title="#{TextField1.Text}" />
 	 
 13.  Renamed WebControl class to ExtControl. As well, renamed 
      Coolite.Ext.Web.WebControl.cs file to Ext.Net.ExtControl.cs.
 	 
-14.  Removed ] ext:ToolbarButton>. Please use ] ext:Button>.	 
+14.  Removed &lt;ext:ToolbarButton>. Please use &lt;ext:Button>.	 
 
-15.  Removed ] ext:ToolbarSplitButton>. Please use ] ext:SplitButton>.
+15.  Removed &lt;ext:ToolbarSplitButton>. Please use &lt;ext:SplitButton>.
 
 16.  Renamed AjaxMethod class to DirectMethod.
 
@@ -707,9 +755,9 @@ Previous Version : 1.0.0 RC2
 	 [DirectMethod]
 	 public void DoSomthing() { }
 	 
-18.  Renamed ] AjaxEvents> property to ] DirectEvents>.	 
+18.  Renamed &lt;AjaxEvents> property to &lt;DirectEvents>.	 
 
-19.  Removed ] ext:ToolbarSplitButton>. Please use ] ext:SplitButton>.
+19.  Removed &lt;ext:ToolbarSplitButton>. Please use &lt;ext:SplitButton>.
 
 20.  Removed Adapter class
 
@@ -725,7 +773,7 @@ Previous Version : 1.0.0 RC2
 
 26.  Renamed ElementMenuItem class to ComponentMenuItem
 
-27.  Renamed ] ext:Accordion> to ] ext:AccordionLayout>
+27.  Renamed &lt;ext:Accordion> to &lt;ext:AccordionLayout>
 	 
 28.  Removed DataReader class .ReaderID property.
 
@@ -745,31 +793,31 @@ Previous Version : 1.0.0 RC2
 35.  Renamed DataSourceProxy class to PageProxy.
 
 36.  Layout collection property is now required in markup if using a 
-     Layout Control within ] Content> or ] Items>.
+     Layout Control within &lt;Content> or &lt;Items>.
 	
-	 ] Items>
+	 &lt;Items>
 		AccordionLayout
 		ContainerLayout
 		CardLayout
 		CenterLayout
 		FitLayout
      
-     ] Anchors>
+     &lt;Anchors>
 		AbsoluteLayout
 		AnchorLayout
 		FormLayout
 	 
-	 ] BoxItems>
+	 &lt;BoxItems>
 		HBoxLayout
 		VBoxLayout
 	 
-	 ] Rows>
+	 &lt;Rows>
 		RowLayout
 	 
-	 ] Columns>
+	 &lt;Columns>
 		ColumnLayout
 	 
-	 ] Cells>
+	 &lt;Cells>
 		TableLayout
 	
 37.  Removed [XType] Attribute and replaced with XType readonly property.
@@ -815,27 +863,27 @@ Previous Version : 1.0.0 RC2
 
 41.  Renamed AjaxRequestModule to DirectRequestModule
 
-42.  Renamed ] ext:ScriptManager> to ] ext:ResourceManager>
+42.  Renamed &lt;ext:ScriptManager> to &lt;ext:ResourceManager>
 
-43.  Removed ] ext:ResourcePlaceHolder> and ] ext:StyleContainer> controls.
+43.  Removed &lt;ext:ResourcePlaceHolder> and &lt;ext:StyleContainer> controls.
 	 
-	 Please use ] ext:ResourcePlaceHolder> with new Mode property which can
+	 Please use &lt;ext:ResourcePlaceHolder> with new Mode property which can
 	 determine if .js or .css resources are rendered. The Mode property is
 	 not required and if not defined, both .js and .css resource files are
 	 rendered into the location of the ResourcePlaceHolder. 
 	 
 	 Example (New)
 	 
-	 ] ext:ResourcePlaceHolder runat="server" Mode="Script" />
+	 &lt;ext:ResourcePlaceHolder runat="server" Mode="Script" />
 
-44.  Renamed ] ext:ViewPort> to ] ext:Viewport>. Change to lowercase "p".
+44.  Renamed &lt;ext:ViewPort> to &lt;ext:Viewport>. Change to lowercase "p".
 
-45.  Renamed ] Body> inner property to ] Content>.
+45.  Renamed &lt;Body> inner property to &lt;Content>.
 
 	 Affects all ContentPanel type controls including Panel, Window, Viewport
-	 Renaming to ] Content> also solves ] Body> rendering bug in VS 2005.
+	 Renaming to &lt;Content> also solves &lt;Body> rendering bug in VS 2005.
 	 
-	 Renaming all ] Body> tags in a project to ] Content> can be easily 
+	 Renaming all &lt;Body> tags in a project to &lt;Content> can be easily 
 	 accomplished with a case-sensitive search and replace within Visual 
 	 Studio. Please search for the following (remove double quotes) and 
 	 ensure you have the "Match case" option checked.
@@ -851,7 +899,7 @@ Previous Version : 1.0.0 RC2
 
 48.  Removed .UpdateBody() Method. Please use .Update().
 
-49.  Removed ] ext:Window> .ShowOnLoad property.
+49.  Removed &lt;ext:Window> .ShowOnLoad property.
      Please use .Hidden property.
 	 
 	 Example (Old)
@@ -865,7 +913,7 @@ Previous Version : 1.0.0 RC2
 	 // Will show Window on initial Page_Load
 	 this.Window.Hidden = false; // 'false' is the default value
 	 
-50.  Renamed the ] ext:Window> .CenterOnLoad property to .InitCenter.
+50.  Renamed the &lt;ext:Window> .CenterOnLoad property to .InitCenter.
 	 Default value is unchanged as "true".
 	 
 	 Example (Old)
@@ -886,31 +934,31 @@ Previous Version : 1.0.0 RC2
 
 53.  GenericPlugin: renamed InstanceOf to InstanceName.
 
-54.  Renamed TabPanel ] Tabs> Collection to ] Items>.
+54.  Renamed TabPanel &lt;Tabs> Collection to &lt;Items>.
 
 	 Example (Old)
 	 
-	 ] ext:TabPanel runat="server">
-         ] Tabs>
-             ] ext:Tab runat="server" Title="Tab 1" />
+	 &lt;ext:TabPanel runat="server">
+         &lt;Tabs>
+             &lt;ext:Tab runat="server" Title="Tab 1" />
 	 
 	 
 	 Example (New)
 	 
-	 ] ext:TabPanel runat="server">
-         ] Items>
-             ] ext:Panel runat="server" Title="Tab 1" />
+	 &lt;ext:TabPanel runat="server">
+         &lt;Items>
+             &lt;ext:Panel runat="server" Title="Tab 1" />
              
-55.  Removed ] ext:Tab> Control. Now any Ext.Net.PanelBase Component can be
+55.  Removed &lt;ext:Tab> Control. Now any Ext.Net.PanelBase Component can be
      added to the TabPanel's .Items Collection. 
      
 56.  XTemplate: renamed Text to Html
 
 57.  XTemplate: Html property is required in markup
-     ] Template>
-	     ] Html>
+     &lt;Template>
+	     &lt;Html>
 	         ....
-	     ] /Html>
+	     &lt;/Html>
 	   
 58.  To disable a Field, the .Disabled property should be used instead of 
 	 the native ASP.NET .Enabled property. 
@@ -941,15 +989,15 @@ Previous Version : 1.0.0 RC2
       
      See more, http://forums.ext.net/showthread.php?6600	
 	 
-63.  The ] ext:TokenScript> component has been renamed to ] ext:XScript>
+63.  The &lt;ext:TokenScript> component has been renamed to &lt;ext:XScript>
 
 	 Example (Old)
 	 
-	 ] ext:TokenScript runat="server" />
+	 &lt;ext:TokenScript runat="server" />
 	 
 	 Example (New)
 	 
-	 ] ext:XScript runat="server" />
+	 &lt;ext:XScript runat="server" />
 	 
 64.  Renamed AjaxEventArgs property to DirectEventArgs
 
@@ -959,17 +1007,17 @@ Previous Version : 1.0.0 RC2
 
 	 Example (Old)
 	 
-	 ] ext:DropDownField runat="server" Icon="Search" />
+	 &lt;ext:DropDownField runat="server" Icon="Search" />
 	 
 	 Example (New)
 	 
-	 ] ext:DropDownField runat="server" TriggerIcon="Search" />
+	 &lt;ext:DropDownField runat="server" TriggerIcon="Search" />
 	 
-67.  The ] ext:MultiField> has been replaced with the new 
-	 ] ext:CompositeField>.
+67.  The &lt;ext:MultiField> has been replaced with the new 
+	 &lt;ext:CompositeField>.
 	 
-	 The old inner ] Fields> property of ] ext:MultiField> should now be 
-	 configured in the ] Items> property of ] ext:CompositeField>.
+	 The old inner &lt;Fields> property of &lt;ext:MultiField> should now be 
+	 configured in the &lt;Items> property of &lt;ext:CompositeField>.
 	 
 68.  ColumnLayout: FitHeight property is true by default (it was false by 
      default for the 0.8.2)
@@ -1009,18 +1057,18 @@ Previous Version : 1.0.0 RC2
      
      Example
      
-     ] ext:Panel runat="server" Title="Example">
-	    ] Listeners>
+     &lt;ext:Panel runat="server" Title="Example">
+	    &lt;Listeners>
 		    // Old
-			] Hide Handler="alert(el);" />
+			&lt;Hide Handler="alert(el);" />
 	        
 			// New
-			] Hide Handler="alert(item);" />
+			&lt;Hide Handler="alert(item);" />
 	        
 			// Recommended
-			] Hide Handler="alert(this);" />
-		] /Listeners>
-	 ] /ext:Panel>
+			&lt;Hide Handler="alert(this);" />
+		&lt;/Listeners>
+	 &lt;/ext:Panel>
 
 76.  GroupName property of Radio widget is removed. Please use Name property.
      Please note that GroupName property of RadioGroup still exists (RadioGroup's GroupName is applied to each child Radio if AutomaticGrouping is true)
@@ -1031,11 +1079,11 @@ Previous Version : 1.0.0 RC2
 
      Example (old)
 	 
-	 ] ext:ResourceManager runat="server" RemoveViewState="true" />
+	 &lt;ext:ResourceManager runat="server" RemoveViewState="true" />
 	 
 	 Example (new)
 	 
-	 ] ext:ResourceManager runat="server" DisableViewState="true" />
+	 &lt;ext:ResourceManager runat="server" DisableViewState="true" />
 	 
 79.  In prior releases, the Store .Load Listener was previously delayed by
      10 milliseconds. This delay was removed as of v1.0 RC2.
@@ -1045,7 +1093,7 @@ Previous Version : 1.0.0 RC2
 
 	 Example
 
-	 ] Load Handler="..." Delay="10" />
+	 &lt;Load Handler="..." Delay="10" />
 
       
 --------------------------------------------------------------------------

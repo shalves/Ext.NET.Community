@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.5.0 - Ext.NET Pro License
+ * @version   : 1.6.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-10
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -92,14 +92,14 @@ namespace Ext.Net
                 return this as DateField.Builder;
             }
              
- 			// /// <summary>
-			// /// The fields null value.
-			// /// </summary>
-            // public virtual TBuilder EmptyValue(object emptyValue)
-            // {
-            //    this.ToComponent().EmptyValue = emptyValue;
-            //    return this as TBuilder;
-            // }
+ 			/// <summary>
+			/// The fields null value.
+			/// </summary>
+            public virtual DateField.Builder EmptyValue(object emptyValue)
+            {
+                this.ToComponent().EmptyValue = emptyValue;
+                return this as DateField.Builder;
+            }
              
  			// /// <summary>
 			// /// Client-side JavaScript Event Handlers

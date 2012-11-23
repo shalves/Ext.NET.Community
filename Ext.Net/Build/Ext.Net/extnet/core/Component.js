@@ -57,9 +57,10 @@ Ext.override(Ext.Component, {
     autoFocusDelay  : 10,
 	
 	destroyBin : function () {
-		if(this.bin){
+		if (this.bin) {
 		    Ext.destroy(this.bin);
 		}
+
 		delete this.bin;
 	},
     
@@ -96,6 +97,7 @@ Ext.override(Ext.Component, {
         
         if (Ext.isArray(plugins)) {
             var i = 0;
+
             for (i; i < plugins.length; i++) {
                 this.plugins.push(this.initPlugin(plugins[i]));
             }

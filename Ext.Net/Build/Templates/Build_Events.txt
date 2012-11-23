@@ -1,17 +1,54 @@
-﻿Pre-Build
+﻿Ext.Net.Pro Pre-Build
+---------------------------------
+
+"$(SolutionDir)Ext.Net.ERB\$(OutDir)\Ext.Net.ResourceBuilder.exe" "$(ProjectDir) " "Ext.Net.Build" "$(ProjectDir) " "XPL"
+xcopy "$(ProjectDir)Build\Ext.Net\README.txt" "$(ProjectDir)Build\NuGet\Ext.NET.README.txt" /y
+xcopy "$(ProjectDir)Build\Ext.Net\CHANGELOG.txt" "$(ProjectDir)Build\NuGet\Ext.NET.CHANGELOG.txt" /y
+xcopy "$(ProjectDir)Build\Ext.Net\Licenses\Ext.NET.Pro.txt" "$(ProjectDir)Build\NuGet\Ext.NET.LICENSE.txt" /y
+xcopy "$(ProjectDir)Build\Ext.Net\README.txt" "$(ProjectDir)Build\Release\1. README.txt" /y
+xcopy "$(ProjectDir)Build\Ext.Net\CHANGELOG.txt" "$(ProjectDir)Build\Release\2. CHANGELOG.txt" /y
+xcopy "$(ProjectDir)Build\Ext.Net\Licenses\Ext.NET.Pro.txt" "$(ProjectDir)Build\Release\3. LICENSE.txt" /y
+xcopy "$(SolutionDir)Ext.Net.Examples\Sample.Web.config" "$(ProjectDir)Build\Release\4. Sample.Web.config" /y
+xcopy "$(ProjectDir)Build\NuGet\Ext.NET.Default.aspx" "$(ProjectDir)Build\Release\5. Default.aspx" /y
+
+Ext.Net.Community Pre-Build
+---------------------------------
+
+"$(SolutionDir)Ext.Net.ERB\$(OutDir)\Ext.Net.ResourceBuilder.exe" "$(ProjectDir) " "Ext.Net.Build" "$(ProjectDir) " "AGPL"
+xcopy "$(ProjectDir)Build\Ext.Net\README.txt" "$(ProjectDir)Build\Release\1. README.txt" /y
+xcopy "$(ProjectDir)Build\Ext.Net\CHANGELOG.txt" "$(ProjectDir)Build\Release\2. CHANGELOG.txt" /y
+xcopy "$(ProjectDir)Build\Ext.Net\Licenses\Ext.NET.Community.txt" "$(ProjectDir)Build\Release\3. LICENSE.txt" /y
+xcopy "$(SolutionDir)Ext.Net.Examples\Sample.Web.config" "$(ProjectDir)Build\Release\4. Sample.Web.config" /y
+xcopy "$(ProjectDir)Build\NuGet\Ext.NET.Default.aspx" "$(ProjectDir)Build\Release\5. Default.aspx" /y
+
+Ext.Net.MVC Post-Build
+---------------------------------
+
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.MVC.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.MVC.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.MVC.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.UX.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.UX.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.UX.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.Utilities.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.Utilities.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Newtonsoft.Json.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Newtonsoft.Json.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Newtonsoft.Json.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+
+
+Misc
 ---------------------------------
 
 "$(SolutionDir)Ext.Net.Meta.Factory\$(OutDir)\Ext.Net.Meta.Factory.exe"
 
-"$(SolutionDir)Ext.Net.ERB\$(OutDir)\Ext.Net.ResourceBuilder.exe" "$(ProjectDir) " "Ext.Net.Build" "$(ProjectDir) " ""
+xcopy "$(ProjectDir)$(OutDir)" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
 
 
-
-Post-Build
+ILMerge
 ---------------------------------
+
 "$(ProjectDir)Build\ILMerge\ILMerge.exe" /ndebug /keyfile:"$(ProjectDir)Properties\Ext.Net.snk" /out:"$(ProjectDir)Build\Results\Ext.Net.dll" "$(ProjectDir)$(OutDir)Ext.Net.dll" /log:"$(ProjectDir)Build\Results\ILMerge_Log.txt" "$(ProjectDir)$(OutDir)Newtonsoft.Json.dll" "$(ProjectDir)$(OutDir)Ext.Net.Utilities.dll"
-
-
-Ext.NET.Utilities Post-Build
----------------------------------
-xcopy /Y "$(ProjectDir)$(OutDir)Ext.Net.Utilities.dll" "$(SolutionDir)Ext.Net\Build\Resources\ReferenceAssemblies\Ext.Net.Utilities\"

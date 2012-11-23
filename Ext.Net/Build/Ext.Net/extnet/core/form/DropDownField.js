@@ -60,21 +60,41 @@ Ext.net.DropDownField = Ext.extend(Ext.net.TriggerField, {
         this.triggers[this.triggers.length - 1].on("click", this.onTriggerClick, this);
     },
     
+    getListParent : function () {
+        return this.componentRenderTo || Ext.net.ResourceMgr.getAspForm() || document.body;
+    },
+    
+    getParentZIndex : function () {
+        var zindex;
+
+        if (this.ownerCt) {
+            this.findParentBy(function (ct) {
+                zindex = parseInt(ct.getPositionEl().getStyle('z-index'), 10);
+                return !!zindex;
+            });
+        }
+
+        return zindex;
+    },
+    
+    getZIndex : function (listParent) {
+        listParent = listParent || Ext.getDom(this.getListParent() || Ext.getBody());
+        var zindex = parseInt(Ext.fly(listParent).getStyle('z-index'), 10);
+
+        if (!zindex) {
+            zindex = this.getParentZIndex();
+        }
+
+        return (zindex || 12000) + 5;
+    },
+    
     initDropDownComponent : function () {
         if (this.component && !this.component.render) {
             this.component.floating = true;
             this.component = new Ext.ComponentMgr.create(this.component, "panel");
         }
         
-        var renderTo = this.componentRenderTo || Ext.net.ResourceMgr.getAspForm() || document.body,
-            zindex = parseInt(Ext.fly(renderTo).getStyle("z-index"), 10);
-            
-        if (this.ownerCt && !zindex) {
-            this.findParentBy(function (ct) {
-                zindex = parseInt(ct.getPositionEl().getStyle("z-index"), 10);
-                return !!zindex;
-            });
-        }
+        var renderTo = this.componentRenderTo || Ext.net.ResourceMgr.getAspForm() || document.body;
         
         this.component.setWidth(this.component.initialConfig.width || this.getWidth());
         this.component.dropDownField = this;
@@ -82,7 +102,7 @@ Ext.net.DropDownField = Ext.extend(Ext.net.TriggerField, {
         this.component.hide();
         this.first = true;
         
-        this.component.getPositionEl().position("absolute", (zindex || 12000) + 5);
+        this.component.getPositionEl().position("absolute", this.getZIndex());
         
         if (this.component.initialConfig.height) {
             this.component.setHeight(this.component.initialConfig.height);
@@ -150,13 +170,13 @@ Ext.net.DropDownField = Ext.extend(Ext.net.TriggerField, {
         var el = this.component.getPositionEl();
         el.setLeft(0);
         el.setTop(0);
-        if(Ext.isIE6 || Ext.isIE7){
+        if (Ext.isIE6 || Ext.isIE7) {
             this.component.show();
         }
-        
+        el.setZIndex(this.getZIndex());
         el.alignTo(this.wrap, this.componentAlign);
         
-        if(!(Ext.isIE6 || Ext.isIE7)){
+        if (!(Ext.isIE6 || Ext.isIE7)) {
             this.component.show();
         }
         

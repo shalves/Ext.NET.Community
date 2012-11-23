@@ -1,12 +1,12 @@
-﻿Product      : Ext.NET Community Edition (AGPLv3 License)
-Version      : 1.5.0
-Last Updated : 2012-07-10
+﻿Product      : Ext.NET.Community
+Version      : 1.6.0
+Last Updated : 2012-11-21
 
 --------------------------------------------------------------------------
    CONTENTS
 --------------------------------------------------------------------------
 
-I.    Version 1.5.0 CHANGELOG
+I.    Version 1.6.0 CHANGELOG
 II.   ADD TO VISUAL STUDIO (or VISUAL WEB DEVELOPER) PROJECT INSTRUCTIONS
 III.  SAMPLE WEB.CONFIG
 IV.   <extnet> WEB.CONFIG GLOBAL CONFIGURATION PROPERTIES
@@ -14,7 +14,7 @@ V.    CREDITS
 
 
 --------------------------------------------------------------------------
-   I. Version 1.5.0 CHANGELOG
+   I. Version 1.6.0 CHANGELOG
 --------------------------------------------------------------------------
 
 See CHANGELOG.txt

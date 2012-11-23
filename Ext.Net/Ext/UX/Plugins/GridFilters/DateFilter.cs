@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.5.0 - Ext.NET Pro License
+ * @version   : 1.6.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-10
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -243,8 +243,8 @@ namespace Ext.Net
 
             if (this.ParentGrid != null)
             {
-                string value = "{before:".ConcatWith(beforeValue.HasValue ? DateTimeUtils.DateNetToJs(beforeValue.Value) : "undefined",
-                    ",after:", afterValue.HasValue ? DateTimeUtils.DateNetToJs(afterValue.Value) : "undefined", "}");
+                string value = "{before:".ConcatWith(beforeValue.HasValue ? JSON.Serialize(beforeValue.Value, JSON.AltConverters) : "undefined",
+                    ",after:", afterValue.HasValue ? JSON.Serialize(afterValue.Value, JSON.AltConverters) : "undefined", "}");
 
                 this.ParentGrid.AddScript("{0}.getFilterPlugin().getFilter({1}).setValue({2});", this.ParentGrid.ClientID, JSON.Serialize(this.DataIndex), value);
             }
@@ -260,7 +260,7 @@ namespace Ext.Net
 
             if (this.ParentGrid != null)
             {
-                string value = "{on:".ConcatWith(onValue.HasValue ? DateTimeUtils.DateNetToJs(onValue.Value) : "undefined", "}");
+                string value = "{on:".ConcatWith(onValue.HasValue ? JSON.Serialize(onValue.Value, JSON.AltConverters) : "undefined", "}");
 
                 this.ParentGrid.AddScript("{0}.getFilterPlugin().getFilter({1}).setValue({2});", this.ParentGrid.ClientID, JSON.Serialize(this.DataIndex), value);
             }
@@ -284,19 +284,19 @@ namespace Ext.Net
                     if (this.BeforeValue.HasValue)
                     {
                         jw.WritePropertyName("before");
-                        jw.WriteRawValue(DateTimeUtils.DateNetToJs(this.BeforeValue.Value));
+                        jw.WriteRawValue(JSON.Serialize(this.BeforeValue.Value, JSON.AltConverters));
                     }
 
                     if (this.AfterValue.HasValue)
                     {
                         jw.WritePropertyName("after");
-                        jw.WriteRawValue(DateTimeUtils.DateNetToJs(this.AfterValue.Value));
+                        jw.WriteRawValue(JSON.Serialize(this.AfterValue.Value, JSON.AltConverters));
                     }
 
                     if (this.OnValue.HasValue)
                     {
                         jw.WritePropertyName("on");
-                        jw.WriteRawValue(DateTimeUtils.DateNetToJs(this.OnValue.Value));
+                        jw.WriteRawValue(JSON.Serialize(this.OnValue.Value, JSON.AltConverters));
                     }
                     
                     jw.WriteEndObject();

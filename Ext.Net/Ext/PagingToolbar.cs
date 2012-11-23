@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.5.0 - Ext.NET Pro License
+ * @version   : 1.6.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-10
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -422,6 +422,28 @@ namespace Ext.Net
             set
             {
                 this.ViewState["HideRefresh"] = value;
+            }
+        }
+
+        /// <summary>
+        /// True to insert any configured items before the paging buttons. Defaults to false.
+        /// </summary>
+        [Meta]
+        [ConfigOption]
+        [Category("7. PagingToolbar")]
+        [DefaultValue(false)]
+        [NotifyParentProperty(true)]
+        [Description("True to insert any configured items before the paging buttons. Defaults to false.")]
+        public virtual bool PrependButtons
+        {
+            get
+            {
+                object obj = this.ViewState["PrependButtons"];
+                return (obj == null) ? true : (bool)obj;
+            }
+            set
+            {
+                this.ViewState["PrependButtons"] = value;
             }
         }
 

@@ -39,7 +39,8 @@ Ext.apply(Ext.lib.Ajax, {
 					    data.push(encoder(name));
 					    data.push("=");
 					    data.push(encoder(element.value));
-					    data.push("&");    
+					    data.push("&");
+                          
 					    if (type === "submit") {
 					        hasSubmit = /submit/i.test(type);
                         }
@@ -50,6 +51,7 @@ Ext.apply(Ext.lib.Ajax, {
 
 	    data = data.join("");
         data = data.substr(0, data.length - 1);
+
         return data;
     }
 });

@@ -1,4 +1,52 @@
 ﻿**************************************************************************
+*                       Version 1.6.0 CHANGELOG                          *
+**************************************************************************
+
+Release Date     : 2012-11-21
+Current Version  : 1.6.0
+Previous Version : 1.5.0
+
+NEW
+    [r4536] VS 2012 solution
+
+FIX
+    [r4196] ToolbarSpacer ignored its config including ID.
+    [r4197] ColumnHeaderGroup misalignment under Chrome.
+    [r4198] PagingToolbar: added the PrependButtons property.
+    [r4199] The RecordField RenderMilliseconds property has been missed in its builder and config classes.
+    [r4205] Fixed issue with NuGet Package where an old .dll was being included instead of new v1.5.0. No code changes were made, only NuGet (.nupkg) was updated to correct version of Ext.Net.dll.
+    [r4266] FitLayout should force resizing if a Panel floats up in BorderLayout.
+    [r4284] The Simple Tasks example: fixed a server exception thrown after double clicking on grid rows.
+    [r4292] The ComboBox selectByIndex method: added the check a record with the specified index is available in the Store to avoid a JavaScript error.
+    [r4309] ColumnHeaderGroup misalignment under Chrome. Related to the revision #4197.
+    [r4322] DirectMethod cannot accept Nullable types
+    [r4424] Store encode option works incorrectly
+    [r4432] EmptyValue of DropDownFiel appears in Value
+    [r4439] DropDownField can expand drop down component with incorrect zIndex
+    [r4444] ComboBox FireSelectOnLoad="true" didn't work with SelectedIndex.
+    [r4537]	Assembly minor version is not generated
+    [r4538]	Date serialization is incorrect for DisabledDate
+    [r4539]	Slate theme bug with TabPanel TabPosition="Bottom"
+    [r4540]	DateField.Config broke MinValue. Now DateField's MinValue has DefaultValue attribute.
+    [r4547]	Corrected the date in the Factory Templates
+
+UPDATE
+    [r4206] Updated version and timestamp on MetaFactory templates
+    [r4225] Move /trunk/ to /branches/1/
+    [r4307] The ColumnBase class: removed the unused Wrap property.
+    [r4308] UX: the ConfigOptions factory files are updated with a new date from the template.
+    [r4385] very minor source formatting of DataView example
+    [r4388] Updated revision number to 1.6.0 and timestamp
+    [r4389] Updated Examples Explorer version number to 1.6.0
+    [r4390] Revised version number to 1.6.0 and time stamps
+    [r4517] A minor formatting issue in Examples Web.config.
+    [r4524] Minor source formatting
+    [r4531] Bumped Examples Explorer version number to 1.6.0. Updated CHANGELOG.txt
+    [r4541] Updated Factory Templates
+
+
+
+**************************************************************************
 *                       Version 1.5.0 CHANGELOG                          *
 **************************************************************************
 

@@ -1,4 +1,3 @@
-
 // @source data/HttpProxy.js
 
 Ext.data.HttpProxy.prototype.doRequest = function (action, rs, params, reader, cb, scope, arg) {

@@ -100,7 +100,7 @@ namespace Ext.Net.Examples.SimpleTasks
 
         void RowDblClick_Event(object sender, DirectEventArgs e)
         {
-            new TaskWindow(int.Parse(e.ExtraParams["taskId"])).Render(this.Page.Form.ClientID, RenderMode.RenderTo);
+            new TaskWindow(int.Parse(e.ExtraParams["taskId"])).Render();
         }
 
         void OpenClick_Event(object sender, DirectEventArgs e)

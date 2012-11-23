@@ -2,7 +2,7 @@
 // @source core/toolbar/ToolbarSpacer.js
 
 Ext.net.ToolbarSpacer = function (config) {
-    Ext.net.ToolbarSpacer.superclass.constructor.call(this);
+    Ext.net.ToolbarSpacer.superclass.constructor.call(this, config);
     config = config || {};
     this.width = config.width;
 

@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.5.0 - Ext.NET Pro License
+ * @version   : 1.6.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-10
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -66,6 +66,7 @@ namespace Ext.Net
                 list.Add("prevText", new ConfigOption("prevText", null, "Previous Page", this.PrevText ));
                 list.Add("refreshText", new ConfigOption("refreshText", null, "Refresh", this.RefreshText ));
                 list.Add("hideRefresh", new ConfigOption("hideRefresh", null, false, this.HideRefresh ));
+                list.Add("prependButtons", new ConfigOption("prependButtons", null, false, this.PrependButtons ));
                 list.Add("paramNames", new ConfigOption("paramNames", new SerializationOptions(JsonMode.ArrayToObject), null, this.ParamNames ));
                 list.Add("listeners", new ConfigOption("listeners", new SerializationOptions("listeners", JsonMode.Object), null, this.Listeners ));
                 list.Add("directEvents", new ConfigOption("directEvents", new SerializationOptions("directEvents", JsonMode.Object), null, this.DirectEvents ));

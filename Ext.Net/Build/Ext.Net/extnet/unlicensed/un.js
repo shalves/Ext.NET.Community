@@ -1,4 +1,4 @@
-﻿Ext.onReady(function(){
+﻿Ext.onReady(function () {
     var el = Ext.DomHelper.append(document.body, {
         tag : "div",
         id: "unlicensed",
@@ -22,7 +22,7 @@
     el.alignTo(document, "br-br", [-20,-20]);
     el.slideIn("b", { 
         callback: function () {
-            (function(){
+            (function () {
                 el.slideOut("b", {
                     callback : function () {
                         el.remove.defer(100, el);

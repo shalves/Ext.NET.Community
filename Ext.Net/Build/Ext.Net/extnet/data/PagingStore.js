@@ -6,7 +6,7 @@
 Ext.ns("Ext.ux.data");
 
 Ext.ux.data.PagingStore = Ext.extend(Ext.net.Store, {
-    reMap : function(record) {
+    reMap : function (record) {
         if (Ext.isArray(record)) {
             for (var i = 0, len = record.length; i < len; i++) {
                 this.reMap(record[i]);
@@ -426,7 +426,7 @@ Ext.ux.data.PagingStore = Ext.extend(Ext.net.Store, {
             if ((typeof start !== "number") || (typeof limit !== "number")) {
                 this.start = 0;                
             }
-            else{
+            else {
                 this.start = start;
                 this.limit = limit;
                 delete params[pn.start];

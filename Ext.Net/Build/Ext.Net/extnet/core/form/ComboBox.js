@@ -376,8 +376,14 @@ Ext.form.ComboBox.override({
     },
     
     selectByIndex : function (index, fireSelect) {
+        var r;
+
         if (index >= 0) {
-            this[this.fireSelect ? "setValueAndFireSelect" : "setValue"](this.store.getAt(index).get(this.valueField || this.displayField));
+            r = this.store.getAt(index);
+
+            if (r) {
+                this[fireSelect ? "setValueAndFireSelect" : "setValue"](r.get(this.valueField || this.displayField));
+            }
         }
     },
     

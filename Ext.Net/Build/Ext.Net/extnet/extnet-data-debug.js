@@ -1,13 +1,28 @@
-/*
- * @version   : 1.5.0 - Ext.NET Community Edition (AGPLv3 License)
+/********
+ * This file is part of Ext.NET.
+ *     
+ * Ext.NET is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * Ext.NET is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
+ * 
+ * You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
+ * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ * @version   : 1.6.0 - Ext.NET Community License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-10
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
- * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
- * @website   : http://www.ext.net/
- */
-
-
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
+ *              See license.txt and http://www.ext.net/license/.
+ *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
+ ********/
 
 // @source data/HttpProxy.js
 
@@ -591,6 +606,10 @@ Ext.extend(Ext.net.Store, Ext.data.GroupingStore, {
                 data[k] = undefined;
             }
             
+            if (options.encode) {
+                data[k] = Ext.util.Format.htmlEncode(data[k]);
+            }
+            
             field = this.getFieldByName(k);
             
             if (Ext.isEmpty(data[k], false) && this.isSimpleField(k, field)) {
@@ -856,7 +875,7 @@ Ext.extend(Ext.net.Store, Ext.data.GroupingStore, {
             json += jsonCreated;
         }
 
-        return options.encode ? Ext.util.Format.htmlEncode(json) : json;
+        return json;
     },
 
     getByDataId : function (id) {
@@ -1458,7 +1477,7 @@ Ext.extend(Ext.net.Store, Ext.data.GroupingStore, {
 Ext.ns("Ext.ux.data");
 
 Ext.ux.data.PagingStore = Ext.extend(Ext.net.Store, {
-    reMap : function(record) {
+    reMap : function (record) {
         if (Ext.isArray(record)) {
             for (var i = 0, len = record.length; i < len; i++) {
                 this.reMap(record[i]);
@@ -1878,7 +1897,7 @@ Ext.ux.data.PagingStore = Ext.extend(Ext.net.Store, {
             if ((typeof start !== "number") || (typeof limit !== "number")) {
                 this.start = 0;                
             }
-            else{
+            else {
                 this.start = start;
                 this.limit = limit;
                 delete params[pn.start];
@@ -4527,7 +4546,7 @@ Ext.chromeVersion = Ext.isChrome ? parseInt(( /chrome\/(\d{2})/ ).exec(navigator
 Ext.grid.ColumnModel.override({
     defaultSortable: true, 
     
-    getTotalWidth : function(includeHidden) {
+    getTotalWidth : function (includeHidden) {
 		if (!this.totalWidth) {
 			var boxsizeadj = (Ext.isChrome && Ext.chromeVersion > 18 ? 2 : 0);
 			this.totalWidth = 0;
@@ -4576,16 +4595,16 @@ Ext.grid.ColumnModel.override({
 Ext.grid.Column.override({
     forbidIdScoping : true,
 
-    getCellEditor: function(rowIndex){
+    getCellEditor: function (rowIndex) {
         var ed = this.getEditor(rowIndex);
-        if(ed){
-            if(!ed.startEdit){
-                if(!ed.gridEditor){
+        if (ed) {
+            if (!ed.startEdit) {
+                if (!ed.gridEditor) {
                     ed.gridEditor = new Ext.grid.GridEditor(ed);
                 }
                 ed = ed.gridEditor;
             }
-            else if(ed.field){
+            else if (ed.field) {
                 ed.field.gridEditor = ed;
             }
         }
@@ -5350,8 +5369,8 @@ Ext.extend(Ext.net.CommandColumn, Ext.util.Observable, {
     destroy : function () {
         var view = this.grid.getView();
         
-        Ext.each(this.sharedMenus || [], function(menu){
-            if(menu){
+        Ext.each(this.sharedMenus || [], function (menu) {
+            if (menu) {
                 menu.destroy();
             }
         });

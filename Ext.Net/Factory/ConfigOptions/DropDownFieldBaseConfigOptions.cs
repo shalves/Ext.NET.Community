@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 1.5.0 - Ext.NET Pro License
+ * @version   : 1.6.0 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-10
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -60,6 +60,7 @@ namespace Ext.Net
                 list.Add("component", new ConfigOption("component", new SerializationOptions("component", typeof(ItemCollectionJsonConverter)), null, this.Component ));
                 list.Add("componentRenderTo", new ConfigOption("componentRenderTo", null, "", this.ComponentRenderTo ));
                 list.Add("syncValue", new ConfigOption("syncValue", new SerializationOptions(JsonMode.Raw), null, this.SyncValue ));
+                list.Add("getListParent", new ConfigOption("getListParent", new SerializationOptions(JsonMode.Raw), null, this.GetListParent ));
 
                 return list;
             }

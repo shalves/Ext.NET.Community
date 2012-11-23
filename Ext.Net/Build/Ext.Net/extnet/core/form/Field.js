@@ -122,7 +122,7 @@ Ext.form.Field.override({
             if (this.rvConfig.lastValue === this.getValue() && this.rvConfig.remoteValid === false) {
                 this.markInvalid(this.rv_response.message || "Invalid");
             }
-            else{
+            else {
                 this.clearInvalid();
             }
             return this.rvConfig.remoteValid;

@@ -38,7 +38,7 @@ Ext.dd.DragSource.override({
 });
 
 // in future, check that Window is dragable under Chrome, if true then remove the following code
-Ext.dd.DragDropMgr.getLocation = function(oDD) {
+Ext.dd.DragDropMgr.getLocation = function (oDD) {
 	if (! this.isTypeOfDD(oDD)) {
 		return null;
 	}

@@ -5839,14 +5839,6 @@
         <Attribute Type="Description" />
       </Attributes>
       <ConfigOptions>
-        <ConfigOption Name="Wrap" Type="bool" DefaultValue="false">
-          <Attributes>
-            <Attribute Type="Meta" />
-            <Attribute Type="ConfigOption" />
-            <Attribute Type="DefaultValue" RawValue="false" />
-            <Attribute Type="Description" />
-          </Attributes>
-        </ConfigOption>
         <ConfigOption Name="Locked" Type="bool" DefaultValue="false">
           <Attributes>
             <Attribute Type="Meta" />
@@ -10840,10 +10832,11 @@
             <Attribute Type="ConfigOption" RawValue="&quot;value&quot;, typeof(CtorDateTimeJsonConverter)" />
           </Attributes>
         </ConfigOption>
-        <ConfigOption Name="EmptyValue" Modifier="Override" Type="object">
+        <ConfigOption Name="EmptyValue" Modifier="Override" Type="object" DefaultValue="typeof(DateTime), &quot;0001-01-01&quot;">
           <Summary><![CDATA[The fields null value.]]></Summary>
           <Attributes>
             <Attribute Type="Meta" />
+            <Attribute Type="DefaultValue" RawValue="typeof(DateTime), &quot;0001-01-01&quot;" />
             <Attribute Type="Category" RawValue="&quot;5. Field&quot;" />
             <Attribute Type="Description" RawValue="The fields null value." />
           </Attributes>
@@ -13870,6 +13863,17 @@
             <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
             <Attribute Type="TypeConverter" RawValue="typeof(ExpandableObjectConverter)" />
             <Attribute Type="Description" RawValue="Function to syncronize value of the field and dropdown control" />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="GetListParent" Type="JFunction" DefaultValue="null">
+          <Summary><![CDATA[Returns the element used to house this ComboBox's pop-up list. Defaults to the document body.]]></Summary>
+          <Attributes>
+            <Attribute Type="ConfigOption" RawValue="JsonMode.Raw" />
+            <Attribute Type="Category" RawValue="&quot;8. DropDownField&quot;" />
+            <Attribute Type="DefaultValue" RawValue="null" />
+            <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
+            <Attribute Type="TypeConverter" RawValue="typeof(ExpandableObjectConverter)" />
+            <Attribute Type="Description" RawValue="Returns the element used to house this ComboBox's pop-up list. Defaults to the document body." />
           </Attributes>
         </ConfigOption>
       </ConfigOptions>
@@ -28839,6 +28843,17 @@
             <Attribute Type="Description" RawValue="Hide refresh button" />
           </Attributes>
         </ConfigOption>
+        <ConfigOption Name="PrependButtons" Type="bool" DefaultValue="false">
+          <Summary><![CDATA[True to insert any configured items before the paging buttons. Defaults to false.]]></Summary>
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="ConfigOption" />
+            <Attribute Type="Category" RawValue="&quot;7. PagingToolbar&quot;" />
+            <Attribute Type="DefaultValue" RawValue="false" />
+            <Attribute Type="NotifyParentProperty" RawValue="true" />
+            <Attribute Type="Description" RawValue="True to insert any configured items before the paging buttons. Defaults to false." />
+          </Attributes>
+        </ConfigOption>
         <ConfigOption Name="ParamNames" Type="ParameterCollection">
           <Summary><![CDATA[Object mapping of parameter names for load calls (defaults to {start: 'start', limit: 'limit'})]]></Summary>
           <Attributes>
@@ -31368,6 +31383,12 @@
             <Attribute Type="PersistenceMode" RawValue="PersistenceMode.InnerProperty" />
             <Attribute Type="TypeConverter" RawValue="typeof(ExpandableObjectConverter)" />
             <Attribute Type="Description" RawValue="(Optional) A function which converts the value provided by the Reader into an object that will be stored in the Record." />
+          </Attributes>
+        </ConfigOption>
+        <ConfigOption Name="RenderMilliseconds" Type="bool" DefaultValue="false">
+          <Attributes>
+            <Attribute Type="Meta" />
+            <Attribute Type="DefaultValue" RawValue="false" />
           </Attributes>
         </ConfigOption>
         <ConfigOption Name="DateFormat" Type="string" DefaultValue="&quot;&quot;">

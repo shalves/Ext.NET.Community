@@ -5,7 +5,7 @@ Ext.override(Ext.layout.FitLayout, {
     onLayout : function (ct, target) {
         Ext.layout.FitLayout.superclass.onLayout.call(this, ct, target);
         
-        if (!ct.collapsed) {            
+        if (!ct.collapsed || (ct.collapseEl === "el" && ct.isVisible())) { //the second condition is a fix for BorderLayout floatable case: http://forums.ext.net/showthread.php?20506
             var sz;
             
             if (Ext.isIE6 && Ext.isStrict && target.dom == (Ext.net.ResourceMgr.getAspForm() || {}).dom) {

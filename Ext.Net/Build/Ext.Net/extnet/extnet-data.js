@@ -1,13 +1,28 @@
-/*
- * @version   : 1.5.0 - Ext.NET Community Edition (AGPLv3 License)
+/********
+ * This file is part of Ext.NET.
+ *     
+ * Ext.NET is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * Ext.NET is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
+ * 
+ * You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
+ * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ * @version   : 1.6.0 - Ext.NET Community License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-10
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
- * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
- * @website   : http://www.ext.net/
- */
-
-
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
+ *              See license.txt and http://www.ext.net/license/.
+ *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
+ ********/
 
 Ext.data.HttpProxy.prototype.doRequest=function(action,rs,params,reader,cb,scope,arg){var o={method:(this.api[action])?this.api[action].method:undefined,request:{callback:cb,scope:scope,arg:arg},reader:reader,callback:this.createCallback(action,rs),scope:this};if(this.conn.json){o.jsonData=params;if((o.method||this.conn.method)==="GET"){o.params=params||{};}}else if(params.jsonData){o.jsonData=params.jsonData;}else if(params.xmlData){o.xmlData=params.xmlData;}else{o.params=params||{};}
 this.conn.url=this.buildUrl(action,rs);if(this.useAjax){Ext.applyIf(o,this.conn);this.activeRequest[action]=Ext.Ajax.request(o);}else{this.conn.request(o);}
@@ -61,6 +76,7 @@ if(options.dirtyRowsOnly&&!isNew){if(!record.dirty){return;}}
 if((options.dirtyCellsOnly===true||(options.dirtyCellsOnly!==false&&this.saveAllFields===false))&&!isNew){var j;for(j in data){if(record.isModified(j)){newData[j]=data[j];}}
 data=newData;}
 var k;for(k in data){if(options.filterField&&options.filterField(record,k,data[k])===false){data[k]=undefined;}
+if(options.encode){data[k]=Ext.util.Format.htmlEncode(data[k]);}
 field=this.getFieldByName(k);if(Ext.isEmpty(data[k],false)&&this.isSimpleField(k,field)){switch(field.submitEmptyValue){case"null":data[k]=null;break;case"emptystring":data[k]="";break;default:data[k]=undefined;break;}}}
 if(options.mappings!==false&&this.saveMappings!==false){var m,map=record.fields.map,mappings={};Ext.iterate(data,function(prop,value){m=map[prop];if(m){mappings[m.mapping?m.mapping:m.name]=value;}});if(options.excludeId!==true){mappings[this.metaId()]=record.id;}
 data=mappings;}
@@ -83,7 +99,7 @@ if(jsonUpdated.length>0){if(json.length>0){json+=",";}
 json+='"Updated":[';json+=jsonUpdated;}
 if(jsonCreated.length>0){if(json.length>0){json+=",";}
 json+='"Created":[';json+=jsonCreated;}
-return options.encode?Ext.util.Format.htmlEncode(json):json;},getByDataId:function(id){if(!this.metaId()){return undefined;}
+return json;},getByDataId:function(id){if(!this.metaId()){return undefined;}
 var m=this.modified,i;for(i=0;i<m.length;i++){if(m[i].data[this.metaId()]===id){return m[i];}}
 return undefined;},recordsSaved:function(o,options,success){if(!o||success===false){if(success!==false){this.fireEvent("save",this,options);}
 if(options.callback){options.callback.call(options.scope||this,options,false);}

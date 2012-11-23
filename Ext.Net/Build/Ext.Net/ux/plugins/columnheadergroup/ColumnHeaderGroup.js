@@ -306,6 +306,21 @@ Ext.ux.grid.ColumnHeaderGroup = Ext.extend(Ext.util.Observable, {
             this.constructor.prototype.afterRenderUI.apply(this, arguments);
             Ext.apply(this.columnDrop, Ext.ux.grid.ColumnHeaderGroup.prototype.columnDropConfig);
             Ext.apply(this.splitZone, Ext.ux.grid.ColumnHeaderGroup.prototype.splitZoneConfig);
+        },
+
+        getColumnWidth : function(column) {
+            var columnWidth = this.cm.getColumnWidth(column),
+                borderWidth = this.borderWidth;
+        
+            if (Ext.isNumber(columnWidth)) {
+                if (Ext.isBorderBox || (Ext.isWebKit && !Ext.isSafari2 && !Ext.isChrome)) {
+                    return columnWidth + "px";
+                } else {
+                    return Math.max(columnWidth - borderWidth, 0) + "px";
+                }
+            } else {
+                return columnWidth;
+            }
         }
     },
 
@@ -383,7 +398,7 @@ Ext.ux.grid.ColumnHeaderGroup = Ext.extend(Ext.util.Observable, {
             }
         }
         return {
-            width: (Ext.isBorderBox || (Ext.isWebKit && !Ext.isSafari2) ? width : Math.max(width - this.borderWidth, 0)) + 'px',
+            width: (Ext.isBorderBox || (Ext.isWebKit && !Ext.isSafari2 && !Ext.isChrome) ? width : Math.max(width - this.borderWidth, 0)) + 'px',
             hidden: hidden
         };
     },

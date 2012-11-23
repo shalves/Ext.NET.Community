@@ -33,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Ext.Net.UX.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ext.Net.Utilities, Version=1.3.0.39155, Culture=neutral, PublicKeyToken=2c34ac34702a3c23, processorArchitecture=MSIL">

@@ -1,14 +1,30 @@
-/*
- * @version   : 1.5.0 - Ext.NET Community Edition (AGPLv3 License)
+/********
+ * This file is part of Ext.NET.
+ *     
+ * Ext.NET is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * Ext.NET is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU AFFERO GENERAL PUBLIC LICENSE for more details.
+ * 
+ * You should have received a copy of the GNU AFFERO GENERAL PUBLIC LICENSE
+ * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ * @version   : 1.6.0 - Ext.NET Community License
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-07-10
+ * @date      : 2012-11-21
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
- * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0.
- * @website   : http://www.ext.net/
- */
+ * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
+ *              See license.txt and http://www.ext.net/license/.
+ *              See AGPL License at http://www.gnu.org/licenses/agpl-3.0.txt
+ ********/
 
-
-Ext.ns("Ext.net","Ext.net.DirectMethods","Ext.ux","Ext.ux.plugins","Ext.ux.layout");Ext.net.Version="1.0.0";
+Ext.ns("Ext.net","Ext.net.DirectMethods","Ext.ux","Ext.ux.plugins","Ext.ux.layout");Ext.net.Version="1.6.0";
 
 Ext.net.ResourceMgr=function(){return{id:"",url:"",quickTips:true,cssClasses:{},submitDisabled:true,BLANK_IMAGE_URL:"",hasCssClass:function(id){return!!this.cssClasses[id];},resolveUrl:function(url){if(url&&Ext.net.StringUtils.startsWith(url,"~/")){return url.replace(/^~/,Ext.isEmpty(this.appName,false)?"":("/"+this.appName))}
 return url;},registerCssClass:function(id,cssClass,registerId){if(!this.hasCssClass(id)){var ss=Ext.fly("extnet-resources"),old="";if(ss){if(Ext.isIE){old=ss.dom.styleSheet.cssText;}else{old=ss.dom.innerHTML;}
@@ -153,7 +169,7 @@ if(this.header&&this.header.repaint){this.header.repaint();}
 if(this.footer&&this.footer.repaint){this.footer.repaint();}else if(this.ft){this.ft.repaint();}};if(Ext.isIE6||Ext.isIE7){this.on("show",refreshBars,this,{buffer:100});this.on("resize",refreshBars,this,{buffer:100});}});Ext.Panel.prototype.onCollapse=Ext.Panel.prototype.onCollapse.createSequence(function(doAnim,animArg){var f=this.getCollapsedField();if(!Ext.isEmpty(f)){f.dom.value="true";}});Ext.Panel.prototype.onExpand=Ext.Panel.prototype.onExpand.createSequence(function(doAnim,animArg){var f=this.getCollapsedField();if(!Ext.isEmpty(f)){f.dom.value="false";}});Ext.Panel.prototype.initComponent=Ext.Panel.prototype.initComponent.createInterceptor(function(){if(this.tbar&&(this.tbar.xtype==="paging"||this.tbar.xtype==="ux.paging")&&!Ext.isDefined(this.tbar.store)&&this.store){this.tbar.store=this.store;}
 if(this.bbar&&(this.bbar.xtype==="paging"||this.bbar.xtype==="ux.paging")&&!Ext.isDefined(this.bbar.store)&&this.store){this.bbar.store=this.store;}});
 
-Ext.override(Ext.layout.FitLayout,{onLayout:function(ct,target){Ext.layout.FitLayout.superclass.onLayout.call(this,ct,target);if(!ct.collapsed){var sz;if(Ext.isIE6&&Ext.isStrict&&target.dom==(Ext.net.ResourceMgr.getAspForm()||{}).dom){sz=Ext.getBody().getViewSize();}else{sz=((Ext.isIE6&&Ext.isStrict&&target.dom==document.body)||target.dom==(Ext.net.ResourceMgr.getAspForm()||{}).dom)?target.getViewSize():target.getStyleSize();}
+Ext.override(Ext.layout.FitLayout,{onLayout:function(ct,target){Ext.layout.FitLayout.superclass.onLayout.call(this,ct,target);if(!ct.collapsed||(ct.collapseEl==="el"&&ct.isVisible())){var sz;if(Ext.isIE6&&Ext.isStrict&&target.dom==(Ext.net.ResourceMgr.getAspForm()||{}).dom){sz=Ext.getBody().getViewSize();}else{sz=((Ext.isIE6&&Ext.isStrict&&target.dom==document.body)||target.dom==(Ext.net.ResourceMgr.getAspForm()||{}).dom)?target.getViewSize():target.getStyleSize();}
 this.setItemSize(this.activeItem||ct.items.itemAt(0),sz);}}});
 
 Ext.layout.BorderLayout.SplitRegion.prototype.render=Ext.layout.BorderLayout.SplitRegion.prototype.render.createInterceptor(function(ct,p){var pos=this.position,dir="westeast".indexOf(pos)>-1?"Width":"Height";this.splitSettings[pos].maxProp=(Ext.isDefined(p["boxMax"+dir])?"boxMax":"max")+dir;this.splitSettings[pos].minProp=(Ext.isDefined(p["boxMin"+dir])?"boxMin":"min")+dir;});Ext.layout.BorderLayout.SplitRegion.prototype.getCollapsedEl=Ext.layout.BorderLayout.SplitRegion.prototype.getCollapsedEl.createSequence(function(){if(this.useSplitTips){this.collapsedEl.dom.title=this.collapsible?this.expandableSplitTip:this.splitTip;}});Ext.layout.BorderLayout.Region.prototype.destroy=Ext.layout.BorderLayout.Region.prototype.destroy.createInterceptor(function(){this.clearMonitor();});Ext.layout.BorderLayout.SplitRegion.override({expandableSplitTip:"Double click to show."});
@@ -462,7 +478,7 @@ return this.origFindRecord(prop,value);},indexOfEx:function(record){if(this.stor
 return this.store.data.indexOf(record);},getSelectedIndex:function(){var r=this.findRecord(this.forceSelection?this.valueField:this.displayField,this.getValue());return(!Ext.isEmpty(r))?this.indexOfEx(r):-1;},onSelect:function(record,index){if(this.fireEvent("beforeselect",this,record,index)!==false){this.setValue(record.data[this.valueField||this.displayField]);this.collapse();this.getSelectionField().setValue(this.getSelectedIndex());this.fireEvent("select",this,record,index);this.oldValue=this.getValue();var t=this.getEl().dom.value?this.getEl().dom.value.trim():"";this.oldText=(t===this.emptyText)?"":t;}},setInitValue:function(value){if(this.store.getCount()>0){this.setLoadedValue(value);}else{this.setValue(value);this.store.on("load",this.setLoadedValue.createDelegate(this,[value]),this,{single:true});}},setLoadedValue:function(value){this[this.fireSelectOnLoad?"setValueAndFireSelect":"setValue"](value);this.clearInvalid();},checkOnBlur:function(){var t=this.getEl().dom.value?this.getEl().dom.value.trim():"",v=this.getValue();if(this.oldValue!==v||(t!==this.oldText&&t!==this.emptyText)){if(!Ext.isEmpty(this.selValue)&&this.selText!==t&&this.selValue===this.getValue()){this.hiddenField.value="";}
 var val=this.el.dom.value,r=this.findRecordByText(this.displayField,val);if(!Ext.isEmpty(r)){this.onSelect(r,this.store.indexOf(r),false,true);}else{if(this.forceSelection){if(Ext.isEmpty(this.findRecord(this.valueField,this.oldValue))){this.clearValue();}else{this.setValue(this.oldValue);}}else{this.setValue(val);}}
 this.getSelectionField().setValue(this.getSelectedIndex());}},triggerBlur:function(){this.mimicing=false;Ext.getDoc().un("mousedown",this.mimicBlur,this);if(this.monitorTab&&this.el){this.el.un("keydown",this.checkTab,this);}
-this.checkOnBlur();Ext.form.TriggerField.superclass.onBlur.call(this);if(this.wrap){this.wrap.removeClass(this.wrapFocusClass);}},onFocus:function(){Ext.form.TriggerField.superclass.onFocus.call(this);if(!this.mimicing){this.wrap.addClass(this.wrapFocusClass);this.mimicing=true;Ext.getDoc().on("mousedown",this.mimicBlur,this,{delay:10});if(this.monitorTab){this.el.on("keydown",this.checkTab,this);}}},selectByIndex:function(index,fireSelect){if(index>=0){this[this.fireSelect?"setValueAndFireSelect":"setValue"](this.store.getAt(index).get(this.valueField||this.displayField));}},setInitValueByIndex:function(index){if(this.store.getCount()>0){this.setLoadedIndex(index);}else{this.store.on("load",this.setLoadedIndex.createDelegate(this,[index]),this,{single:true});}},setLoadedIndex:function(index){this.selectByIndex(index,this.fireSelectOnLoad);this.clearInvalid();},onLoad:Ext.form.ComboBox.prototype.onLoad.createInterceptor(function(){if(this.mode==="single"){this.mode="local";}}),initList:Ext.form.ComboBox.prototype.initList.createSequence(function(){if(this.mode==="single"&&this.store.isLoaded){this.mode="local";}}),doForce:Ext.emptyFn});
+this.checkOnBlur();Ext.form.TriggerField.superclass.onBlur.call(this);if(this.wrap){this.wrap.removeClass(this.wrapFocusClass);}},onFocus:function(){Ext.form.TriggerField.superclass.onFocus.call(this);if(!this.mimicing){this.wrap.addClass(this.wrapFocusClass);this.mimicing=true;Ext.getDoc().on("mousedown",this.mimicBlur,this,{delay:10});if(this.monitorTab){this.el.on("keydown",this.checkTab,this);}}},selectByIndex:function(index,fireSelect){var r;if(index>=0){r=this.store.getAt(index);if(r){this[fireSelect?"setValueAndFireSelect":"setValue"](r.get(this.valueField||this.displayField));}}},setInitValueByIndex:function(index){if(this.store.getCount()>0){this.setLoadedIndex(index);}else{this.store.on("load",this.setLoadedIndex.createDelegate(this,[index]),this,{single:true});}},setLoadedIndex:function(index){this.selectByIndex(index,this.fireSelectOnLoad);this.clearInvalid();},onLoad:Ext.form.ComboBox.prototype.onLoad.createInterceptor(function(){if(this.mode==="single"){this.mode="local";}}),initList:Ext.form.ComboBox.prototype.initList.createSequence(function(){if(this.mode==="single"&&this.store.isLoaded){this.mode="local";}}),doForce:Ext.emptyFn});
 
 Date.prototype.extadd=Date.prototype.add;Ext.DatePicker.prototype.initComponent=Ext.DatePicker.prototype.initComponent.createInterceptor(function(){if(!this.msadd){Date.prototype.msadd=Date.prototype.add;Date.prototype.add=function(){return this[typeof arguments[0]==="string"?"extadd":"msadd"].apply(this,arguments);};}});Ext.form.DateField.override({setDisabledDates:function(dd){this.disabledDates=dd;this.disabledDatesRE=null;this.initDisabledDays();if(this.menu){this.menu.picker.setDisabledDates(this.disabledDatesRE);}},onTriggerClick:function(){if(this.disabled){return;}
 if(Ext.isEmpty(this.menu)){this.menu=new Ext.menu.DateMenu({hideOnClick:false,focusOnSelect:false});}
@@ -623,9 +639,10 @@ if(Ext.net.StringUtils.startsWith(this.triggerClass||"","x-form-simple")){if(thi
 isSimple=true;}
 if(this.hideTrigger||this.readOnly){Ext.apply(triggerCfg,{style:"display:none",hidden:true});this.hideTrigger=false;}
 if(isSimple){this.addClass("clear-right");}
-if(this.triggersConfig){this.triggerConfig.cn.push(triggerCfg);}else{cn.push(triggerCfg);this.triggerConfig={tag:"span",cls:"x-form-twin-triggers",cn:cn};}},initTrigger:function(){Ext.net.DropDownField.superclass.initTrigger.call(this);this.triggers[this.triggers.length-1].removeListener("click",this.onCustomTriggerClick,this);this.triggers[this.triggers.length-1].on("click",this.onTriggerClick,this);},initDropDownComponent:function(){if(this.component&&!this.component.render){this.component.floating=true;this.component=new Ext.ComponentMgr.create(this.component,"panel");}
-var renderTo=this.componentRenderTo||Ext.net.ResourceMgr.getAspForm()||document.body,zindex=parseInt(Ext.fly(renderTo).getStyle("z-index"),10);if(this.ownerCt&&!zindex){this.findParentBy(function(ct){zindex=parseInt(ct.getPositionEl().getStyle("z-index"),10);return!!zindex;});}
-this.component.setWidth(this.component.initialConfig.width||this.getWidth());this.component.dropDownField=this;this.component.render(renderTo);this.component.hide();this.first=true;this.component.getPositionEl().position("absolute",(zindex||12000)+5);if(this.component.initialConfig.height){this.component.setHeight(this.component.initialConfig.height);}
+if(this.triggersConfig){this.triggerConfig.cn.push(triggerCfg);}else{cn.push(triggerCfg);this.triggerConfig={tag:"span",cls:"x-form-twin-triggers",cn:cn};}},initTrigger:function(){Ext.net.DropDownField.superclass.initTrigger.call(this);this.triggers[this.triggers.length-1].removeListener("click",this.onCustomTriggerClick,this);this.triggers[this.triggers.length-1].on("click",this.onTriggerClick,this);},getListParent:function(){return this.componentRenderTo||Ext.net.ResourceMgr.getAspForm()||document.body;},getParentZIndex:function(){var zindex;if(this.ownerCt){this.findParentBy(function(ct){zindex=parseInt(ct.getPositionEl().getStyle('z-index'),10);return!!zindex;});}
+return zindex;},getZIndex:function(listParent){listParent=listParent||Ext.getDom(this.getListParent()||Ext.getBody());var zindex=parseInt(Ext.fly(listParent).getStyle('z-index'),10);if(!zindex){zindex=this.getParentZIndex();}
+return(zindex||12000)+5;},initDropDownComponent:function(){if(this.component&&!this.component.render){this.component.floating=true;this.component=new Ext.ComponentMgr.create(this.component,"panel");}
+var renderTo=this.componentRenderTo||Ext.net.ResourceMgr.getAspForm()||document.body;this.component.setWidth(this.component.initialConfig.width||this.getWidth());this.component.dropDownField=this;this.component.render(renderTo);this.component.hide();this.first=true;this.component.getPositionEl().position("absolute",this.getZIndex());if(this.component.initialConfig.height){this.component.setHeight(this.component.initialConfig.height);}
 this.syncValue(this.getValue(),this.getText());},onRender:function(ct,position){Ext.net.DropDownField.superclass.onRender.call(this,ct,position);if(Ext.isGecko){this.el.dom.setAttribute("autocomplete","off");}
 if(!this.lazyInit){this.initDropDownComponent();}else{this.on("focus",this.initDropDownComponent,this,{single:true});}
 if(this.mode!=="text"){this.getUnderlyingValueField().render(ct);}},isExpanded:function(){return this.component&&this.component.isVisible&&this.component.isVisible();},collapse:function(){if(!this.isExpanded()){return;}
@@ -633,7 +650,7 @@ this.component.hide();if(this.allowBlur===false){Ext.getDoc().un("mousewheel",th
 this.fireEvent("collapse",this);},collapseIf:function(e){if(!e.within(this.wrap)&&!e.within(this.component.el)){this.collapse();}},expand:function(){if(this.isExpanded()||!this.hasFocus){return;}
 if(this.first){this.doResize(this.el.getWidth()+this.getTriggerWidth());delete this.first;}else if(this.bufferSize){this.doResize(this.bufferSize);delete this.bufferSize;}
 var el=this.component.getPositionEl();el.setLeft(0);el.setTop(0);if(Ext.isIE6||Ext.isIE7){this.component.show();}
-el.alignTo(this.wrap,this.componentAlign);if(!(Ext.isIE6||Ext.isIE7)){this.component.show();}
+el.setZIndex(this.getZIndex());el.alignTo(this.wrap,this.componentAlign);if(!(Ext.isIE6||Ext.isIE7)){this.component.show();}
 if(this.allowBlur===false){this.mon(Ext.getDoc(),{scope:this,mousewheel:this.collapseIf,mousedown:this.collapseIf});}
 this.fireEvent("expand",this);},onTriggerClick:function(){if(this.readOnly||this.disabled){return;}
 if(this.isExpanded()){this.collapse();}else{this.onFocus({});this.expand();}
@@ -722,7 +739,7 @@ Ext.Toolbar.prototype.initComponent=Ext.Toolbar.prototype.initComponent.createSe
 
 Ext.Toolbar.Item.prototype.getEl=function(){return Ext.get(this.el);};
 
-Ext.net.ToolbarSpacer=function(config){Ext.net.ToolbarSpacer.superclass.constructor.call(this);config=config||{};this.width=config.width;this.render=function(td){Ext.net.ToolbarSpacer.superclass.render.call(this,td);if(!Ext.isEmpty(this.width)){Ext.fly(this.el).removeClass("ytb-spacer").setWidth(this.width);}};};Ext.extend(Ext.net.ToolbarSpacer,Ext.Toolbar.Spacer);Ext.reg("nettbspacer",Ext.net.ToolbarSpacer);
+Ext.net.ToolbarSpacer=function(config){Ext.net.ToolbarSpacer.superclass.constructor.call(this,config);config=config||{};this.width=config.width;this.render=function(td){Ext.net.ToolbarSpacer.superclass.render.call(this,td);if(!Ext.isEmpty(this.width)){Ext.fly(this.el).removeClass("ytb-spacer").setWidth(this.width);}};};Ext.extend(Ext.net.ToolbarSpacer,Ext.Toolbar.Spacer);Ext.reg("nettbspacer",Ext.net.ToolbarSpacer);
 
 Ext.Toolbar.TextItem.override({getText:function(){return this.rendered?this.el.dom.innerHTML:this.autoEl.html;}});
 

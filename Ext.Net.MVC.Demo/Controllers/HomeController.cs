@@ -8,7 +8,7 @@ namespace Ext.Net.MVC.Demo.Controllers
     {
         public ActionResult Index()
         {
-            this.ViewData["AppName"] = "<b>Northwind Traders</b> (1.4)";
+            this.ViewData["AppName"] = "<b>Northwind Traders</b> (1.6)";
             this.ViewData["Username"] = this.HttpContext.User.Identity.Name;
 
             return this.View();
