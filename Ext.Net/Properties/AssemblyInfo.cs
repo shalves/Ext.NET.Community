@@ -15,9 +15,9 @@
  * along with Ext.NET.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @version   : 2.1.0 - Ext.NET Community License (AGPLv3 License)
+ * @version   : 2.1.1 - Ext.NET Community License (AGPLv3 License)
  * @author    : Ext.NET, Inc. http://www.ext.net/
- * @date      : 2012-11-21
+ * @date      : 2012-12-10
  * @copyright : Copyright (c) 2007-2012, Ext.NET, Inc. (http://www.ext.net/). All rights reserved.
  * @license   : GNU AFFERO GENERAL PUBLIC LICENSE (AGPL) 3.0. 
  *              See license.txt and http://www.ext.net/license/.
@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Web.UI;
 
-[assembly: AssemblyVersion("2.1.0.*")]
+[assembly: AssemblyVersion("2.1.1.*")]
 [assembly: TagPrefix("Ext.NET", "ext")]
 [assembly: AssemblyTitle("Ext.NET")]
 [assembly: AssemblyDescription("Ext.NET Community")]

@@ -1,4 +1,15 @@
 ﻿**************************************************************************
+*                      2.1.1 BREAKING CHANGES                            *
+**************************************************************************
+
+Release Date     : 2012-11-28
+Current Version  : 2.1.1
+Previous Version : 2.1.0
+
+    NONE
+	
+	
+**************************************************************************
 *                      2.1.0 BREAKING CHANGES                            *
 **************************************************************************
 
@@ -28,7 +39,7 @@ Current Version  : 2.0.0
 
 	But ClientID doesn't match ID anymore, it is constructed in a common way.
 
-	Use IDMode="Static" isntead.
+	Use IDMode="Static" instead.
 
 3.	 Window .CloseAction "Close" has been renamed to "Destroy".
 
@@ -444,7 +455,7 @@ Current Version  : 2.0.0
          </Features>
 	 </ext:GridPanel>
 
-26.  GridPanel Command and GroupCommand listeners has been moved to Column listeners
+26.  GridPanel Command and GroupCommand listeners has been moved to Column listeners.
 
 27.  Store .SortInfo has been removed.
 	 Use Store .Sorters
@@ -468,7 +479,7 @@ Current Version  : 2.0.0
 
 	 GridPanel "editing" events are moved to CellEditing/RowEditing.
 
-	 Use the editing plugin client startEdit method instead of the ridPanel startEditing one.
+	 Use the editing plugin client startEdit method instead of the GridPanel startEditing one.
 	 
 	 Example
 
@@ -682,8 +693,15 @@ Current Version  : 2.0.0
 	So, .Width of a Component is ignored.
 	To avoid it set up MatchFieldWidth="false".
 
-57. TreeNode class has been renamed to Node, .Nodes renamed to .Children.
-	Node has client .data property instead of .attributes one.
+57. The TreeNode class has been renamed to the Node one. The Nodes property has been renamed to the Children one.
+	
+	A Node JavaScript instance has the client "data" property instead of the "attributes" one.
+
+	To get a custom attribute (CustomAttributes) appeared in the "data" property, you should add a respective ModelField.
+
+	A ModelField can be added to the TreePanel's Fields collection or to the Fields collection of the TreeStore's Model.
+
+	The ModelField's Name should match the custom attribute's Name.
 
 58. TreePanel DefaultSelectionModel and MultiSelectionModel has been renamed to TreeSelectionModel.
     Use .Mode to set up selection mode.
@@ -717,13 +735,16 @@ Current Version  : 2.0.0
 70. Element .AddClass(), .RemoveClass(), .ToogleClass() has been renamed to, respectively, 
 	.AddCls(), .RemoveCls(), .ToogleCls(). Their client side pairs as well.
 
-71. Panel AutoLoad has been removed. Use Loader.
+71. The Panel's AutoLoad property has been removed. Use the Loader one. It has the ComponentLoader type.
+
+	The LoadConfig class hass been removed. Use the ComponentLoader one.
 	
 	71.1. Use DisableCaching instead of NoCache.
 	71.2. Use Mode="Html" instead of Mode="Merge". It's by default.
 	71.3. Use LoadMask.ShowMask instead of ShowMask.
 	71.4. Use LoadMask.Msg instead of MaskMsg.
 	71.5. Use Loader BeforeLoad and Load events instead of Panel BeforeUpdate and Update.
+	71.6. Use AutoLoad instead of ManuallyTriggered. A replacement of ManuallyTriggered="true" is AutoLoad="false".
 
 72. TabPanel ResizeTabs has been renamed to Resizable.
 
@@ -751,9 +772,15 @@ Current Version  : 2.0.0
 
 80. TreePanel client side initChildren method has been removed. Use the setRootNode method.
 
-81. TreePanel EnableDD has been removed. Set up TreeViewDragDrop plugin for TreePanel View.
+81. The TreePanel's drag@drop related properties have been removed: EnableDD, EnableDrag, EnableDrop, AllowLeafDrop, DDAppendOnly, DDGroup, DDScroll, ContainerScroll.
 
-82. TreePanel ContainerScroll has been removed.
+	Configure a TreeViewDragDrop plugin for a TreePanel's View.
+	http://examples.ext.net/#/TreePanel/Basic/Reorder_Nodes/
+	http://docs.sencha.com/ext-js/4-1/#!/api/Ext.tree.plugin.TreeViewDragDrop
+
+82. The GridPanel's EnableHdMenu property has been removed.
+
+	Configure the MenuDisabled property of its columns.	
 
 83. AsyncTreeNode class has been removed. Use a Node class instead. 
 
@@ -969,7 +996,9 @@ Current Version  : 2.0.0
 
 114. The server ColumnModel class has been removed.
 
-	Use the GridHeaderContainer class.
+	 Use the GridHeaderContainer class.
+
+	 Its Sortable property has the same meaning as the DefaultSortable one previously.
 
 115. The request utility functions like IsIE, IsGecko, IsChrome, IsWindows, etc. has been moved to RequestManager.
 
@@ -1018,11 +1047,137 @@ Current Version  : 2.0.0
 	Use the Column HeaderItems property.
 	http://examples.ext.net/#/GridPanel/MultiHeader/Overview/
 
-126. The FileUploadField FileSelected event has been removed.
-
-	Use the Change one.
+126. The Checkbox's Change event has been removed. Use the Change one.
 
 127. A RowLayout has been removed. Use an AnchorLayout or a VBoxLayout instead.
 	 http://examples.ext.net/#/search/AnchorLayout
 	 http://examples.ext.net/#/search/VBoxLayout
-     
+
+128. The ColumnBase's Fixed property has been removed. Use its Resizable property (defaults to true).
+
+129. The field's Valid and Invalid events have been removed. Use its ValidityChange event.
+
+130. Now the ColumnBase class is a base class for all GridPanel columns. Previosly it was the Column class.
+
+	 Example
+
+	 //Old
+	 Column c = new BooleanColumn();
+
+	 //New
+	 ColumnBase c = new BooleanColumn();
+
+131. The FormPanel's:
+		 - MonitorValid and MonitorPoll properties,
+		 - ClientValidation event, 
+		 - StartMonitoring and StopMonitoring methods 
+	 have been removed.
+
+	 Use, respectively, the following things:
+		 - PollForChanges and PollInterval properties,
+		 - ValidityChange event,
+		 - StartPolling and StopPolling methods.
+
+132. A field's ValidationEvent and ValidationDelay properties have been removed.
+
+	 Use the CheckChangeEvents and CheckChangeBuffer properties.
+
+133. The FilterCondition class has been refactored.
+
+		 - FilterType property has been renamed to Type,
+		 - Name property has been renamed to Field,
+		 - ValueList has been renamed to List,
+		 - ValueAs* (where * is a type) properties has been replaced with a single generic Value<type> property.
+
+134. The Panel's Failure event has been removed. Use the Loader's Exception event.
+
+135. The DropPoint enum's members have been renamed: Above => Before, Below => After.
+
+136. The GridView's HeaderGroupRows property has been removed.
+	 
+	 The HeaderGroupRow and HeaderGroupColumn classes have been removed.
+
+	 Now the Column class has the Columns collection property to organize grouping.
+	 http://examples.ext.net/#/GridPanel/Miscellaneous/ColumnHeaderGroup/
+
+137. The TreeGrid class has been removed. Now a common TreePanel suppors columns.
+     http://examples.ext.net/#/TreePanel/Advanced/TreeGrid/
+
+138. The Component's Ref property has been removed.
+
+	 Please use the AbstractContainer's down method.
+	 http://docs.sencha.com/ext-js/4-1/#!/api/Ext.container.AbstractContainer-method-down
+
+	 Example
+
+	 //New
+	 <ext:Panel ID="Panel1" runat="server">
+		 <TopBar>
+			 <ext:Toolbar runat="server">
+				 <Items>
+					 <ext:Button runat="server" ItemID="TestButton" Text="Test Button" />
+				 </Items>
+			 </ext:Toolbar>
+		 </TopBar>
+	 </ext:Panel>
+
+	 JavaScript code to access the Button can look:
+
+	 var btn = App.Panel1.down("#TestButton");
+
+139. The ComponentMenuItem class has been removed.
+	
+     Now any component can be added to directly to a Menu's Items collection.
+	 http://examples.ext.net/#/Toolbar/Menu/Controls_In_Menu/
+
+140. The TreeNode class has been removed. Please use the Node one.
+	
+	 There is no Disabled property any more and no a direct substituion.
+
+	 You can set up a custom attribute for a Node and configure a View's GetRowClass handler. Here is a related discussion on Sencha forum.
+	 http://www.sencha.com/forum/showthread.php?138173
+
+141. The TabPanel's EnableTabScroll property has been removed. There is no need in this property anymore.
+
+	 Now the scroll tools will appear and disappear automatically regardless any property. 
+
+142. The TreeLoader has been removed.
+
+	 See the TreePanel Loaders examples in the Examples Exmplorers.
+
+143. The FormPanelBase's FileUpload property has been removed. There is no need in this property anymore.
+
+	 Now a FormPanel checks itself it contains a FileUploadField or not. More details are here.
+	 http://docs.sencha.com/ext-js/4-1/#!/api/Ext.form.Basic-method-hasUpload
+
+144. The Store's RefreshAfterSaving property has been removed.
+
+	 A Store reload is not required anymore in most cases because in a response you have to return data (new ids, etc). Look at this example.
+	 http://examples.ext.net/#/GridPanel/Update/AutoSave/
+
+	 If you still need to reload a Store after a sync request then configure a success handler.
+	
+	 Example
+
+	 App.Store1.sync({
+		 success : function () {
+			 App.Store1.reload();
+		 }
+	 });
+
+145. Now CurrentCulture (instead of CurrentUICulture in Ext.NET v1) is used as a default value for the ResourceManager's Locale property.
+
+	 It can be set up, for example, by the following ways.
+
+	 Example 1
+
+	 <%@ Page Language="C#" Culture="de-DE" %>
+
+
+	 Example 2
+
+	 protected void Page_Load(object sender, EventArgs e)
+	 {
+		 System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("it-IT");
+	 }
+

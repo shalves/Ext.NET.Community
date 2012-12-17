@@ -2,44 +2,58 @@
 ---------------------------------
 
 "$(SolutionDir)Ext.Net\Build\ReferenceAssemblies\ERB\Ext.Net.ResourceBuilder.exe" "$(ProjectDir) " "Ext.Net.Build" "$(ProjectDir) " "XPL"
-xcopy "$(ProjectDir)Build\Ext.Net\README.txt" "$(ProjectDir)Build\NuGet\Ext.NET.README.txt" /y
-xcopy "$(ProjectDir)Build\Ext.Net\CHANGELOG.txt" "$(ProjectDir)Build\NuGet\Ext.NET.CHANGELOG.txt" /y
-xcopy "$(ProjectDir)Build\Ext.Net\BREAKING_CHANGES.txt" "$(ProjectDir)Build\NuGet\Ext.NET.BREAKING_CHANGES.txt" /y
-xcopy "$(ProjectDir)Build\Ext.Net\Licenses\Ext.NET.Pro.txt" "$(ProjectDir)Build\NuGet\Ext.NET.LICENSE.txt" /y
-xcopy "$(ProjectDir)Build\Ext.Net\README.txt" "$(ProjectDir)Build\Release\1. README.txt" /y
-xcopy "$(ProjectDir)Build\Ext.Net\CHANGELOG.txt" "$(ProjectDir)Build\Release\2. CHANGELOG.txt" /y
-xcopy "$(ProjectDir)Build\Ext.Net\BREAKING_CHANGES.txt" "$(ProjectDir)Build\Release\3. BREAKING CHANGES.txt" /y
-xcopy "$(ProjectDir)Build\Ext.Net\Licenses\Ext.NET.Pro.txt" "$(ProjectDir)Build\Release\4. LICENSE.txt" /y
-xcopy "$(SolutionDir)Ext.Net.Examples\Sample.Web.config" "$(ProjectDir)Build\Release\5. Sample.Web.config" /y
-xcopy "$(ProjectDir)Build\NuGet\Ext.NET.Default.aspx" "$(ProjectDir)Build\Release\6. Default.aspx" /y
-
-Ext.Net Post-Build
----------------------------------
-
-xcopy "$(ProjectDir)$(OutDir)Ext.Net.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
-xcopy "$(ProjectDir)$(OutDir)Ext.Net.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
-xcopy "$(ProjectDir)$(OutDir)Ext.Net.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
-xcopy "$(ProjectDir)$(OutDir)Ext.Net.Utilities.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
-xcopy "$(ProjectDir)$(OutDir)Ext.Net.Utilities.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
-xcopy "$(ProjectDir)$(OutDir)Ext.Net.Utilities.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
-xcopy "$(ProjectDir)$(OutDir)Transformer.NET.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
-xcopy "$(ProjectDir)$(OutDir)Transformer.NET.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
-xcopy "$(ProjectDir)$(OutDir)Transformer.NET.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
-xcopy "$(ProjectDir)$(OutDir)Newtonsoft.Json.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
-xcopy "$(ProjectDir)$(OutDir)Newtonsoft.Json.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
-xcopy "$(ProjectDir)$(OutDir)Newtonsoft.Json.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
-
+xcopy "$(ProjectDir)Build\Ext.Net\Licenses\Ext.NET.Pro.txt" "$(ProjectDir)Build\Ext.Net\LICENSE.txt" /y
 
 Ext.Net.Community Pre-Build
 ---------------------------------
 
 "$(SolutionDir)Ext.Net\Build\ReferenceAssemblies\ERB\Ext.Net.ResourceBuilder.exe" "$(ProjectDir) " "Ext.Net.Build" "$(ProjectDir) " "AGPL"
+xcopy "$(ProjectDir)Build\Ext.Net\Licenses\Ext.NET.Community.txt" "$(ProjectDir)Build\Ext.Net\LICENSE.txt" /y
+
+
+Ext.Net Post-Build
+---------------------------------
+
+xcopy "$(ProjectDir)Build\Ext.Net\README.txt" "$(ProjectDir)Build\NuGet\content\App_Readme\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\CHANGELOG.txt" "$(ProjectDir)Build\NuGet\content\App_Readme\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\BREAKING_CHANGES.txt" "$(ProjectDir)Build\NuGet\content\App_Readme\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\License.txt" "$(ProjectDir)Build\NuGet\content\App_Readme\" /y
+
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.dll" "$(ProjectDir)Build\NuGet\lib\net40\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.xml" "$(ProjectDir)Build\NuGet\lib\net40\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.pdb" "$(ProjectDir)Build\NuGet\lib\net40\pdb\" /y
+
 xcopy "$(ProjectDir)Build\Ext.Net\README.txt" "$(ProjectDir)Build\Release\1. README.txt" /y
 xcopy "$(ProjectDir)Build\Ext.Net\CHANGELOG.txt" "$(ProjectDir)Build\Release\2. CHANGELOG.txt" /y
 xcopy "$(ProjectDir)Build\Ext.Net\BREAKING_CHANGES.txt" "$(ProjectDir)Build\Release\3. BREAKING CHANGES.txt" /y
-xcopy "$(ProjectDir)Build\Ext.Net\Licenses\Ext.NET.Community.txt" "$(ProjectDir)Build\Release\4. LICENSE.txt" /y
-xcopy "$(SolutionDir)Ext.Net.Examples\Sample.Web.config" "$(ProjectDir)Build\Release\5. Sample.Web.config" /y
-xcopy "$(ProjectDir)Build\NuGet\Ext.NET.Default.aspx" "$(ProjectDir)Build\Release\6. Default.aspx" /y
+
+xcopy "$(ProjectDir)Build\Ext.Net\License.txt" "$(ProjectDir)Build\Release\4. LICENSE.txt" /y
+xcopy "$(ProjectDir)Build\Ext.Net\Sample.Web.config" "$(ProjectDir)Build\Release\5. Sample.Web.config" /y
+xcopy "$(ProjectDir)Build\NuGet\content\Ext.NET.Default.aspx" "$(ProjectDir)Build\Release\6. Default.aspx" /y
+
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\pdb\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.Utilities.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.Utilities.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\pdb\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.Utilities.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Transformer.NET.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Transformer.NET.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\pdb\" /y
+xcopy "$(ProjectDir)$(OutDir)Transformer.NET.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Newtonsoft.Json.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Newtonsoft.Json.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\pdb\" /y
+xcopy "$(ProjectDir)$(OutDir)Newtonsoft.Json.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+
+xcopy "$(ProjectDir)Build\Ext.Net\README.txt" "$(SolutionDir)Ext.Net.Examples\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\CHANGELOG.txt" "$(SolutionDir)Ext.Net.Examples\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\BREAKING_CHANGES.txt" "$(SolutionDir)Ext.Net.Examples\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\Sample.Web.config" "$(SolutionDir)Ext.Net.Examples\" /y
+
+xcopy "$(ProjectDir)Build\Ext.Net\README.txt" "$(SolutionDir)Ext.Net.Examples.MVC\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\CHANGELOG.txt" "$(SolutionDir)Ext.Net.Examples.MVC\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\BREAKING_CHANGES.txt" "$(SolutionDir)Ext.Net.Examples.MVC\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\Sample.Web.config" "$(SolutionDir)Ext.Net.Examples.MVC\" /y
 
 
 Misc

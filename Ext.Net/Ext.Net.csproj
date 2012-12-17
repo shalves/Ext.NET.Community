@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">MVC Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{195F2E70-F5E6-4A61-AAD9-2639657C29C4}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -43,27 +43,104 @@
     <DocumentationFile>bin\Debug\Ext.Net.xml</DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <MVC Condition=" '$(MVC)' == '' ">1</MVC>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;MVC NET40</DefineConstants>
+    <DefineConstants>TRACE;ISPRO MVC NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Ext.Net.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
+    <MVC Condition=" '$(MVC)' == '' ">1</MVC>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MVC Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\MVC Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;ISPRO MVC NET40</DefineConstants>
+    <DocumentationFile>bin\MVC Debug\Ext.Net.xml</DocumentationFile>
+    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <MVC Condition=" '$(MVC)' == '' ">1</MVC>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MVC Release|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\MVC Release\</OutputPath>
+    <DefineConstants>TRACE;MVC NET40</DefineConstants>
+    <DocumentationFile>bin\MVC Release\Ext.Net.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <MVC Condition=" '$(MVC)' == '' ">1</MVC>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WebForm NET35 Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\WebForm NET35 Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;ISPRO NET35</DefineConstants>
+    <DocumentationFile>bin\WebForm NET35 Debug\Ext.Net.xml</DocumentationFile>
+    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WebForm NET40 Release|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\WebForm NET40 Release\</OutputPath>
+    <DefineConstants>TRACE;NET40</DefineConstants>
+    <DocumentationFile>bin\WebForm NET40 Release\Ext.Net.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WebForm NET35 Release|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\WebForm NET35 Release\</OutputPath>
+    <DefineConstants>TRACE;NET35</DefineConstants>
+    <DocumentationFile>bin\Release\Ext.Net.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WebForm NET40 Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\WebForm NET40 Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;ISPRO NET40</DefineConstants>
+    <DocumentationFile>bin\Debug\Ext.Net.xml</DocumentationFile>
+    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ext.Net.Utilities, Version=2.1.0.0, Culture=neutral, PublicKeyToken=2c34ac34702a3c23, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ext.NET.Utilities.2.1.0\lib\Ext.Net.Utilities.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -74,13 +151,156 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Transformer.NET, Version=2.1.0.0, Culture=neutral, PublicKeyToken=e274d618e7c603a7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Transformer.NET.2.1.0\lib\Transformer.NET.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(MVC)' == '1'">
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Compile Include="Ext\Data\ModelStateStore.cs" />
+    <Compile Include="Factory\Builder\ModelStateStoreBuilder.cs" />
+    <Compile Include="Factory\Builder\MvcItemBuilder.cs" />
+    <Compile Include="Factory\ConfigOptions\MvcItemConfigOptions.cs" />
+    <Compile Include="Factory\Config\ModelStateStoreConfig.cs" />
+    <Compile Include="Factory\Config\MvcItemConfig.cs" />
+    <Compile Include="MVC\DirectMethods\DirectControllerAttribute.cs" />
+    <Compile Include="MVC\DirectMethods\MvcDirectMethod.cs" />
+    <Compile Include="MVC\Extensions\WidgetExtensions.cs" />
+    <Compile Include="MVC\Ext\BaseControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MVC\Ext\Button\Button.cs" />
+    <Compile Include="MVC\Ext\Button\CycleButton.cs" />
+    <Compile Include="MVC\Ext\Data\Store.cs" />
+    <Compile Include="MVC\Ext\Events\ComponentDirectEvent.cs" />
+    <Compile Include="MVC\Ext\Form\CheckboxBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MVC\Ext\Form\Checkbox.cs" />
+    <Compile Include="MVC\Ext\Form\DateFieldBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MVC\Ext\Form\Field.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MVC\Ext\Form\FormPanel.cs" />
+    <Compile Include="MVC\Ext\Form\MultiSelectBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MVC\Ext\Form\NumberFieldBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MVC\Ext\Form\TextFieldBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MVC\Ext\Form\TimeField.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MVC\Ext\Form\HtmlEditor.cs" />
+    <Compile Include="MVC\Ext\Form\Hidden.cs" />
+    <Compile Include="MVC\Ext\Form\DropDownFieldBase.cs" />
+    <Compile Include="MVC\Ext\Form\DisplayField.cs" />
+    <Compile Include="MVC\Ext\Form\ComboBoxBase.cs" />
+    <Compile Include="MVC\Ext\Form\Radio.cs" />
+    <Compile Include="MVC\Ext\Grid\GridPanel.cs" />
+    <Compile Include="MVC\Ext\Menu\MenuItem.cs" />
+    <Compile Include="MVC\Ext\Panel\Tool.cs" />
+    <Compile Include="MVC\Ext\Picker\ColorPicker.cs" />
+    <Compile Include="MVC\Ext\Picker\DatePicker.cs" />
+    <Compile Include="MVC\Ext\Slider\SliderBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MVC\Ext\BaseItem.cs" />
+    <Compile Include="MVC\Ext\Observable.cs" />
+    <Compile Include="MVC\Factory\AbstractComponentBuilder.cs" />
+    <Compile Include="MVC\Factory\AbstractContainerBuilder.cs" />
+    <Compile Include="MVC\Factory\AbstractStoreBuilder.cs" />
+    <Compile Include="MVC\Factory\BuilderFactory.cs" />
+    <Compile Include="Ext\Container\MvcItem.cs" />
+    <Compile Include="MVC\Factory\ButtonBuilder.cs" />
+    <Compile Include="MVC\Factory\CheckboxBuilder.cs" />
+    <Compile Include="MVC\Factory\ColorPickerBuilder.cs" />
+    <Compile Include="MVC\Factory\ColumnBaseBuilder.cs" />
+    <Compile Include="MVC\Factory\ControlBuilder.cs" />
+    <Compile Include="MVC\Factory\CycleButtonBuilder.cs" />
+    <Compile Include="MVC\Factory\DataSorterBuilder.cs" />
+    <Compile Include="MVC\Factory\GridFilterBuilder.cs" />
+    <Compile Include="MVC\Factory\MenuItemBuilder.cs" />
+    <Compile Include="MVC\Factory\ModelBuilder.cs" />
+    <Compile Include="MVC\Factory\ModelFieldBuilder.cs" />
+    <Compile Include="MVC\Factory\MvcItemBuilder.cs" />
+    <Compile Include="MVC\Factory\StoreBaseBuilder.cs" />
+    <Compile Include="MVC\Factory\TablePanelBuilder.cs" />
+    <Compile Include="MVC\Factory\ToolBuilder.cs" />
+    <Compile Include="MVC\Factory\DatePickerBuilder.cs" />
+    <Compile Include="MVC\Factory\RadioBuilder.cs" />
+    <Compile Include="MVC\MetadataAware\ClientResourceAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\ColumnBaseAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\ExclusionValidationAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\ModelAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\ModelFieldAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\AbstractValidationAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\FormatValidationAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\InclusionValidationAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\LengthValidationAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\PresenceValidationAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\AbstractAssociationAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\BelongsToAssociationAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\HasManyAssociationAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\HasOneAssociationAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\ProxyAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\AbstractReaderAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\JsonReaderAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\XmlReaderAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\ArrayReaderAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\AbstractWriterAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\JsonWriterAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\XmlWriterAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\ColumnAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\TreeColumnAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\BooleanColumnAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\CheckColumnAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\DateColumnAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\NumberColumnAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\TemplateColumnAttribute.cs" />
+    <Compile Include="MVC\MetadataAware\EmailValidationAttribute.cs" />
+    <Compile Include="MVC\ModelBinders\SubmittedNode.cs" />
+    <Compile Include="MVC\ModelBinders\SubmittedNodeModelBinder.cs" />
+    <Compile Include="MVC\ModelBinders\JsonModelBinder.cs" />
+    <Compile Include="MVC\Results\ComponentConfigResult.cs" />
+    <Compile Include="MVC\Results\FormPanelResult.cs" />
+    <Compile Include="MVC\Results\DirectResult.cs" />
+    <Compile Include="MVC\MetadataAware\FieldDefaultsAttribute.cs" />
+    <Compile Include="MVC\Extensions\FieldExtensions.cs" />
+    <Compile Include="MVC\Results\RemoteTreeResult.cs" />
+    <Compile Include="MVC\Results\StoreResult.cs" />
+    <Compile Include="MVC\Extensions\ControllerExtensions.cs" />
+    <Compile Include="MVC\MvcResourceManager.cs" />
+    <Compile Include="MVC\Extensions\PartialView.cs" />
+    <Compile Include="MVC\Extensions\General.cs" />
+    <Compile Include="MVC\Extensions\XExtensions.cs" />
+    <Compile Include="MVC\MvcResourcePlaceHolder.cs" />
+    <Compile Include="MVC\PartialViewPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MVC\PartialViewRenderer.cs" />
+    <Compile Include="MVC\Results\PartialViewResult.cs" />
+    <Compile Include="MVC\Results\RestResult.cs" />
+    <Compile Include="MVC\ViewDataContainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\BaseLoadConfig.cs" />
@@ -119,6 +339,7 @@
     <Compile Include="Enums\ButtonTextAlign.cs" />
     <Compile Include="Enums\ChartExportType.cs" />
     <Compile Include="Enums\ChartMask.cs" />
+    <Compile Include="Enums\ClientIDMode.cs" />
     <Compile Include="Enums\CollapseTarget.cs" />
     <Compile Include="Enums\RemoteTreeAction.cs" />
     <Compile Include="Enums\ShrinkWrap.cs" />
@@ -389,7 +610,6 @@
     <Compile Include="Ext\Data\ModelProxy.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Ext\Data\ModelStateStore.cs" />
     <Compile Include="Ext\Data\SequentialIdGenerator.cs" />
     <Compile Include="Ext\Data\StoreRequestParameters.cs" />
     <Compile Include="Ext\Data\Tree\Node.cs">
@@ -1110,7 +1330,6 @@
     <Compile Include="Factory\Builder\ModelBuilder.cs" />
     <Compile Include="Factory\Builder\ModelFieldBuilder.cs" />
     <Compile Include="Factory\Builder\ModelIdGeneratorBuilder.cs" />
-    <Compile Include="Factory\Builder\ModelStateStoreBuilder.cs" />
     <Compile Include="Factory\Builder\MonthPickerBuilder.cs" />
     <Compile Include="Factory\Builder\MonthViewBaseBuilder.cs" />
     <Compile Include="Factory\Builder\MonthViewBuilder.cs" />
@@ -1124,7 +1343,6 @@
     <Compile Include="Factory\Builder\MultiSelectBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Factory\Builder\MvcItemBuilder.cs" />
     <Compile Include="Factory\Builder\NodeBuilder.cs" />
     <Compile Include="Factory\Builder\NumberColumnBuilder.cs">
       <SubType>Code</SubType>
@@ -1643,7 +1861,6 @@
     <Compile Include="Factory\ConfigOptions\MouseDistanceSensorConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\MouseDistanceSensorDirectEventsConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\MouseDistanceSensorListenersConfigOptions.cs" />
-    <Compile Include="Factory\ConfigOptions\MvcItemConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\NodeCollectionConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\NumericAxisConfigOptions.cs" />
     <Compile Include="Factory\ConfigOptions\ObservableDirectEventConfigOptions.cs" />
@@ -2095,7 +2312,6 @@
     <Compile Include="Factory\Config\ModelConfig.cs" />
     <Compile Include="Factory\Config\ModelFieldConfig.cs" />
     <Compile Include="Factory\Config\ModelIdGeneratorConfig.cs" />
-    <Compile Include="Factory\Config\ModelStateStoreConfig.cs" />
     <Compile Include="Factory\Config\MonthPickerConfig.cs" />
     <Compile Include="Factory\Config\MonthViewBaseConfig.cs" />
     <Compile Include="Factory\Config\MonthViewConfig.cs" />
@@ -2109,7 +2325,6 @@
     <Compile Include="Factory\Config\MultiSelectConfig.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Factory\Config\MvcItemConfig.cs" />
     <Compile Include="Factory\Config\NodeConfig.cs" />
     <Compile Include="Factory\Config\NumberColumnConfig.cs">
       <SubType>Code</SubType>
@@ -2369,130 +2584,6 @@
     <Compile Include="Interfaci\IStore.cs" />
     <Compile Include="Interfaci\IXPostBackDataHandler.cs" />
     <Compile Include="Interfaci\INoneEditable.cs" />
-    <Compile Include="MVC\DirectMethods\DirectControllerAttribute.cs" />
-    <Compile Include="MVC\DirectMethods\MvcDirectMethod.cs" />
-    <Compile Include="MVC\Extensions\WidgetExtensions.cs" />
-    <Compile Include="MVC\Ext\BaseControl.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MVC\Ext\Button\Button.cs" />
-    <Compile Include="MVC\Ext\Button\CycleButton.cs" />
-    <Compile Include="MVC\Ext\Data\Store.cs" />
-    <Compile Include="MVC\Ext\Events\ComponentDirectEvent.cs" />
-    <Compile Include="MVC\Ext\Form\CheckboxBase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MVC\Ext\Form\Checkbox.cs" />
-    <Compile Include="MVC\Ext\Form\DateFieldBase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MVC\Ext\Form\Field.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MVC\Ext\Form\FormPanel.cs" />
-    <Compile Include="MVC\Ext\Form\MultiSelectBase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MVC\Ext\Form\NumberFieldBase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MVC\Ext\Form\TextFieldBase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MVC\Ext\Form\TimeField.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MVC\Ext\Form\HtmlEditor.cs" />
-    <Compile Include="MVC\Ext\Form\Hidden.cs" />
-    <Compile Include="MVC\Ext\Form\DropDownFieldBase.cs" />
-    <Compile Include="MVC\Ext\Form\DisplayField.cs" />
-    <Compile Include="MVC\Ext\Form\ComboBoxBase.cs" />
-    <Compile Include="MVC\Ext\Form\Radio.cs" />
-    <Compile Include="MVC\Ext\Grid\GridPanel.cs" />
-    <Compile Include="MVC\Ext\Menu\MenuItem.cs" />
-    <Compile Include="MVC\Ext\Panel\Tool.cs" />
-    <Compile Include="MVC\Ext\Picker\ColorPicker.cs" />
-    <Compile Include="MVC\Ext\Picker\DatePicker.cs" />
-    <Compile Include="MVC\Ext\Slider\SliderBase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MVC\Ext\BaseItem.cs" />
-    <Compile Include="MVC\Ext\Observable.cs" />
-    <Compile Include="MVC\Factory\AbstractComponentBuilder.cs" />
-    <Compile Include="MVC\Factory\AbstractContainerBuilder.cs" />
-    <Compile Include="MVC\Factory\AbstractStoreBuilder.cs" />
-    <Compile Include="MVC\Factory\BuilderFactory.cs" />
-    <Compile Include="Ext\Container\MvcItem.cs" />
-    <Compile Include="MVC\Factory\ButtonBuilder.cs" />
-    <Compile Include="MVC\Factory\CheckboxBuilder.cs" />
-    <Compile Include="MVC\Factory\ColorPickerBuilder.cs" />
-    <Compile Include="MVC\Factory\ColumnBaseBuilder.cs" />
-    <Compile Include="MVC\Factory\ControlBuilder.cs" />
-    <Compile Include="MVC\Factory\CycleButtonBuilder.cs" />
-    <Compile Include="MVC\Factory\DataSorterBuilder.cs" />
-    <Compile Include="MVC\Factory\GridFilterBuilder.cs" />
-    <Compile Include="MVC\Factory\MenuItemBuilder.cs" />
-    <Compile Include="MVC\Factory\ModelBuilder.cs" />
-    <Compile Include="MVC\Factory\ModelFieldBuilder.cs" />
-    <Compile Include="MVC\Factory\MvcItemBuilder.cs" />
-    <Compile Include="MVC\Factory\StoreBaseBuilder.cs" />
-    <Compile Include="MVC\Factory\TablePanelBuilder.cs" />
-    <Compile Include="MVC\Factory\ToolBuilder.cs" />
-    <Compile Include="MVC\Factory\DatePickerBuilder.cs" />
-    <Compile Include="MVC\Factory\RadioBuilder.cs" />
-    <Compile Include="MVC\MetadataAware\ClientResourceAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\ColumnBaseAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\ExclusionValidationAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\ModelAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\ModelFieldAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\AbstractValidationAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\FormatValidationAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\InclusionValidationAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\LengthValidationAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\PresenceValidationAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\AbstractAssociationAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\BelongsToAssociationAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\HasManyAssociationAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\HasOneAssociationAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\ProxyAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\AbstractReaderAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\JsonReaderAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\XmlReaderAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\ArrayReaderAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\AbstractWriterAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\JsonWriterAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\XmlWriterAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\ColumnAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\TreeColumnAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\BooleanColumnAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\CheckColumnAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\DateColumnAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\NumberColumnAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\TemplateColumnAttribute.cs" />
-    <Compile Include="MVC\MetadataAware\EmailValidationAttribute.cs" />
-    <Compile Include="MVC\ModelBinders\SubmittedNode.cs" />
-    <Compile Include="MVC\ModelBinders\SubmittedNodeModelBinder.cs" />
-    <Compile Include="MVC\ModelBinders\JsonModelBinder.cs" />
-    <Compile Include="MVC\Results\ComponentConfigResult.cs" />
-    <Compile Include="MVC\Results\FormPanelResult.cs" />
-    <Compile Include="MVC\Results\DirectResult.cs" />
-    <Compile Include="MVC\MetadataAware\FieldDefaultsAttribute.cs" />
-    <Compile Include="MVC\Extensions\FieldExtensions.cs" />
-    <Compile Include="MVC\Results\RemoteTreeResult.cs" />
-    <Compile Include="MVC\Results\StoreResult.cs" />
-    <Compile Include="MVC\Extensions\ControllerExtensions.cs" />
-    <Compile Include="MVC\MvcResourceManager.cs" />
-    <Compile Include="MVC\Extensions\PartialView.cs" />
-    <Compile Include="MVC\Extensions\General.cs" />
-    <Compile Include="MVC\Extensions\XExtensions.cs" />
-    <Compile Include="MVC\MvcResourcePlaceHolder.cs" />
-    <Compile Include="MVC\PartialViewPage.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="MVC\PartialViewRenderer.cs" />
-    <Compile Include="MVC\Results\PartialViewResult.cs" />
-    <Compile Include="MVC\Results\RestResult.cs" />
-    <Compile Include="MVC\ViewDataContainer.cs" />
     <Compile Include="Utility\Box.cs" />
     <Compile Include="Core\BaseItem\BaseItem.cs" />
     <Compile Include="Core\BaseItem\BaseItemCollection.cs" />
@@ -4692,6 +4783,7 @@
     <EmbeddedResource Include="Build\Ext.Net\extnet\unlicensed\images\unlicensed-bg.png" />
     <EmbeddedResource Include="Build\Ext.Net\extnet\unlicensed\images\unlicensed-button-txt.png" />
     <EmbeddedResource Include="Build\Ext.Net\extnet\unlicensed\un.js" />
+    <Content Include="Build\Ext.Net\LICENSE.txt" />
     <Content Include="Build\Ext.Net\Licenses\FlagIcons.txt" />
     <Content Include="Build\Ext.Net\Licenses\SilkCompanionIcon.txt" />
     <Content Include="Build\Ext.Net\ux\calendar\src\CalendarPanel.js" />
@@ -6919,9 +7011,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Build\Release\lib\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -6931,9 +7021,47 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)Build\Ext.Net\README.txt" "$(ProjectDir)Build\NuGet\content\App_Readme\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\CHANGELOG.txt" "$(ProjectDir)Build\NuGet\content\App_Readme\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\BREAKING_CHANGES.txt" "$(ProjectDir)Build\NuGet\content\App_Readme\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\License.txt" "$(ProjectDir)Build\NuGet\content\App_Readme\" /y
+
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.dll" "$(ProjectDir)Build\NuGet\lib\net40\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.xml" "$(ProjectDir)Build\NuGet\lib\net40\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.pdb" "$(ProjectDir)Build\NuGet\lib\net40\pdb\" /y
+
+xcopy "$(ProjectDir)Build\Ext.Net\README.txt" "$(ProjectDir)Build\Release\1. README.txt" /y
+xcopy "$(ProjectDir)Build\Ext.Net\CHANGELOG.txt" "$(ProjectDir)Build\Release\2. CHANGELOG.txt" /y
+xcopy "$(ProjectDir)Build\Ext.Net\BREAKING_CHANGES.txt" "$(ProjectDir)Build\Release\3. BREAKING CHANGES.txt" /y
+
+xcopy "$(ProjectDir)Build\Ext.Net\License.txt" "$(ProjectDir)Build\Release\4. LICENSE.txt" /y
+xcopy "$(ProjectDir)Build\Ext.Net\Sample.Web.config" "$(ProjectDir)Build\Release\5. Sample.Web.config" /y
+xcopy "$(ProjectDir)Build\NuGet\content\Ext.NET.Default.aspx" "$(ProjectDir)Build\Release\6. Default.aspx" /y
+
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\pdb\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.Utilities.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.Utilities.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\pdb\" /y
+xcopy "$(ProjectDir)$(OutDir)Ext.Net.Utilities.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Transformer.NET.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Transformer.NET.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\pdb\" /y
+xcopy "$(ProjectDir)$(OutDir)Transformer.NET.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Newtonsoft.Json.dll" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+xcopy "$(ProjectDir)$(OutDir)Newtonsoft.Json.pdb" "$(SolutionDir)Ext.Net\Build\Release\lib\pdb\" /y
+xcopy "$(ProjectDir)$(OutDir)Newtonsoft.Json.xml" "$(SolutionDir)Ext.Net\Build\Release\lib\" /y
+
+xcopy "$(ProjectDir)Build\Ext.Net\README.txt" "$(SolutionDir)Ext.Net.Examples\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\CHANGELOG.txt" "$(SolutionDir)Ext.Net.Examples\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\BREAKING_CHANGES.txt" "$(SolutionDir)Ext.Net.Examples\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\Sample.Web.config" "$(SolutionDir)Ext.Net.Examples\" /y
+
+xcopy "$(ProjectDir)Build\Ext.Net\README.txt" "$(SolutionDir)Ext.Net.Examples.MVC\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\CHANGELOG.txt" "$(SolutionDir)Ext.Net.Examples.MVC\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\BREAKING_CHANGES.txt" "$(SolutionDir)Ext.Net.Examples.MVC\" /y
+xcopy "$(ProjectDir)Build\Ext.Net\Sample.Web.config" "$(SolutionDir)Ext.Net.Examples.MVC\" /y</PostBuildEvent>
+    <PreBuildEvent>"$(SolutionDir)Ext.Net\Build\ReferenceAssemblies\ERB\Ext.Net.ResourceBuilder.exe" "$(ProjectDir) " "Ext.Net.Build" "$(ProjectDir) " "AGPL"
+xcopy "$(ProjectDir)Build\Ext.Net\Licenses\Ext.NET.Community.txt" "$(ProjectDir)Build\Ext.Net\LICENSE.txt" /y</PreBuildEvent>
   </PropertyGroup>
 </Project>

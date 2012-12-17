@@ -1,6 +1,6 @@
 ﻿Product      : Ext.NET.Community
-Version      : 2.1.0
-Last Updated : 2012-11-21
+Version      : 2.1.1
+Last Updated : 2012-12-10
 
 
 --------------------------------------------------------------------------
@@ -9,7 +9,7 @@ Last Updated : 2012-11-21
 
 I.   SYSTEM REQUIREMENTS
 II.  ADD TO VISUAL STUDIO TOOLBOX INSTRUCTIONS
-III. Version 2.1.0 REVISIONS + BREAKING CHANGES
+III. Version 2.1.1 REVISIONS + BREAKING CHANGES
 IV.  SAMPLE WEB.CONFIG
 V.   <extnet> WEB.CONFIG GLOBAL CONFIGURATION PROPERTIES
 VI.  CREDITS
@@ -81,7 +81,7 @@ your Visual Studio or Visual Web Developer Express Toolbox.
 
 
 --------------------------------------------------------------------------
-   III. Version 2.1.0 REVISIONS + BREAKING CHANGES
+   III. Version 2.1.1 REVISIONS + BREAKING CHANGES
 --------------------------------------------------------------------------
 
 See CHANGELOG.txt and BREAKING_CHANGES.txt
@@ -143,6 +143,22 @@ See CHANGELOG.txt and BREAKING_CHANGES.txt
 				/>
 		</handlers>
 	</system.webServer>
+	<runtime>
+		<assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+			<dependentAssembly>
+				<assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" />
+				<bindingRedirect oldVersion="1.0.0.0-4.5.9" newVersion="4.5.10" />
+			</dependentAssembly>
+			<dependentAssembly>
+				<assemblyIdentity name="Ext.Net.Utilities" publicKeyToken="2c34ac34702a3c23" />
+				<bindingRedirect oldVersion="0.0.0.0-2.0.1" newVersion="2.1.0" />
+			</dependentAssembly>
+			<dependentAssembly>
+				<assemblyIdentity name="Transformer.NET" publicKeyToken="e274d618e7c603a7" />
+				<bindingRedirect oldVersion="0.0.0.0-2.0.0" newVersion="2.1.0" />
+			</dependentAssembly>
+		</assemblyBinding>
+	</runtime>
 </configuration>
 
 
